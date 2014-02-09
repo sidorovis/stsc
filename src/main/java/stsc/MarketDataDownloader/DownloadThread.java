@@ -11,14 +11,20 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.io.CharStreams;
 
 public class DownloadThread implements Runnable {
 
 	MarketDataContext marketDataContext;
-	static int amount = 0;
+	static int solvedAmount = 0;
+	private static Logger logger = LogManager.getLogger("DownloadThread");
 
 	DownloadThread(MarketDataContext mdc) {
 		marketDataContext = mdc;
@@ -31,40 +37,78 @@ public class DownloadThread implements Runnable {
 				Stock s = getStockFromFileSystem(task);
 				if (s == null) {
 					download(task);
+					logger.trace("task {} fully downloaded", task);
 				} else {
 					partiallyDownload(s, task);
+					logger.trace("task {} partially downloaded", task);
 				}
 			} catch (Exception e) {
+				logger.warn("task {} throwed an exception {}", task,
+						e.toString());
 				File file = new File(generateFilePath(task));
 				if (file.length() == 0)
 					file.delete();
+			}
+			synchronized (marketDataContext) {
+				solvedAmount += 1;
+				if (solvedAmount % 100 == 0)
+					logger.info("solved {} tasks", solvedAmount);
 			}
 			task = marketDataContext.getTask();
 		}
 	}
 
-	public final Stock download(String stockName) throws IOException,
-			ParseException {
-		URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s="
-				+ stockName);
-		String stockContent = CharStreams.toString(new InputStreamReader(url
-				.openStream()));
-		Stock newStock = Stock.newStockFromString(stockName, stockContent);
-		if (newStock.getDays().isEmpty())
-			return null;
-		printOutStock(newStock);
+	public final Stock download(String stockName) throws ParseException,
+			MalformedURLException, InterruptedException {
+		int tries = 0;
+
+		Stock newStock = null;
+		while (tries < 5) {
+			URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s="
+					+ stockName);
+			try {
+				String stockContent = CharStreams
+						.toString(new InputStreamReader(url.openStream()));
+				newStock = Stock.newStockFromString(stockName, stockContent);
+				if (newStock.getDays().isEmpty())
+					return null;
+				printOutStock(newStock);
+				return newStock;
+			} catch (IOException e) {
+				Thread.sleep(100);
+			}
+			tries += 1;
+		}
+		if (newStock == null)
+			throw new InterruptedException(
+					"5 tries not enought to download data on " + stockName
+							+ " stock");
 		return newStock;
 	}
 
 	public final void partiallyDownload(Stock stock, String stockName)
-			throws IOException, ParseException {
+			throws IOException, ParseException, InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
-		URL url = new URL(downloadLink);
-		String stockNewContent = CharStreams.toString(new InputStreamReader(url
-				.openStream()));
-		boolean newDays = stock.addDaysFromString(stockNewContent);
-		if ( newDays )
-			printOutStock(stock);
+
+		int tries = 0;
+
+		while (tries < 5) {
+			URL url = new URL(downloadLink);
+			try {
+				String stockNewContent = CharStreams
+						.toString(new InputStreamReader(url.openStream()));
+				boolean newDays = stock.addDaysFromString(stockNewContent);
+				if (newDays)
+					printOutStock(stock);
+				return;
+			} catch (IOException e) {
+				Thread.sleep(100);
+			}
+			tries += 1;
+		}
+		throw new InterruptedException(
+				"5 tries not enought to partially download data on " + downloadLink
+						+ " stock");
 	}
 
 	private void printOutStock(Stock s) throws FileNotFoundException,
@@ -78,16 +122,22 @@ public class DownloadThread implements Runnable {
 
 	private final Stock getStockFromFileSystem(String stockName) {
 		Stock s = null;
-		InputStream is;
+		InputStream is = null;
+		ObjectInput oi = null;
 		try {
 			is = new BufferedInputStream(new FileInputStream(
 					generateBinaryFilePath(stockName)));
-			ObjectInput oi = new ObjectInputStream(is);
+			oi = new ObjectInputStream(is);
 			s = (Stock) oi.readObject();
-			oi.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		} catch (ClassNotFoundException e) {
+		} finally {
+			if (oi != null)
+				try {
+					oi.close();
+				} catch (IOException e) {
+				}
 		}
 		return s;
 	}
