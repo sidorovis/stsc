@@ -1,8 +1,12 @@
 package stsc.MarketDataDownloader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,14 +19,15 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 public final class MarketDataDownloader {
 
 	static {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "D:/dev/java/MarketDataDownloader/log4j2.xml");
-    }
-	
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+				"./log4j2.xml");
+	}
+
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
 
 	MarketDataContext marketDataContext = new MarketDataContext();
-	static final int downloadThreadSize = 8;
-	static final int stockNameMaxLength = 1;
+	static int downloadThreadSize = 8;
+	static int stockNameMaxLength = 1;
 
 	void generateNextElement(char[] generatedText, int currentIndex, int size) {
 		for (char c = 'a'; c <= 'z'; ++c) {
@@ -41,9 +46,23 @@ public final class MarketDataDownloader {
 		generateNextElement(generatedText, 0, taskLength);
 	}
 
+	private void readProperties() throws IOException {
+		FileInputStream in = new FileInputStream("MarketDataDownloader.ini");
+
+		Properties p = new Properties();
+		p.load(in);
+		in.close();
+
+		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
+		stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name.size"));
+	}
+
 	MarketDataDownloader() throws InterruptedException, IOException {
+
+		readProperties();
+
 		DownloadThread downloadThread = new DownloadThread(marketDataContext);
-		
+
 		logger.trace("starting");
 
 		for (int i = 1; i <= stockNameMaxLength; ++i)
