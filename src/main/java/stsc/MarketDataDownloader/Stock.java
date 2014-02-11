@@ -22,7 +22,7 @@ public class Stock implements Serializable {
 	final String name;
 	ArrayList<Day> days = new ArrayList<Day>();
 
-	static Stock readFromBinFile(String filePath)
+	public static Stock readFromBinFile(String filePath)
 			throws ClassNotFoundException, IOException {
 		Stock s = null;
 		ObjectInputStream oi = null;
@@ -37,7 +37,7 @@ public class Stock implements Serializable {
 		return s;
 	}
 
-	static Stock readFromCsvFile(String name, String filePath)
+	public static Stock readFromCsvFile(String name, String filePath)
 			throws IOException, ParseException {
 		byte[] data = Files.readAllBytes(Paths.get(filePath));
 		String content = new String(data);
@@ -57,7 +57,7 @@ public class Stock implements Serializable {
 		return stock;
 	}
 
-	Stock(String n) {
+	public Stock(String n) {
 		name = n;
 	}
 
@@ -85,7 +85,7 @@ public class Stock implements Serializable {
 		return Collections.unmodifiableCollection(days);
 	}
 
-	ArrayList<Day> getDaysAsArrayList() {
+	public ArrayList<Day> getDaysAsArrayList() {
 		return days;
 	}
 

@@ -1,10 +1,13 @@
-package stsc.MarketDataDownloader;
+package stsc.MarketDataFilter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+
+import stsc.MarketDataDownloader.Day;
+import stsc.MarketDataDownloader.Stock;
 
 public class StockFilter {
 

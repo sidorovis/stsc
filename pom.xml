@@ -5,15 +5,64 @@
   <groupId>stsc</groupId>
   <artifactId>MarketDataDownloader</artifactId>
   <version>0.0.2-SNAPSHOT</version>
-  <packaging>pom</packaging>
-
+<!--  <packaging>pom</packaging>
+    -->
   <name>MarketDataDownloader</name>
   <url>https://github.com/sidorovis/MarketDataDownloader</url>
 
-  <properties>
+  <executions>
+    <execution>
+      <id>stsc-storage</id>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/MarketDataDownloader</schemaDirectory>
+        <generatePackage>stsc.MarketDataDownloader</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/MarketDataDownloader</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-filter</id>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/MarketDataFilter</schemaDirectory>
+        <generatePackage>stsc.MarketDataFilter</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/MarketDataFilter</generateDirectory>
+      </configuration>
+    </execution>
+
+    <execution>
+      <id>stsc-storage-tests</id>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/MarketDataDownloader</schemaDirectory>
+        <generatePackage>stsc.MarketDataDownloader</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/MarketDataDownloader</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-filter-tests</id>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/MarketDataFilter</schemaDirectory>
+        <generatePackage>stsc.MarketDataFilter</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/MarketDataFilter</generateDirectory>
+      </configuration>
+    </execution>
+
+  </executions>
+
+<!--  <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
+-->
   <build>
 	<defaultGoal>install</defaultGoal>
 	<plugins>

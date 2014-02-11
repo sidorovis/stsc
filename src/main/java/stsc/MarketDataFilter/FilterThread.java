@@ -1,4 +1,6 @@
-package stsc.MarketDataDownloader;
+package stsc.MarketDataFilter;
+
+import stsc.MarketDataDownloader.MarketDataContext;
 
 public class FilterThread implements Runnable{
 

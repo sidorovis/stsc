@@ -1,9 +1,11 @@
-package stsc.MarketDataDownloader;
+package stsc.MarketDataFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import stsc.MarketDataDownloader.Stock;
+import stsc.MarketDataFilter.StockFilter;
 import junit.framework.TestCase;
 
 public class StockFilterTest extends TestCase {

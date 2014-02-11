@@ -6,12 +6,12 @@ import java.util.Date;
 public class Day implements Serializable {
 
 	private static final long serialVersionUID = -6744589336558997380L;
-	final Date date;
-	final Prices prices;
-	final double volume;
-	final double adj_close;
+	public final Date date;
+	public final Prices prices;
+	public final double volume;
+	public final double adj_close;
 
-	Day(Date d) {
+	public Day(Date d) {
 		date = d;
 		prices = null;
 		volume = 0.0;
