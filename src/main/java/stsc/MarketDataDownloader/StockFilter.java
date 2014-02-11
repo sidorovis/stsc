@@ -10,7 +10,8 @@ public class StockFilter {
 
 	static final int minimalDaysWithDataPerLastYear = 210;
 	static final int minimalDaysWithDataPerLastMonth = 15;
-
+	static final int minimalAverageYearVolume = 100000000;
+	
 	static Date today = new Date();
 
 	class DayComparator implements Comparator<Day> {
@@ -51,15 +52,24 @@ public class StockFilter {
 
 		Calendar monthAgoCalendar = Calendar.getInstance();
 		monthAgoCalendar.set(year, month, date);
-		monthAgoCalendar.add( Calendar.MONTH, -1);
-		
+		monthAgoCalendar.add(Calendar.MONTH, -1);
+
 		Date monthAgo = monthAgoCalendar.getTime();
 
-		int monthAgoIndex = Collections.binarySearch(days, new Day(monthAgo), new DayComparator() );
+		int monthAgoIndex = Collections.binarySearch(days, new Day(monthAgo),
+				new DayComparator());
 		if (monthAgoIndex < 0)
 			monthAgoIndex = -monthAgoIndex;
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth)
+			return false;
+
+		double volume_amount = 0;
+		for (int i = daysWithDataForLastYear; i < days.size(); ++i)
+			volume_amount += days.get(i).volume;
+		volume_amount = volume_amount / daysWithDataForLastYear;
+
+		if (volume_amount < minimalAverageYearVolume)
 			return false;
 		
 		return true;

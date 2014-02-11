@@ -12,7 +12,6 @@ public class StockFilterTest extends TestCase {
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(2014, 0, 13);
-		cal.getTime();
 
 		StockFilter stockFilter = new StockFilter(cal.getTime());
 		Stock s1 = Stock.readFromCsvFile("ibm", "./test_data/ibm.csv");
@@ -20,13 +19,13 @@ public class StockFilterTest extends TestCase {
 		Stock s2 = Stock.readFromCsvFile("anse", "./test_data/anse.csv");
 		assertEquals(false, stockFilter.test(s2));
 
-		cal.set(2014, 0, 13);
-		cal.getTime();
-
 		cal.set(2014, 1, 10);
 		StockFilter stockFilter2 = new StockFilter(cal.getTime());
 
 		Stock s3 = Stock.readFromBinFile("./test_data/aapl.bin");
 		assertEquals(true, stockFilter2.test(s3));
+
+		Stock s4 = Stock.readFromBinFile("./test_data/spy.bin");
+		assertEquals(true, stockFilter2.test(s4));
 	}
 }
