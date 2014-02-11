@@ -1,15 +1,10 @@
 package stsc.MarketDataDownloader;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -69,7 +64,7 @@ public class DownloadThread implements Runnable {
 			try {
 				String stockContent = CharStreams
 						.toString(new InputStreamReader(url.openStream()));
-				newStock = Stock.newStockFromString(stockName, stockContent);
+				newStock = Stock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
 				printOutStock(newStock);
@@ -122,23 +117,11 @@ public class DownloadThread implements Runnable {
 
 	private final Stock getStockFromFileSystem(String stockName) {
 		Stock s = null;
-		InputStream is = null;
-		ObjectInput oi = null;
-		try {
-			is = new BufferedInputStream(new FileInputStream(
-					generateBinaryFilePath(stockName)));
-			oi = new ObjectInputStream(is);
-			s = (Stock) oi.readObject();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} catch (ClassNotFoundException e) {
-		} finally {
-			if (oi != null)
-				try {
-					oi.close();
-				} catch (IOException e) {
-				}
-		}
+			try {
+				s = Stock.readFromBinFile(generateBinaryFilePath(stockName));
+			} catch (ClassNotFoundException e) {
+			} catch (IOException e) {
+			}
 		return s;
 	}
 

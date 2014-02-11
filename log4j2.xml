@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<Properties>
-		<Property name="filename">./_log_file.log</Property>
+		<Property name="market_data_downloader_filename">./_market_data_downloader_filename.log</Property>
+		<Property name="downloaded_stock_filter_filename">./_downloaded_stock_filter_filename.log</Property>
 	</Properties>
     <Appenders>
-		<File name="File" fileName="${filename}">
+ 		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</Console>
+		<File name="MarketDataFile" fileName="${market_data_downloader_filename}">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="StockFilterFile" fileName="${downloaded_stock_filter_filename}">
 			<PatternLayout>
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
@@ -12,13 +23,16 @@
     </Appenders>
     <Loggers>
     	<Root level="error">
-    		<AppenderRef ref="File"/>
+    		<AppenderRef ref="MarketDataFile"/>
     	</Root>
     	<Logger name="MarketDataDownloader" level="trace" additivity="false">
-    		<AppenderRef ref="File"/>
+    		<AppenderRef ref="MarketDataFile"/>
     	</Logger>
     	<Logger name="DownloadThread" level="info" additivity="false">
-    		<AppenderRef ref="File"/>
+    		<AppenderRef ref="MarketDataFile"/>
+    	</Logger>
+    	<Logger name="DownloadedStockFilter" level="trace" additivity="false">
+    		<AppenderRef ref="Console"/>
     	</Logger>
     </Loggers>
 </Configuration>

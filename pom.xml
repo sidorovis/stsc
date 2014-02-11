@@ -5,7 +5,7 @@
   <groupId>stsc</groupId>
   <artifactId>MarketDataDownloader</artifactId>
   <version>0.0.2-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>MarketDataDownloader</name>
   <url>https://github.com/sidorovis/MarketDataDownloader</url>

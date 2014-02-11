@@ -1,8 +1,6 @@
 package stsc.MarketDataDownloader;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,8 @@ public final class MarketDataDownloader {
 
 	MarketDataContext marketDataContext = new MarketDataContext();
 	static int downloadThreadSize = 8;
-	static int stockNameMaxLength = 1;
+	static int stockNameMinLength = 5;
+	static int stockNameMaxLength = 5;
 
 	void generateNextElement(char[] generatedText, int currentIndex, int size) {
 		for (char c = 'a'; c <= 'z'; ++c) {
@@ -54,7 +53,8 @@ public final class MarketDataDownloader {
 		in.close();
 
 		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
-		stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name.size"));
+		stockNameMinLength = Integer.parseInt(p.getProperty("stock_name_min.size"));
+		stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name_max.size"));
 	}
 
 	MarketDataDownloader() throws InterruptedException, IOException {
@@ -65,7 +65,7 @@ public final class MarketDataDownloader {
 
 		logger.trace("starting");
 
-		for (int i = 1; i <= stockNameMaxLength; ++i)
+		for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
 			generateTasks(i);
 
 		logger.trace("tasks size: {}", marketDataContext.taskQueueSize());

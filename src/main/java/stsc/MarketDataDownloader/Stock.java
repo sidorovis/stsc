@@ -1,6 +1,12 @@
 package stsc.MarketDataDownloader;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,16 +15,36 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 public class Stock implements Serializable {
 
 	private static final long serialVersionUID = 4471626546221264954L;
 	final String name;
-	List<Day> days = new ArrayList<Day>();
+	ArrayList<Day> days = new ArrayList<Day>();
 
-	static Stock newStockFromString(String n, String content)
-			throws ParseException {
+	static Stock readFromBinFile(String filePath)
+			throws ClassNotFoundException, IOException {
+		Stock s = null;
+		ObjectInputStream oi = null;
+		BufferedInputStream is = new BufferedInputStream(new FileInputStream(
+				filePath));
+		try {
+			oi = new ObjectInputStream(is);
+			s = (Stock) oi.readObject();
+		} finally {
+			oi.close();
+		}
+		return s;
+	}
+
+	static Stock readFromCsvFile(String name, String filePath)
+			throws IOException, ParseException {
+		byte[] data = Files.readAllBytes(Paths.get(filePath));
+		String content = new String(data);
+		return Stock.newFromString(name, content);
+	}
+
+	static Stock newFromString(String n, String content) throws ParseException {
 		Stock stock = new Stock(n);
 		String[] lines = content.split("\n");
 
@@ -51,12 +77,16 @@ public class Stock implements Serializable {
 		for (int i = 0; i < lines.length - 1; ++i)
 			if (!lines[i].isEmpty())
 				storeDataLine(this, lines[i]);
-		
+
 		return lines.length > 1;
 	}
 
 	Collection<Day> getDays() {
 		return Collections.unmodifiableCollection(days);
+	}
+
+	ArrayList<Day> getDaysAsArrayList() {
+		return days;
 	}
 
 	String generatePartiallyDownloadLine() {

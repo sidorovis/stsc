@@ -11,6 +11,13 @@ public class Day implements Serializable {
 	final double volume;
 	final double adj_close;
 
+	Day(Date d) {
+		date = d;
+		prices = null;
+		volume = 0.0;
+		adj_close = 0.0;
+	}
+
 	Day(Date d, Prices p, double v, double ac) {
 		date = d;
 		prices = p;
