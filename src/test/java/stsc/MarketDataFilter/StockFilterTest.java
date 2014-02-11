@@ -29,5 +29,8 @@ public class StockFilterTest extends TestCase {
 
 		Stock s4 = Stock.readFromBinFile("./test_data/spy.bin");
 		assertEquals(true, stockFilter2.test(s4));
+	
+		Stock s5 = Stock.readFromBinFile("./test_data/aaaa.bin");
+		assertEquals(false, stockFilter2.test(s5));
 	}
 }
