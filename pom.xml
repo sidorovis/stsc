@@ -5,18 +5,32 @@
   <groupId>stsc</groupId>
   <artifactId>MarketDataDownloader</artifactId>
   <version>0.0.3-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>MarketDataDownloader</name>
   <url>https://github.com/sidorovis/MarketDataDownloader</url>
 
 
-<!--  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <properties>
+    <project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
   </properties>
--->
+
   <build>
 	<defaultGoal>install</defaultGoal>
-	<plugins>
+<!--	<resources>
+		<resource>
+			<directory>./</directory>
+			<excludes>
+				<exclude>_*.log</exclude>
+				<exclude>target</exclude>
+				<exclude>data</exclude>
+				<exclude>test</exclude>
+				<exclude>test_data</exclude>
+				<exclude>src</exclude>
+			</excludes>
+		</resource>
+	</resources>
+-->	<plugins>
 	<plugin>
  	<groupId>org.apache.maven.plugins</groupId>
  	<artifactId>maven-eclipse-plugin</artifactId>

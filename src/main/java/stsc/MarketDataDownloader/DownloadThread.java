@@ -1,11 +1,8 @@
 package stsc.MarketDataDownloader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -29,7 +26,7 @@ public class DownloadThread implements Runnable {
 		String task = marketDataContext.getTask();
 		while (task != null) {
 			try {
-				Stock s = getStockFromFileSystem(task);
+				Stock s = marketDataContext.getStockFromFileSystem(task);
 				if (s == null) {
 					download(task);
 					logger.trace("task {} fully downloaded", task);
@@ -40,7 +37,7 @@ public class DownloadThread implements Runnable {
 			} catch (Exception e) {
 				logger.warn("task {} throwed an exception {}", task,
 						e.toString());
-				File file = new File(generateFilePath(task));
+				File file = new File(marketDataContext.generateFilePath(task));
 				if (file.length() == 0)
 					file.delete();
 			}
@@ -53,7 +50,7 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	public final Stock download(String stockName) throws ParseException,
+	public final void download(String stockName) throws ParseException,
 			MalformedURLException, InterruptedException {
 		int tries = 0;
 
@@ -66,9 +63,10 @@ public class DownloadThread implements Runnable {
 						.toString(new InputStreamReader(url.openStream()));
 				newStock = Stock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
-					return null;
-				printOutStock(newStock);
-				return newStock;
+					return;
+				newStock.store(marketDataContext
+						.generateBinaryFilePath(newStock.name));
+				return;
 			} catch (IOException e) {
 				Thread.sleep(100);
 			}
@@ -78,7 +76,7 @@ public class DownloadThread implements Runnable {
 			throw new InterruptedException(
 					"5 tries not enought to download data on " + stockName
 							+ " stock");
-		return newStock;
+		return;
 	}
 
 	public final void partiallyDownload(Stock stock, String stockName)
@@ -94,7 +92,8 @@ public class DownloadThread implements Runnable {
 						.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
-					printOutStock(stock);
+					stock.store(marketDataContext
+							.generateBinaryFilePath(stock.name));
 				return;
 			} catch (IOException e) {
 				Thread.sleep(100);
@@ -102,36 +101,7 @@ public class DownloadThread implements Runnable {
 			tries += 1;
 		}
 		throw new InterruptedException(
-				"5 tries not enought to partially download data on " + downloadLink
-						+ " stock");
-	}
-
-	private void printOutStock(Stock s) throws FileNotFoundException,
-			IOException {
-		ObjectOutputStream outFile = null;
-		outFile = new ObjectOutputStream(new FileOutputStream(
-				generateBinaryFilePath(s.name)));
-		outFile.writeObject(s);
-		outFile.close();
-	}
-
-	private final Stock getStockFromFileSystem(String stockName) {
-		Stock s = null;
-			try {
-				s = Stock.readFromBinFile(generateBinaryFilePath(stockName));
-			} catch (ClassNotFoundException e) {
-			} catch (IOException e) {
-			}
-		return s;
-	}
-
-	private String generateFilePath(String stockName) {
-		String dataFolder = marketDataContext.getDataFolder();
-		return dataFolder + stockName + ".csv";
-	}
-
-	private String generateBinaryFilePath(String stockName) {
-		String dataFolder = marketDataContext.getDataFolder();
-		return dataFolder + stockName + ".bin";
+				"5 tries not enought to partially download data on "
+						+ downloadLink + " stock");
 	}
 }

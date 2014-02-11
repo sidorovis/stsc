@@ -1,7 +1,11 @@
 package stsc.MarketDataFilter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,27 +20,58 @@ public class DownloadedStockFilter {
 				"./log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger("DownloadedStockFilter");
+	static int downloadThreadSize = 8;
+	private static Logger logger = LogManager
+			.getLogger("DownloadedStockFilter");
 
 	static MarketDataContext marketDataContext;
 
 	private void collectDownloadedStockNames() {
 
-		File folder = new File(marketDataContext.getDataFolder());
+		File folder = new File(marketDataContext.dataFolder);
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if ( file.isFile() && filename.endsWith( ".bin" ))
-				marketDataContext.addTask( filename );
+			if (file.isFile() && filename.endsWith(".bin"))
+				marketDataContext.addTask(filename.substring(0, filename.length() - 4));
 		}
 	}
 
-	public DownloadedStockFilter() throws IOException {
+	private void readProperties() throws IOException {
+		FileInputStream in = new FileInputStream("DownloadedStockFilter.ini");
+
+		Properties p = new Properties();
+		p.load(in);
+		in.close();
+
+		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
+	}
+
+	public DownloadedStockFilter() throws IOException, InterruptedException {
+		readProperties();
+
 		logger.trace("downloaded stock filter started");
 		marketDataContext = new MarketDataContext();
 		collectDownloadedStockNames();
-		logger.trace("collected stock names to start filter process: {}", marketDataContext.taskQueueSize());
-		
+		logger.trace("collected stock names to start filter process: {}",
+				marketDataContext.taskQueueSize());
+
+		List<Thread> threads = new ArrayList<Thread>();
+
+		FilterThread filterThread = new FilterThread(marketDataContext);
+
+		for (int i = 0; i < downloadThreadSize; ++i) {
+			Thread newThread = new Thread(filterThread);
+			threads.add(newThread);
+			newThread.start();
+		}
+
+		logger.info("calculating threads started ( {} )", downloadThreadSize);
+
+		for (Thread thread : threads) {
+			thread.join();
+		}
+
 		logger.trace("downloaded stock filter finished");
 	}
 
@@ -44,6 +79,8 @@ public class DownloadedStockFilter {
 		try {
 			new DownloadedStockFilter();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

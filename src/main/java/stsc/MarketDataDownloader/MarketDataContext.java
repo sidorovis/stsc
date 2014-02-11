@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MarketDataContext {
 	ConcurrentLinkedQueue<String> taskQueue = new ConcurrentLinkedQueue<String>();
 	public String dataFolder = "./data/";
+	public String filteredDataFolder = "./filtered_data/";
 
 	public MarketDataContext() throws IOException {
 	}
@@ -22,7 +23,26 @@ public class MarketDataContext {
 		return taskQueue.poll();
 	}
 
-	public String getDataFolder() {
-		return dataFolder;
+	public String generateFilePath(String stockName) {
+		return dataFolder + stockName + ".csv";
 	}
+	public String generateFilteredBinaryFilePath(String stockName) {
+		return filteredDataFolder + stockName + ".bin";
+	}
+
+	public String generateBinaryFilePath(String stockName) {
+		return dataFolder + stockName + ".bin";
+	}
+	
+	public Stock getStockFromFileSystem(String stockName) {
+		Stock s = null;
+		try {
+			s = Stock.readFromBinFile(generateBinaryFilePath(stockName));
+		} catch (ClassNotFoundException e) {
+		} catch (IOException e) {
+		}
+		return s;
+	}
+
+	
 }

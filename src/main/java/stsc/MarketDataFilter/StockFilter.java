@@ -6,16 +6,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import stsc.MarketDataDownloader.Day;
 import stsc.MarketDataDownloader.Stock;
 
 public class StockFilter {
 
-	static final int minimalDaysWithDataPerLastYear = 210;
-	static final int minimalDaysWithDataPerLastMonth = 15;
-	static final int minimalAverageYearVolume = 100000000;
-	
+	static final int minimalDaysWithDataPerLastYear = 200;
+	static final int minimalDaysWithDataPerLastMonth = 16;
+	static final int minimalAverageYearVolume = 50000000;
+
 	static Date today = new Date();
+
+	private static Logger logger = LogManager.getLogger("StockFilter");
 
 	class DayComparator implements Comparator<Day> {
 
@@ -50,8 +55,11 @@ public class StockFilter {
 		if (yearAgoIndex < 0)
 			yearAgoIndex = -yearAgoIndex;
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
-		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear)
+		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear) {
+			logger.debug("stock " + s.getName() + " have only "
+					+ daysWithDataForLastYear + " for last year");
 			return false;
+		}
 
 		Calendar monthAgoCalendar = Calendar.getInstance();
 		monthAgoCalendar.set(year, month, date);
@@ -64,17 +72,21 @@ public class StockFilter {
 		if (monthAgoIndex < 0)
 			monthAgoIndex = -monthAgoIndex;
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
-		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth)
+		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
+			logger.debug("stock " + s.getName() + " have only "
+					+ daysWithDataForLastMonth + " for last month");
 			return false;
-
-		double volume_amount = 0;
+		}
+		double volumeAmount = 0;
 		for (int i = daysWithDataForLastYear; i < days.size(); ++i)
-			volume_amount += days.get(i).volume;
-		volume_amount = volume_amount / daysWithDataForLastYear;
+			volumeAmount += days.get(i).volume;
+		volumeAmount = volumeAmount / daysWithDataForLastYear;
 
-		if (volume_amount < minimalAverageYearVolume)
+		if (volumeAmount < minimalAverageYearVolume) {
+			logger.debug("stock " + s.getName() + " have only "
+					+ volumeAmount + " too small average volume amount for last year");
 			return false;
-		
+		}
 		return true;
 	}
 

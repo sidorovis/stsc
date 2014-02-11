@@ -2,8 +2,11 @@ package stsc.MarketDataDownloader;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -67,6 +70,13 @@ public class Stock implements Serializable {
 
 	void addDay(Day d) {
 		days.add(d);
+	}
+
+	public void store(String filePath) throws FileNotFoundException, IOException {
+		ObjectOutputStream outFile = null;
+		outFile = new ObjectOutputStream(new FileOutputStream(filePath));
+		outFile.writeObject(this);
+		outFile.close();
 	}
 
 	public boolean addDaysFromString(String newData) throws ParseException {
