@@ -1,4 +1,4 @@
-package stsc.MarketDataDownloader;
+package stsc.yahoofetcher;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -21,12 +21,10 @@ import com.google.common.io.Files;
 import junit.framework.TestCase;
 
 public class DownloadThreadTest extends TestCase {
-	public void testDownloadThread() throws InterruptedException, IOException,
-			ClassNotFoundException {
+	public void testDownloadThread() throws InterruptedException, IOException, ClassNotFoundException {
 		MarketDataContext marketDataContext = new MarketDataContext();
 		marketDataContext.dataFolder = "./test/";
-		Files.copy(new File("./test_data/aaoi.bin"),
-				new File("./test/aaoi.bin"));
+		Files.copy(new File("./test_data/aaoi.bin"), new File("./test/aaoi.bin"));
 		marketDataContext.addTask("a");
 		DownloadThread downloadThread = new DownloadThread(marketDataContext);
 		{
@@ -47,8 +45,7 @@ public class DownloadThreadTest extends TestCase {
 			th.join();
 		}
 		{
-			InputStream is = new BufferedInputStream(new FileInputStream(
-					"./test/aaoi.bin"));
+			InputStream is = new BufferedInputStream(new FileInputStream("./test/aaoi.bin"));
 			ObjectInput oi = new ObjectInputStream(is);
 			Stock s = null;
 			s = (Stock) oi.readObject();

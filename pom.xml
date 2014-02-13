@@ -31,20 +31,20 @@
         <goal>eclipse</goal>
       </goals>
       <configuration>
-        <schemaDirectory>src/main/java/stsc/StscCommon</schemaDirectory>
+        <schemaDirectory>src/main/java/stsc/common</schemaDirectory>
         <generatePackage>stsc.common</generatePackage>
         <generateDirectory>${project.build.directory}/target/classes/stsc/common</generateDirectory>
       </configuration>
     </execution>
     <execution>
-      <id>stsc-yahoo-downloader</id>
+      <id>stsc-yahoo-fetcher</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
       <configuration>
-        <schemaDirectory>src/main/java/stsc/MarketDataDownloader</schemaDirectory>
-        <generatePackage>stsc.MarketDataDownloader</generatePackage>
-        <generateDirectory>${project.build.directory}/target/classes/stsc/MarketDataDownloader</generateDirectory>
+        <schemaDirectory>src/main/java/stsc/yahoofetcher</schemaDirectory>
+        <generatePackage>stsc.yahoofetcher</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/yahoofetcher</generateDirectory>
       </configuration>
     </execution>
     <execution>
@@ -82,14 +82,14 @@
       </configuration>
     </execution>
     <execution>
-      <id>stsc-yahoo-downloader-tests</id>
+      <id>stsc-yahoo-fetcher-tests</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
       <configuration>
-        <schemaDirectory>src/test/java/stsc/MarketDataDownloader</schemaDirectory>
-        <generatePackage>stsc.MarketDataDownloader</generatePackage>
-        <generateDirectory>${project.build.directory}/target/test-classes/stsc/MarketDataDownloader</generateDirectory>
+        <schemaDirectory>src/test/java/stsc/yahoofetcher</schemaDirectory>
+        <generatePackage>stsc.yahoofetcher</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/yahoofetcher</generateDirectory>
       </configuration>
     </execution>
     <execution>
@@ -134,13 +134,13 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.MarketDataDownloader.MarketDataDownloader</mainClass>
+          			<mainClass>stsc.yahoofetcher.MarketDataDownloader</mainClass>
         		</manifest>
       		</archive>
         </configuration>
     	<executions>
       		<execution>
-        		<id>make-my-jar-with-dependencies</id>
+        		<id>make-yahoofetcher-jar-with-dependencies</id>
         		<phase>package</phase>
         		<goals>
           			<goal>single</goal>

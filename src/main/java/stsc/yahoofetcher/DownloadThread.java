@@ -1,4 +1,4 @@
-package stsc.MarketDataDownloader;
+package stsc.yahoofetcher;
 
 import java.io.File;
 import java.io.IOException;

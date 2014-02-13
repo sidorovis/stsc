@@ -1,4 +1,4 @@
-package stsc.MarketDataDownloader;
+package stsc.yahoofetcher;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public final class MarketDataDownloader {
 	}
 
 	private void readProperties() throws IOException {
-		FileInputStream in = new FileInputStream("MarketDataDownloader.ini");
+		FileInputStream in = new FileInputStream("conf_yahoo_fetcher.ini");
 
 		Properties p = new Properties();
 		p.load(in);

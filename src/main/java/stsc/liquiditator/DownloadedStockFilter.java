@@ -35,7 +35,7 @@ public class DownloadedStockFilter {
 	}
 
 	private void readProperties() throws IOException {
-		FileInputStream in = new FileInputStream("DownloadedStockFilter.ini");
+		FileInputStream in = new FileInputStream("conf_liquiditator.ini");
 
 		Properties p = new Properties();
 		p.load(in);
