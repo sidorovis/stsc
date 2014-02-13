@@ -13,6 +13,9 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import stsc.common.MarketDataContext;
+import stsc.common.Stock;
+
 import com.google.common.io.Files;
 
 import junit.framework.TestCase;

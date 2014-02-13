@@ -1,4 +1,4 @@
-package stsc.MarketDataDownloader;
+package stsc.common;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

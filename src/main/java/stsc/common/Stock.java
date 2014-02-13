@@ -1,4 +1,4 @@
-package stsc.MarketDataDownloader;
+package stsc.common;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ public class Stock implements Serializable {
 		return Stock.newFromString(name, content);
 	}
 
-	static Stock newFromString(String n, String content) throws ParseException {
+	public static Stock newFromString(String n, String content) throws ParseException {
 		Stock stock = new Stock(n);
 		String[] lines = content.split("\n");
 
@@ -91,7 +91,7 @@ public class Stock implements Serializable {
 		return lines.length > 1;
 	}
 
-	Collection<Day> getDays() {
+	public Collection<Day> getDays() {
 		return Collections.unmodifiableCollection(days);
 	}
 
@@ -99,7 +99,7 @@ public class Stock implements Serializable {
 		return days;
 	}
 
-	String generatePartiallyDownloadLine() {
+	public String generatePartiallyDownloadLine() {
 		Date lastDate = days.get(days.size() - 1).date;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(lastDate);

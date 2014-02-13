@@ -3,7 +3,7 @@ package stsc.MarketDataFilter;
 import java.io.File;
 import java.io.IOException;
 
-import stsc.MarketDataDownloader.MarketDataContext;
+import stsc.common.MarketDataContext;
 import junit.framework.TestCase;
 
 public class FilterThreadTest extends TestCase {

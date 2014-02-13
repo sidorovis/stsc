@@ -10,6 +10,9 @@ import java.text.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import stsc.common.MarketDataContext;
+import stsc.common.Stock;
+
 import com.google.common.io.CharStreams;
 
 public class DownloadThread implements Runnable {
@@ -65,7 +68,7 @@ public class DownloadThread implements Runnable {
 				if (newStock.getDays().isEmpty())
 					return;
 				newStock.store(marketDataContext
-						.generateBinaryFilePath(newStock.name));
+						.generateBinaryFilePath(newStock.getName()));
 				return;
 			} catch (IOException e) {
 				Thread.sleep(100);
@@ -93,7 +96,7 @@ public class DownloadThread implements Runnable {
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
 					stock.store(marketDataContext
-							.generateBinaryFilePath(stock.name));
+							.generateBinaryFilePath(stock.getName()));
 				return;
 			} catch (IOException e) {
 				Thread.sleep(100);

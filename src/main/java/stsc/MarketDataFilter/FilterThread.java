@@ -1,13 +1,16 @@
 package stsc.MarketDataFilter;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.MarketDataDownloader.MarketDataContext;
-import stsc.MarketDataDownloader.Stock;
+import stsc.common.MarketDataContext;
+import stsc.common.Stock;
 
 public class FilterThread implements Runnable {
 
@@ -32,16 +35,19 @@ public class FilterThread implements Runnable {
 				Stock s = marketDataContext.getStockFromFileSystem(task);
 				if (s != null) {
 					if (stockFilter.test(s)) {
-						s.store(marketDataContext
-								.generateFilteredBinaryFilePath(s.getName()));
+						File filteredFile = new File(marketDataContext.generateFilteredBinaryFilePath(task));
+						File originalFile = new File(marketDataContext.generateBinaryFilePath(task));
+						if (filteredFile.exists() && originalFile.exists()
+								&& filteredFile.length() == originalFile.length()) {
+							// do nothing
+						} else
+							Files.copy( originalFile.toPath(), filteredFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						logger.trace("stock " + task + " liquid");
 					} else {
-//						logger.trace("stock " + task + " not liquid");
 					}
 				}
 			} catch (IOException e) {
-				logger.trace("binary file " + task
-						+ " processing throw IOException: " + e.toString());
+				logger.trace("binary file " + task + " processing throw IOException: " + e.toString());
 			}
 			task = marketDataContext.getTask();
 		}

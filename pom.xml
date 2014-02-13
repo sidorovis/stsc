@@ -10,34 +10,34 @@
   <name>MarketDataDownloader</name>
   <url>https://github.com/sidorovis/MarketDataDownloader</url>
 
-
   <properties>
     <project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
   </properties>
 
   <build>
 	<defaultGoal>install</defaultGoal>
-<!--	<resources>
-		<resource>
-			<directory>./</directory>
-			<excludes>
-				<exclude>_*.log</exclude>
-				<exclude>target</exclude>
-				<exclude>data</exclude>
-				<exclude>test</exclude>
-				<exclude>test_data</exclude>
-				<exclude>src</exclude>
-			</excludes>
-		</resource>
-	</resources>
--->	<plugins>
+
+	<plugins>
 	<plugin>
  	<groupId>org.apache.maven.plugins</groupId>
  	<artifactId>maven-eclipse-plugin</artifactId>
 	<version>2.8</version>
+
   	<executions>
+
     <execution>
-      <id>stsc-storage</id>
+      <id>stsc-common</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/StscCommon</schemaDirectory>
+        <generatePackage>stsc.common</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/common</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-yahoo-downloader</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
@@ -58,9 +58,31 @@
         <generateDirectory>${project.build.directory}/target/classes/stsc/MarketDataFilter</generateDirectory>
       </configuration>
     </execution>
+    <execution>
+      <id>stsc-storage</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/storage</schemaDirectory>
+        <generatePackage>stsc.storage</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/storage</generateDirectory>
+      </configuration>
+    </execution>
 
     <execution>
-      <id>stsc-storage-tests</id>
+      <id>stsc-common-tests</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/common</schemaDirectory>
+        <generatePackage>stsc.common</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/common</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-yahoo-downloader-tests</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
@@ -81,7 +103,20 @@
         <generateDirectory>${project.build.directory}/target/test-classes/stsc/MarketDataFilter</generateDirectory>
       </configuration>
     </execution>
+    <execution>
+      <id>stsc-storage-tests</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/storage</schemaDirectory>
+        <generatePackage>stsc.storage</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/storage</generateDirectory>
+      </configuration>
+    </execution>
+
   	</executions>
+
 	</plugin>
 	<plugin>
    		<artifactId>maven-compiler-plugin</artifactId>
@@ -91,19 +126,6 @@
        		<target>1.7</target>
    		</configuration>
 	</plugin>
-<!--	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-jar-plugin</artifactId>
-		<version>2.3.2</version>
-		<configuration>
-			<archive>
-			<manifest>
-				<addClasspath>true</addClasspath>
-				<mainClass>stsc.MarketDataDownloader.MarketDataDownloader</mainClass>
-			</manifest>
-            </archive>
-        </configuration>
-    </plugin>-->
 	<plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -155,7 +177,8 @@
 		<groupId>joda-time</groupId>
 		<artifactId>joda-time</artifactId>
 		<version>2.3</version>
-	</dependency>
+	</dependency>            
+
   </dependencies>
   <description>MarketDataDownloader is a bunch of classes that will download datafeed from Yahoo store it on HDD and share it to Memory Mapped to File.</description>
 </project>

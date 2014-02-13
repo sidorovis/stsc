@@ -11,23 +11,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.MarketDataDownloader.MarketDataContext;
+import stsc.common.MarketDataContext;
 
 public class DownloadedStockFilter {
 
 	static {
-		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-				"./log4j2.xml");
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./log4j2.xml");
 	}
 
 	static int downloadThreadSize = 8;
-	private static Logger logger = LogManager
-			.getLogger("DownloadedStockFilter");
+	private static Logger logger = LogManager.getLogger("DownloadedStockFilter");
 
 	static MarketDataContext marketDataContext;
 
 	private void collectDownloadedStockNames() {
-
 		File folder = new File(marketDataContext.dataFolder);
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
@@ -53,8 +50,7 @@ public class DownloadedStockFilter {
 		logger.trace("downloaded stock filter started");
 		marketDataContext = new MarketDataContext();
 		collectDownloadedStockNames();
-		logger.trace("collected stock names to start filter process: {}",
-				marketDataContext.taskQueueSize());
+		logger.trace("collected stock names to start filter process: {}", marketDataContext.taskQueueSize());
 
 		List<Thread> threads = new ArrayList<Thread>();
 

@@ -9,8 +9,8 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.MarketDataDownloader.Day;
-import stsc.MarketDataDownloader.Stock;
+import stsc.common.Day;
+import stsc.common.Stock;
 
 public class StockFilter {
 
@@ -50,14 +50,12 @@ public class StockFilter {
 		Date yearAgo = yearAgoCalendar.getTime();
 
 		ArrayList<Day> days = s.getDaysAsArrayList();
-		int yearAgoIndex = Collections.binarySearch(days, new Day(yearAgo),
-				new DayComparator());
+		int yearAgoIndex = Collections.binarySearch(days, new Day(yearAgo), new DayComparator());
 		if (yearAgoIndex < 0)
 			yearAgoIndex = -yearAgoIndex;
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
 		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear) {
-			logger.debug("stock " + s.getName() + " have only "
-					+ daysWithDataForLastYear + " for last year");
+			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastYear + " days for last year");
 			return false;
 		}
 
@@ -67,14 +65,12 @@ public class StockFilter {
 
 		Date monthAgo = monthAgoCalendar.getTime();
 
-		int monthAgoIndex = Collections.binarySearch(days, new Day(monthAgo),
-				new DayComparator());
+		int monthAgoIndex = Collections.binarySearch(days, new Day(monthAgo), new DayComparator());
 		if (monthAgoIndex < 0)
 			monthAgoIndex = -monthAgoIndex;
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
-			logger.debug("stock " + s.getName() + " have only "
-					+ daysWithDataForLastMonth + " for last month");
+			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month");
 			return false;
 		}
 		double volumeAmount = 0;
@@ -83,8 +79,8 @@ public class StockFilter {
 		volumeAmount = volumeAmount / daysWithDataForLastYear;
 
 		if (volumeAmount < minimalAverageYearVolume) {
-			logger.debug("stock " + s.getName() + " have only "
-					+ volumeAmount + " too small average volume amount for last year");
+			logger.debug("stock " + s.getName() + " have only " + volumeAmount
+					+ ", it is too small average volume amount for last year");
 			return false;
 		}
 		return true;

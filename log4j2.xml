@@ -25,6 +25,11 @@
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
 		</File>
+		<File name="StockStorageFile" fileName="./_stock_storage.log">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
     </Appenders>
     <Loggers>
     	<Root level="error">
@@ -45,5 +50,9 @@
     	<Logger name="StockFilter" level="trace" additivity="false">
     		<AppenderRef ref="StockFilterWarnFile"/>
     	</Logger>
+    	<Logger name="SharedStockStorage" level="trace" additivity="false">
+    		<AppenderRef ref="StockStorageFile"/>
+    	</Logger>
+
     </Loggers>
 </Configuration>
