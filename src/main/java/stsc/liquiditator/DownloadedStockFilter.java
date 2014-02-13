@@ -1,4 +1,4 @@
-package stsc.MarketDataFilter;
+package stsc.liquiditator;
 
 import java.io.File;
 import java.io.FileInputStream;

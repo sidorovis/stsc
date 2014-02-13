@@ -1,10 +1,9 @@
-package stsc.MarketDataFilter;
+package stsc.liquiditator;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 
-import stsc.MarketDataFilter.StockFilter;
 import stsc.common.Stock;
 import junit.framework.TestCase;
 

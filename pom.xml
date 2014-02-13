@@ -48,14 +48,14 @@
       </configuration>
     </execution>
     <execution>
-      <id>stsc-filter</id>
+      <id>stsc-liquiditator</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
       <configuration>
-        <schemaDirectory>src/main/java/stsc/MarketDataFilter</schemaDirectory>
-        <generatePackage>stsc.MarketDataFilter</generatePackage>
-        <generateDirectory>${project.build.directory}/target/classes/stsc/MarketDataFilter</generateDirectory>
+        <schemaDirectory>src/main/java/stsc/liquiditator</schemaDirectory>
+        <generatePackage>stsc.liquiditator</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/liquiditator</generateDirectory>
       </configuration>
     </execution>
     <execution>
@@ -93,14 +93,14 @@
       </configuration>
     </execution>
     <execution>
-      <id>stsc-filter-tests</id>
+      <id>stsc-liquiditator-tests</id>
       <goals>
         <goal>eclipse</goal>
       </goals>
       <configuration>
-        <schemaDirectory>src/test/java/stsc/MarketDataFilter</schemaDirectory>
-        <generatePackage>stsc.MarketDataFilter</generatePackage>
-        <generateDirectory>${project.build.directory}/target/test-classes/stsc/MarketDataFilter</generateDirectory>
+        <schemaDirectory>src/test/java/stsc/liquiditator</schemaDirectory>
+        <generatePackage>stsc.liquiditator</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/liquiditator</generateDirectory>
       </configuration>
     </execution>
     <execution>
