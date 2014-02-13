@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>MarketDataDownloader</artifactId>
+  <artifactId>Stsc</artifactId>
   <version>0.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>MarketDataDownloader</name>
+  <name>Stsc</name>
   <url>https://github.com/sidorovis/MarketDataDownloader</url>
 
   <properties>
@@ -180,5 +180,5 @@
 	</dependency>            
 
   </dependencies>
-  <description>MarketDataDownloader is a bunch of classes that will download datafeed from Yahoo store it on HDD and share it to Memory Mapped to File.</description>
+  <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>
