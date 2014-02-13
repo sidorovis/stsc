@@ -49,7 +49,7 @@ public class StockFilter {
 
 		Date yearAgo = yearAgoCalendar.getTime();
 
-		ArrayList<Day> days = s.getDaysAsArrayList();
+		ArrayList<Day> days = s.getDays();
 		int yearAgoIndex = Collections.binarySearch(days, new Day(yearAgo), new DayComparator());
 		if (yearAgoIndex < 0)
 			yearAgoIndex = -yearAgoIndex;

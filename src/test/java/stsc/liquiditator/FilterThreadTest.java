@@ -23,11 +23,11 @@ public class FilterThreadTest extends TestCase {
 			th.start();
 			th.join();
 		}
-		assertEquals( false, new File( "./test/aaoi.bin ").exists() );
-		assertEquals( true, new File( "./test/aapl.bin ").exists() );
-		assertEquals( false, new File( "./test/ibm.bin ").exists() );
-		assertEquals( true, new File( "./test/spy.bin ").exists() );
-		new File( "./test/aapl.bin ").delete();
-		new File( "./test/spy.bin ").delete();
+		assertEquals( false, new File( "./test/aaoi.uf").exists() );
+		assertEquals( true, new File( "./test/aapl.uf").exists() );
+		assertEquals( false, new File( "./test/ibm.uf").exists() );
+		assertEquals( true, new File( "./test/spy.uf").exists() );
+		new File( "./test/aapl.uf").delete();
+		new File( "./test/spy.uf").delete();
 	}
 }

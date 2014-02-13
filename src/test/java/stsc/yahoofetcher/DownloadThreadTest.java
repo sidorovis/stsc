@@ -25,7 +25,7 @@ public class DownloadThreadTest extends TestCase {
 		MarketDataContext marketDataContext = new MarketDataContext();
 		marketDataContext.dataFolder = "./test/";
 		marketDataContext.filteredDataFolder = "./test/";
-		Files.copy(new File("./test_data/aaoi.bin"), new File("./test/aaoi.bin"));
+		Files.copy(new File("./test_data/aaoi.uf"), new File("./test/aaoi.uf"));
 		marketDataContext.addTask("a");
 		DownloadThread downloadThread = new DownloadThread(marketDataContext);
 		{
@@ -46,11 +46,7 @@ public class DownloadThreadTest extends TestCase {
 			th.join();
 		}
 		{
-			InputStream is = new BufferedInputStream(new FileInputStream("./test/aaoi.bin"));
-			ObjectInput oi = new ObjectInputStream(is);
-			Stock s = null;
-			s = (Stock) oi.readObject();
-			oi.close();
+			Stock s = marketDataContext.getStockFromFileSystem("aaoi");
 			Calendar cal = Calendar.getInstance();
 			cal.set(2014, 1, 10);
 			Date d93 = cal.getTime();
@@ -58,7 +54,7 @@ public class DownloadThreadTest extends TestCase {
 			Days days = Days.daysBetween(new DateTime(d93), new DateTime(today));
 			assertEquals(93 + days.getDays(), s.getDays().size());
 		}
-		new File("./test/a.bin").delete();
-		new File("./test/aaoi.bin").delete();
+		new File("./test/a.uf").delete();
+		new File("./test/aaoi.uf").delete();
 	}
 }

@@ -45,8 +45,8 @@ public class FilterThread implements Runnable {
 	}
 
 	public static void copyFilteredStockFile(MarketDataContext marketDataContext, String stockName) throws IOException {
-		File filteredFile = new File(marketDataContext.generateFilteredBinaryFilePath(stockName));
-		File originalFile = new File(marketDataContext.generateBinaryFilePath(stockName));
+		File filteredFile = new File(marketDataContext.generateFilteredUniteFormatPath(stockName));
+		File originalFile = new File(marketDataContext.generateUniteFormatPath(stockName));
 		if (filteredFile.exists() && originalFile.exists() && filteredFile.length() == originalFile.length()) {
 			// do nothing
 		} else

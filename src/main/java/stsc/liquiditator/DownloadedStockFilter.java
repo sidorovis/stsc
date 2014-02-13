@@ -29,8 +29,8 @@ public class DownloadedStockFilter {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(".bin"))
-				marketDataContext.addTask(filename.substring(0, filename.length() - 4));
+			if (file.isFile() && filename.endsWith(".uf"))
+				marketDataContext.addTask(filename.substring(0, filename.length() - 3));
 		}
 	}
 

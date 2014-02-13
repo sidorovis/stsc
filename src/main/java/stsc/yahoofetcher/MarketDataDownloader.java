@@ -19,8 +19,7 @@ import stsc.common.MarketDataContext;
 public final class MarketDataDownloader {
 
 	static {
-		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-				"./log4j2.xml");
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./log4j2.xml");
 	}
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");

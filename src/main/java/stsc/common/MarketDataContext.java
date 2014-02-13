@@ -8,7 +8,7 @@ public class MarketDataContext {
 	public String dataFolder = "./data/";
 	public String filteredDataFolder = "./filtered_data/";
 
-	public MarketDataContext() throws IOException {
+	public MarketDataContext() {
 	}
 
 	public int taskQueueSize() {
@@ -26,23 +26,22 @@ public class MarketDataContext {
 	public String generateFilePath(String stockName) {
 		return dataFolder + stockName + ".csv";
 	}
-	public String generateFilteredBinaryFilePath(String stockName) {
-		return filteredDataFolder + stockName + ".bin";
+
+	public String generateFilteredUniteFormatPath(String stockName) {
+		return filteredDataFolder + stockName + ".uf";
 	}
 
-	public String generateBinaryFilePath(String stockName) {
-		return dataFolder + stockName + ".bin";
+	public String generateUniteFormatPath(String stockName) {
+		return dataFolder + stockName + ".uf";
 	}
-	
+
 	public Stock getStockFromFileSystem(String stockName) {
 		Stock s = null;
 		try {
-			s = Stock.readFromBinFile(generateBinaryFilePath(stockName));
-		} catch (ClassNotFoundException e) {
+			s = Stock.readFromUniteFormatFile(generateUniteFormatPath(stockName));
 		} catch (IOException e) {
 		}
 		return s;
 	}
 
-	
 }

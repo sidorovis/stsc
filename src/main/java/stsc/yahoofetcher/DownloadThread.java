@@ -71,7 +71,7 @@ public class DownloadThread implements Runnable {
 				newStock = Stock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
-				newStock.store(marketDataContext.generateBinaryFilePath(newStock.getName()));
+				newStock.storeUniteFormat(marketDataContext.generateUniteFormatPath(newStock.getName()));
 				return newStock;
 			} catch (IOException e) {
 				Thread.sleep(100);
@@ -95,7 +95,7 @@ public class DownloadThread implements Runnable {
 				String stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
-					stock.store(marketDataContext.generateBinaryFilePath(stock.getName()));
+					stock.storeUniteFormat(marketDataContext.generateUniteFormatPath(stock.getName()));
 				return;
 			} catch (IOException e) {
 				Thread.sleep(100);

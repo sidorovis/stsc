@@ -13,5 +13,6 @@ public class StockStorageTest extends TestCase {
 		assertNotNull(stockStorage.getStock("aaaa"));
 		assertNotNull(stockStorage.getStock("aapl"));
 		assertNull(stockStorage.getStock("anse"));
+		assertEquals(7421, stockStorage.getStock("aapl").getDays().size());
 	}
 }

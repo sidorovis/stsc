@@ -18,13 +18,11 @@ public class StockStorage {
 
 	private HashMap<String, Stock> datafeed = new HashMap<String, Stock>();
 
-	public StockStorage(MarketDataContext marketDataContext)
-			throws ClassNotFoundException, IOException {
+	public StockStorage(MarketDataContext marketDataContext) throws ClassNotFoundException, IOException {
 		this.marketDataContext = marketDataContext;
 		logger.trace("created");
 		loadFilteredDatafeed();
-		logger.info("filtered datafeed header readed: {} stocks",
-				marketDataContext.taskQueueSize());
+		logger.info("filtered datafeed header readed: {} stocks", marketDataContext.taskQueueSize());
 		loadStocks();
 		logger.info("stocks were loaded");
 	}
@@ -34,17 +32,15 @@ public class StockStorage {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(".bin"))
-				marketDataContext.addTask(filename.substring(0,
-						filename.length() - 4));
+			if (file.isFile() && filename.endsWith(".uf"))
+				marketDataContext.addTask(filename.substring(0, filename.length() - 3));
 		}
 	}
 
 	private void loadStocks() throws ClassNotFoundException, IOException {
 		String task = marketDataContext.getTask();
 		while (task != null) {
-			Stock s = Stock.readFromBinFile(marketDataContext
-					.generateFilteredBinaryFilePath(task));
+			Stock s = marketDataContext.getStockFromFileSystem(task);
 			if (s != null)
 				datafeed.put(s.getName(), s);
 			task = marketDataContext.getTask();

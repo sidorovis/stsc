@@ -21,29 +21,22 @@ import junit.framework.TestCase;
 public class StockTest extends TestCase {
 
 	public void testStockGenerate() throws IOException, ParseException {
-		assertEquals(1, Stock.readFromCsvFile("anse", "./test_data/anse.csv")
-				.getDays().size());
-		assertEquals(105, Stock.readFromCsvFile("aahc", "./test_data/aahc.csv")
-				.getDays().size());
-		assertEquals(75, Stock.readFromCsvFile("aaoi", "./test_data/aaoi.csv")
-				.getDays().size());
-		assertEquals(13098, Stock.readFromCsvFile("ibm", "./test_data/ibm.csv")
-				.getDays().size());
+		assertEquals(1, Stock.readFromCsvFile("anse", "./test_data/anse.csv").getDays().size());
+		assertEquals(105, Stock.readFromCsvFile("aahc", "./test_data/aahc.csv").getDays().size());
+		assertEquals(75, Stock.readFromCsvFile("aaoi", "./test_data/aaoi.csv").getDays().size());
+		assertEquals(13098, Stock.readFromCsvFile("ibm", "./test_data/ibm.csv").getDays().size());
 	}
 
-	public void testStockStore() throws IOException, ParseException,
-			ClassNotFoundException {
+	public void testStockStore() throws IOException, ParseException, ClassNotFoundException {
 		{
 			Stock s = Stock.readFromCsvFile("aaoi", "./test_data/aaoi.csv");
-			OutputStream os = new BufferedOutputStream(new FileOutputStream(
-					"./test/aaoi.bin"));
+			OutputStream os = new BufferedOutputStream(new FileOutputStream("./test/aaoi.bin"));
 			ObjectOutput oo = new ObjectOutputStream(os);
 			oo.writeObject(s);
 			oo.close();
 		}
 		{
-			InputStream is = new BufferedInputStream(new FileInputStream(
-					"./test/aaoi.bin"));
+			InputStream is = new BufferedInputStream(new FileInputStream("./test/aaoi.bin"));
 			ObjectInput oi = new ObjectInputStream(is);
 			Stock s = null;
 			s = (Stock) oi.readObject();
@@ -53,15 +46,11 @@ public class StockTest extends TestCase {
 		(new File("./test/aaoi.bin")).delete();
 	}
 
-	public void testGeneratePartiallyDownloadLine() throws IOException,
-			ParseException {
+	public void testGeneratePartiallyDownloadLine() throws IOException, ParseException {
 		Stock aaoi = Stock.readFromCsvFile("aaoi", "./test_data/aaoi.csv");
-		assertEquals(
-				"http://ichart.yahoo.com/table.csv?s=aaoi&a=0&b=14&c=2014",
-				aaoi.generatePartiallyDownloadLine());
+		assertEquals("http://ichart.yahoo.com/table.csv?s=aaoi&a=0&b=14&c=2014", aaoi.generatePartiallyDownloadLine());
 		Stock aahc = Stock.readFromCsvFile("aahc", "./test_data/aahc.csv");
-		assertEquals("http://ichart.yahoo.com/table.csv?s=aahc&a=5&b=4&c=2013",
-				aahc.generatePartiallyDownloadLine());
+		assertEquals("http://ichart.yahoo.com/table.csv?s=aahc&a=5&b=4&c=2013", aahc.generatePartiallyDownloadLine());
 	}
 
 	public void testAddDaysFromString() throws IOException, ParseException {
@@ -70,5 +59,15 @@ public class StockTest extends TestCase {
 		String content = new String(data);
 		aaoi.addDaysFromString(content);
 		assertEquals(91, aaoi.getDays().size());
+	}
+
+	public void testUniteFormat() throws IOException, ParseException {
+		Stock s = Stock.readFromCsvFile("aaoi", "./test_data/aaoi.csv");
+		s.storeUniteFormat("./test/aaoi.uf");
+		Stock s_copy = Stock.readFromUniteFormatFile("./test/aaoi.uf");
+		assertEquals("aaoi", s_copy.getName());
+		new File("./test/aaoi.uf").delete();
+		assertEquals( 75, s_copy.getDays().size() );
+		assertEquals( 75, s.getDays().size() );
 	}
 }

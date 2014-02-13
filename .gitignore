@@ -7,7 +7,7 @@
 *.ear
 
 /target
-/data/*.bin
-/filtered_data/*.bin
+/data/*.uf
+/filtered_data/*.uf
 
 _*.log

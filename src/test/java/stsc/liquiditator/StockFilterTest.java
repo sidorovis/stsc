@@ -8,8 +8,7 @@ import stsc.common.Stock;
 import junit.framework.TestCase;
 
 public class StockFilterTest extends TestCase {
-	public void testStockFilter() throws IOException, ParseException,
-			ClassNotFoundException {
+	public void testStockFilter() throws IOException, ParseException, ClassNotFoundException {
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(2014, 0, 13);
@@ -23,13 +22,13 @@ public class StockFilterTest extends TestCase {
 		cal.set(2014, 1, 10);
 		StockFilter stockFilter2 = new StockFilter(cal.getTime());
 
-		Stock s3 = Stock.readFromBinFile("./test_data/aapl.bin");
+		Stock s3 = Stock.readFromUniteFormatFile("./test_data/aapl.uf");
 		assertEquals(true, stockFilter2.test(s3));
 
-		Stock s4 = Stock.readFromBinFile("./test_data/spy.bin");
+		Stock s4 = Stock.readFromUniteFormatFile("./test_data/spy.uf");
 		assertEquals(true, stockFilter2.test(s4));
-	
-		Stock s5 = Stock.readFromBinFile("./test_data/aaaa.bin");
+
+		Stock s5 = Stock.readFromUniteFormatFile("./test_data/aaaa.uf");
 		assertEquals(false, stockFilter2.test(s5));
 	}
 }
