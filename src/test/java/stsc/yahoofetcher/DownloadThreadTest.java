@@ -24,6 +24,7 @@ public class DownloadThreadTest extends TestCase {
 	public void testDownloadThread() throws InterruptedException, IOException, ClassNotFoundException {
 		MarketDataContext marketDataContext = new MarketDataContext();
 		marketDataContext.dataFolder = "./test/";
+		marketDataContext.filteredDataFolder = "./test/";
 		Files.copy(new File("./test_data/aaoi.bin"), new File("./test/aaoi.bin"));
 		marketDataContext.addTask("a");
 		DownloadThread downloadThread = new DownloadThread(marketDataContext);

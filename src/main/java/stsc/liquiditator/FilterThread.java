@@ -33,24 +33,23 @@ public class FilterThread implements Runnable {
 		while (task != null) {
 			try {
 				Stock s = marketDataContext.getStockFromFileSystem(task);
-				if (s != null) {
-					if (stockFilter.test(s)) {
-						File filteredFile = new File(marketDataContext.generateFilteredBinaryFilePath(task));
-						File originalFile = new File(marketDataContext.generateBinaryFilePath(task));
-						if (filteredFile.exists() && originalFile.exists()
-								&& filteredFile.length() == originalFile.length()) {
-							// do nothing
-						} else
-							Files.copy( originalFile.toPath(), filteredFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-						logger.trace("stock " + task + " liquid");
-					} else {
-					}
+				if (s != null && stockFilter.test(s)) {
+					copyFilteredStockFile(marketDataContext, task);
+					logger.trace("stock " + task + " liquid");
 				}
 			} catch (IOException e) {
 				logger.trace("binary file " + task + " processing throw IOException: " + e.toString());
 			}
 			task = marketDataContext.getTask();
 		}
+	}
 
+	public static void copyFilteredStockFile(MarketDataContext marketDataContext, String stockName) throws IOException {
+		File filteredFile = new File(marketDataContext.generateFilteredBinaryFilePath(stockName));
+		File originalFile = new File(marketDataContext.generateBinaryFilePath(stockName));
+		if (filteredFile.exists() && originalFile.exists() && filteredFile.length() == originalFile.length()) {
+			// do nothing
+		} else
+			Files.copy(originalFile.toPath(), filteredFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 }

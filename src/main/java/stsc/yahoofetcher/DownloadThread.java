@@ -12,17 +12,21 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.common.MarketDataContext;
 import stsc.common.Stock;
+import stsc.liquiditator.FilterThread;
+import stsc.liquiditator.StockFilter;
 
 import com.google.common.io.CharStreams;
 
 public class DownloadThread implements Runnable {
 
-	MarketDataContext marketDataContext;
-	static int solvedAmount = 0;
+	private MarketDataContext marketDataContext;
+	private StockFilter stockFilter;
+	private static int solvedAmount = 0;
 	private static Logger logger = LogManager.getLogger("DownloadThread");
 
 	DownloadThread(MarketDataContext mdc) {
 		marketDataContext = mdc;
+		stockFilter = new StockFilter();
 	}
 
 	public void run() {
@@ -31,15 +35,18 @@ public class DownloadThread implements Runnable {
 			try {
 				Stock s = marketDataContext.getStockFromFileSystem(task);
 				if (s == null) {
-					download(task);
+					s = download(task);
 					logger.trace("task {} fully downloaded", task);
 				} else {
 					partiallyDownload(s, task);
 					logger.trace("task {} partially downloaded", task);
 				}
+				if (stockFilter.test(s)) {
+					FilterThread.copyFilteredStockFile(marketDataContext, task);
+					logger.info("task {} is liquid and copied to filter stock directory", task);
+				}
 			} catch (Exception e) {
-				logger.warn("task {} throwed an exception {}", task,
-						e.toString());
+				logger.warn("task {} throwed an exception {}", task, e.toString());
 				File file = new File(marketDataContext.generateFilePath(task));
 				if (file.length() == 0)
 					file.delete();
@@ -53,37 +60,31 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	public final void download(String stockName) throws ParseException,
-			MalformedURLException, InterruptedException {
+	private final Stock download(String stockName) throws ParseException, MalformedURLException, InterruptedException {
 		int tries = 0;
 
 		Stock newStock = null;
 		while (tries < 5) {
-			URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s="
-					+ stockName);
+			URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
 			try {
-				String stockContent = CharStreams
-						.toString(new InputStreamReader(url.openStream()));
+				String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				newStock = Stock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
-					return;
-				newStock.store(marketDataContext
-						.generateBinaryFilePath(newStock.getName()));
-				return;
+					return null;
+				newStock.store(marketDataContext.generateBinaryFilePath(newStock.getName()));
+				return newStock;
 			} catch (IOException e) {
 				Thread.sleep(100);
 			}
 			tries += 1;
 		}
 		if (newStock == null)
-			throw new InterruptedException(
-					"5 tries not enought to download data on " + stockName
-							+ " stock");
-		return;
+			throw new InterruptedException("5 tries not enought to download data on " + stockName + " stock");
+		return newStock;
 	}
 
-	public final void partiallyDownload(Stock stock, String stockName)
-			throws IOException, ParseException, InterruptedException {
+	private final void partiallyDownload(Stock stock, String stockName) throws IOException, ParseException,
+			InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
 
 		int tries = 0;
@@ -91,20 +92,16 @@ public class DownloadThread implements Runnable {
 		while (tries < 5) {
 			URL url = new URL(downloadLink);
 			try {
-				String stockNewContent = CharStreams
-						.toString(new InputStreamReader(url.openStream()));
+				String stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
-					stock.store(marketDataContext
-							.generateBinaryFilePath(stock.getName()));
+					stock.store(marketDataContext.generateBinaryFilePath(stock.getName()));
 				return;
 			} catch (IOException e) {
 				Thread.sleep(100);
 			}
 			tries += 1;
 		}
-		throw new InterruptedException(
-				"5 tries not enought to partially download data on "
-						+ downloadLink + " stock");
+		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock");
 	}
 }

@@ -87,7 +87,7 @@ public class StockFilter {
 	}
 
 	public boolean test(Stock s) {
-		if (!testLastPeriods(s))
+		if (s == null || !testLastPeriods(s))
 			return false;
 		return true;
 	}
