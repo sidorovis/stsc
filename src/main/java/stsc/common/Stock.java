@@ -40,22 +40,22 @@ public class Stock implements Serializable {
 
 	public static Stock readFromUniteFormatFile(String filePath) throws IOException {
 		Stock s = null;
-		DataInputStream is = new DataInputStream(new FileInputStream(filePath));
-		String name = is.readUTF();
-		s = new Stock(name);
-		int daysLength = is.readInt();
-		for (int i = 0; i < daysLength; ++i) {
-			Date dayTime = new Date(is.readLong());
-			double open = is.readDouble();
-			double high = is.readDouble();
-			double low = is.readDouble();
-			double close = is.readDouble();
-			double volume = is.readDouble();
-			double adjClose = is.readDouble();
-			Day newDay = new Day(dayTime, new Prices(open, high, low, close), volume, adjClose);
-			s.addDay(newDay);
+		try (DataInputStream is = new DataInputStream(new FileInputStream(filePath))) {
+			String name = is.readUTF();
+			s = new Stock(name);
+			int daysLength = is.readInt();
+			for (int i = 0; i < daysLength; ++i) {
+				Date dayTime = new Date(is.readLong());
+				double open = is.readDouble();
+				double high = is.readDouble();
+				double low = is.readDouble();
+				double close = is.readDouble();
+				double volume = is.readDouble();
+				double adjClose = is.readDouble();
+				Day newDay = new Day(dayTime, new Prices(open, high, low, close), volume, adjClose);
+				s.addDay(newDay);
+			}
 		}
-		is.close();
 		return s;
 	}
 
@@ -78,19 +78,19 @@ public class Stock implements Serializable {
 	}
 
 	public void storeUniteFormat(String filePath) throws IOException {
-		DataOutputStream os = new DataOutputStream(new FileOutputStream(filePath));
-		os.writeUTF(name);
-		os.writeInt(days.size());
-		for (Day day : days) {
-			os.writeLong(day.date.getTime());
-			os.writeDouble(day.prices.open);
-			os.writeDouble(day.prices.high);
-			os.writeDouble(day.prices.low);
-			os.writeDouble(day.prices.close);
-			os.writeDouble(day.volume);
-			os.writeDouble(day.adj_close);
+		try (DataOutputStream os = new DataOutputStream(new FileOutputStream(filePath))) {
+			os.writeUTF(name);
+			os.writeInt(days.size());
+			for (Day day : days) {
+				os.writeLong(day.date.getTime());
+				os.writeDouble(day.prices.open);
+				os.writeDouble(day.prices.high);
+				os.writeDouble(day.prices.low);
+				os.writeDouble(day.prices.close);
+				os.writeDouble(day.volume);
+				os.writeDouble(day.adj_close);
+			}
 		}
-		os.close();
 	}
 
 	private void addDay(Day d) {
