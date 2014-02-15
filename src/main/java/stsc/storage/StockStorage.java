@@ -3,7 +3,6 @@ package stsc.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -57,6 +56,15 @@ public class StockStorage {
 		logger.info("stocks were loaded");
 	}
 
+	public StockStorage() throws ClassNotFoundException, IOException, InterruptedException {
+		this.marketDataContext = new MarketDataContext();
+		logger.trace("created");
+		loadFilteredDatafeed();
+		logger.info("filtered datafeed header readed: {} stocks", marketDataContext.taskQueueSize());
+		loadStocks();
+		logger.info("stocks were loaded");
+	}
+
 	private void loadFilteredDatafeed() {
 		File folder = new File(marketDataContext.filteredDataFolder);
 		File[] listOfFiles = folder.listFiles();
@@ -83,7 +91,15 @@ public class StockStorage {
 
 	}
 
-	Stock getStock(String name) {
+	public Stock acquireStock(String name) {
+		return null;
+	}
+
+	public void releaseStock(String name) {
+
+	}
+
+	public Stock getStock(String name) {
 		return datafeed.get(name);
 	}
 }

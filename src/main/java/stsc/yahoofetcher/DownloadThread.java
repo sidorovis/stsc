@@ -46,7 +46,7 @@ public class DownloadThread implements Runnable {
 					logger.info("task {} is liquid and copied to filter stock directory", task);
 				}
 			} catch (Exception e) {
-				logger.warn("task {} throwed an exception {}", task, e.toString());
+//				logger.warn("task {} throwed an exception {}", task, e.toString());
 				File file = new File(marketDataContext.generateFilePath(task));
 				if (file.length() == 0)
 					file.delete();

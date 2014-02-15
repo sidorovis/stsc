@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<Properties>
-		<Property name="market_data_downloader_filename">./_market_data_downloader_filename.log</Property>
-		<Property name="downloaded_stock_filter_filename">./_downloaded_stock_filter_filename.log</Property>
+		<Property name="market_data_downloader_filename">./_market_data_downloader.log</Property>
+		<Property name="downloaded_stock_filter_filename">./_downloaded_stock_filter.log</Property>
 	</Properties>
     <Appenders>
  		<Console name="Console" target="SYSTEM_OUT">
