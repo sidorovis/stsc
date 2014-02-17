@@ -2,12 +2,6 @@ package stsc.yahoofetcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
 import stsc.common.MarketDataContext;
 import stsc.common.StockInterface;
 
@@ -28,6 +22,12 @@ public class DownloadThreadTest extends TestCase {
 			th.start();
 			th.join();
 		}
+		int beforeDownload = Integer.MAX_VALUE;
+		{
+			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
+			beforeDownload = s.getDays().size();
+			assertEquals(95, s.getDays().size());
+		}
 		marketDataContext.addTask("aaoi");
 		{
 			Thread th = new Thread(downloadThread);
@@ -42,12 +42,7 @@ public class DownloadThreadTest extends TestCase {
 		}
 		{
 			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
-			Calendar cal = Calendar.getInstance();
-			cal.set(2014, 1, 10);
-			Date d93 = cal.getTime();
-			Date today = new Date();
-			Days days = Days.daysBetween(new DateTime(d93), new DateTime(today));
-			assertEquals(93 + days.getDays(), s.getDays().size());
+			assertEquals(true, beforeDownload < s.getDays().size());
 		}
 		new File("./test/a.uf").delete();
 		new File("./test/aaoi.uf").delete();
