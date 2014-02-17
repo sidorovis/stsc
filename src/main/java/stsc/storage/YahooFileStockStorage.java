@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -13,7 +11,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import stsc.common.MarketDataContext;
 import stsc.common.StockInterface;
 
-public class YahooFileStockStorage implements StockStorage {
+public class YahooFileStockStorage extends InMemoryStockStorage {
 
 	private class StockReadThread implements Runnable {
 
@@ -39,12 +37,10 @@ public class YahooFileStockStorage implements StockStorage {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger("SharedStockStorage");
+	private static Logger logger = LogManager.getLogger("YahooFileStorage");
 
 	private MarketDataContext marketDataContext;
 	private int readStockThreadSize = 4;
-
-	private ConcurrentHashMap<String, StockLock> datafeed = new ConcurrentHashMap<String, StockLock>();
 
 	public YahooFileStockStorage(MarketDataContext marketDataContext) throws ClassNotFoundException, IOException,
 			InterruptedException {
@@ -52,21 +48,10 @@ public class YahooFileStockStorage implements StockStorage {
 		loadStocksFromFileSystem();
 	}
 
-	public static YahooFileStockStorage newStockStorageFromFilesystem() throws ClassNotFoundException, IOException,
-			InterruptedException {
-		return new YahooFileStockStorage(true);
-	}
-
-	public static YahooFileStockStorage newInMemoryStockStorage() throws ClassNotFoundException, IOException,
-			InterruptedException {
-		return new YahooFileStockStorage(false);
-	}
-
-	private YahooFileStockStorage(boolean readFromFileSystem) throws ClassNotFoundException, IOException,
+	public YahooFileStockStorage() throws ClassNotFoundException, IOException,
 			InterruptedException {
 		this.marketDataContext = new MarketDataContext();
-		if (readFromFileSystem)
-			loadStocksFromFileSystem();
+		loadStocksFromFileSystem();
 	}
 
 	private void loadStocksFromFileSystem() throws ClassNotFoundException, IOException, InterruptedException {
@@ -100,24 +85,5 @@ public class YahooFileStockStorage implements StockStorage {
 		for (Thread thread : threads) {
 			thread.join();
 		}
-	}
-
-	@Override
-	public StockInterface getStock(String name) {
-		StockLock stockLock = datafeed.get(name);
-		if (stockLock == null)
-			return null;
-		StockInterface stock = stockLock.getStock();
-		return stock;
-	}
-
-	@Override
-	public void updateStock(StockInterface stock) {
-		String stockName = stock.getName();
-		StockLock stockLock = datafeed.get(stockName);
-		if (stockLock == null)
-			datafeed.put(stockName, new StockLock(stock));
-		else
-			stockLock.updateStock(stock);
 	}
 }

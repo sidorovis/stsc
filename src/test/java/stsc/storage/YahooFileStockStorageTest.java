@@ -1,11 +1,7 @@
 package stsc.storage;
 
 import java.io.File;
-import java.io.IOException;
-
-import stsc.common.InMemoryStock;
 import stsc.common.MarketDataContext;
-import stsc.common.StockInterface;
 import junit.framework.TestCase;
 
 public class YahooFileStockStorageTest extends TestCase {
@@ -30,10 +26,5 @@ public class YahooFileStockStorageTest extends TestCase {
 			if (new File("./filtered_data/aapl.uf").exists())
 				assertNotNull(stockStorage.getStock("aapl"));
 		}
-	}
-	public void testInMemoryStoskStorage() throws ClassNotFoundException, IOException, InterruptedException{
-		StockStorage stockStorage = YahooFileStockStorage.newInMemoryStockStorage();
-		StockInterface stock = new InMemoryStock("aapl");
-		stockStorage.updateStock(stock);
 	}
 }

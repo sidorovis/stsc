@@ -5,8 +5,8 @@ import java.text.ParseException;
 
 import stsc.algorithms.TestAlgorithm;
 import stsc.common.UnitedFormatStock;
+import stsc.storage.InMemoryStockStorage;
 import stsc.storage.StockStorage;
-import stsc.storage.YahooFileStockStorage;
 import junit.framework.TestCase;
 
 public class MarketSimulatorTest extends TestCase {
@@ -17,7 +17,7 @@ public class MarketSimulatorTest extends TestCase {
 
 	public void testMarketSimulator() throws Exception {
 
-		StockStorage ss = YahooFileStockStorage.newInMemoryStockStorage();
+		StockStorage ss = new InMemoryStockStorage();
 
 		csvReaderHelper(ss, "aapl");
 		csvReaderHelper(ss, "gfi");
