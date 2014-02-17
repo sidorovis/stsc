@@ -13,13 +13,13 @@ import stsc.trading.Broker;
 import stsc.trading.Position;
 import stsc.trading.Side;
 
-public class SimpleTraderExample implements Algorithm {
+public class TestTraderAlgorithm implements Algorithm {
 
 	Broker broker;
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
-	public SimpleTraderExample() {
+	public TestTraderAlgorithm() {
 		openedPositions = new HashMap<String, Position>();
 	}
 

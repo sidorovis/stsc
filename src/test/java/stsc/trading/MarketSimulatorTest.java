@@ -1,20 +1,21 @@
 package stsc.trading;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+
+import stsc.algorithms.TestAlgorithm;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.StockStorage;
 import stsc.storage.YahooFileStockStorage;
 import junit.framework.TestCase;
 
 public class MarketSimulatorTest extends TestCase {
-	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException{
-		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, "./test_data/market_simulator_tests/"+stockName+".csv"));
+	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException {
+		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, "./test_data/market_simulator_tests/" + stockName
+				+ ".csv"));
 	}
-	public void testMarketSimulator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			ParseException, IOException, InterruptedException {
+
+	public void testMarketSimulator() throws Exception {
 
 		StockStorage ss = YahooFileStockStorage.newInMemoryStockStorage();
 
@@ -23,12 +24,28 @@ public class MarketSimulatorTest extends TestCase {
 		csvReaderHelper(ss, "oldstock");
 		csvReaderHelper(ss, "no30");
 
-		MarketSimulator marketSimulator = new MarketSimulator(ss);
+		MarketSimulatorSettings settings = new MarketSimulatorSettings();
+		settings.setStockStorage(ss);
+		settings.setBroker(new Broker());
+		settings.setFrom("30-10-2013");
+		settings.setTo("06-11-2013");
+		settings.getAlgorithmList().add(TestAlgorithm.class.getName());
+		settings.getStockList().add("aapl");
+		settings.getStockList().add("gfi");
+		settings.getStockList().add("no30");
+		settings.getStockList().add("unexisted_stock");
+		settings.getStockList().add("oldstock");
 
-		try {
-			marketSimulator.simulate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		MarketSimulator marketSimulator = new MarketSimulator(settings);
+		marketSimulator.simulate();
+		assertEquals(1, marketSimulator.getTradeAlgorithms().size());
+		
+		TestAlgorithm ta = (TestAlgorithm) marketSimulator.getTradeAlgorithms().get(0);
+		assertEquals(ta.datafeeds.size(), 7);
+		
+		int[] expectedDatafeedSizes = {1,1,2,2,3,2,0};
+		
+		for(int i = 0; i < expectedDatafeedSizes.length ; ++i)
+			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 	}
 }

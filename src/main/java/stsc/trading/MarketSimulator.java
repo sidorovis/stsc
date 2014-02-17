@@ -3,11 +3,8 @@ package stsc.trading;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,94 +21,42 @@ public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	private Algorithm tradeAlgorithm;
+	private ArrayList<Algorithm> tradeAlgorithms = new ArrayList<Algorithm>();
 
 	private Date from;
 	private Date to;
 
 	private List<String> processingStockList = new ArrayList<String>();
 
-	private class StockIterator {
-		@SuppressWarnings("unused")
-		StockInterface stock;
-		ArrayList<Day> days;
-		int currentIterator;
-
-		public StockIterator(StockInterface stock, Date from) {
-			this.stock = stock;
-			days = stock.getDays();
-			if (days.size() > 0 && days.get(0).date.compareTo(from) >= 0)
-				currentIterator = 0;
-			else {
-				currentIterator = Collections.binarySearch(days, new Day(from));
-				if (currentIterator < 0) {
-					if (-currentIterator >= days.size())
-						currentIterator = days.size();
-					else
-						currentIterator = -currentIterator - 1;
-				}
-			}
-		}
-
-		public boolean dataFound() {
-			return currentIterator < days.size();
-		}
-
-		public Day getCurrentDayAndIncrement(Day currentDay) {
-			// TODO: rebuild method mechanism for elegant search of the
-			// necessary information
-			if (currentIterator < days.size()) {
-				Day day = days.get(currentIterator);
-				int dayCompare = day.compareTo(currentDay);
-				if (dayCompare == 0) {
-					currentIterator++;
-					return day;
-				} else if (dayCompare < 0) {
-					currentIterator = Collections.binarySearch(days, currentDay);
-					if (currentIterator < 0) {
-						currentIterator = -currentIterator;
-						return null;
-					}
-					if (currentIterator >= 0 && currentIterator < days.size())
-						return days.get(currentIterator);
-
-				} else {
-					return null;
-				}
-				return null;
-			}
-			return null;
-		}
-	}
-
 	private HashMap<String, StockIterator> stocks = new HashMap<String, StockIterator>();
 
-	public MarketSimulator(StockStorage stockStorage) throws ClassNotFoundException, NoSuchMethodException,
+	public MarketSimulator(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, ParseException, IOException, InterruptedException {
-		this.stockStorage = stockStorage; //
-		broker = new Broker();
+		this.stockStorage = settings.getStockStorage();
+		broker = settings.getBroker();
 
-		Class<?> classType = Class.forName("stsc.algorithms.SimpleTraderExample");
-		Constructor<?> constructor = classType.getConstructor();
-		tradeAlgorithm = (Algorithm) constructor.newInstance();
-
-		tradeAlgorithm.setBroker(broker);
-
-		parseSimulationSettings();
+		loadAlgorithms(settings);
+		parseSimulationSettings(settings);
 	}
 
-	private void parseSimulationSettings() throws ParseException {
-		DateFormat dateReader = new SimpleDateFormat("dd-MM-yyyy");
+	private void loadAlgorithms(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
+			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
+		for (String algorithmType : settings.getAlgorithmList()) {
+			Class<?> classType = Class.forName(algorithmType);// "stsc.algorithms.SimpleTraderExample");
+			Constructor<?> constructor = classType.getConstructor();
+			Algorithm algo = (Algorithm) constructor.newInstance();
+			algo.setBroker(broker);
+			tradeAlgorithms.add(algo);
+		}
+	}
 
-		from = dateReader.parse("30-10-2013");
-		to = dateReader.parse("06-11-2013");
+	private void parseSimulationSettings(MarketSimulatorSettings settings) {
+		from = settings.getFrom();
+		to = settings.getTo();
 
-		processingStockList.add("aapl");
-		processingStockList.add("gfi");
-		processingStockList.add("no30");
-		processingStockList.add("unexisted_stock");
-		processingStockList.add("oldstock");
+		processingStockList.addAll(settings.getStockList());
 	}
 
 	public void simulate() throws Exception {
@@ -129,9 +74,7 @@ public class MarketSimulator {
 				String stockName = i.getKey();
 				StockIterator stockIterator = i.getValue();
 				Day stockDay = stockIterator.getCurrentDayAndIncrement(currentDay);
-				if (stockDay == null) {
-					// TODO: think about deleting stocks with no data for period
-				} else {
+				if (stockDay != null) {
 					if (stockDay.compareTo(currentDay) == 0)
 						datafeed.put(stockName, stockDay);
 					else {
@@ -140,8 +83,9 @@ public class MarketSimulator {
 					}
 				}
 			}
-
-			tradeAlgorithm.process(currentDay.date, datafeed);
+			for (Algorithm algorithm : tradeAlgorithms) {
+				algorithm.process(currentDay.date, datafeed);
+			}
 			dateIterator = dateIterator.plusDays(1);
 		}
 	}
@@ -156,5 +100,9 @@ public class MarketSimulator {
 				}
 			}
 		}
+	}
+
+	public ArrayList<Algorithm> getTradeAlgorithms() {
+		return tradeAlgorithms;
 	}
 }
