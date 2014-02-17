@@ -16,20 +16,20 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-public class Stock implements Serializable {
+public class UnitedFormatStock implements Serializable, StockInterface {
 
 	private static final long serialVersionUID = 4471626546221264954L;
 	final String name;
 	ArrayList<Day> days = new ArrayList<Day>();
 
-	public static Stock readFromCsvFile(String name, String filePath) throws IOException, ParseException {
+	public static UnitedFormatStock readFromCsvFile(String name, String filePath) throws IOException, ParseException {
 		byte[] data = Files.readAllBytes(Paths.get(filePath));
 		String content = new String(data);
-		return Stock.newFromString(name, content);
+		return UnitedFormatStock.newFromString(name, content);
 	}
 
-	public static Stock newFromString(String n, String content) throws ParseException {
-		Stock stock = new Stock(n);
+	public static UnitedFormatStock newFromString(String n, String content) throws ParseException {
+		UnitedFormatStock stock = new UnitedFormatStock(n);
 		String[] lines = content.split("\n");
 		Collections.reverse(Arrays.asList(lines));
 		for (int i = 0; i < lines.length - 1; ++i)
@@ -38,11 +38,11 @@ public class Stock implements Serializable {
 		return stock;
 	}
 
-	public static Stock readFromUniteFormatFile(String filePath) throws IOException {
-		Stock s = null;
+	public static UnitedFormatStock readFromUniteFormatFile(String filePath) throws IOException {
+		UnitedFormatStock s = null;
 		try (DataInputStream is = new DataInputStream(new FileInputStream(filePath))) {
 			String name = is.readUTF();
-			s = new Stock(name);
+			s = new UnitedFormatStock(name);
 			int daysLength = is.readInt();
 			for (int i = 0; i < daysLength; ++i) {
 				Date dayTime = new Date(is.readLong());
@@ -59,7 +59,7 @@ public class Stock implements Serializable {
 		return s;
 	}
 
-	static private void storeDataLine(Stock stock, String line) throws ParseException {
+	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
 		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(line.substring(0, 10));
 		String[] tokens = line.split(",");
 		double volume = Double.parseDouble(tokens[5]);
@@ -69,10 +69,14 @@ public class Stock implements Serializable {
 		stock.addDay(newDay);
 	}
 
-	public Stock(String name) {
+	public UnitedFormatStock(String name) {
 		this.name = name;
 	}
 
+	/* (non-Javadoc)
+	 * @see stsc.common.StockInterface#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -106,6 +110,10 @@ public class Stock implements Serializable {
 		return lines.length > 1;
 	}
 
+	/* (non-Javadoc)
+	 * @see stsc.common.StockInterface#getDays()
+	 */
+	@Override
 	public ArrayList<Day> getDays() {
 		return days;
 	}

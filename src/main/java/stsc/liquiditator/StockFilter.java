@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import stsc.common.Day;
-import stsc.common.Stock;
+import stsc.common.StockInterface;
 
 public class StockFilter {
 
@@ -37,7 +37,7 @@ public class StockFilter {
 		today = testToday;
 	}
 
-	public boolean testLastPeriods(Stock s) {
+	public boolean testLastPeriods(StockInterface s) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(today);
 		int year = cal.get(Calendar.YEAR);
@@ -86,7 +86,7 @@ public class StockFilter {
 		return true;
 	}
 
-	public boolean test(Stock s) {
+	public boolean test(StockInterface s) {
 		if (s == null || !testLastPeriods(s))
 			return false;
 		return true;

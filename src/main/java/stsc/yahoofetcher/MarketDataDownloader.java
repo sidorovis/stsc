@@ -1,5 +1,6 @@
 package stsc.yahoofetcher;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public final class MarketDataDownloader {
 	static int downloadThreadSize = 8;
 	static int stockNameMinLength = 5;
 	static int stockNameMaxLength = 5;
+	static boolean downloadExisted = false;
 
 	void generateNextElement(char[] generatedText, int currentIndex, int size) {
 		for (char c = 'a'; c <= 'z'; ++c) {
@@ -56,6 +58,7 @@ public final class MarketDataDownloader {
 		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
 		stockNameMinLength = Integer.parseInt(p.getProperty("stock_name_min.size"));
 		stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name_max.size"));
+		downloadExisted = Boolean.parseBoolean(p.getProperty("download_existed"));
 	}
 
 	MarketDataDownloader() throws InterruptedException, IOException {
@@ -66,9 +69,19 @@ public final class MarketDataDownloader {
 
 		logger.trace("starting");
 
-		for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
-			generateTasks(i);
+		if (downloadExisted) {
+			File folder = new File(marketDataContext.dataFolder);
+			File[] listOfFiles = folder.listFiles();
+			for (File file : listOfFiles) {
+				String filename = file.getName();
+				if (file.isFile() && filename.endsWith(".uf"))
+					marketDataContext.addTask(filename.substring(0, filename.length() - 3));
+			}
 
+		} else {
+			for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
+				generateTasks(i);
+		}
 		logger.trace("tasks size: {}", marketDataContext.taskQueueSize());
 
 		List<Thread> threads = new ArrayList<Thread>();

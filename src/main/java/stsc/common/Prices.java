@@ -18,7 +18,7 @@ public class Prices implements Serializable {
 		return new Prices(o, h, l, c);
 	}
 
-	Prices(double o, double h, double l, double c) {
+	public Prices(double o, double h, double l, double c) {
 		open = o;
 		high = h;
 		low = l;

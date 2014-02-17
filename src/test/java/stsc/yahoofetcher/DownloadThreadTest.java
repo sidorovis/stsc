@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import stsc.common.MarketDataContext;
-import stsc.common.Stock;
+import stsc.common.StockInterface;
 
 import com.google.common.io.Files;
 
@@ -41,7 +41,7 @@ public class DownloadThreadTest extends TestCase {
 			th.join();
 		}
 		{
-			Stock s = marketDataContext.getStockFromFileSystem("aaoi");
+			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
 			Calendar cal = Calendar.getInstance();
 			cal.set(2014, 1, 10);
 			Date d93 = cal.getTime();

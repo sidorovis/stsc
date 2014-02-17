@@ -35,10 +35,10 @@ public class MarketDataContext {
 		return dataFolder + stockName + ".uf";
 	}
 
-	public Stock getStockFromFileSystem(String stockName) {
-		Stock s = null;
+	public UnitedFormatStock getStockFromFileSystem(String stockName) {
+		UnitedFormatStock s = null;
 		try {
-			s = Stock.readFromUniteFormatFile(generateUniteFormatPath(stockName));
+			s = UnitedFormatStock.readFromUniteFormatFile(generateUniteFormatPath(stockName));
 		} catch (IOException e) {
 		}
 		return s;

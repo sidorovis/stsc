@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import stsc.common.MarketDataContext;
-import stsc.common.Stock;
+import stsc.common.UnitedFormatStock;
 import stsc.liquiditator.FilterThread;
 import stsc.liquiditator.StockFilter;
 
@@ -33,7 +33,7 @@ public class DownloadThread implements Runnable {
 		String task = marketDataContext.getTask();
 		while (task != null) {
 			try {
-				Stock s = marketDataContext.getStockFromFileSystem(task);
+				UnitedFormatStock s = marketDataContext.getStockFromFileSystem(task);
 				if (s == null) {
 					s = download(task);
 					logger.trace("task {} fully downloaded", task);
@@ -60,15 +60,15 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	private final Stock download(String stockName) throws ParseException, MalformedURLException, InterruptedException {
+	private final UnitedFormatStock download(String stockName) throws ParseException, MalformedURLException, InterruptedException {
 		int tries = 0;
 
-		Stock newStock = null;
+		UnitedFormatStock newStock = null;
 		while (tries < 5) {
 			URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
 			try {
 				String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
-				newStock = Stock.newFromString(stockName, stockContent);
+				newStock = UnitedFormatStock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
 				newStock.storeUniteFormat(marketDataContext.generateUniteFormatPath(newStock.getName()));
@@ -83,7 +83,7 @@ public class DownloadThread implements Runnable {
 		return newStock;
 	}
 
-	private final void partiallyDownload(Stock stock, String stockName) throws IOException, ParseException,
+	private final void partiallyDownload(UnitedFormatStock stock, String stockName) throws IOException, ParseException,
 			InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
 

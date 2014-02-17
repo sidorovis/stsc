@@ -12,7 +12,7 @@ import stsc.trading.Broker;
  */
 public interface Algorithm {
 
-	public void setBroker(Broker broker);
+	public abstract void setBroker(Broker broker);
 
-	public void process(Date date, HashMap<String, Day> datafeed);
+	public abstract void process(Date date, HashMap<String, Day> datafeed);
 }
