@@ -44,7 +44,7 @@ public class MarketSimulator {
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		for (String algorithmType : settings.getAlgorithmList()) {
-			Class<?> classType = Class.forName(algorithmType);// "stsc.algorithms.SimpleTraderExample");
+			Class<?> classType = Class.forName(algorithmType);
 			Constructor<?> constructor = classType.getConstructor();
 			Algorithm algo = (Algorithm) constructor.newInstance();
 			algo.setBroker(broker);
