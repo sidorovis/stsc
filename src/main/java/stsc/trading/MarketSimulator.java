@@ -48,10 +48,12 @@ public class MarketSimulator {
 		for (Execution executionDescription : settings.getExecutionsList()) {
 			Class<?> classType = Class.forName(executionDescription.algorithmName);
 			Constructor<?> constructor = classType.getConstructor();
+
 			AlgorithmInterface algo = (AlgorithmInterface) constructor.newInstance();
 			algo.setExecutionName(executionDescription.executionName);
 			algo.setBroker(broker);
 			algo.setSignalsStorage(signalsStorage);
+
 			tradeAlgorithms.put(executionDescription.executionName, algo);
 		}
 	}
@@ -72,7 +74,8 @@ public class MarketSimulator {
 		while (dateIterator.isBefore(endDate)) {
 			HashMap<String, Day> datafeed = new HashMap<String, Day>();
 
-			Day currentDay = new Day(dateIterator.toDate());
+			Date today = dateIterator.toDate();
+			Day currentDay = new Day(today);
 
 			for (Map.Entry<String, StockIterator> i : stocks.entrySet()) {
 				String stockName = i.getKey();
@@ -82,11 +85,11 @@ public class MarketSimulator {
 					if (stockDay.compareTo(currentDay) == 0)
 						datafeed.put(stockName, stockDay);
 					else {
-						throw new Exception("Bad day returned for stock " + stockName + " for day "
-								+ dateIterator.toDate());
+						throw new Exception("Bad day returned for stock " + stockName + " for day " + today);
 					}
 				}
 			}
+			broker.setToday(today);
 			for (Map.Entry<String, AlgorithmInterface> i : tradeAlgorithms.entrySet()) {
 				i.getValue().process(currentDay.date, datafeed);
 			}
@@ -97,11 +100,15 @@ public class MarketSimulator {
 	private void collectStocksFromStorage() {
 		for (String i : processingStockList) {
 			StockInterface stock = stockStorage.getStock(i);
-			if (stock != null) {
-				StockIterator stockIterator = new StockIterator(stock, from);
-				if (stockIterator.dataFound()) {
-					stocks.put(i, stockIterator);
-				}
+			addStock(i, stock);
+		}
+	}
+
+	private void addStock(String name, StockInterface stock) {
+		if (stock != null) {
+			StockIterator stockIterator = new StockIterator(stock, from);
+			if (stockIterator.dataFound()) {
+				stocks.put(name, stockIterator);
 			}
 		}
 	}

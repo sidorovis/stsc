@@ -36,7 +36,7 @@ public class TestTraderAlgorithm extends Algorithm {
 		int boughtStocks = 0;
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
-			int boughtAmount = broker.buy(stockName, Side.LONG, 100000);
+			int boughtAmount = broker.buy(stockName, Side.LONG, 500);
 			if (boughtAmount > 0) {
 				boughtStocks += 1;
 				openedPositions.put(stockName, new Position(stockName, Side.LONG, boughtAmount));
