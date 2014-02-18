@@ -12,16 +12,16 @@ public class MarketSimulatorSettings {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	
+
 	private DateFormat dateReader = new SimpleDateFormat("dd-MM-yyyy");
 
 	private Date from;
 	private Date to;
 
-	private ArrayList<String> algorithmList = new ArrayList<String>();
+	private ArrayList<Execution> executionsList = new ArrayList<Execution>();
 
 	private ArrayList<String> stockList = new ArrayList<String>();
-	
+
 	public ArrayList<String> getStockList() {
 		return stockList;
 	}
@@ -50,8 +50,8 @@ public class MarketSimulatorSettings {
 		return to;
 	}
 
-	public ArrayList<String> getAlgorithmList() {
-		return algorithmList;
+	public ArrayList<Execution> getExecutionsList() {
+		return executionsList;
 	}
 
 	public StockStorage getStockStorage() {

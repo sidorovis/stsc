@@ -1,13 +1,16 @@
 package stsc.algorithms;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.Day;
-import stsc.trading.Broker;
+import stsc.storage.BadSignalException;
+import stsc.storage.ExecutionSignal;
 
-public class TestAlgorithm implements Algorithm {
+public class TestAlgorithm extends Algorithm {
 
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
@@ -15,13 +18,19 @@ public class TestAlgorithm implements Algorithm {
 	}
 
 	@Override
-	public void setBroker(Broker broker) {
-		// do nothing
+	public Class<? extends ExecutionSignal> registerSignalsClass() {
+		return TestAlgorithmSignal.class;
 	}
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) {
 		datafeeds.add(datafeed);
+		DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
+		TestAlgorithmSignal signal = new TestAlgorithmSignal(fd.format(date));
+		try {
+			addSignal(date, signal);
+		} catch (BadSignalException e) {
+			// do nothing
+		}
 	}
-
 }

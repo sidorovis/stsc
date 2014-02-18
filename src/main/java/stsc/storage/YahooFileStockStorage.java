@@ -44,12 +44,13 @@ public class YahooFileStockStorage extends InMemoryStockStorage {
 
 	public YahooFileStockStorage(MarketDataContext marketDataContext) throws ClassNotFoundException, IOException,
 			InterruptedException {
+		super();
 		this.marketDataContext = marketDataContext;
 		loadStocksFromFileSystem();
 	}
 
-	public YahooFileStockStorage() throws ClassNotFoundException, IOException,
-			InterruptedException {
+	public YahooFileStockStorage() throws ClassNotFoundException, IOException, InterruptedException {
+		super();
 		this.marketDataContext = new MarketDataContext();
 		loadStocksFromFileSystem();
 	}

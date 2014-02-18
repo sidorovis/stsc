@@ -12,16 +12,18 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.Algorithm;
+import stsc.algorithms.AlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.StockInterface;
+import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
 
 public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	private ArrayList<Algorithm> tradeAlgorithms = new ArrayList<Algorithm>();
+	private SignalsStorage signalsStorage = new SignalsStorage();
+	private HashMap<String, AlgorithmInterface> tradeAlgorithms = new HashMap<String, AlgorithmInterface>();
 
 	private Date from;
 	private Date to;
@@ -43,12 +45,14 @@ public class MarketSimulator {
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
-		for (String algorithmType : settings.getAlgorithmList()) {
-			Class<?> classType = Class.forName(algorithmType);
+		for (Execution executionDescription : settings.getExecutionsList()) {
+			Class<?> classType = Class.forName(executionDescription.algorithmName);
 			Constructor<?> constructor = classType.getConstructor();
-			Algorithm algo = (Algorithm) constructor.newInstance();
+			AlgorithmInterface algo = (AlgorithmInterface) constructor.newInstance();
+			algo.setExecutionName(executionDescription.executionName);
 			algo.setBroker(broker);
-			tradeAlgorithms.add(algo);
+			algo.setSignalsStorage(signalsStorage);
+			tradeAlgorithms.put(executionDescription.executionName, algo);
 		}
 	}
 
@@ -83,8 +87,8 @@ public class MarketSimulator {
 					}
 				}
 			}
-			for (Algorithm algorithm : tradeAlgorithms) {
-				algorithm.process(currentDay.date, datafeed);
+			for (Map.Entry<String, AlgorithmInterface> i : tradeAlgorithms.entrySet()) {
+				i.getValue().process(currentDay.date, datafeed);
 			}
 			dateIterator = dateIterator.plusDays(1);
 		}
@@ -102,7 +106,11 @@ public class MarketSimulator {
 		}
 	}
 
-	public ArrayList<Algorithm> getTradeAlgorithms() {
+	public HashMap<String, AlgorithmInterface> getTradeAlgorithms() {
 		return tradeAlgorithms;
+	}
+
+	public SignalsStorage getSignalsStorage() {
+		return signalsStorage;
 	}
 }

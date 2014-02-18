@@ -9,23 +9,17 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import stsc.common.Day;
-import stsc.trading.Broker;
+import stsc.storage.ExecutionSignal;
 import stsc.trading.Position;
 import stsc.trading.Side;
 
-public class TestTraderAlgorithm implements Algorithm {
+public class TestTraderAlgorithm extends Algorithm {
 
-	Broker broker;
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
 	public TestTraderAlgorithm() {
 		openedPositions = new HashMap<String, Position>();
-	}
-
-	@Override
-	public void setBroker(Broker broker) {
-		this.broker = broker;
 	}
 
 	@Override
@@ -74,4 +68,11 @@ public class TestTraderAlgorithm implements Algorithm {
 			openedPositions.remove(string);
 		}
 	}
+
+
+	@Override
+	public Class<ExecutionSignal> registerSignalsClass() {
+		return null;
+	}
+
 }
