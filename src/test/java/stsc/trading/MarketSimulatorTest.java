@@ -1,8 +1,8 @@
 package stsc.trading;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.text.ParseException;
+import java.sql.Date;
 
 import stsc.algorithms.TestAlgorithm;
 import stsc.algorithms.TestAlgorithmSignal;
@@ -30,7 +30,7 @@ public class MarketSimulatorTest extends TestCase {
 
 		MarketSimulatorSettings settings = new MarketSimulatorSettings();
 		settings.setStockStorage(ss);
-		settings.setBroker(new Broker());
+		settings.setBroker(new Broker(ss));
 		settings.setFrom("30-10-2013");
 		settings.setTo("06-11-2013");
 		settings.getExecutionsList().add(new Execution("e1", TestAlgorithm.class.getName()));
