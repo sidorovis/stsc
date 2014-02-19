@@ -91,6 +91,17 @@
         <generateDirectory>${project.build.directory}/target/classes/stsc/trading</generateDirectory>
       </configuration>
     </execution>
+    <execution>
+      <id>stsc-statistic</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/statistic</schemaDirectory>
+        <generatePackage>stsc.statistic</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/statistic</generateDirectory>
+      </configuration>
+    </execution>
 
     <execution>
       <id>stsc-common-tests</id>
@@ -156,6 +167,17 @@
         <schemaDirectory>src/test/java/stsc/trading</schemaDirectory>
         <generatePackage>stsc.trading</generatePackage>
         <generateDirectory>${project.build.directory}/target/test-classes/stsc/trading</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-statistic-tests</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/statistic</schemaDirectory>
+        <generatePackage>stsc.statistic</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/statistic</generateDirectory>
       </configuration>
     </execution>
 
