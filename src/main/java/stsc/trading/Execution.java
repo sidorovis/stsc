@@ -1,6 +1,6 @@
 package stsc.trading;
 
-import stsc.algorithms.Algorithm;
+import stsc.algorithms.EodAlgorithm;
 
 public class Execution {
 	public final String executionName;
@@ -9,7 +9,7 @@ public class Execution {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 	}
-	public Execution(String executionName, Class<? extends Algorithm> algorithmType){
+	public Execution(String executionName, Class<? extends EodAlgorithm> algorithmType){
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 	}

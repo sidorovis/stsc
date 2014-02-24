@@ -28,16 +28,24 @@ public class BrokerTest extends TestCase {
 		Broker broker = new Broker(stockStorage);
 		broker.setToday(Date.valueOf("2013-10-30"));
 		assertEquals(1000, broker.buy("aapl", Side.LONG, 1000));
-		assertEquals(2000, broker.sell("aapl", Side.SHORT, 2000));
+		assertEquals(0, broker.sell("aapl", Side.SHORT, 2000));
+		assertEquals(500, broker.sell("aapl", Side.LONG, 500));
+		assertEquals(500, broker.sell("aapl", Side.LONG, 1000));
 		assertEquals(0, broker.buy("no30", Side.LONG, 1000));
 		assertEquals(0, broker.sell("no30", Side.SHORT, 2000));
+
+		assertEquals(1000, broker.buy("aapl", Side.SHORT, 1000));
+		assertEquals(500, broker.buy("aapl", Side.LONG, 500));
+		
+		assertEquals(500, broker.sell("aapl", Side.LONG, 1000));
+		assertEquals(1000, broker.sell("aapl", Side.SHORT, 1000));
 
 		try (FileWriter fw = new FileWriter("./test/out_file.txt")) {
 			broker.getTradingLog().printOut(fw);
 		}
 
 		File out = new File("./test/out_file.txt");
-		assertEquals(57, out.length());
+		assertEquals(194, out.length());
 		out.delete();
 	}
 

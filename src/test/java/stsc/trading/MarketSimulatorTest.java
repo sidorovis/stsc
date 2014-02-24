@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.sql.Date;
 
-import stsc.algorithms.TestAlgorithm;
+import stsc.algorithms.TestEodAlgorithm;
 import stsc.algorithms.TestAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.ExecutionSignal;
@@ -33,7 +33,7 @@ public class MarketSimulatorTest extends TestCase {
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("30-10-2013");
 		settings.setTo("06-11-2013");
-		settings.getExecutionsList().add(new Execution("e1", TestAlgorithm.class.getName()));
+		settings.getExecutionsList().add(new Execution("e1", TestEodAlgorithm.class.getName()));
 		settings.getStockList().add("aapl");
 		settings.getStockList().add("gfi");
 		settings.getStockList().add("no30");
@@ -44,7 +44,7 @@ public class MarketSimulatorTest extends TestCase {
 		marketSimulator.simulate();
 		assertEquals(1, marketSimulator.getTradeAlgorithms().size());
 
-		TestAlgorithm ta = (TestAlgorithm) marketSimulator.getTradeAlgorithms().get("e1");
+		TestEodAlgorithm ta = (TestEodAlgorithm) marketSimulator.getTradeAlgorithms().get("e1");
 		assertEquals(ta.datafeeds.size(), 7);
 
 		int[] expectedDatafeedSizes = { 1, 1, 2, 2, 3, 2, 0 };

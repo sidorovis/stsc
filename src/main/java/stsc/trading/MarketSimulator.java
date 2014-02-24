@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.AlgorithmInterface;
+import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.StockInterface;
 import stsc.storage.SignalsStorage;
@@ -23,7 +23,8 @@ public class MarketSimulator {
 	private StockStorage stockStorage;
 	private Broker broker;
 	private SignalsStorage signalsStorage = new SignalsStorage();
-	private HashMap<String, AlgorithmInterface> tradeAlgorithms = new HashMap<String, AlgorithmInterface>();
+	// TODO private HashMap<String, StockAlgorithmInterface >
+	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<String, EodAlgorithmInterface>();
 
 	private Date from;
 	private Date to;
@@ -49,7 +50,7 @@ public class MarketSimulator {
 			Class<?> classType = Class.forName(executionDescription.algorithmName);
 			Constructor<?> constructor = classType.getConstructor();
 
-			AlgorithmInterface algo = (AlgorithmInterface) constructor.newInstance();
+			EodAlgorithmInterface algo = (EodAlgorithmInterface) constructor.newInstance();
 			algo.setExecutionName(executionDescription.executionName);
 			algo.setBroker(broker);
 			algo.setSignalsStorage(signalsStorage);
@@ -90,7 +91,7 @@ public class MarketSimulator {
 				}
 			}
 			broker.setToday(today);
-			for (Map.Entry<String, AlgorithmInterface> i : tradeAlgorithms.entrySet()) {
+			for (Map.Entry<String, EodAlgorithmInterface> i : tradeAlgorithms.entrySet()) {
 				i.getValue().process(currentDay.date, datafeed);
 			}
 			dateIterator = dateIterator.plusDays(1);
@@ -113,7 +114,7 @@ public class MarketSimulator {
 		}
 	}
 
-	public HashMap<String, AlgorithmInterface> getTradeAlgorithms() {
+	public HashMap<String, EodAlgorithmInterface> getTradeAlgorithms() {
 		return tradeAlgorithms;
 	}
 

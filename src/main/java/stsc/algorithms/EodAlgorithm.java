@@ -9,7 +9,7 @@ import stsc.storage.ExecutionSignal;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
-public abstract class Algorithm implements AlgorithmInterface {
+public abstract class EodAlgorithm implements EodAlgorithmInterface {
 
 	protected Broker broker;
 	private String executionName;

@@ -1,6 +1,6 @@
 package stsc.trading;
 
-import stsc.algorithms.TestAlgorithm;
+import stsc.algorithms.TestEodAlgorithm;
 import junit.framework.TestCase;
 
 public class ExecutionTest extends TestCase {
@@ -11,7 +11,7 @@ public class ExecutionTest extends TestCase {
 		Execution e2 = new Execution("e1", "stsc.algorithms.TestAlgorithm");
 		assertEquals("stsc.algorithms.TestAlgorithm", e2.algorithmName);
 		
-		Execution e3 = new Execution("e1", TestAlgorithm.class.getName());
+		Execution e3 = new Execution("e1", TestEodAlgorithm.class.getName());
 		assertEquals("stsc.algorithms.TestAlgorithm", e3.algorithmName);
 		
 	}

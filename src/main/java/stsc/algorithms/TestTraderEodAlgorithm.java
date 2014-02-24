@@ -13,12 +13,12 @@ import stsc.storage.ExecutionSignal;
 import stsc.trading.Position;
 import stsc.trading.Side;
 
-public class TestTraderAlgorithm extends Algorithm {
+public class TestTraderEodAlgorithm extends EodAlgorithm {
 
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
-	public TestTraderAlgorithm() {
+	public TestTraderEodAlgorithm() {
 		openedPositions = new HashMap<String, Position>();
 	}
 

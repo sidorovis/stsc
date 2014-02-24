@@ -9,10 +9,10 @@ import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
 /**
- * @author rilley_elf Algorithms interface is an interface for all data
- *         processing algorithms
+ * @author rilley_elf Algorithms interface is an interface for all eod-of-day
+ *         data processing algorithms
  */
-public interface AlgorithmInterface {
+public interface EodAlgorithmInterface {
 
 	public abstract void setBroker(Broker broker);
 
@@ -21,5 +21,6 @@ public interface AlgorithmInterface {
 	public abstract void setSignalsStorage(SignalsStorage signalsStorage);
 
 	public abstract Class<? extends ExecutionSignal> registerSignalsClass();
+
 	public abstract void process(Date date, HashMap<String, Day> datafeed);
 }

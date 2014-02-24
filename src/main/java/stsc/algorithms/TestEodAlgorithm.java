@@ -10,11 +10,11 @@ import stsc.common.Day;
 import stsc.storage.BadSignalException;
 import stsc.storage.ExecutionSignal;
 
-public class TestAlgorithm extends Algorithm {
+public class TestEodAlgorithm extends EodAlgorithm {
 
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
-	public TestAlgorithm() {
+	public TestEodAlgorithm() {
 	}
 
 	@Override
