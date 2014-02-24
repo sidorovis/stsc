@@ -14,7 +14,7 @@ public class YahooFileStockStorageTest extends TestCase {
 		assertNotNull(stockStorage.getStock("aaaa"));
 		assertNotNull(stockStorage.getStock("aapl"));
 		assertNull(stockStorage.getStock("anse"));
-		assertEquals(7424, stockStorage.getStock("aapl").getDays().size());
+		assertEquals(7428, stockStorage.getStock("aapl").getDays().size());
 	}
 
 	public void testLiqudityStorageReader() throws Exception {

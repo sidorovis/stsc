@@ -16,7 +16,7 @@ public class DownloadThreadTest extends TestCase {
 		marketDataContext.filteredDataFolder = "./test/";
 		Files.copy(new File("./test_data/aaoi.uf"), new File("./test/aaoi.uf"));
 		marketDataContext.addTask("a");
-		DownloadThread downloadThread = new DownloadThread(marketDataContext);
+		DownloadThread downloadThread = new DownloadThread(marketDataContext, false);
 		{
 			Thread th = new Thread(downloadThread);
 			th.start();

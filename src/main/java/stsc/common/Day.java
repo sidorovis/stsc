@@ -15,7 +15,7 @@ public class Day implements Serializable, Comparable<Day> {
 	public final Prices prices;
 	public final double volume;
 	public final double adj_close;
-
+	
 	public Day(Date d) {
 		date = d;
 		prices = null;

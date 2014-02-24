@@ -57,17 +57,22 @@ public class TradingLog {
 
 	private ArrayList<TradingRecord> records = new ArrayList<TradingRecord>();
 
-	void addBuyRecord(Date when, String stockName, Side side, int sharesAmount) {
+	public void addBuyRecord(Date when, String stockName, Side side, int sharesAmount) {
 		records.add(TradingRecord.buy(when, stockName, side, sharesAmount));
 	}
 
-	void addSellRecord(Date when, String stockName, Side side, int sharesAmount) {
+	public void addSellRecord(Date when, String stockName, Side side, int sharesAmount) {
 		records.add(TradingRecord.sell(when, stockName, side, sharesAmount));
 	}
 
-	void printOut(Writer w) throws IOException {
+	public void printOut(Writer w) throws IOException {
 		for (TradingRecord record : records) {
 			record.printOut(w);
 		}
 	}
+
+	public ArrayList<TradingRecord> getRecords() {
+		return records;
+	}
+
 }

@@ -36,11 +36,22 @@ public class FilterThread implements Runnable {
 				if (s != null && stockFilter.test(s)) {
 					copyFilteredStockFile(marketDataContext, task);
 					logger.trace("stock " + task + " liquid");
+				} else {
+					deleteIfExisted(task);
 				}
 			} catch (IOException e) {
 				logger.trace("binary file " + task + " processing throw IOException: " + e.toString());
 			}
 			task = marketDataContext.getTask();
+		}
+	}
+
+	public void deleteIfExisted(String stockName) {
+		File file = new File(marketDataContext.generateFilteredUniteFormatPath(stockName));
+		if (file.exists()) {
+			logger.debug("deleting filtered file with stock " + stockName
+					+ " it doesn't pass new liquidity filter tests");
+			file.delete();
 		}
 	}
 

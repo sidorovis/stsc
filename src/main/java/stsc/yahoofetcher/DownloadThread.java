@@ -22,11 +22,18 @@ public class DownloadThread implements Runnable {
 	private MarketDataContext marketDataContext;
 	private StockFilter stockFilter;
 	private static int solvedAmount = 0;
+	private boolean deleteFilteredData = true;
 	private static Logger logger = LogManager.getLogger("DownloadThread");
 
-	DownloadThread(MarketDataContext mdc) {
+	public DownloadThread(MarketDataContext mdc) {
 		marketDataContext = mdc;
 		stockFilter = new StockFilter();
+	}
+
+	public DownloadThread(MarketDataContext mdc, boolean deleteFilteredData) {
+		marketDataContext = mdc;
+		stockFilter = new StockFilter();
+		this.deleteFilteredData = deleteFilteredData;
 	}
 
 	public void run() {
@@ -44,9 +51,19 @@ public class DownloadThread implements Runnable {
 				if (stockFilter.test(s)) {
 					FilterThread.copyFilteredStockFile(marketDataContext, task);
 					logger.info("task {} is liquid and copied to filter stock directory", task);
+				} else {
+					if (deleteFilteredData) {
+						String filteredFilePath = marketDataContext.generateFilteredUniteFormatPath(task);
+						File filteredFile = new File(filteredFilePath);
+						if (filteredFile.exists()) {
+							logger.debug("deleting filtered file with stock " + task
+									+ " it doesn't pass new liquidity filter tests");
+							filteredFile.delete();
+						}
+					}
 				}
 			} catch (Exception e) {
-//				logger.warn("task {} throwed an exception {}", task, e.toString());
+				logger.debug("task {} throwed an exception {}", task, e.toString());
 				File file = new File(marketDataContext.generateFilePath(task));
 				if (file.length() == 0)
 					file.delete();
@@ -60,7 +77,8 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	private final UnitedFormatStock download(String stockName) throws ParseException, MalformedURLException, InterruptedException {
+	private final UnitedFormatStock download(String stockName) throws ParseException, MalformedURLException,
+			InterruptedException {
 		int tries = 0;
 
 		UnitedFormatStock newStock = null;

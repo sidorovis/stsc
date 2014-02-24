@@ -27,10 +27,11 @@ public class DownloadedStockFilter {
 	private void collectDownloadedStockNames() {
 		File folder = new File(marketDataContext.dataFolder);
 		File[] listOfFiles = folder.listFiles();
+		String extension = ".uf";
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(".uf"))
-				marketDataContext.addTask(filename.substring(0, filename.length() - 3));
+			if (file.isFile() && filename.endsWith(extension))
+				marketDataContext.addTask(filename.substring(0, filename.length() - extension.length()));
 		}
 	}
 
