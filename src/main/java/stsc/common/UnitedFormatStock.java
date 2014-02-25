@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.Date;
 public class UnitedFormatStock implements Serializable, StockInterface {
 
 	private static final long serialVersionUID = 4471626546221264954L;
+
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	final String name;
 	ArrayList<Day> days = new ArrayList<Day>();
 
@@ -45,7 +48,7 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 			s = new UnitedFormatStock(name);
 			int daysLength = is.readInt();
 			for (int i = 0; i < daysLength; ++i) {
-				Date dayTime = new Date(is.readLong());
+				Date dayTime = nullableTime( new Date(is.readLong()) );
 				double open = is.readDouble();
 				double high = is.readDouble();
 				double low = is.readDouble();
@@ -59,8 +62,19 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 		return s;
 	}
 
+	static private Date nullableTime(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR, 12);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		Date result = cal.getTime();
+		return result;
+	}
+
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
-		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(line.substring(0, 10));
+		Date date = dateFormat.parse(line.substring(0, 10));
 		String[] tokens = line.split(",");
 		double volume = Double.parseDouble(tokens[5]);
 		double adj_close = Double.parseDouble(tokens[6]);
@@ -73,7 +87,9 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see stsc.common.StockInterface#getName()
 	 */
 	@Override
@@ -110,7 +126,9 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 		return lines.length > 1;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see stsc.common.StockInterface#getDays()
 	 */
 	@Override

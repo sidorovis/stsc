@@ -15,14 +15,17 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.StockInterface;
+import stsc.statistic.EquityCurve;
 import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
+import stsc.storage.StockStorageCache;
 
 public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
 	private SignalsStorage signalsStorage = new SignalsStorage();
+
 	// TODO private HashMap<String, StockAlgorithmInterface >
 	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<String, EodAlgorithmInterface>();
 
@@ -31,6 +34,7 @@ public class MarketSimulator {
 
 	private List<String> processingStockList = new ArrayList<String>();
 
+	private StockStorageCache stockStorageCache = new StockStorageCache();
 	private HashMap<String, StockIterator> stocks = new HashMap<String, StockIterator>();
 
 	public MarketSimulator(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
@@ -92,10 +96,16 @@ public class MarketSimulator {
 			}
 			broker.setToday(today);
 			for (Map.Entry<String, EodAlgorithmInterface> i : tradeAlgorithms.entrySet()) {
-				i.getValue().process(currentDay.date, datafeed);
+				i.getValue().process(today, datafeed);
 			}
 			dateIterator = dateIterator.plusDays(1);
 		}
+	}
+
+	public void calculateStatistics() {
+		// EquityCurve equityCurve =
+		new EquityCurve(broker.getTradingLog(), stockStorageCache);
+		// TODO calculate statistics
 	}
 
 	private void collectStocksFromStorage() {
@@ -110,6 +120,7 @@ public class MarketSimulator {
 			StockIterator stockIterator = new StockIterator(stock, from);
 			if (stockIterator.dataFound()) {
 				stocks.put(name, stockIterator);
+				stockStorageCache.updateStock(stock);
 			}
 		}
 	}

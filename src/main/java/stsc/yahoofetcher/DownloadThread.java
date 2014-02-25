@@ -52,19 +52,11 @@ public class DownloadThread implements Runnable {
 					FilterThread.copyFilteredStockFile(marketDataContext, task);
 					logger.info("task {} is liquid and copied to filter stock directory", task);
 				} else {
-					if (deleteFilteredData) {
-						String filteredFilePath = marketDataContext.generateFilteredUniteFormatPath(task);
-						File filteredFile = new File(filteredFilePath);
-						if (filteredFile.exists()) {
-							logger.debug("deleting filtered file with stock " + task
-									+ " it doesn't pass new liquidity filter tests");
-							filteredFile.delete();
-						}
-					}
+					deleteEmptyFilteredFile(task);
 				}
 			} catch (Exception e) {
 				logger.debug("task {} throwed an exception {}", task, e.toString());
-				File file = new File(marketDataContext.generateFilePath(task));
+				File file = new File(marketDataContext.generateUniteFormatPath(task));
 				if (file.length() == 0)
 					file.delete();
 			}
@@ -74,6 +66,18 @@ public class DownloadThread implements Runnable {
 					logger.info("solved {} tasks", solvedAmount);
 			}
 			task = marketDataContext.getTask();
+		}
+	}
+
+	private void deleteEmptyFilteredFile(String stockName) {
+		if (deleteFilteredData) {
+			String filteredFilePath = marketDataContext.generateFilteredUniteFormatPath(stockName);
+			File filteredFile = new File(filteredFilePath);
+			if (filteredFile.exists()) {
+				logger.debug("deleting filtered file with stock " + stockName
+						+ " it doesn't pass new liquidity filter tests");
+				filteredFile.delete();
+			}
 		}
 	}
 

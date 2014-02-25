@@ -55,22 +55,22 @@ public class MarketSimulatorTest extends TestCase {
 		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
 		ExecutionSignal e1s1 = signalsStorage.getSignal("e1", Date.valueOf("2013-10-30"));
 		assertEquals(true, e1s1.getClass() == TestAlgorithmSignal.class);
-		assertEquals("2013-10-30", ((TestAlgorithmSignal)e1s1).dateRepresentation);
+		assertEquals("2013-10-30", ((TestAlgorithmSignal) e1s1).dateRepresentation);
 
 		ExecutionSignal e1s2 = signalsStorage.getSignal("e1", Date.valueOf("2013-10-31"));
 		assertEquals(true, e1s2.getClass() == TestAlgorithmSignal.class);
-		assertEquals("2013-10-31", ((TestAlgorithmSignal)e1s2).dateRepresentation);
+		assertEquals("2013-10-31", ((TestAlgorithmSignal) e1s2).dateRepresentation);
 
 		ExecutionSignal e1s3 = signalsStorage.getSignal("e1", Date.valueOf("2013-11-01"));
 		assertEquals(true, e1s3.getClass() == TestAlgorithmSignal.class);
-		assertEquals("2013-11-01", ((TestAlgorithmSignal)e1s3).dateRepresentation);
+		assertEquals("2013-11-01", ((TestAlgorithmSignal) e1s3).dateRepresentation);
 
 		ExecutionSignal e1s6 = signalsStorage.getSignal("e1", Date.valueOf("2013-11-05"));
 		assertEquals(true, e1s6.getClass() == TestAlgorithmSignal.class);
-		assertEquals("2013-11-05", ((TestAlgorithmSignal)e1s6).dateRepresentation);
-		
-		assertNull( signalsStorage.getSignal("e1", Date.valueOf("2013-11-06")) );
-		assertNull( signalsStorage.getSignal("e2", Date.valueOf("2013-11-03")) );
-		assertNull( signalsStorage.getSignal("e1", Date.valueOf("2013-10-29")) );
+		assertEquals("2013-11-05", ((TestAlgorithmSignal) e1s6).dateRepresentation);
+
+		assertNull(signalsStorage.getSignal("e1", Date.valueOf("2013-11-06")));
+		assertNull(signalsStorage.getSignal("e2", Date.valueOf("2013-11-03")));
+		assertNull(signalsStorage.getSignal("e1", Date.valueOf("2013-10-29")));
 	}
 }

@@ -12,7 +12,7 @@ public class ExecutionTest extends TestCase {
 		assertEquals("stsc.algorithms.TestAlgorithm", e2.algorithmName);
 		
 		Execution e3 = new Execution("e1", TestEodAlgorithm.class.getName());
-		assertEquals("stsc.algorithms.TestAlgorithm", e3.algorithmName);
+		assertEquals("stsc.algorithms.TestEodAlgorithm", e3.algorithmName);
 		
 	}
 }
