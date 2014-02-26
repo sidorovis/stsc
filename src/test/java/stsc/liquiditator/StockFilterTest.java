@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collections;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import stsc.common.Day;
 import stsc.common.DayComparator;
@@ -36,7 +37,7 @@ public class StockFilterTest extends TestCase {
 		StockInterface s4 = UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf");
 		assertEquals(true, stockFilter2.test(s4));
 
-		StockInterface s5 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aaaa.uf");
+		StockInterface s5 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aaae.uf");
 		assertEquals(false, stockFilter2.test(s5));
 	}
 
@@ -44,22 +45,24 @@ public class StockFilterTest extends TestCase {
 		Calendar cal = Calendar.getInstance();
 		cal.set(2014, 1, 10);
 		StockFilter stockFilter = new StockFilter(cal.getTime());
-		
-		StockInterface aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 
+		StockInterface aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
+		
 		InMemoryStock smallappl = new InMemoryStock("smallaapl");
 		ArrayList<Day> days = smallappl.getDays();
-		
+
 		ArrayList<Day> copyFromDays = aapl.getDays();
-		int indexOfDeletingTo = -Collections.binarySearch(copyFromDays, new Day( new DateTime(2007,1,1,0,0).toDate()), new DayComparator() );
-		for (int i = 0 ; i < indexOfDeletingTo; i++ ) {
-			days.add( copyFromDays.get(i ));
+		int indexOfDeletingTo = -Collections.binarySearch(copyFromDays,
+				new Day(new DateTime(2007, 1, 1, 0, 0).toDate()), new DayComparator());
+		for (int i = 0; i < indexOfDeletingTo; i++) {
+			days.add(copyFromDays.get(i));
 		}
-		int indexOfDeletingFrom = -Collections.binarySearch(copyFromDays, new Day( new DateTime(2009,1,1,0,0).toDate()), new DayComparator() );
-		for (int i = indexOfDeletingFrom ; i < copyFromDays.size(); i++ ) {
-			days.add( copyFromDays.get(i ));
+		int indexOfDeletingFrom = -Collections.binarySearch(copyFromDays,
+				new Day(new LocalDate(2009, 1, 1).toDate()), new DayComparator());
+		for (int i = indexOfDeletingFrom; i < copyFromDays.size(); i++) {
+			days.add(copyFromDays.get(i));
 		}
 		assertEquals(false, stockFilter.test(smallappl));
-	
+
 	}
 }

@@ -1,4 +1,4 @@
-package stsc.trading;
+package stsc.algorithms;
 
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.TestingEodAlgorithm;
@@ -17,7 +17,7 @@ public class EodAlgorithmExecutionTest extends TestCase {
 	public void testExecution() {
 
 		EodAlgorithmExecution e3 = new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName());
-		assertEquals("stsc.algorithms.TestEodAlgorithm", e3.getAlgorithmName());
+		assertEquals("stsc.algorithms.TestingEodAlgorithm", e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
 
 	}

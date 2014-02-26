@@ -48,7 +48,7 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 			s = new UnitedFormatStock(name);
 			int daysLength = is.readInt();
 			for (int i = 0; i < daysLength; ++i) {
-				Date dayTime = nullableTime( new Date(is.readLong()) );
+				Date dayTime = new Date(is.readLong());
 				double open = is.readDouble();
 				double high = is.readDouble();
 				double low = is.readDouble();
@@ -74,7 +74,7 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 	}
 
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
-		Date date = dateFormat.parse(line.substring(0, 10));
+		Date date = nullableTime(dateFormat.parse(line.substring(0, 10)));
 		String[] tokens = line.split(",");
 		double volume = Double.parseDouble(tokens[5]);
 		double adj_close = Double.parseDouble(tokens[6]);
@@ -102,7 +102,7 @@ public class UnitedFormatStock implements Serializable, StockInterface {
 			os.writeUTF(name);
 			os.writeInt(days.size());
 			for (Day day : days) {
-				os.writeLong(day.date.getTime());
+				os.writeLong(nullableTime(day.date).getTime());
 				os.writeDouble(day.prices.open);
 				os.writeDouble(day.prices.high);
 				os.writeDouble(day.prices.low);

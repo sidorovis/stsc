@@ -26,7 +26,7 @@ public class DownloadThreadTest extends TestCase {
 		{
 			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
 			beforeDownload = s.getDays().size();
-			assertEquals(95, s.getDays().size());
+			assertEquals(104, s.getDays().size());
 		}
 		marketDataContext.addTask("aaoi");
 		{
