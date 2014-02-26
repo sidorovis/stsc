@@ -2,11 +2,12 @@ package stsc.storage;
 
 import java.sql.Date;
 
+import stsc.algorithms.EodExecutionSignal;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {
 
-	class TestSignal extends ExecutionSignal {
+	class TestSignal extends EodExecutionSignal {
 		public final int id;
 
 		public TestSignal(int id) {

@@ -1,29 +1,30 @@
 package stsc.trading;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.StockInterface;
-import stsc.statistic.EquityCurve;
+import stsc.statistic.Statistics;
+import stsc.storage.DayIteratorStorage;
 import stsc.storage.SignalsStorage;
+import stsc.storage.DayIterator;
 import stsc.storage.StockStorage;
-import stsc.storage.StockStorageCache;
 
 public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
+	private Statistics statistics = new Statistics();
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
 	// TODO private HashMap<String, StockAlgorithmInterface >
@@ -34,32 +35,22 @@ public class MarketSimulator {
 
 	private List<String> processingStockList = new ArrayList<String>();
 
-	private StockStorageCache stockStorageCache = new StockStorageCache();
-	private HashMap<String, StockIterator> stocks = new HashMap<String, StockIterator>();
+	private DayIteratorStorage stocks;
 
-	public MarketSimulator(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
-			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, ParseException, IOException, InterruptedException {
+	public MarketSimulator(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		broker = settings.getBroker();
 
 		loadAlgorithms(settings);
 		parseSimulationSettings(settings);
+
+		this.stocks = new DayIteratorStorage(from);
 	}
 
-	private void loadAlgorithms(MarketSimulatorSettings settings) throws ClassNotFoundException, NoSuchMethodException,
-			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
-		for (Execution executionDescription : settings.getExecutionsList()) {
-			Class<?> classType = Class.forName(executionDescription.algorithmName);
-			Constructor<?> constructor = classType.getConstructor();
-
-			EodAlgorithmInterface algo = (EodAlgorithmInterface) constructor.newInstance();
-			algo.setExecutionName(executionDescription.executionName);
-			algo.setBroker(broker);
-			algo.setSignalsStorage(signalsStorage);
-
-			tradeAlgorithms.put(executionDescription.executionName, algo);
+	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
+		for (EodAlgorithmExecution execution : settings.getExecutionsList()) {
+			EodAlgorithmInterface algo = execution.getInstance(broker, signalsStorage);
+			tradeAlgorithms.put(execution.getName(), algo);
 		}
 	}
 
@@ -71,57 +62,47 @@ public class MarketSimulator {
 	}
 
 	public void simulate() throws Exception {
-		LocalDate dateIterator = new LocalDate(from);
+		LocalDate dayIterator = new LocalDate(from);
 		LocalDate endDate = new LocalDate(to);
 
 		collectStocksFromStorage();
 
-		while (dateIterator.isBefore(endDate)) {
+		while (dayIterator.isBefore(endDate)) {
 			HashMap<String, Day> datafeed = new HashMap<String, Day>();
 
-			Date today = dateIterator.toDate();
+			Date today = dayIterator.toDate();
 			Day currentDay = new Day(today);
 
-			for (Map.Entry<String, StockIterator> i : stocks.entrySet()) {
-				String stockName = i.getKey();
-				StockIterator stockIterator = i.getValue();
-				Day stockDay = stockIterator.getCurrentDayAndIncrement(currentDay);
+			broker.setToday(today);
+			statistics.setToday(today);
+
+			for (Entry<String, DayIterator> i : stocks) {
+				DayIterator stockIterator = i.getValue();
+				Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
 				if (stockDay != null) {
-					if (stockDay.compareTo(currentDay) == 0)
+					String stockName = i.getKey();
+
+					if (stockDay.compareTo(currentDay) == 0) {
+						statistics.setStockDay(stockName, stockDay);
+
 						datafeed.put(stockName, stockDay);
-					else {
+					} else {
 						throw new Exception("Bad day returned for stock " + stockName + " for day " + today);
+						// TODO only for debugging, delete it later
 					}
 				}
 			}
-			broker.setToday(today);
 			for (Map.Entry<String, EodAlgorithmInterface> i : tradeAlgorithms.entrySet()) {
 				i.getValue().process(today, datafeed);
 			}
-			dateIterator = dateIterator.plusDays(1);
+			dayIterator = dayIterator.plusDays(1);
 		}
-	}
-
-	public void calculateStatistics() {
-		// EquityCurve equityCurve =
-		new EquityCurve(broker.getTradingLog(), stockStorageCache);
-		// TODO calculate statistics
 	}
 
 	private void collectStocksFromStorage() {
 		for (String i : processingStockList) {
 			StockInterface stock = stockStorage.getStock(i);
-			addStock(i, stock);
-		}
-	}
-
-	private void addStock(String name, StockInterface stock) {
-		if (stock != null) {
-			StockIterator stockIterator = new StockIterator(stock, from);
-			if (stockIterator.dataFound()) {
-				stocks.put(name, stockIterator);
-				stockStorageCache.updateStock(stock);
-			}
+			stocks.add(stock);
 		}
 	}
 

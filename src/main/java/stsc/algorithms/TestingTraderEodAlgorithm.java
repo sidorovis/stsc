@@ -9,16 +9,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import stsc.common.Day;
-import stsc.storage.ExecutionSignal;
 import stsc.trading.Position;
 import stsc.trading.Side;
 
-public class TestTraderEodAlgorithm extends EodAlgorithm {
+public class TestingTraderEodAlgorithm extends EodAlgorithm {
 
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
-	public TestTraderEodAlgorithm() {
+	public TestingTraderEodAlgorithm() {
 		openedPositions = new HashMap<String, Position>();
 	}
 
@@ -71,7 +70,7 @@ public class TestTraderEodAlgorithm extends EodAlgorithm {
 
 
 	@Override
-	public Class<ExecutionSignal> registerSignalsClass() {
+	public Class<EodExecutionSignal> registerSignalsClass() {
 		return null;
 	}
 

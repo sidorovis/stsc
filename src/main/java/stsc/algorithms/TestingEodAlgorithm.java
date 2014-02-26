@@ -8,25 +8,24 @@ import java.util.HashMap;
 
 import stsc.common.Day;
 import stsc.storage.BadSignalException;
-import stsc.storage.ExecutionSignal;
 
-public class TestEodAlgorithm extends EodAlgorithm {
+public class TestingEodAlgorithm extends EodAlgorithm {
 
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
-	public TestEodAlgorithm() {
+	public TestingEodAlgorithm() {
 	}
 
 	@Override
-	public Class<? extends ExecutionSignal> registerSignalsClass() {
-		return TestAlgorithmSignal.class;
+	public Class<? extends EodExecutionSignal> registerSignalsClass() {
+		return TestingAlgorithmSignal.class;
 	}
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) {
 		datafeeds.add(datafeed);
 		DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
-		TestAlgorithmSignal signal = new TestAlgorithmSignal(fd.format(date));
+		TestingAlgorithmSignal signal = new TestingAlgorithmSignal(fd.format(date));
 		try {
 			addSignal(date, signal);
 		} catch (BadSignalException e) {

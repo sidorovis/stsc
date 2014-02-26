@@ -3,20 +3,22 @@ package stsc.storage;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.algorithms.EodExecutionSignal;
+
 public class SignalsStorage {
 	class ExecutionSignalsStorage {
-		private final Class<? extends ExecutionSignal> signalClass;
-		private HashMap<Date, ExecutionSignal> signals = new HashMap<Date, ExecutionSignal>();
+		private final Class<? extends EodExecutionSignal> signalClass;
+		private HashMap<Date, EodExecutionSignal> signals = new HashMap<Date, EodExecutionSignal>();
 
-		public ExecutionSignalsStorage(Class<? extends ExecutionSignal> signalClass) {
+		public ExecutionSignalsStorage(Class<? extends EodExecutionSignal> signalClass) {
 			this.signalClass = signalClass;
 		}
 
-		public HashMap<Date, ExecutionSignal> getSignals() {
+		public HashMap<Date, EodExecutionSignal> getSignals() {
 			return signals;
 		}
 
-		public void addSignal(Date date, ExecutionSignal signal) throws BadSignalException {
+		public void addSignal(Date date, EodExecutionSignal signal) throws BadSignalException {
 			if (signal.getClass() == signalClass)
 				signals.put(date, signal);
 			else
@@ -28,16 +30,16 @@ public class SignalsStorage {
 
 	private HashMap<String, ExecutionSignalsStorage> signals = new HashMap<>();
 
-	public void registerSignalsFromExecution(String executionName, Class<? extends ExecutionSignal> signalsClass) {
+	public void registerSignalsFromExecution(String executionName, Class<? extends EodExecutionSignal> signalsClass) {
 		if (signalsClass != null)
 			signals.put(executionName, new ExecutionSignalsStorage(signalsClass));
 	}
 
-	public void addSignal(String executionName, Date date, ExecutionSignal signal) throws BadSignalException {
+	public void addSignal(String executionName, Date date, EodExecutionSignal signal) throws BadSignalException {
 		signals.get(executionName).addSignal(date, signal);
 	}
 
-	public ExecutionSignal getSignal(String executionName, Date date) {
+	public EodExecutionSignal getSignal(String executionName, Date date) {
 		ExecutionSignalsStorage ess = signals.get(executionName);
 		if (ess != null)
 			return signals.get(executionName).signals.get(date);

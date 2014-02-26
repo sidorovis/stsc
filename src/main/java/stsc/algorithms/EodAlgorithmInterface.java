@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.Day;
-import stsc.storage.ExecutionSignal;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
@@ -14,13 +13,13 @@ import stsc.trading.Broker;
  */
 public interface EodAlgorithmInterface {
 
-	public abstract void setBroker(Broker broker);
-
 	public abstract void setExecutionName(String executionName);
+
+	public abstract void setBroker(Broker broker);
 
 	public abstract void setSignalsStorage(SignalsStorage signalsStorage);
 
-	public abstract Class<? extends ExecutionSignal> registerSignalsClass();
+	public abstract Class<? extends EodExecutionSignal> registerSignalsClass();
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed);
 }
