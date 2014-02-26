@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>Stsc</artifactId>
-  <version>0.0.4-DELETE-IF-FILTER-FAIL</version>
+  <version>0.0.5-STRING-PATTERN</version>
   <packaging>jar</packaging>
 
   <name>Stsc</name>

@@ -96,7 +96,7 @@ public class DownloadThread implements Runnable {
 				newStock.storeUniteFormat(marketDataContext.generateUniteFormatPath(newStock.getName()));
 				return newStock;
 			} catch (IOException e) {
-				Thread.sleep(100);
+				Thread.sleep(300);
 			}
 			tries += 1;
 		}
@@ -120,7 +120,7 @@ public class DownloadThread implements Runnable {
 					stock.storeUniteFormat(marketDataContext.generateUniteFormatPath(stock.getName()));
 				return;
 			} catch (IOException e) {
-				Thread.sleep(100);
+				Thread.sleep(300);
 			}
 			tries += 1;
 		}
