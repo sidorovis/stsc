@@ -2,7 +2,7 @@ package stsc.trading;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.sql.Date;
+import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodExecutionSignal;
@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 public class MarketSimulatorTest extends TestCase {
 	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException {
-		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, "./test_data/market_simulator_tests/" + stockName
-				+ ".csv"));
+		final String stocksFilePath = "./test_data/market_simulator_tests/";
+		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, stocksFilePath + stockName + ".csv"));
 	}
 
 	public void testMarketSimulator() throws Exception {
@@ -54,24 +54,24 @@ public class MarketSimulatorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
-		EodExecutionSignal e1s1 = signalsStorage.getSignal("e1", Date.valueOf("2013-10-30"));
+		EodExecutionSignal e1s1 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 30).toDate());
 		assertEquals(true, e1s1.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingAlgorithmSignal) e1s1).dateRepresentation);
 
-		EodExecutionSignal e1s2 = signalsStorage.getSignal("e1", Date.valueOf("2013-10-31"));
+		EodExecutionSignal e1s2 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 31).toDate());
 		assertEquals(true, e1s2.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingAlgorithmSignal) e1s2).dateRepresentation);
 
-		EodExecutionSignal e1s3 = signalsStorage.getSignal("e1", Date.valueOf("2013-11-01"));
+		EodExecutionSignal e1s3 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 01).toDate());
 		assertEquals(true, e1s3.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingAlgorithmSignal) e1s3).dateRepresentation);
 
-		EodExecutionSignal e1s6 = signalsStorage.getSignal("e1", Date.valueOf("2013-11-05"));
+		EodExecutionSignal e1s6 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 05).toDate());
 		assertEquals(true, e1s6.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-11-05", ((TestingAlgorithmSignal) e1s6).dateRepresentation);
 
-		assertNull(signalsStorage.getSignal("e1", Date.valueOf("2013-11-06")));
-		assertNull(signalsStorage.getSignal("e2", Date.valueOf("2013-11-03")));
-		assertNull(signalsStorage.getSignal("e1", Date.valueOf("2013-10-29")));
+		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 6).toDate()));
+		assertNull(signalsStorage.getSignal("e2", new LocalDate(2013, 11, 3).toDate()));
+		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 29).toDate()));
 	}
 }

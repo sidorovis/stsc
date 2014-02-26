@@ -11,6 +11,9 @@ public class InMemoryStockStorageTest extends TestCase {
 		StockStorage stockStorage = new InMemoryStockStorage();
 		StockInterface stock = new InMemoryStock("aapl");
 		stockStorage.updateStock(stock);
+		
+		assertNull(stockStorage.getStock("nostock"));
+		assertNotNull(stockStorage.getStock("aapl"));
 	}
 
 }

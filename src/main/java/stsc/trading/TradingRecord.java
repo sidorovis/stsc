@@ -56,6 +56,10 @@ public class TradingRecord {
 		return type;
 	}
 
+	public boolean isPurchase() {
+		return type == TradingType.BUY;
+	}
+
 	public Date getDate() {
 		return date;
 	}
@@ -66,6 +70,10 @@ public class TradingRecord {
 
 	public Side getSide() {
 		return side;
+	}
+	
+	public boolean isLong(){
+		return side == Side.LONG;
 	}
 
 	public int getAmount() {

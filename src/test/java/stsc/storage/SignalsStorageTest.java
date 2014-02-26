@@ -1,6 +1,6 @@
 package stsc.storage;
 
-import java.sql.Date;
+import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodExecutionSignal;
 import junit.framework.TestCase;
@@ -18,8 +18,8 @@ public class SignalsStorageTest extends TestCase {
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
 		signalsStorage.registerSignalsFromExecution("e1", TestSignal.class);
-		signalsStorage.addSignal("e1", Date.valueOf("2010-10-20"), new TestSignal(12));
-		TestSignal ts = (TestSignal)signalsStorage.getSignal("e1", Date.valueOf("2010-10-20"));
+		signalsStorage.addSignal("e1", new LocalDate(2010, 10, 20).toDate(), new TestSignal(12));
+		TestSignal ts = (TestSignal)signalsStorage.getSignal("e1", new LocalDate(2010, 10, 20).toDate());
 		assertEquals(12, ts.id);
 	}
 }

@@ -24,7 +24,7 @@ public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	private Statistics statistics = new Statistics();
+	private Statistics statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
 	// TODO private HashMap<String, StockAlgorithmInterface >
@@ -39,8 +39,9 @@ public class MarketSimulator {
 
 	public MarketSimulator(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
-		broker = settings.getBroker();
-
+		this.broker = settings.getBroker();
+		this.statistics = new Statistics(broker.getTradingLog());
+		
 		loadAlgorithms(settings);
 		parseSimulationSettings(settings);
 
@@ -95,6 +96,7 @@ public class MarketSimulator {
 			for (Map.Entry<String, EodAlgorithmInterface> i : tradeAlgorithms.entrySet()) {
 				i.getValue().process(today, datafeed);
 			}
+			statistics.processEod();
 			dayIterator = dayIterator.plusDays(1);
 		}
 	}

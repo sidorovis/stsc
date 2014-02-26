@@ -2,7 +2,7 @@ package stsc.liquiditator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
+import org.joda.time.LocalDate;
 
 import stsc.common.MarketDataContext;
 import junit.framework.TestCase;
@@ -18,10 +18,7 @@ public class FilterThreadTest extends TestCase {
 		marketDataContext.addTask("ibm");
 		marketDataContext.addTask("spy");
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(2014, 0, 13);
-		
-		FilterThread filterThread = new FilterThread( marketDataContext, cal.getTime());
+		FilterThread filterThread = new FilterThread( marketDataContext, new LocalDate(2014, 1, 14).toDate() );
 		{
 			Thread th = new Thread(filterThread);
 			th.start();

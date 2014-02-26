@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import stsc.common.Day;
 import stsc.common.DayComparator;
@@ -37,19 +37,11 @@ public class StockFilter {
 	}
 
 	public boolean testLastPeriods(StockInterface s) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-		int date = cal.get(Calendar.DAY_OF_MONTH);
 
 		ArrayList<Day> days = s.getDays();
+		LocalDate todayDate = new LocalDate(today);
 
-		Calendar yearAgoCalendar = Calendar.getInstance();
-		yearAgoCalendar.set(year - 1, month, date);
-
-		Date yearAgo = yearAgoCalendar.getTime();
-		int yearAgoIndex = Collections.binarySearch(days, new Day(yearAgo), dayComparator);
+		int yearAgoIndex = Collections.binarySearch(days, new Day(todayDate.plusYears(-1).toDate()), dayComparator);
 		if (yearAgoIndex < 0)
 			yearAgoIndex = -yearAgoIndex;
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
@@ -58,13 +50,7 @@ public class StockFilter {
 			return false;
 		}
 
-		Calendar monthAgoCalendar = Calendar.getInstance();
-		monthAgoCalendar.set(year, month, date);
-		monthAgoCalendar.add(Calendar.MONTH, -1);
-
-		Date monthAgo = monthAgoCalendar.getTime();
-
-		int monthAgoIndex = Collections.binarySearch(days, new Day(monthAgo), dayComparator);
+		int monthAgoIndex = Collections.binarySearch(days, new Day(todayDate.plusMonths(-1).toDate()), dayComparator);
 		if (monthAgoIndex < 0)
 			monthAgoIndex = -monthAgoIndex;
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
@@ -85,16 +71,16 @@ public class StockFilter {
 
 		return true;
 	}
-	
-	private boolean testLastNYears(StockInterface s){
+
+	private boolean testLastNYears(StockInterface s) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(today);
 		int year = cal.get(Calendar.YEAR);
 
 		ArrayList<Day> days = s.getDays();
-	
+
 		int tenYearsAgoIndex = Collections.binarySearch(days,
-				new Day(new DateTime(year - lastYearsAmount, 1, 1, 0, 0).toDate()), dayComparator);
+				new Day(new LocalDate(year - lastYearsAmount, 1, 1).toDate()), dayComparator);
 		if (tenYearsAgoIndex < 0)
 			tenYearsAgoIndex = -tenYearsAgoIndex;
 		int realDaysForTenYears = days.size() - tenYearsAgoIndex;
