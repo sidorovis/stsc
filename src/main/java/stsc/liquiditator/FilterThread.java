@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import stsc.common.MarketDataContext;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class FilterThread implements Runnable {
 
@@ -32,7 +32,7 @@ public class FilterThread implements Runnable {
 		String task = marketDataContext.getTask();
 		while (task != null) {
 			try {
-				StockInterface s = marketDataContext.getStockFromFileSystem(task);
+				Stock s = marketDataContext.getStockFromFileSystem(task);
 				if (s != null && stockFilter.test(s)) {
 					copyFilteredStockFile(marketDataContext, task);
 					logger.trace("stock " + task + " liquid");

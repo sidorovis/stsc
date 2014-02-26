@@ -13,7 +13,7 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 import stsc.statistic.Statistics;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.SignalsStorage;
@@ -103,7 +103,7 @@ public class MarketSimulator {
 
 	private void collectStocksFromStorage() {
 		for (String i : processingStockList) {
-			StockInterface stock = stockStorage.getStock(i);
+			Stock stock = stockStorage.getStock(i);
 			stocks.add(stock);
 		}
 	}

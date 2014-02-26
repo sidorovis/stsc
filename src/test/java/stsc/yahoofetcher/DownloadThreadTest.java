@@ -3,7 +3,7 @@ package stsc.yahoofetcher;
 import java.io.File;
 import java.io.IOException;
 import stsc.common.MarketDataContext;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 import com.google.common.io.Files;
 
@@ -24,7 +24,7 @@ public class DownloadThreadTest extends TestCase {
 		}
 		int beforeDownload = Integer.MAX_VALUE;
 		{
-			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
+			Stock s = marketDataContext.getStockFromFileSystem("aaoi");
 			beforeDownload = s.getDays().size();
 			assertEquals(104, s.getDays().size());
 		}
@@ -41,7 +41,7 @@ public class DownloadThreadTest extends TestCase {
 			th.join();
 		}
 		{
-			StockInterface s = marketDataContext.getStockFromFileSystem("aaoi");
+			Stock s = marketDataContext.getStockFromFileSystem("aaoi");
 			assertEquals(true, beforeDownload <= s.getDays().size());
 		}
 		new File("./test/a.uf").delete();

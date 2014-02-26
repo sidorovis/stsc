@@ -1,11 +1,11 @@
 package stsc.storage;
 
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public interface StockStorage {
 
-	public abstract StockInterface getStock(String name);
+	public abstract Stock getStock(String name);
 
-	public abstract void updateStock(StockInterface stock);
+	public abstract void updateStock(Stock stock);
 
 }

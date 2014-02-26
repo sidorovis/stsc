@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.MarketDataContext;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class YahooFileStockStorage extends InMemoryStockStorage {
 
@@ -25,7 +25,7 @@ public class YahooFileStockStorage extends InMemoryStockStorage {
 		public void run() {
 			String task = marketDataContext.getTask();
 			while (task != null) {
-				StockInterface s = marketDataContext.getStockFromFileSystem(task);
+				Stock s = marketDataContext.getStockFromFileSystem(task);
 				if (s != null)
 					datafeed.put(s.getName(), new StockLock(s));
 				task = marketDataContext.getTask();

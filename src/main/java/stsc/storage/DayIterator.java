@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import stsc.common.Day;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class DayIterator {
 	private final Date from;
@@ -13,7 +13,7 @@ public class DayIterator {
 	private ArrayList<Day> days;
 	private int currentIterator;
 
-	public DayIterator(StockInterface stock, Date from) {
+	public DayIterator(Stock stock, Date from) {
 		this.from = from;
 		this.days = stock.getDays();
 		reset();
@@ -47,10 +47,13 @@ public class DayIterator {
 			} else if (dayCompare < 0) {
 				currentIterator = Collections.binarySearch(days, currentDay);
 				if (currentIterator < 0) {
-					currentIterator = -currentIterator;
+					if (-currentIterator < days.size())
+						currentIterator = -currentIterator;
+					else
+						currentIterator = days.size();
 					return null;
 				}
-				if (currentIterator >= 0 && currentIterator < days.size())
+				if (currentIterator >= 0)
 					return days.get(currentIterator);
 
 			} else {

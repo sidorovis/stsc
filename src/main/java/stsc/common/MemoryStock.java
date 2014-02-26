@@ -2,12 +2,12 @@ package stsc.common;
 
 import java.util.ArrayList;
 
-public class InMemoryStock implements StockInterface {
+public class MemoryStock extends Stock {
 
 	private final String name;
 	private ArrayList<Day> days = new ArrayList<Day>();
 
-	public InMemoryStock(String name) {
+	public MemoryStock(String name) {
 		this.name = name;
 	}
 

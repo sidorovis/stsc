@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -17,9 +16,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-public class UnitedFormatStock implements Serializable, StockInterface {
-
-	private static final long serialVersionUID = 4471626546221264954L;
+public class UnitedFormatStock extends Stock {
 
 	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	final String name;

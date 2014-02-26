@@ -2,7 +2,7 @@ package stsc.storage;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class InMemoryStockStorage implements StockStorage{
 
@@ -13,16 +13,16 @@ public class InMemoryStockStorage implements StockStorage{
 	}
 
 	@Override
-	public StockInterface getStock(String name) {
+	public Stock getStock(String name) {
 		StockLock stockLock = datafeed.get(name);
 		if (stockLock == null)
 			return null;
-		StockInterface stock = stockLock.getStock();
+		Stock stock = stockLock.getStock();
 		return stock;
 	}
 
 	@Override
-	public void updateStock(StockInterface stock) {
+	public void updateStock(Stock stock) {
 		String stockName = stock.getName();
 		StockLock stockLock = datafeed.get(stockName);
 		if (stockLock == null)

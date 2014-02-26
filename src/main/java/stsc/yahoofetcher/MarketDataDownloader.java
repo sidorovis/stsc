@@ -30,6 +30,9 @@ public final class MarketDataDownloader {
 	static int stockNameMinLength = 5;
 	static int stockNameMaxLength = 5;
 	static boolean downloadExisted = false;
+	static boolean downloadByPattern = false;
+	static String startPattern = "a";
+	static String endPattern = "zz";
 
 	void generateNextElement(char[] generatedText, int currentIndex, int size) {
 		for (char c = 'a'; c <= 'z'; ++c) {
@@ -56,9 +59,17 @@ public final class MarketDataDownloader {
 		in.close();
 
 		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
-		stockNameMinLength = Integer.parseInt(p.getProperty("stock_name_min.size"));
-		stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name_max.size"));
 		downloadExisted = Boolean.parseBoolean(p.getProperty("download_existed"));
+		if (!downloadExisted) {
+			downloadByPattern = Boolean.parseBoolean(p.getProperty("download_by_pattern"));
+			if (downloadByPattern) {
+				startPattern = p.getProperty("pattern.start");
+				endPattern = p.getProperty("pattern.end");
+			} else {
+				stockNameMinLength = Integer.parseInt(p.getProperty("stock_name_min.size"));
+				stockNameMaxLength = Integer.parseInt(p.getProperty("stock_name_max.size"));
+			}
+		}
 	}
 
 	MarketDataDownloader() throws InterruptedException, IOException {
@@ -79,8 +90,16 @@ public final class MarketDataDownloader {
 			}
 
 		} else {
-			for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
-				generateTasks(i);
+			if (downloadByPattern) {
+				String pattern = startPattern;
+				while (StringUtils.comparePatterns(pattern, endPattern) <= 0) {
+					marketDataContext.addTask(pattern);
+					pattern = StringUtils.nextPermutation(pattern);
+				}
+			} else {
+				for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
+					generateTasks(i);
+			}
 		}
 		logger.trace("tasks size: {}", marketDataContext.taskQueueSize());
 

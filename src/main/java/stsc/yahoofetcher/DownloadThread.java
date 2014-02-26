@@ -63,7 +63,7 @@ public class DownloadThread implements Runnable {
 			synchronized (marketDataContext) {
 				solvedAmount += 1;
 				if (solvedAmount % 100 == 0)
-					logger.info("solved {} tasks", solvedAmount);
+					logger.info("solved {} tasks last stock name {}", solvedAmount, task);
 			}
 			task = marketDataContext.getTask();
 		}

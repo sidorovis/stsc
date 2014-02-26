@@ -1,19 +1,19 @@
 package stsc.storage;
 
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class StockLock {
-	StockInterface stock;
+	Stock stock;
 
-	public StockLock(StockInterface stock) {
+	public StockLock(Stock stock) {
 		this.stock = stock;
 	}
 
-	public synchronized void updateStock(StockInterface stock) {
+	public synchronized void updateStock(Stock stock) {
 		this.stock = stock;
 	}
 
-	public synchronized StockInterface getStock() {
+	public synchronized Stock getStock() {
 		return stock;
 	}
 }

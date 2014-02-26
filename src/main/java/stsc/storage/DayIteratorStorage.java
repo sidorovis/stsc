@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> {
 
@@ -44,7 +44,7 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 		this.from = from;
 	}
 	
-	public void add(StockInterface stock) {
+	public void add(Stock stock) {
 		if (stock != null) {
 			DayIterator stockIterator = new DayIterator(stock, from);
 			if (stockIterator.dataFound()) {

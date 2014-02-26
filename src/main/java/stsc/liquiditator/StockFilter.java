@@ -1,8 +1,6 @@
 package stsc.liquiditator;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,8 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
-import stsc.common.DayComparator;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 
 public class StockFilter {
 
@@ -26,8 +23,6 @@ public class StockFilter {
 
 	private static Logger logger = LogManager.getLogger("StockFilter");
 
-	private final DayComparator dayComparator = new DayComparator();
-
 	public StockFilter() {
 
 	}
@@ -36,23 +31,19 @@ public class StockFilter {
 		today = testToday;
 	}
 
-	public boolean testLastPeriods(StockInterface s) {
+	public boolean testLastPeriods(Stock s) {
 
 		ArrayList<Day> days = s.getDays();
 		LocalDate todayDate = new LocalDate(today);
 
-		int yearAgoIndex = Collections.binarySearch(days, new Day(todayDate.plusYears(-1).toDate()), dayComparator);
-		if (yearAgoIndex < 0)
-			yearAgoIndex = -yearAgoIndex;
+		int yearAgoIndex = s.findDayIndex(todayDate.plusYears(-1).toDate());
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
 		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastYear + " days for last year");
 			return false;
 		}
 
-		int monthAgoIndex = Collections.binarySearch(days, new Day(todayDate.plusMonths(-1).toDate()), dayComparator);
-		if (monthAgoIndex < 0)
-			monthAgoIndex = -monthAgoIndex;
+		int monthAgoIndex = s.findDayIndex(todayDate.plusMonths(-1).toDate());
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month");
@@ -72,19 +63,14 @@ public class StockFilter {
 		return true;
 	}
 
-	private boolean testLastNYears(StockInterface s) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
+	private boolean testLastNYears(Stock s) {
+		LocalDate todayDate = new LocalDate(today);
 
 		ArrayList<Day> days = s.getDays();
 
-		int tenYearsAgoIndex = Collections.binarySearch(days,
-				new Day(new LocalDate(year - lastYearsAmount, 1, 1).toDate()), dayComparator);
-		if (tenYearsAgoIndex < 0)
-			tenYearsAgoIndex = -tenYearsAgoIndex;
-		int realDaysForTenYears = days.size() - tenYearsAgoIndex;
+		int tenYearsAgoIndex = s.findDayIndex(todayDate.plusYears(-lastYearsAmount).toDate());
 
+		int realDaysForTenYears = days.size() - tenYearsAgoIndex;
 		int expectedDaysForLast10Year = daysPerYear * lastYearsAmount;
 
 		float averagePercentDaysPer10Year = (float) realDaysForTenYears / expectedDaysForLast10Year;
@@ -97,7 +83,7 @@ public class StockFilter {
 		return true;
 	}
 
-	public boolean test(StockInterface s) {
+	public boolean test(Stock s) {
 		if (s != null) {
 			if (!testLastPeriods(s))
 				return false;

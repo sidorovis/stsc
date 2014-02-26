@@ -1,10 +1,7 @@
 package stsc.common;
 
-import java.io.Serializable;
+public class Prices{
 
-public class Prices implements Serializable {
-
-	private static final long serialVersionUID = 3757627779233215689L;
 	final double open;
 	final double high;
 	final double low;

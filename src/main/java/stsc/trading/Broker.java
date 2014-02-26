@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.Day;
-import stsc.common.StockInterface;
+import stsc.common.Stock;
 import stsc.storage.StockStorage;
 
 public class Broker {
@@ -144,7 +144,7 @@ public class Broker {
 	}
 
 	private boolean dataExist(String stockName) {
-		StockInterface stock = stockStorage.getStock(stockName);
+		Stock stock = stockStorage.getStock(stockName);
 		ArrayList<Day> days = stock.getDays();
 		int index = Collections.binarySearch(days, new Day(today));
 		return index >= 0 && index < days.size();
