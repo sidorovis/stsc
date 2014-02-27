@@ -12,11 +12,23 @@ import stsc.trading.TradingLog;
 import junit.framework.TestCase;
 
 public class StatisticsTest extends TestCase {
+
+	private static boolean stocksLoaded = false;
+	private static Stock aapl;
+	private static Stock adm;
+
+	private void loadStocksForTest() throws IOException{
+		if (stocksLoaded)
+			return;
+		aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
+		adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
+		stocksLoaded = true;
+	}
+	
 	public void testStatistics() throws Exception {
 
-		Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		Stock adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
-
+		loadStocksForTest();
+		
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
@@ -46,8 +58,7 @@ public class StatisticsTest extends TestCase {
 
 	public void testReverseStatistics() throws Exception {
 
-		Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		Stock adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
+		loadStocksForTest();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -78,8 +89,7 @@ public class StatisticsTest extends TestCase {
 
 	public void testSeveralDaysTrading() throws IOException {
 
-		Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		Stock adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
+		loadStocksForTest();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -99,6 +109,9 @@ public class StatisticsTest extends TestCase {
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
+		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
+		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 500);
+
 		statistics.processEod();
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
@@ -106,13 +119,12 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 100);
-		tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 200);
+		tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 200);
+		tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 700);
 
 		statistics.processEod();
 
 		assertEquals(4, statistics.getEquityCurve().size());
-		assertEquals(true, Math.abs(-226.0 - statistics.getEquityCurve().get(3)) < 0.000001);
-	
+		assertEquals(true, Math.abs(-512.0 - statistics.getEquityCurve().get(3)) < 0.000001);
 	}
 }
