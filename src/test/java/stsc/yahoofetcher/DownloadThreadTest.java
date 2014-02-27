@@ -42,7 +42,7 @@ public class DownloadThreadTest extends TestCase {
 		}
 		{
 			Stock s = marketDataContext.getStockFromFileSystem("aaoi");
-			assertEquals(true, beforeDownload <= s.getDays().size());
+			assertEquals(true, beforeDownload < s.getDays().size());
 		}
 		new File("./test/a.uf").delete();
 		new File("./test/aaoi.uf").delete();

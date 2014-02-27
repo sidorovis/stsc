@@ -1,8 +1,9 @@
 package stsc.statistic;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import stsc.common.Day;
 import stsc.trading.TradingLog;
@@ -10,6 +11,8 @@ import stsc.trading.TradingRecord;
 
 public class Statistics {
 
+	public static double Epsilon = 0.000001;
+	
 	public class Positions {
 		private class Position {
 			private int shares = 0;
@@ -57,9 +60,17 @@ public class Statistics {
 			Position position = positions.get(stockName);
 			return position.sharePrice();
 		}
+
+		public double cost(HashMap<String, Double> prices) {
+			double result = 0.0;
+			for (Map.Entry<String, Position> i : positions.entrySet()) {
+				double price = prices.get(i.getKey());
+				result += price * i.getValue().shares;
+			}
+			return result;
+		}
 	}
 
-//	private Date today;
 	private HashMap<String, Double> lastPrice = new HashMap<>();
 	private ArrayList<TradingRecord> tradingRecords;
 	private int tradingRecordsIndex = 0;
@@ -70,14 +81,10 @@ public class Statistics {
 	private Positions longPositions = new Positions();
 	private Positions shortPositions = new Positions();
 
-//	private ArrayList<Double> equityCurve = new ArrayList<>();
+	private ArrayList<Double> equityCurve = new ArrayList<>();
 
 	public Statistics(TradingLog tradingLog) {
 		this.tradingRecords = tradingLog.getRecords();
-	}
-
-	public void setToday(Date today) {
-//		this.today = today;
 	}
 
 	public void setStockDay(String stockName, Day stockDay) {
@@ -89,9 +96,11 @@ public class Statistics {
 		for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
 			TradingRecord record = tradingRecords.get(i);
 			String stockName = record.getStockName();
+
 			double price = lastPrice.get(stockName);
 			int shares = record.getAmount();
 			double sharesPrice = shares * price;
+
 			if (record.isPurchase()) {
 				if (record.isLong()) {
 					spentLongCash += sharesPrice;
@@ -105,13 +114,24 @@ public class Statistics {
 					spentLongCash -= sharesPrice;
 					longPositions.decrement(stockName, shares, sharesPrice);
 				} else {
-					double sharePrice = shortPositions.sharePrice(stockName);
-					spentShortCash -= shares * ( 2 * sharePrice - price );			
+					double oldPrice = shortPositions.sharePrice(stockName);
+					double priceDiff = shares * (oldPrice - price);
+					spentShortCash -= (sharesPrice + 2 * priceDiff);
 					shortPositions.decrement(stockName, shares, sharesPrice);
 				}
 			}
 		}
 		tradingRecordsIndex = tradingRecordSize;
+		double dayCache = spentLongCash + spentShortCash;
+		double moneyInLongs = longPositions.cost(lastPrice);
+		double moneyInShorts = shortPositions.cost(lastPrice);
 
+		equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
 	}
+
+	public ArrayList<Double> getEquityCurve() {
+		return equityCurve;
+	}
+
+	
 }

@@ -75,7 +75,6 @@ public class MarketSimulator {
 			Day currentDay = new Day(today);
 
 			broker.setToday(today);
-			statistics.setToday(today);
 
 			for (Entry<String, DayIterator> i : stocks) {
 				DayIterator stockIterator = i.getValue();
