@@ -2,6 +2,7 @@ package stsc.trading;
 
 import java.io.IOException;
 import java.text.ParseException;
+
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodAlgorithmExecution;
@@ -9,7 +10,7 @@ import stsc.algorithms.EodExecutionSignal;
 import stsc.algorithms.TestingEodAlgorithm;
 import stsc.algorithms.TestingAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
-import stsc.storage.InMemoryStockStorage;
+import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
 import junit.framework.TestCase;
@@ -20,9 +21,9 @@ public class MarketSimulatorTest extends TestCase {
 		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, stocksFilePath + stockName + ".csv"));
 	}
 
-	public void testMarketSimulator() throws Exception {
+	public void atestMarketSimulator() throws Exception {
 
-		StockStorage ss = new InMemoryStockStorage();
+		StockStorage ss = new ThreadSafeStockStorage();
 
 		csvReaderHelper(ss, "aapl");
 		csvReaderHelper(ss, "gfi");
@@ -73,5 +74,27 @@ public class MarketSimulatorTest extends TestCase {
 		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 6).toDate()));
 		assertNull(signalsStorage.getSignal("e2", new LocalDate(2013, 11, 3).toDate()));
 		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 29).toDate()));
+	}
+
+	public void testMarketSimulatorWithStatistics() throws Exception {
+		StockStorage ss = new ThreadSafeStockStorage();
+
+		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
+		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
+		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
+
+		MarketSimulatorSettings settings = new MarketSimulatorSettings();
+		settings.setStockStorage(ss);
+		settings.setBroker(new Broker(ss));
+		settings.setFrom("02-09-2013");
+		settings.setTo("06-11-2013");
+		settings.getExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
+		settings.getStockList().add("aapl");
+		settings.getStockList().add("adm");
+		settings.getStockList().add("spy");
+
+		MarketSimulator marketSimulator = new MarketSimulator(settings);
+		marketSimulator.simulate();
+
 	}
 }

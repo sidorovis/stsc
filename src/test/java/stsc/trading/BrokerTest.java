@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.text.ParseException;
 
 import stsc.common.UnitedFormatStock;
-import stsc.storage.InMemoryStockStorage;
+import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.StockStorage;
 import junit.framework.TestCase;
 
@@ -18,7 +18,7 @@ public class BrokerTest extends TestCase {
 	}
 
 	public void testBroker() throws IOException, ParseException {
-		StockStorage stockStorage = new InMemoryStockStorage();
+		StockStorage stockStorage = new ThreadSafeStockStorage();
 
 		csvReaderHelper(stockStorage, "aapl");
 		csvReaderHelper(stockStorage, "gfi");
@@ -50,7 +50,7 @@ public class BrokerTest extends TestCase {
 	}
 
 	public void testBrokerTradingCalculating() throws IOException, ParseException {
-		StockStorage stockStorage = new InMemoryStockStorage();
+		StockStorage stockStorage = new ThreadSafeStockStorage();
 
 		csvReaderHelper(stockStorage, "aapl");
 		csvReaderHelper(stockStorage, "gfi");

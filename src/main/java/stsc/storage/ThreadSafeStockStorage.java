@@ -4,11 +4,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import stsc.common.Stock;
 
-public class InMemoryStockStorage implements StockStorage{
+public class ThreadSafeStockStorage implements StockStorage{
 
 	protected ConcurrentHashMap<String, StockLock> datafeed = new ConcurrentHashMap<String, StockLock>();
 
-	public InMemoryStockStorage() {
+	public ThreadSafeStockStorage() {
 		super();
 	}
 

@@ -6,9 +6,9 @@ import stsc.common.MemoryStock;
 import stsc.common.Stock;
 import junit.framework.TestCase;
 
-public class InMemoryStockStorageTest extends TestCase {
-	public void testInMemoryStoskStorage() throws ClassNotFoundException, IOException, InterruptedException {
-		StockStorage stockStorage = new InMemoryStockStorage();
+public class ThreadSafeStockStorageTest extends TestCase {
+	public void testThreadSafeMemoryStoskStorage() throws ClassNotFoundException, IOException, InterruptedException {
+		StockStorage stockStorage = new ThreadSafeStockStorage();
 		Stock stock = new MemoryStock("aapl");
 		stockStorage.updateStock(stock);
 		

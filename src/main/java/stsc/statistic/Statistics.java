@@ -10,8 +10,8 @@ import stsc.trading.TradingRecord;
 
 public class Statistics {
 
-	public static double Epsilon = 0.000001;
-	
+	public final static double EPSILON = 0.000001;
+
 	public class Positions {
 		private class Position {
 			private int shares = 0;
@@ -82,6 +82,11 @@ public class Statistics {
 
 	private ArrayList<Double> equityCurve = new ArrayList<>();
 
+	//
+	private double maximumSpentMoney = 0.0;
+
+	//
+
 	public Statistics(TradingLog tradingLog) {
 		this.tradingRecords = tradingLog.getRecords();
 	}
@@ -122,6 +127,8 @@ public class Statistics {
 		}
 		tradingRecordsIndex = tradingRecordSize;
 		double dayCache = spentLongCash + spentShortCash;
+		if (maximumSpentMoney < dayCache)
+			maximumSpentMoney = dayCache;
 		double moneyInLongs = longPositions.cost(lastPrice);
 		double moneyInShorts = shortPositions.cost(lastPrice);
 
@@ -132,5 +139,16 @@ public class Statistics {
 		return equityCurve;
 	}
 
-	
+	public void recalculateEquityCurve() {
+		maximumSpentMoney /= 100.0;
+		if (isDoubleEqual(maximumSpentMoney, 0.0))
+			return;
+		for (int i = 0; i < equityCurve.size(); ++i) {
+			equityCurve. set(i, -equityCurve.get(i) / maximumSpentMoney);
+		}
+	}
+
+	public static boolean isDoubleEqual(double l, double r) {
+		return (Math.abs(l - r) < EPSILON);
+	}
 }

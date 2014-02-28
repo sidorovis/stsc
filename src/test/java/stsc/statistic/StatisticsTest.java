@@ -17,14 +17,14 @@ public class StatisticsTest extends TestCase {
 	private static Stock aapl;
 	private static Stock adm;
 
-	private void loadStocksForTest() throws IOException{
+	private void loadStocksForTest() throws IOException {
 		if (stocksLoaded)
 			return;
 		aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
 		stocksLoaded = true;
 	}
-	
+
 	public void testStatistics() throws Exception {
 
 		loadStocksForTest();
@@ -53,7 +53,7 @@ public class StatisticsTest extends TestCase {
 		statistics.processEod();
 
 		assertEquals(2, statistics.getEquityCurve().size());
-		assertEquals(true, Math.abs(3.0 - statistics.getEquityCurve().get(1)) < 0.000001);
+		assertEquals(true, Statistics.isDoubleEqual(3.0, statistics.getEquityCurve().get(1)));
 	}
 
 	public void testReverseStatistics() throws Exception {
@@ -84,7 +84,7 @@ public class StatisticsTest extends TestCase {
 		statistics.processEod();
 
 		assertEquals(2, statistics.getEquityCurve().size());
-		assertEquals(true, Math.abs(-3.0 - statistics.getEquityCurve().get(1)) < 0.000001);
+		assertEquals(true, Statistics.isDoubleEqual(-3.0, statistics.getEquityCurve().get(1)));
 	}
 
 	public void testSeveralDaysTrading() throws IOException {
@@ -125,6 +125,12 @@ public class StatisticsTest extends TestCase {
 		statistics.processEod();
 
 		assertEquals(4, statistics.getEquityCurve().size());
-		assertEquals(true, Math.abs(-512.0 - statistics.getEquityCurve().get(3)) < 0.000001);
+		assertEquals(true, Statistics.isDoubleEqual(-512.0, statistics.getEquityCurve().get(3)));
+
+		statistics.recalculateEquityCurve();
+
+		assertEquals(4, statistics.getEquityCurve().size());
+		assertEquals(true, Statistics.isDoubleEqual(.4091973, statistics.getEquityCurve().get(3)));
+	
 	}
 }

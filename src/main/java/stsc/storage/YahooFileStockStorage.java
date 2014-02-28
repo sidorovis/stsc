@@ -11,7 +11,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import stsc.common.MarketDataContext;
 import stsc.common.Stock;
 
-public class YahooFileStockStorage extends InMemoryStockStorage {
+public class YahooFileStockStorage extends ThreadSafeStockStorage {
 
 	private class StockReadThread implements Runnable {
 
