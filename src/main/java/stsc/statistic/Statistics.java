@@ -11,8 +11,9 @@ import stsc.trading.TradingRecord;
 public class Statistics {
 
 	public final static double EPSILON = 0.000001;
+	private final static double PERCENTS = 100.0;
 
-	public class Positions {
+	private class Positions {
 		private class Position {
 			private int shares = 0;
 			private double spentMoney = 0.0;
@@ -70,85 +71,107 @@ public class Statistics {
 		}
 	}
 
-	private HashMap<String, Double> lastPrice = new HashMap<>();
-	private ArrayList<TradingRecord> tradingRecords;
-	private int tradingRecordsIndex = 0;
+	public static boolean isDoubleEqual(double l, double r) {
+		return (Math.abs(l - r) < EPSILON);
+	}
 
-	private double spentLongCash = 0;
-	private double spentShortCash = 0;
+	private class EquityCalculationData {
 
-	private Positions longPositions = new Positions();
-	private Positions shortPositions = new Positions();
+		private HashMap<String, Double> lastPrice = new HashMap<>();
+		private ArrayList<TradingRecord> tradingRecords;
+		private int tradingRecordsIndex = 0;
 
-	private ArrayList<Double> equityCurve = new ArrayList<>();
+		private double spentLongCash = 0;
+		private double spentShortCash = 0;
 
-	//
-	private double maximumSpentMoney = 0.0;
+		private Positions longPositions = new Positions();
+		private Positions shortPositions = new Positions();
 
-	//
+		private double maximumSpentMoney = 0.0;
+
+		private ArrayList<Double> equityCurve = new ArrayList<>();
+
+		public EquityCalculationData(TradingLog tradingLog) {
+			this.tradingRecords = tradingLog.getRecords();
+		}
+
+		public void setStockDay(String stockName, Day stockDay) {
+			lastPrice.put(stockName, stockDay.getPrices().getOpen());
+		}
+
+		public void processEod() {
+			int tradingRecordSize = tradingRecords.size();
+			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
+				TradingRecord record = tradingRecords.get(i);
+				String stockName = record.getStockName();
+
+				double price = lastPrice.get(stockName);
+				int shares = record.getAmount();
+				double sharesPrice = shares * price;
+
+				if (record.isPurchase()) {
+					if (record.isLong()) {
+						spentLongCash += sharesPrice;
+						longPositions.increment(stockName, shares, sharesPrice);
+					} else {
+						spentShortCash += sharesPrice;
+						shortPositions.increment(stockName, shares, sharesPrice);
+					}
+				} else {
+					if (record.isLong()) {
+						spentLongCash -= sharesPrice;
+						longPositions.decrement(stockName, shares, sharesPrice);
+					} else {
+						double oldPrice = shortPositions.sharePrice(stockName);
+						double priceDiff = shares * (oldPrice - price);
+						spentShortCash -= (sharesPrice + 2 * priceDiff);
+						shortPositions.decrement(stockName, shares, sharesPrice);
+					}
+				}
+			}
+			tradingRecordsIndex = tradingRecordSize;
+			double dayCache = spentLongCash + spentShortCash;
+			if (maximumSpentMoney < dayCache)
+				maximumSpentMoney = dayCache;
+			double moneyInLongs = longPositions.cost(lastPrice);
+			double moneyInShorts = shortPositions.cost(lastPrice);
+
+			equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
+		}
+
+		public ArrayList<Double> recalculateEquityCurve() {
+			maximumSpentMoney /= PERCENTS;
+			if (isDoubleEqual(maximumSpentMoney, 0.0))
+				return null;
+			for (int i = 0; i < equityCurve.size(); ++i) {
+				equityCurve.set(i, -equityCurve.get(i) / maximumSpentMoney);
+			}
+			return equityCurve;
+		}
+	};
+
+	private EquityCalculationData equityCalculationData;
+	private StatisticsData statisticsData;
 
 	public Statistics(TradingLog tradingLog) {
-		this.tradingRecords = tradingLog.getRecords();
+		this.equityCalculationData = new EquityCalculationData(tradingLog);
 	}
 
 	public void setStockDay(String stockName, Day stockDay) {
-		lastPrice.put(stockName, stockDay.getPrices().getOpen());
+		equityCalculationData.setStockDay(stockName, stockDay);
 	}
 
 	public void processEod() {
-		int tradingRecordSize = tradingRecords.size();
-		for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
-			TradingRecord record = tradingRecords.get(i);
-			String stockName = record.getStockName();
-
-			double price = lastPrice.get(stockName);
-			int shares = record.getAmount();
-			double sharesPrice = shares * price;
-
-			if (record.isPurchase()) {
-				if (record.isLong()) {
-					spentLongCash += sharesPrice;
-					longPositions.increment(stockName, shares, sharesPrice);
-				} else {
-					spentShortCash += sharesPrice;
-					shortPositions.increment(stockName, shares, sharesPrice);
-				}
-			} else {
-				if (record.isLong()) {
-					spentLongCash -= sharesPrice;
-					longPositions.decrement(stockName, shares, sharesPrice);
-				} else {
-					double oldPrice = shortPositions.sharePrice(stockName);
-					double priceDiff = shares * (oldPrice - price);
-					spentShortCash -= (sharesPrice + 2 * priceDiff);
-					shortPositions.decrement(stockName, shares, sharesPrice);
-				}
-			}
-		}
-		tradingRecordsIndex = tradingRecordSize;
-		double dayCache = spentLongCash + spentShortCash;
-		if (maximumSpentMoney < dayCache)
-			maximumSpentMoney = dayCache;
-		double moneyInLongs = longPositions.cost(lastPrice);
-		double moneyInShorts = shortPositions.cost(lastPrice);
-
-		equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
+		equityCalculationData.processEod();
 	}
 
-	public ArrayList<Double> getEquityCurve() {
-		return equityCurve;
+	public StatisticsData calculate() {
+		statisticsData = new StatisticsData(equityCalculationData.recalculateEquityCurve());
+		equityCalculationData = null;
+		return statisticsData;
 	}
 
-	public void recalculateEquityCurve() {
-		maximumSpentMoney /= 100.0;
-		if (isDoubleEqual(maximumSpentMoney, 0.0))
-			return;
-		for (int i = 0; i < equityCurve.size(); ++i) {
-			equityCurve. set(i, -equityCurve.get(i) / maximumSpentMoney);
-		}
-	}
-
-	public static boolean isDoubleEqual(double l, double r) {
-		return (Math.abs(l - r) < EPSILON);
+	public StatisticsData getStatisticsData() {
+		return statisticsData;
 	}
 }

@@ -28,7 +28,7 @@ public class StatisticsTest extends TestCase {
 	public void testStatistics() throws Exception {
 
 		loadStocksForTest();
-		
+
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
@@ -51,9 +51,11 @@ public class StatisticsTest extends TestCase {
 		tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, 200);
 
 		statistics.processEod();
-
-		assertEquals(2, statistics.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(3.0, statistics.getEquityCurve().get(1)));
+		
+		StatisticsData statisticsData = statistics.calculate();
+		
+		assertEquals(2, statisticsData.getEquityCurve().size());
+		assertEquals(true, Statistics.isDoubleEqual(-0.005255, statisticsData.getEquityCurve().get(1)));
 	}
 
 	public void testReverseStatistics() throws Exception {
@@ -83,8 +85,10 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		assertEquals(2, statistics.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(-3.0, statistics.getEquityCurve().get(1)));
+		StatisticsData statisticsData = statistics.calculate();
+
+		assertEquals(2, statisticsData.getEquityCurve().size());
+		assertEquals(true, Statistics.isDoubleEqual(0.005255, statisticsData.getEquityCurve().get(1)));
 	}
 
 	public void testSeveralDaysTrading() throws IOException {
@@ -124,13 +128,13 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		assertEquals(4, statistics.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(-512.0, statistics.getEquityCurve().get(3)));
+		StatisticsData statisticsData = statistics.calculate();
 
-		statistics.recalculateEquityCurve();
+		assertEquals(4, statisticsData.getEquityCurve().size());
+		assertEquals(true, Statistics.isDoubleEqual(.4091973, statisticsData.getEquityCurve().get(3)));
 
-		assertEquals(4, statistics.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(.4091973, statistics.getEquityCurve().get(3)));
-	
+		assertEquals(true, Statistics.isDoubleEqual(statisticsData.getRoi(), 0.4091973));
+		
+
 	}
 }
