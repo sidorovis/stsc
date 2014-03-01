@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
@@ -13,7 +14,7 @@ import stsc.common.Stock;
 public class StockFilter {
 
 	static final int minimalDaysWithDataPerLastYear = 216;
-	static final int minimalDaysWithDataPerLastMonth = 18;
+	static final int minimalDaysWithDataPerLastMonth = 19;
 	static final int minimalAverageYearVolume = 60000000;
 	static final float minimalDaysPercentPerLast15Years = (float) 0.9;
 	static final int lastYearsAmount = 18;
@@ -36,6 +37,11 @@ public class StockFilter {
 		ArrayList<Day> days = s.getDays();
 		LocalDate todayDate = new LocalDate(today);
 
+		if (todayDate.getDayOfWeek() == DateTimeConstants.SUNDAY)
+			todayDate = todayDate.minusDays(2);
+		else if (todayDate.getDayOfWeek() == DateTimeConstants.SATURDAY)
+			todayDate = todayDate.minusDays(1);
+
 		int yearAgoIndex = s.findDayIndex(todayDate.plusYears(-1).toDate());
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
 		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear) {
@@ -48,7 +54,8 @@ public class StockFilter {
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month");
 			return false;
-		}
+		} else
+			logger.info("stock " + s.getName() + " have " + daysWithDataForLastMonth + " days for last month");
 		double volumeAmount = 0;
 		for (int i = daysWithDataForLastYear; i < days.size(); ++i)
 			volumeAmount += days.get(i).volume;

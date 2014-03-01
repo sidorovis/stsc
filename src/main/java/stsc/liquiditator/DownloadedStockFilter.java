@@ -19,7 +19,7 @@ public class DownloadedStockFilter {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./log4j2.xml");
 	}
 
-	static int downloadThreadSize = 8;
+	static int processThreadSize = 8;
 	private static Logger logger = LogManager.getLogger("DownloadedStockFilter");
 
 	static MarketDataContext marketDataContext;
@@ -42,7 +42,7 @@ public class DownloadedStockFilter {
 		p.load(in);
 		in.close();
 
-		downloadThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
+		processThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
 	}
 
 	public DownloadedStockFilter() throws IOException, InterruptedException {
@@ -57,13 +57,13 @@ public class DownloadedStockFilter {
 
 		FilterThread filterThread = new FilterThread(marketDataContext);
 
-		for (int i = 0; i < downloadThreadSize; ++i) {
+		for (int i = 0; i < processThreadSize; ++i) {
 			Thread newThread = new Thread(filterThread);
 			threads.add(newThread);
 			newThread.start();
 		}
 
-		logger.info("calculating threads started ( {} )", downloadThreadSize);
+		logger.info("calculating threads started ( {} )", processThreadSize);
 
 		for (Thread thread : threads) {
 			thread.join();
