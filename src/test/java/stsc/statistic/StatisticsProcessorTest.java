@@ -11,7 +11,7 @@ import stsc.trading.Side;
 import stsc.trading.TradingLog;
 import junit.framework.TestCase;
 
-public class StatisticsTest extends TestCase {
+public class StatisticsProcessorTest extends TestCase {
 
 	private static boolean stocksLoaded = false;
 	private static Stock aapl;
@@ -36,7 +36,7 @@ public class StatisticsTest extends TestCase {
 
 		TradingLog tradingLog = new TradingLog();
 
-		Statistics statistics = new Statistics(tradingLog);
+		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
@@ -54,10 +54,10 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		StatisticsData statisticsData = statistics.calculate();
+		Statistics statisticsData = statistics.calculate();
 
 		assertEquals(2, statisticsData.getPeriod());
-		assertEquals(true, Statistics.isDoubleEqual(-0.005255, statisticsData.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.005255, statisticsData.getAvGain()));
 	}
 
 	public void testReverseStatistics() throws Exception {
@@ -69,7 +69,7 @@ public class StatisticsTest extends TestCase {
 
 		TradingLog tradingLog = new TradingLog();
 
-		Statistics statistics = new Statistics(tradingLog);
+		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
@@ -87,10 +87,10 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		StatisticsData statisticsData = statistics.calculate();
+		Statistics statisticsData = statistics.calculate();
 
 		assertEquals(2, statisticsData.getPeriod());
-		assertEquals(true, Statistics.isDoubleEqual(0.005255, statisticsData.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.005255, statisticsData.getAvGain()));
 	}
 
 	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
@@ -103,7 +103,7 @@ public class StatisticsTest extends TestCase {
 
 		TradingLog tradingLog = new TradingLog();
 
-		Statistics statistics = new Statistics(tradingLog);
+		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
@@ -136,19 +136,19 @@ public class StatisticsTest extends TestCase {
 
 		statistics.processEod();
 
-		StatisticsData statisticsData = statistics.calculate();
+		Statistics statisticsData = statistics.calculate();
 
 		assertEquals(4, statisticsData.getPeriod());
-		assertEquals(true, Statistics.isDoubleEqual(.345697, statisticsData.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(.345697, statisticsData.getAvGain()));
 
-		assertEquals(true, Statistics.isDoubleEqual(.75, statisticsData.getFreq()));
-		assertEquals(true, Statistics.isDoubleEqual(0.666666, statisticsData.getWinProb()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(.75, statisticsData.getFreq()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.666666, statisticsData.getWinProb()));
 
-		assertEquals(true, Statistics.isDoubleEqual(256.0, statisticsData.getAvWin()));
-		assertEquals(true, Statistics.isDoubleEqual(62.4, statisticsData.getAvLoss()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(256.0, statisticsData.getAvWin()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(62.4, statisticsData.getAvLoss()));
 
-		assertEquals(true, Statistics.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
-		assertEquals(true, Statistics.isDoubleEqual(0.585417, statisticsData.getKelly()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.585417, statisticsData.getKelly()));
 	}
 
 	public void testEquityCurveStatistics() throws IOException, StatisticsCalculationException {
@@ -161,7 +161,7 @@ public class StatisticsTest extends TestCase {
 
 		TradingLog tradingLog = new TradingLog();
 
-		Statistics statistics = new Statistics(tradingLog);
+		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
 		final int buy_sell_each = 5;
 		
@@ -185,14 +185,14 @@ public class StatisticsTest extends TestCase {
 			statistics.processEod();
 		}
 
-		StatisticsData statisticsData = statistics.calculate();
+		Statistics statisticsData = statistics.calculate();
 
 		assertEquals(504, statisticsData.getPeriod());
-		assertEquals(true, Statistics.isDoubleEqual(-3.976890, statisticsData.getAvGain()));
-		assertEquals(true, Statistics.isDoubleEqual(0.297619, statisticsData.getFreq()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-3.976890, statisticsData.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.297619, statisticsData.getFreq()));
 		
-		assertEquals(true, Statistics.isDoubleEqual(363.449275, statisticsData.getAvWin()));
-		assertEquals(true, Statistics.isDoubleEqual(-0.059925, statisticsData.getKelly()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(363.449275, statisticsData.getAvWin()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.059925, statisticsData.getKelly()));
 		
 		
 	}

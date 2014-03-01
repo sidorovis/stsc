@@ -14,7 +14,7 @@ import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.Stock;
-import stsc.statistic.Statistics;
+import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.SignalsStorage;
@@ -25,7 +25,7 @@ public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	private Statistics statistics;
+	private StatisticsProcessor statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
 	// TODO private HashMap<String, StockAlgorithmInterface >
@@ -41,7 +41,7 @@ public class MarketSimulator {
 	public MarketSimulator(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
-		this.statistics = new Statistics(broker.getTradingLog());
+		this.statistics = new StatisticsProcessor(broker.getTradingLog());
 		
 		loadAlgorithms(settings);
 		parseSimulationSettings(settings);

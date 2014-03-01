@@ -1,197 +1,128 @@
 package stsc.statistic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import stsc.common.Day;
-import stsc.statistic.StatisticsData.StatisticsDataInit;
-import stsc.trading.TradingLog;
-import stsc.trading.TradingRecord;
+import org.joda.time.LocalDate;
 
 public class Statistics {
 
-	public final static double EPSILON = 0.000001;
-	private final static double PERCENTS = 100.0;
+	static public class StatisticsInit {
 
-	private class Positions {
-		private class Position {
-			private int shares = 0;
-			private double spentMoney = 0.0;
+		public EquityCurve equityCurve = new EquityCurve();
 
-			public Position(int shares, double spentMoney) {
-				super();
-				this.shares = shares;
-				this.spentMoney = spentMoney;
-			}
+		public int count = 0;
 
-			public void increment(int shares, double spentMoney) {
-				this.shares += shares;
-				this.spentMoney += spentMoney;
-			}
+		public int winCount = 0;
+		public int lossCount = 0;
 
-			public boolean decrement(int shares, double spentMoney) {
-				this.shares -= shares;
-				this.spentMoney -= spentMoney;
-				return this.shares == 0.0;
-			}
+		public double winSum = 0.0;
+		public double lossSum = 0.0;
 
-			public double sharePrice() {
-				return spentMoney / shares;
-			}
+		public double getAvGain() throws StatisticsCalculationException {
+			if (equityCurve.size() == 0)
+				throw new StatisticsCalculationException("no elements at equity curve");
+			return equityCurve.getLastValue();
 		}
 
-		private HashMap<String, Position> positions = new HashMap<>();
-
-		void increment(String stockName, int shares, double sharesPrice) {
-			Position position = positions.get(stockName);
-			if (position != null)
-				position.increment(shares, sharesPrice);
-			else
-				positions.put(stockName, new Position(shares, sharesPrice));
-		}
-
-		public void decrement(String stockName, int shares, double sharesPrice) {
-			Position position = positions.get(stockName);
-			if (position.decrement(shares, sharesPrice))
-				positions.remove(stockName);
-		}
-
-		public double sharePrice(String stockName) {
-			Position position = positions.get(stockName);
-			return position.sharePrice();
-		}
-
-		public double cost(HashMap<String, Double> prices) {
-			double result = 0.0;
-			for (Map.Entry<String, Position> i : positions.entrySet()) {
-				double price = prices.get(i.getKey());
-				result += price * i.getValue().shares;
-			}
-			return result;
-		}
-	}
-
-	public static boolean isDoubleEqual(double l, double r) {
-		return (Math.abs(l - r) < EPSILON);
-	}
-
-	private class EquityCalculationData {
-
-		private HashMap<String, Double> lastPrice = new HashMap<>();
-		private ArrayList<TradingRecord> tradingRecords;
-		private int tradingRecordsIndex = 0;
-
-		private double spentLongCash = 0;
-		private double spentShortCash = 0;
-
-		private Positions longPositions = new Positions();
-		private Positions shortPositions = new Positions();
-
-		private double maximumSpentMoney = 0.0;
-
-		StatisticsDataInit statisticsDataInit = StatisticsData.getInit();
-
-		public EquityCalculationData(TradingLog tradingLog) {
-			this.tradingRecords = tradingLog.getRecords();
-		}
-
-		public void setStockDay(String stockName, Day stockDay) {
-			lastPrice.put(stockName, stockDay.getPrices().getOpen());
-		}
-
-		public void processEod() {
-			int tradingRecordSize = tradingRecords.size();
-			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
-				TradingRecord record = tradingRecords.get(i);
-				String stockName = record.getStockName();
-
-				double price = lastPrice.get(stockName);
-				int shares = record.getAmount();
-				double sharesPrice = shares * price;
-
-				if (record.isPurchase()) {
-					if (record.isLong()) {
-						spentLongCash += sharesPrice;
-						longPositions.increment(stockName, shares, sharesPrice);
-					} else {
-						spentShortCash += sharesPrice;
-						shortPositions.increment(stockName, shares, sharesPrice);
-					}
-				} else {
-					if (record.isLong()) {
-						double oldPrice = longPositions.sharePrice(stockName);
-						double priceDiff = shares * (price - oldPrice);
-						addPositionClose(priceDiff);
-						spentLongCash -= sharesPrice;
-						longPositions.decrement(stockName, shares, sharesPrice);
-					} else {
-						double oldPrice = shortPositions.sharePrice(stockName);
-						double priceDiff = shares * (oldPrice - price);
-						addPositionClose(priceDiff);
-						spentShortCash -= (sharesPrice + 2 * priceDiff);
-						shortPositions.decrement(stockName, shares, sharesPrice);
-					}
-				}
-			}
-			tradingRecordsIndex = tradingRecordSize;
-			double dayCache = spentLongCash + spentShortCash;
-			if (maximumSpentMoney < dayCache)
-				maximumSpentMoney = dayCache;
-			double moneyInLongs = longPositions.cost(lastPrice);
-			double moneyInShorts = shortPositions.cost(lastPrice);
-
-			statisticsDataInit.equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
-		}
-
-		private void addPositionClose(double moneyDiff) {
-			if (moneyDiff >= 0)
-				addWin(moneyDiff);
-			else
-				addLoss(moneyDiff);
-		}
-
-		private void addWin(double moneyDiff) {
-			statisticsDataInit.count += 1;
-			statisticsDataInit.winCount += 1;
-			statisticsDataInit.winSum += moneyDiff;
-		}
-
-		private void addLoss(double moneyDiff) {
-			statisticsDataInit.count += 1;
-			statisticsDataInit.lossCount += 1;
-			statisticsDataInit.lossSum += moneyDiff;
-		}
-
-		public StatisticsData calculate() throws StatisticsCalculationException {
-			maximumSpentMoney /= PERCENTS;
-			if (isDoubleEqual(maximumSpentMoney, 0.0))
-				return null;
-			for (int i = 0; i < statisticsDataInit.equityCurve.size(); ++i) {
-				statisticsDataInit.equityCurve.set(i, -statisticsDataInit.equityCurve.get(i) / maximumSpentMoney);
-			}
-			return new StatisticsData( statisticsDataInit );
-		}
 	};
 
-	private EquityCalculationData equityCalculationData;
-
-	public Statistics(TradingLog tradingLog) {
-		this.equityCalculationData = new EquityCalculationData(tradingLog);
+	static private double division(double a, double b) {
+		if (b == 0.0)
+			return 0.0;
+		else
+			return a / b;
 	}
 
-	public void setStockDay(String stockName, Day stockDay) {
-		equityCalculationData.setStockDay(stockName, stockDay);
+	private double avGain;
+	private int period;
+	private double freq;
+	private double winProb;
+
+	private double avWin;
+	private double avLoss;
+	private double avWinAvLoss;
+
+	private double kelly;
+
+	private double sharpeRatio;
+
+	static public StatisticsInit getInit() {
+		return new StatisticsInit();
 	}
 
-	public void processEod() {
-		equityCalculationData.processEod();
+	public Statistics(StatisticsInit init) throws StatisticsCalculationException {
+		calculateProbabilityStatistics(init);
+		calculateEquityStatistics(init);
 	}
 
-	public StatisticsData calculate() throws StatisticsCalculationException {
-		StatisticsData statisticsData = equityCalculationData.calculate();
-		equityCalculationData = null;
-		return statisticsData;
+	private void calculateProbabilityStatistics(StatisticsInit init) throws StatisticsCalculationException {
+		avGain = init.getAvGain();
+		period = init.equityCurve.size();
+
+		freq = division(init.count, period);
+		winProb = division(init.winCount, init.count);
+
+		avWin = division(init.winSum, init.winCount);
+		avLoss = Math.abs(division(init.lossSum, init.lossCount));
+		avWinAvLoss = division(avWin, avLoss);
+
+		if (avWinAvLoss == 0.0)
+			kelly = 0.0;
+		else
+			kelly = winProb - (1 - winProb) / avWinAvLoss;
+	}
+
+	private void calculateEquityStatistics(StatisticsInit init) {
+		final int DAYS_PER_YEAR = 250;
+		if (period > DAYS_PER_YEAR)
+			calculateMonthsStatistics(init);
+	}
+
+	private void calculateMonthsStatistics(StatisticsInit init) {
+		LocalDate initDate = new LocalDate(init.equityCurve.get(0).date);
+		int lastMonthOfTheYear = initDate.getMonthOfYear();
+		
+		for (int i = 1; i < init.equityCurve.size(); ++i) {
+			LocalDate current = new LocalDate(init.equityCurve.get(i).date);
+			int currentMonthOfYear = current.getMonthOfYear();
+			if (currentMonthOfYear != lastMonthOfTheYear) {
+				
+			}
+		}
+	}
+
+	public double getAvGain() {
+		return avGain;
+	}
+
+	public int getPeriod() {
+		return period;
+	}
+
+	public double getWinProb() {
+		return winProb;
+	}
+
+	public double getFreq() {
+		return freq;
+	}
+
+	public double getAvWin() {
+		return avWin;
+	}
+
+	public double getAvLoss() {
+		return avLoss;
+	}
+
+	public double getAvWinAvLoss() {
+		return avWinAvLoss;
+	}
+
+	public double getKelly() {
+		return kelly;
+	}
+
+	public double getSharpeRatio() {
+		return sharpeRatio;
 	}
 
 }
