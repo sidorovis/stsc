@@ -53,9 +53,9 @@ public class StatisticsTest extends TestCase {
 		tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, 200);
 
 		statistics.processEod();
-		
+
 		StatisticsData statisticsData = statistics.calculate();
-		
+
 		assertEquals(2, statisticsData.getPeriod());
 		assertEquals(true, Statistics.isDoubleEqual(-0.005255, statisticsData.getAvGain()));
 	}
@@ -118,7 +118,7 @@ public class StatisticsTest extends TestCase {
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 		spyIndex++;
-		
+
 		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
 		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 500);
 
@@ -150,7 +150,50 @@ public class StatisticsTest extends TestCase {
 		assertEquals(true, Statistics.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
 		assertEquals(true, Statistics.isDoubleEqual(0.585417, statisticsData.getKelly()));
 	}
-	public void testEquityCurveStatistics(){
+
+	public void testEquityCurveStatistics() throws IOException, StatisticsCalculationException {
+
+		loadStocksForTest();
+
+		int aaplIndex = aapl.findDayIndex(new LocalDate(2008, 9, 4).toDate());
+		int admIndex = adm.findDayIndex(new LocalDate(2008, 9, 4).toDate());
+		int spyIndex = spy.findDayIndex(new LocalDate(2008, 9, 4).toDate());
+
+		TradingLog tradingLog = new TradingLog();
+
+		Statistics statistics = new Statistics(tradingLog);
+
+		final int buy_sell_each = 5;
+		
+		for (int i = 0; i < 504; ++i) {
+
+			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
+			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
+			statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
+
+			if (i % buy_sell_each == 0 && i % (buy_sell_each * 2) == 0) {
+				tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
+				tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 200);
+				tradingLog.addBuyRecord(new Date(), "spy", Side.SHORT, 100);
+			}
+			if (i % buy_sell_each == 0 && i % (buy_sell_each * 2) != 0) {
+				tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 100);
+				tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 200);
+				tradingLog.addSellRecord(new Date(), "spy", Side.SHORT, 100);
+			}
+
+			statistics.processEod();
+		}
+
+		StatisticsData statisticsData = statistics.calculate();
+
+		assertEquals(504, statisticsData.getPeriod());
+		assertEquals(true, Statistics.isDoubleEqual(-3.976890, statisticsData.getAvGain()));
+		assertEquals(true, Statistics.isDoubleEqual(0.297619, statisticsData.getFreq()));
+		
+		assertEquals(true, Statistics.isDoubleEqual(363.449275, statisticsData.getAvWin()));
+		assertEquals(true, Statistics.isDoubleEqual(-0.059925, statisticsData.getKelly()));
+		
 		
 	}
 }

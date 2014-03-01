@@ -47,6 +47,10 @@ public class StatisticsData {
 	}
 
 	public StatisticsData(StatisticsDataInit init) throws StatisticsCalculationException {
+		calculateProbabilityStatistics(init);
+	}
+	
+	private void calculateProbabilityStatistics( StatisticsDataInit init ) throws StatisticsCalculationException{
 		avGain = init.getAvGain();
 		period = init.equityCurve.size();
 
