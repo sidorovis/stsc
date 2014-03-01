@@ -16,12 +16,14 @@ public class StatisticsTest extends TestCase {
 	private static boolean stocksLoaded = false;
 	private static Stock aapl;
 	private static Stock adm;
+	private static Stock spy;
 
 	private void loadStocksForTest() throws IOException {
 		if (stocksLoaded)
 			return;
 		aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
+		spy = UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf");
 		stocksLoaded = true;
 	}
 
@@ -54,8 +56,8 @@ public class StatisticsTest extends TestCase {
 		
 		StatisticsData statisticsData = statistics.calculate();
 		
-		assertEquals(2, statisticsData.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(-0.005255, statisticsData.getEquityCurve().get(1)));
+		assertEquals(2, statisticsData.getPeriod());
+		assertEquals(true, Statistics.isDoubleEqual(-0.005255, statisticsData.getAvGain()));
 	}
 
 	public void testReverseStatistics() throws Exception {
@@ -87,16 +89,17 @@ public class StatisticsTest extends TestCase {
 
 		StatisticsData statisticsData = statistics.calculate();
 
-		assertEquals(2, statisticsData.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(0.005255, statisticsData.getEquityCurve().get(1)));
+		assertEquals(2, statisticsData.getPeriod());
+		assertEquals(true, Statistics.isDoubleEqual(0.005255, statisticsData.getAvGain()));
 	}
 
-	public void testSeveralDaysTrading() throws IOException {
+	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
 
 		loadStocksForTest();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
+		int spyIndex = spy.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
 		TradingLog tradingLog = new TradingLog();
 
@@ -104,15 +107,18 @@ public class StatisticsTest extends TestCase {
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
+		statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
 
 		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
 		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 200);
+		tradingLog.addBuyRecord(new Date(), "spy", Side.SHORT, 30);
 
 		statistics.processEod();
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
-
+		spyIndex++;
+		
 		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
 		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 500);
 
@@ -120,21 +126,31 @@ public class StatisticsTest extends TestCase {
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
+		statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
 
 		statistics.processEod();
 
 		tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 200);
 		tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 700);
+		tradingLog.addSellRecord(new Date(), "spy", Side.SHORT, 30);
 
 		statistics.processEod();
 
 		StatisticsData statisticsData = statistics.calculate();
 
-		assertEquals(4, statisticsData.getEquityCurve().size());
-		assertEquals(true, Statistics.isDoubleEqual(.4091973, statisticsData.getEquityCurve().get(3)));
+		assertEquals(4, statisticsData.getPeriod());
+		assertEquals(true, Statistics.isDoubleEqual(.345697, statisticsData.getAvGain()));
 
-		assertEquals(true, Statistics.isDoubleEqual(statisticsData.getRoi(), 0.4091973));
+		assertEquals(true, Statistics.isDoubleEqual(.75, statisticsData.getFreq()));
+		assertEquals(true, Statistics.isDoubleEqual(0.666666, statisticsData.getWinProb()));
+
+		assertEquals(true, Statistics.isDoubleEqual(256.0, statisticsData.getAvWin()));
+		assertEquals(true, Statistics.isDoubleEqual(62.4, statisticsData.getAvLoss()));
+
+		assertEquals(true, Statistics.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
+		assertEquals(true, Statistics.isDoubleEqual(0.585417, statisticsData.getKelly()));
+	}
+	public void testEquityCurveStatistics(){
 		
-
 	}
 }

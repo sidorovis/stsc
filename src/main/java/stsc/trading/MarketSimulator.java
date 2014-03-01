@@ -15,6 +15,7 @@ import stsc.algorithms.EodAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.statistic.Statistics;
+import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.DayIterator;
@@ -62,7 +63,7 @@ public class MarketSimulator {
 		processingStockList.addAll(settings.getStockList());
 	}
 
-	public void simulate() throws Exception {
+	public void simulate() throws StatisticsCalculationException {
 		LocalDate dayIterator = new LocalDate(from);
 		LocalDate endDate = new LocalDate(to);
 
@@ -87,7 +88,7 @@ public class MarketSimulator {
 
 						datafeed.put(stockName, stockDay);
 					} else {
-						throw new Exception("Bad day returned for stock " + stockName + " for day " + today);
+						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);
 						// TODO only for debugging, delete it later
 					}
 				}
@@ -98,6 +99,7 @@ public class MarketSimulator {
 			statistics.processEod();
 			dayIterator = dayIterator.plusDays(1);
 		}
+		statistics.calculate();
 	}
 
 	private void collectStocksFromStorage() {

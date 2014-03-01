@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import stsc.common.Day;
+import stsc.statistic.StatisticsData.StatisticsDataInit;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord;
 
@@ -89,7 +90,7 @@ public class Statistics {
 
 		private double maximumSpentMoney = 0.0;
 
-		private ArrayList<Double> equityCurve = new ArrayList<>();
+		StatisticsDataInit statisticsDataInit = StatisticsData.getInit();
 
 		public EquityCalculationData(TradingLog tradingLog) {
 			this.tradingRecords = tradingLog.getRecords();
@@ -119,11 +120,15 @@ public class Statistics {
 					}
 				} else {
 					if (record.isLong()) {
+						double oldPrice = longPositions.sharePrice(stockName);
+						double priceDiff = shares * (price - oldPrice);
+						addPositionClose(priceDiff);
 						spentLongCash -= sharesPrice;
 						longPositions.decrement(stockName, shares, sharesPrice);
 					} else {
 						double oldPrice = shortPositions.sharePrice(stockName);
 						double priceDiff = shares * (oldPrice - price);
+						addPositionClose(priceDiff);
 						spentShortCash -= (sharesPrice + 2 * priceDiff);
 						shortPositions.decrement(stockName, shares, sharesPrice);
 					}
@@ -136,22 +141,40 @@ public class Statistics {
 			double moneyInLongs = longPositions.cost(lastPrice);
 			double moneyInShorts = shortPositions.cost(lastPrice);
 
-			equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
+			statisticsDataInit.equityCurve.add(dayCache - moneyInLongs - moneyInShorts);
 		}
 
-		public ArrayList<Double> recalculateEquityCurve() {
+		private void addPositionClose(double moneyDiff) {
+			if (moneyDiff >= 0)
+				addWin(moneyDiff);
+			else
+				addLoss(moneyDiff);
+		}
+
+		private void addWin(double moneyDiff) {
+			statisticsDataInit.count += 1;
+			statisticsDataInit.winCount += 1;
+			statisticsDataInit.winSum += moneyDiff;
+		}
+
+		private void addLoss(double moneyDiff) {
+			statisticsDataInit.count += 1;
+			statisticsDataInit.lossCount += 1;
+			statisticsDataInit.lossSum += moneyDiff;
+		}
+
+		public StatisticsData calculate() throws StatisticsCalculationException {
 			maximumSpentMoney /= PERCENTS;
 			if (isDoubleEqual(maximumSpentMoney, 0.0))
 				return null;
-			for (int i = 0; i < equityCurve.size(); ++i) {
-				equityCurve.set(i, -equityCurve.get(i) / maximumSpentMoney);
+			for (int i = 0; i < statisticsDataInit.equityCurve.size(); ++i) {
+				statisticsDataInit.equityCurve.set(i, -statisticsDataInit.equityCurve.get(i) / maximumSpentMoney);
 			}
-			return equityCurve;
+			return new StatisticsData( statisticsDataInit );
 		}
 	};
 
 	private EquityCalculationData equityCalculationData;
-	private StatisticsData statisticsData;
 
 	public Statistics(TradingLog tradingLog) {
 		this.equityCalculationData = new EquityCalculationData(tradingLog);
@@ -165,13 +188,10 @@ public class Statistics {
 		equityCalculationData.processEod();
 	}
 
-	public StatisticsData calculate() {
-		statisticsData = new StatisticsData(equityCalculationData.recalculateEquityCurve());
+	public StatisticsData calculate() throws StatisticsCalculationException {
+		StatisticsData statisticsData = equityCalculationData.calculate();
 		equityCalculationData = null;
 		return statisticsData;
 	}
 
-	public StatisticsData getStatisticsData() {
-		return statisticsData;
-	}
 }
