@@ -22,9 +22,9 @@ public class Statistics {
 		public double getAvGain() throws StatisticsCalculationException {
 			if (equityCurve.size() == 0)
 				throw new StatisticsCalculationException("no elements at equity curve");
-			return equityCurve.getLastValue();
+			return equityCurve.getLastElement().value;
 		}
-		
+
 		public double maxWin = 0.0;
 		public double maxLoss = 0.0;
 
@@ -48,7 +48,7 @@ public class Statistics {
 
 	private double maxWin;
 	private double maxLoss;
-	
+
 	private double kelly;
 
 	private double sharpeRatio;
@@ -83,8 +83,18 @@ public class Statistics {
 
 	private void calculateEquityStatistics(StatisticsInit init) {
 		final int DAYS_PER_YEAR = 250;
-		if (period > DAYS_PER_YEAR)
+		if (period > DAYS_PER_YEAR) {
 			calculateMonthsStatistics(init);
+			calculate12MonthsStatistics(init);
+		}
+	}
+
+	private void calculate12MonthsStatistics(StatisticsInit init) {
+//		LocalDate indexDate = new LocalDate(init.equityCurve.get(0).date);
+//		LocalDate nextMonthBegin = indexDate.plusMonths(1).withDayOfMonth(1);
+//
+//		int index = init.equityCurve.find(nextMonthBegin.toDate());
+//		LocalDate nextMonthBeginRealDate = new LocalDate(init.equityCurve.get(index).date);
 	}
 
 	private void calculateMonthsStatistics(StatisticsInit init) {
@@ -94,40 +104,50 @@ public class Statistics {
 		LocalDate indexDate = new LocalDate(init.equityCurve.get(index).date);
 		LocalDate monthAgo = indexDate.plusMonths(1);
 
-		LocalDate previous = monthAgo;
 		double indexValue = init.equityCurve.get(index).value;
 
 		double monthsCapitalsSum = 0.0;
 		ArrayList<Double> monthsDifferents = new ArrayList<>();
 
-		for (int i = 1; i < init.equityCurve.size(); ++i) {
-			LocalDate current = new LocalDate(init.equityCurve.get(i).date);
-			if (current.isAfter(monthAgo)) {
-				double lastValue = init.equityCurve.get(i - 1).value;
-				double differentForMonth = lastValue - indexValue;
+		final LocalDate lastDate = new LocalDate(init.equityCurve.getLastElement().date);
+		
+		while (monthAgo.isBefore(lastDate)) {
+			index = init.equityCurve.find(monthAgo.toDate());
 
-				monthsDifferents.add(differentForMonth);
-				monthsCapitalsSum += differentForMonth;
+			double lastValue = init.equityCurve.get(index).value;
+			double differentForMonth = lastValue - indexValue;
+			
+			monthsDifferents.add(differentForMonth);
+			monthsCapitalsSum += differentForMonth;
 
-				indexValue = lastValue;
-				index = i - 1;
-				monthAgo = previous.plusMonths(1);
-			}
-			previous = current;
+			indexValue = lastValue;
+			monthAgo = monthAgo.plusMonths(1);
 		}
+
 		final int REASONABLE_AMOUNT_OF_DAYS = 12;
 		if (init.equityCurve.size() - index > REASONABLE_AMOUNT_OF_DAYS) {
-			double lastValue = init.equityCurve.getLastValue();
+			double lastValue = init.equityCurve.getLastElement().value;
 			double differentForMonth = lastValue - indexValue;
 
 			monthsDifferents.add(differentForMonth);
 			monthsCapitalsSum += differentForMonth;
 		}
 
-		double sharpeAnnualReturn = (12.0 / monthsDifferents.size()) * monthsCapitalsSum;
-		double sharpeStdDev = Math.sqrt(12) * calculateStdDev(monthsCapitalsSum, monthsDifferents);
+		final double MONTH_PER_YEAR = 12.0;
+		final double RISK_PERCENTS = 5.0;
 		
-		sharpeRatio = (sharpeAnnualReturn - 5) / sharpeStdDev;
+		double sharpeAnnualReturn = (MONTH_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
+		double sharpeStdDev = Math.sqrt(MONTH_PER_YEAR) * calculateStdDev(monthsCapitalsSum, monthsDifferents);
+
+		sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStdDev;
+	}
+
+	public double calculateStdDev(List<Double> elements) {
+		double summ = 0.0;
+		for (Double i : elements) {
+			summ += i;
+		}
+		return calculateStdDev(summ, elements);
 	}
 
 	private double calculateStdDev(double summ, List<Double> elements) {
