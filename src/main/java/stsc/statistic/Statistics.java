@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
+import stsc.statistic.EquityCurve.EquityCurveElement;
+
 public class Statistics {
 
 	static public class StatisticsInit {
@@ -109,12 +111,13 @@ public class Statistics {
 		double monthsCapitalsSum = 0.0;
 		ArrayList<Double> monthsDifferents = new ArrayList<>();
 
-		final LocalDate lastDate = new LocalDate(init.equityCurve.getLastElement().date);
+		final LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
 		
-		while (monthAgo.isBefore(lastDate)) {
-			index = init.equityCurve.find(monthAgo.toDate());
+		while (monthAgo.isBefore(endDate)) {
+			index = init.equityCurve.find(monthAgo.toDate()) - 1;
+			EquityCurveElement element = init.equityCurve.get(index);
 
-			double lastValue = init.equityCurve.get(index).value;
+			double lastValue = element.value;
 			double differentForMonth = lastValue - indexValue;
 			
 			monthsDifferents.add(differentForMonth);

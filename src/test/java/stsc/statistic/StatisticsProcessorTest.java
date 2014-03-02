@@ -197,7 +197,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(363.449275, statisticsData.getAvWin()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.059925, statisticsData.getKelly()));
 		
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.575473, statisticsData.getSharpeRatio()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.586906, statisticsData.getSharpeRatio()));
 		
 	}
 }

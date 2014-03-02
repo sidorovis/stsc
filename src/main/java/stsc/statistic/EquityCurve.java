@@ -70,7 +70,7 @@ public class EquityCurve {
 		int index = Collections.binarySearch(elements, EquityCurveElement.makeForSearch(date),
 				equityCurveElementComparator);
 		if (index < 0)
-			index = -index;
+			index = -index - 1;
 		return index;
 	}
 }
