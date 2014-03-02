@@ -149,7 +149,7 @@ public class StatisticsProcessorTest extends TestCase {
 
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(293.0, statisticsData.getMaxWin()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(62.4, statisticsData.getMaxLoss()));
-		
+
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.585417, statisticsData.getKelly()));
 	}
@@ -164,40 +164,55 @@ public class StatisticsProcessorTest extends TestCase {
 
 		TradingLog tradingLog = new TradingLog();
 
-		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
+		StatisticsProcessor statisticsProcessor = new StatisticsProcessor(tradingLog);
 
-		final int buy_sell_each = 5;
-		
-		for (int i = 0; i < 504; ++i) {
+		final int buySellEach = 5;
+		boolean opened = false;
+		final int daysCount = 518;
+		for (int i = 0; i < 518; ++i) {
 
-			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
-			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
-			statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
+			statisticsProcessor.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
+			statisticsProcessor.setStockDay("adm", adm.getDays().get(admIndex++));
+			statisticsProcessor.setStockDay("spy", spy.getDays().get(spyIndex++));
 
-			if (i % buy_sell_each == 0 && i % (buy_sell_each * 2) == 0) {
+			if (i % buySellEach == 0 && i % (buySellEach * 2) == 0) {
 				tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
 				tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 200);
 				tradingLog.addBuyRecord(new Date(), "spy", Side.SHORT, 100);
+				opened = true;
 			}
-			if (i % buy_sell_each == 0 && i % (buy_sell_each * 2) != 0) {
+			if (i % buySellEach == 0 && i % (buySellEach * 2) != 0) {
 				tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 100);
 				tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 200);
 				tradingLog.addSellRecord(new Date(), "spy", Side.SHORT, 100);
+				opened = false;
 			}
 
-			statistics.processEod();
+			if ((i == (daysCount - 1)) && opened) {
+				tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 100);
+				tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 200);
+				tradingLog.addSellRecord(new Date(), "spy", Side.SHORT, 100);
+				opened = false;
+			}
+
+			statisticsProcessor.processEod();
 		}
 
-		Statistics statisticsData = statistics.calculate();
+		Statistics stats = statisticsProcessor.calculate();
 
-		assertEquals(504, statisticsData.getPeriod());
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-3.976890, statisticsData.getAvGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.297619, statisticsData.getFreq()));
-		
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(363.449275, statisticsData.getAvWin()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.059925, statisticsData.getKelly()));
-		
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.586906, statisticsData.getSharpeRatio()));
-		
+		assertEquals(518, stats.getPeriod());
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-13.738679, stats.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.301158, stats.getFreq()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(358.816901, stats.getAvWin()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.121142, stats.getKelly()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.861926, stats.getSharpeRatio()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.549547, stats.getStartMonthAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(3.590038, stats.getStartMonthStdDevGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(5.136049, stats.getStartMonthMax()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-8.821443, stats.getStartMonthMin()));
+
 	}
 }

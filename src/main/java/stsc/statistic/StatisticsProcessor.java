@@ -3,9 +3,13 @@ package stsc.statistic;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
+
 import stsc.common.Day;
+import stsc.statistic.EquityCurve.EquityCurveElement;
 import stsc.statistic.Statistics.StatisticsInit;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord;
@@ -91,6 +95,10 @@ public class StatisticsProcessor {
 		private Positions shortPositions = new Positions();
 
 		private double maximumSpentMoney = 0.0;
+		private double sumOfStartMonths = 0.0;
+		
+		
+		private ArrayList<Double> elementsInStartMonths = new ArrayList<>();
 
 		StatisticsInit statisticsInit = Statistics.getInit();
 
@@ -175,7 +183,120 @@ public class StatisticsProcessor {
 			if (isDoubleEqual(maximumSpentMoney, 0.0))
 				return null;
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);
+			
+			calculateEquityStatistics();
+			
 			return new Statistics(statisticsInit);
+		}
+		
+		private void calculateEquityStatistics() {
+			final int DAYS_PER_YEAR = 250;
+			statisticsInit.period = statisticsInit.equityCurve.size();
+			
+			if (statisticsInit.period > DAYS_PER_YEAR) {
+				calculateMonthsStatistics();
+				calculateStartMonthsStatistics();
+			}
+		}
+
+		private void calculateStartMonthsStatistics() {
+
+			StatisticsInit init = statisticsInit;
+			
+			LocalDate nextMonthBegin = new LocalDate(init.equityCurve.get(0).date).plusMonths(1).withDayOfMonth(1);
+			double lastValue = init.equityCurve.get(0).value;
+
+			int firstMonthIndex = init.equityCurve.find(nextMonthBegin.toDate());
+
+			final int REASONABLE_AMOUNT_OF_DAYS = 15;
+			if (firstMonthIndex >= REASONABLE_AMOUNT_OF_DAYS) {
+				EquityCurveElement element = init.equityCurve.get(firstMonthIndex);
+				double nextValue = element.value;
+
+				double differentForMonth = nextValue - lastValue;
+				processMonthInStartMonths(differentForMonth);
+
+				lastValue = nextValue;
+				nextMonthBegin = nextMonthBegin.plusMonths(1);
+			}
+
+			LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
+
+			int nextIndex = init.equityCurve.size();
+			while (nextMonthBegin.isBefore(endDate)) {
+				nextIndex = init.equityCurve.find(nextMonthBegin.toDate());
+				EquityCurveElement element = init.equityCurve.get(nextIndex);
+				double nextValue = element.value;
+				
+				double differentForMonth = nextValue - lastValue;
+				processMonthInStartMonths(differentForMonth);
+
+				lastValue = nextValue;
+				nextMonthBegin = nextMonthBegin.plusMonths(1);
+			}
+			if (init.equityCurve.size() - nextIndex >= REASONABLE_AMOUNT_OF_DAYS) {
+				double lastestValue = init.equityCurve.getLastElement().value;
+				double differentForMonth = lastestValue - lastValue;
+				processMonthInStartMonths(differentForMonth);
+			}
+			init.startMonthAvGain = sumOfStartMonths / elementsInStartMonths.size();
+			init.startMonthStdDevGain = calculateStdDev(sumOfStartMonths, elementsInStartMonths);
+		}
+
+		private void processMonthInStartMonths(double moneyDiff) {
+			elementsInStartMonths.add(moneyDiff);
+			sumOfStartMonths += moneyDiff;
+			if (moneyDiff > statisticsInit.startMonthMax)
+				statisticsInit.startMonthMax = moneyDiff;
+			if (moneyDiff < statisticsInit.startMonthMin)
+				statisticsInit.startMonthMin = moneyDiff;
+		}
+
+		private void calculateMonthsStatistics() {
+			StatisticsInit init = statisticsInit;
+			
+			int index = 0;
+
+			LocalDate indexDate = new LocalDate(init.equityCurve.get(index).date);
+			LocalDate monthAgo = indexDate.plusMonths(1);
+
+			double indexValue = init.equityCurve.get(index).value;
+
+			double monthsCapitalsSum = 0.0;
+			ArrayList<Double> monthsDifferents = new ArrayList<>();
+
+			final LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
+
+			while (monthAgo.isBefore(endDate)) {
+				index = init.equityCurve.find(monthAgo.toDate()) - 1;
+				EquityCurveElement element = init.equityCurve.get(index);
+
+				double lastValue = element.value;
+				double differentForMonth = lastValue - indexValue;
+
+				monthsDifferents.add(differentForMonth);
+				monthsCapitalsSum += differentForMonth;
+
+				indexValue = lastValue;
+				monthAgo = monthAgo.plusMonths(1);
+			}
+
+			final int REASONABLE_AMOUNT_OF_DAYS = 13;
+			if (init.equityCurve.size() - index >= REASONABLE_AMOUNT_OF_DAYS) {
+				double lastValue = init.equityCurve.getLastElement().value;
+				double differentForMonth = lastValue - indexValue;
+
+				monthsDifferents.add(differentForMonth);
+				monthsCapitalsSum += differentForMonth;
+			}
+
+			final double MONTH_PER_YEAR = 12.0;
+			final double RISK_PERCENTS = 5.0;
+
+			double sharpeAnnualReturn = (MONTH_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
+			double sharpeStdDev = Math.sqrt(MONTH_PER_YEAR) * calculateStdDev(monthsCapitalsSum, monthsDifferents);
+
+			init.sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStdDev;
 		}
 	};
 
@@ -197,6 +318,25 @@ public class StatisticsProcessor {
 		Statistics statisticsData = equityCalculationData.calculate();
 		equityCalculationData = null;
 		return statisticsData;
+	}
+
+	public double calculateStdDev(List<Double> elements) {
+		double summ = 0.0;
+		for (Double i : elements) {
+			summ += i;
+		}
+		return calculateStdDev(summ, elements);
+	}
+
+	public double calculateStdDev(double summ, List<Double> elements) {
+		double result = 0.0;
+		int size = elements.size();
+		double average = summ / size;
+		for (Double i : elements) {
+			result += Math.pow((average - i), 2);
+		}
+		result = Math.sqrt(result / size);
+		return result;
 	}
 
 }
