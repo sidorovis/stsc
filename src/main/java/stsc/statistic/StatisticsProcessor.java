@@ -158,12 +158,16 @@ public class StatisticsProcessor {
 			statisticsInit.count += 1;
 			statisticsInit.winCount += 1;
 			statisticsInit.winSum += moneyDiff;
+			if (moneyDiff > statisticsInit.maxWin)
+				statisticsInit.maxWin = moneyDiff;
 		}
 
 		private void addLoss(double moneyDiff) {
 			statisticsInit.count += 1;
 			statisticsInit.lossCount += 1;
 			statisticsInit.lossSum += moneyDiff;
+			if (moneyDiff < statisticsInit.maxLoss)
+				statisticsInit.maxLoss = moneyDiff;
 		}
 
 		public Statistics calculate() throws StatisticsCalculationException {
