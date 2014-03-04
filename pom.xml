@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>Stsc</artifactId>
-  <version>0.0.5-STRING-PATTERN</version>
+  <version>0.0.6-MORE-GENEROUS-NUMBER-PARSING-ON-DOUNLOAD</version>
   <packaging>jar</packaging>
 
   <name>Stsc</name>

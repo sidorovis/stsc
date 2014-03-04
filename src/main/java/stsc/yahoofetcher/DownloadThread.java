@@ -81,49 +81,61 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	private final UnitedFormatStock download(String stockName) throws ParseException, MalformedURLException,
-			InterruptedException {
+	private final UnitedFormatStock download(String stockName) throws InterruptedException {
 		int tries = 0;
-
+		String error = "";
 		UnitedFormatStock newStock = null;
 		while (tries < 5) {
-			URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
 			try {
+				URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
 				String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				newStock = UnitedFormatStock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
 				newStock.storeUniteFormat(marketDataContext.generateUniteFormatPath(newStock.getName()));
 				return newStock;
+			} catch (MalformedURLException e) {
+				Thread.sleep(300);
+				error = e.toString();
+			} catch (ParseException e) {
+				Thread.sleep(300);
+				error = e.toString();
 			} catch (IOException e) {
 				Thread.sleep(300);
+				error = e.toString();
 			}
 			tries += 1;
 		}
 		if (newStock == null)
-			throw new InterruptedException("5 tries not enought to download data on " + stockName + " stock");
+			throw new InterruptedException("5 tries not enought to download data on " + stockName + " stock. " + error);
 		return newStock;
 	}
 
-	private final void partiallyDownload(UnitedFormatStock stock, String stockName) throws IOException, ParseException,
-			InterruptedException {
+	private final void partiallyDownload(UnitedFormatStock stock, String stockName) throws InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
-
+		String error = "";
+		String stockNewContent = "";
 		int tries = 0;
 
 		while (tries < 5) {
-			URL url = new URL(downloadLink);
 			try {
-				String stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
+				URL url = new URL(downloadLink);
+				stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
 					stock.storeUniteFormat(marketDataContext.generateUniteFormatPath(stock.getName()));
 				return;
+			} catch (ParseException e) {
+				error = "exception " + e.toString() + " with: '" + stockNewContent + "'";
+				break;
+			} catch (MalformedURLException e) {
+				Thread.sleep(300);
 			} catch (IOException e) {
 				Thread.sleep(300);
 			}
 			tries += 1;
 		}
-		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock");
+		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock "
+				+ error);
 	}
 }
