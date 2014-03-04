@@ -12,9 +12,14 @@ public abstract class Stock {
 
 	public int findDayIndex(Date date) {
 		ArrayList<Day> days = getDays();
-		int index = Collections.binarySearch(days, new Day( date ), DayComparator.getInstance());
-		if ( index < 0 )
+		int index = Collections.binarySearch(days, new Day(date), DayComparator.getInstance());
+		if (index < 0)
 			index = -index;
 		return index;
+	}
+
+	@Override
+	public String toString() {
+		return "Stock(" + getName() + ")";
 	}
 }

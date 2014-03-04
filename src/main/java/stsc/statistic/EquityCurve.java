@@ -30,6 +30,10 @@ public class EquityCurve {
 			value = -value / divider;
 		}
 
+		public String toString() {
+			return "ece(" + String.format("%03f", value) + ")";
+		}
+
 	};
 
 	static public class ElementComparator implements Comparator<EquityCurveElement> {
@@ -72,5 +76,9 @@ public class EquityCurve {
 		if (index < 0)
 			index = -index - 1;
 		return index;
+	}
+
+	public String toString() {
+		return elements.toString();
 	}
 }

@@ -1,8 +1,12 @@
 package stsc.common;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Day implements Comparable<Day> {
+
+	static private DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
 
 	public final Date date;
 	public final Prices prices;
@@ -42,5 +46,10 @@ public class Day implements Comparable<Day> {
 	@Override
 	public int compareTo(Day o) {
 		return date.compareTo(o.date);
+	}
+	
+	@Override
+	public String toString(){
+		return "Day:"+fd.format(date);
 	}
 }

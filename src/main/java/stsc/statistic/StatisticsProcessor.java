@@ -81,7 +81,7 @@ public class StatisticsProcessor {
 		return (Math.abs(l - r) < EPSILON);
 	}
 
-	private class EquityCalculationData {
+	private class EquityProcessor {
 
 		private Date lastDate;
 		private HashMap<String, Double> lastPrice = new HashMap<>();
@@ -96,13 +96,13 @@ public class StatisticsProcessor {
 
 		private double maximumSpentMoney = 0.0;
 		private double sumOfStartMonths = 0.0;
-		
-		
+
 		private ArrayList<Double> elementsInStartMonths = new ArrayList<>();
+		private ArrayList<Integer> startMonthsIndexes = new ArrayList<>();
 
 		StatisticsInit statisticsInit = Statistics.getInit();
 
-		public EquityCalculationData(TradingLog tradingLog) {
+		public EquityProcessor(TradingLog tradingLog) {
 			this.tradingRecords = tradingLog.getRecords();
 		}
 
@@ -183,61 +183,81 @@ public class StatisticsProcessor {
 			if (isDoubleEqual(maximumSpentMoney, 0.0))
 				return null;
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);
-			
+
 			calculateEquityStatistics();
-			
+
 			return new Statistics(statisticsInit);
 		}
-		
+
 		private void calculateEquityStatistics() {
 			final int DAYS_PER_YEAR = 250;
 			statisticsInit.period = statisticsInit.equityCurve.size();
-			
+
 			if (statisticsInit.period > DAYS_PER_YEAR) {
 				calculateMonthsStatistics();
+				collectElementsInStartMonths();
 				calculateStartMonthsStatistics();
+				calculate12MonthsStatistics();
 			}
 		}
 
-		private void calculateStartMonthsStatistics() {
+		private void collectElementsInStartMonths() {
+			final StatisticsInit init = statisticsInit;
 
-			StatisticsInit init = statisticsInit;
-			
 			LocalDate nextMonthBegin = new LocalDate(init.equityCurve.get(0).date).plusMonths(1).withDayOfMonth(1);
-			double lastValue = init.equityCurve.get(0).value;
-
-			int firstMonthIndex = init.equityCurve.find(nextMonthBegin.toDate());
+			final int firstMonthIndex = init.equityCurve.find(nextMonthBegin.toDate());
 
 			final int REASONABLE_AMOUNT_OF_DAYS = 15;
 			if (firstMonthIndex >= REASONABLE_AMOUNT_OF_DAYS) {
-				EquityCurveElement element = init.equityCurve.get(firstMonthIndex);
-				double nextValue = element.value;
-
-				double differentForMonth = nextValue - lastValue;
-				processMonthInStartMonths(differentForMonth);
-
-				lastValue = nextValue;
-				nextMonthBegin = nextMonthBegin.plusMonths(1);
+				startMonthsIndexes.add(0);
 			}
 
-			LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
+			final LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
 
 			int nextIndex = init.equityCurve.size();
 			while (nextMonthBegin.isBefore(endDate)) {
 				nextIndex = init.equityCurve.find(nextMonthBegin.toDate());
-				EquityCurveElement element = init.equityCurve.get(nextIndex);
-				double nextValue = element.value;
-				
-				double differentForMonth = nextValue - lastValue;
-				processMonthInStartMonths(differentForMonth);
-
-				lastValue = nextValue;
+				startMonthsIndexes.add(nextIndex);
 				nextMonthBegin = nextMonthBegin.plusMonths(1);
 			}
 			if (init.equityCurve.size() - nextIndex >= REASONABLE_AMOUNT_OF_DAYS) {
-				double lastestValue = init.equityCurve.getLastElement().value;
-				double differentForMonth = lastestValue - lastValue;
+				startMonthsIndexes.add(init.equityCurve.size() - 1);
+			}
+		}
+
+		private void calculate12MonthsStatistics() {
+			final StatisticsInit init = statisticsInit;
+			final int MONTHS_PER_YEAR = 12;
+			final int startMonthsIndexesSize = startMonthsIndexes.size() - MONTHS_PER_YEAR;
+
+			ArrayList<Double> rollingWindow12Month = new ArrayList<>();
+			double rollingWindow12MonthSum = 0.0;
+
+			for (int i = 0; i < startMonthsIndexesSize; ++i) {
+				final double beginPeriodValue = init.equityCurve.get(startMonthsIndexes.get(i)).value;
+				final double endPeriodValue = init.equityCurve.get(startMonthsIndexes.get(i + MONTHS_PER_YEAR)).value;
+				final double diff = endPeriodValue - beginPeriodValue;
+				rollingWindow12Month.add(diff);
+				rollingWindow12MonthSum += diff;
+				if (diff > init.month12Max)
+					init.month12Max = diff;
+				if (diff < init.month12Min)
+					init.month12Min = diff;
+			}
+			init.month12AvGain = rollingWindow12MonthSum / rollingWindow12Month.size();
+			init.month12StdDevGain = calculateStdDev(rollingWindow12MonthSum, rollingWindow12Month);
+		}
+
+		private void calculateStartMonthsStatistics() {
+			final StatisticsInit init = statisticsInit;
+			final int startMonthsIndexesSize = startMonthsIndexes.size();
+
+			double lastValue = init.equityCurve.get(0).value;
+			for (int i = 1; i < startMonthsIndexesSize; ++i) {
+				double nextValue = init.equityCurve.get(startMonthsIndexes.get(i)).value;
+				double differentForMonth = nextValue - lastValue;
 				processMonthInStartMonths(differentForMonth);
+				lastValue = nextValue;
 			}
 			init.startMonthAvGain = sumOfStartMonths / elementsInStartMonths.size();
 			init.startMonthStdDevGain = calculateStdDev(sumOfStartMonths, elementsInStartMonths);
@@ -253,8 +273,8 @@ public class StatisticsProcessor {
 		}
 
 		private void calculateMonthsStatistics() {
-			StatisticsInit init = statisticsInit;
-			
+			final StatisticsInit init = statisticsInit;
+
 			int index = 0;
 
 			LocalDate indexDate = new LocalDate(init.equityCurve.get(index).date);
@@ -263,7 +283,7 @@ public class StatisticsProcessor {
 			double indexValue = init.equityCurve.get(index).value;
 
 			double monthsCapitalsSum = 0.0;
-			ArrayList<Double> monthsDifferents = new ArrayList<>();
+			final ArrayList<Double> monthsDifferents = new ArrayList<>();
 
 			final LocalDate endDate = new LocalDate(init.equityCurve.getLastElement().date);
 
@@ -290,33 +310,33 @@ public class StatisticsProcessor {
 				monthsCapitalsSum += differentForMonth;
 			}
 
-			final double MONTH_PER_YEAR = 12.0;
 			final double RISK_PERCENTS = 5.0;
-
-			double sharpeAnnualReturn = (MONTH_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
-			double sharpeStdDev = Math.sqrt(MONTH_PER_YEAR) * calculateStdDev(monthsCapitalsSum, monthsDifferents);
+			final double MONTHS_PER_YEAR = 12.0;
+			final double sharpeAnnualReturn = (MONTHS_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
+			final double sharpeStdDev = Math.sqrt(MONTHS_PER_YEAR)
+					* calculateStdDev(monthsCapitalsSum, monthsDifferents);
 
 			init.sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStdDev;
 		}
 	};
 
-	private EquityCalculationData equityCalculationData;
+	private EquityProcessor equityProcessor;
 
 	public StatisticsProcessor(TradingLog tradingLog) {
-		this.equityCalculationData = new EquityCalculationData(tradingLog);
+		this.equityProcessor = new EquityProcessor(tradingLog);
 	}
 
 	public void setStockDay(String stockName, Day stockDay) {
-		equityCalculationData.setStockDay(stockName, stockDay);
+		equityProcessor.setStockDay(stockName, stockDay);
 	}
 
 	public void processEod() {
-		equityCalculationData.processEod();
+		equityProcessor.processEod();
 	}
 
 	public Statistics calculate() throws StatisticsCalculationException {
-		Statistics statisticsData = equityCalculationData.calculate();
-		equityCalculationData = null;
+		Statistics statisticsData = equityProcessor.calculate();
+		equityProcessor = null;
 		return statisticsData;
 	}
 

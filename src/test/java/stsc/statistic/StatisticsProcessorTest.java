@@ -154,8 +154,52 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.585417, statisticsData.getKelly()));
 	}
 
-	public void testEquityCurveStatistics() throws IOException, StatisticsCalculationException {
+	public void testEquityCurveOn518DaysStatistics() throws IOException, StatisticsCalculationException {
+		Statistics stats = testTradingHelper( 518 );
+		
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-13.738679, stats.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.301158, stats.getFreq()));
 
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(358.816901, stats.getAvWin()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.121142, stats.getKelly()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.861926, stats.getSharpeRatio()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.549547, stats.getStartMonthAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(3.590038, stats.getStartMonthStdDevGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(5.136049, stats.getStartMonthMax()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-8.821443, stats.getStartMonthMin()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-9.059939, stats.getMonth12AvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(7.121803, stats.getMonth12StdDevGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(8.732297, stats.getMonth12Max()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-18.664019, stats.getMonth12Min()));
+
+		
+	}
+	public void testEquityCurveOn251DaysStatistics() throws IOException, StatisticsCalculationException {
+		Statistics stats = testTradingHelper( 251 );
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.310756, stats.getFreq()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(413.166666, stats.getAvWin()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.133738, stats.getKelly()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.553627, stats.getSharpeRatio()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(1.050778, stats.getStartMonthAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(3.729215, stats.getStartMonthStdDevGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(7.416400, stats.getStartMonthMax()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(-4.973523, stats.getStartMonthMin()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getMonth12AvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.0, stats.getMonth12StdDevGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getMonth12Max()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.0, stats.getMonth12Min()));	}
+
+	private Statistics testTradingHelper(int daysCount) throws IOException, StatisticsCalculationException {
+		
 		loadStocksForTest();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2008, 9, 4).toDate());
@@ -168,8 +212,8 @@ public class StatisticsProcessorTest extends TestCase {
 
 		final int buySellEach = 5;
 		boolean opened = false;
-		final int daysCount = 518;
-		for (int i = 0; i < 518; ++i) {
+
+		for (int i = 0; i < daysCount; ++i) {
 
 			statisticsProcessor.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 			statisticsProcessor.setStockDay("adm", adm.getDays().get(admIndex++));
@@ -199,20 +243,8 @@ public class StatisticsProcessorTest extends TestCase {
 		}
 
 		Statistics stats = statisticsProcessor.calculate();
-
-		assertEquals(518, stats.getPeriod());
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-13.738679, stats.getAvGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.301158, stats.getFreq()));
-
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(358.816901, stats.getAvWin()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.121142, stats.getKelly()));
-
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.861926, stats.getSharpeRatio()));
-
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-0.549547, stats.getStartMonthAvGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(3.590038, stats.getStartMonthStdDevGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(5.136049, stats.getStartMonthMax()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(-8.821443, stats.getStartMonthMin()));
-
+		assertEquals(daysCount, stats.getPeriod());
+		
+		return stats;
 	}
 }

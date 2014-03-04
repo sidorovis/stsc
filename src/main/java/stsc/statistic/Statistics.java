@@ -7,7 +7,7 @@ public class Statistics {
 		public EquityCurve equityCurve = new EquityCurve();
 
 		public int period = 0;
-		
+
 		public int count = 0;
 
 		public int winCount = 0;
@@ -24,15 +24,22 @@ public class Statistics {
 
 		public double maxWin = 0.0;
 		public double maxLoss = 0.0;
-		
+
 		public double sharpeRatio = 0.0;
 
 		public double startMonthAvGain = 0.0;
 		public double startMonthStdDevGain = 0.0;
-		
-		public double startMonthMax = 0.0;
 		public double startMonthMin = 0.0;
+		public double startMonthMax = 0.0;
 
+		public double month12AvGain = 0.0;
+		public double month12StdDevGain = 0.0;
+		public double month12Min = 0.0;
+		public double month12Max = 0.0;
+
+		public String toString() {
+			return "curve(" + equityCurve.toString() + ")";
+		}
 	};
 
 	static private double division(double a, double b) {
@@ -56,13 +63,18 @@ public class Statistics {
 
 	private double kelly;
 
-	private double sharpeRatio;
-	
+	private double sharpeRatio = 0.0;
+
 	private double startMonthAvGain = 0.0;
 	private double startMonthStdDevGain = 0.0;
 	private double startMonthMax = 0.0;
 	private double startMonthMin = 0.0;
 
+	private double month12AvGain = 0.0;
+	private double month12StdDevGain = 0.0;
+	private double month12Min = 0.0;
+	private double month12Max = 0.0;
+	
 	static public StatisticsInit getInit() {
 		return new StatisticsInit();
 	}
@@ -93,13 +105,17 @@ public class Statistics {
 
 	private void calculateEquityStatistics(StatisticsInit init) {
 		sharpeRatio = init.sharpeRatio;
-		
+
 		startMonthAvGain = init.startMonthAvGain;
 		startMonthStdDevGain = init.startMonthStdDevGain;
 		startMonthMax = init.startMonthMax;
 		startMonthMin = init.startMonthMin;
-	}
 
+		month12AvGain = init.month12AvGain;
+		month12StdDevGain = init.month12StdDevGain;
+		month12Max = init.month12Max;
+		month12Min = init.month12Min;
+	}
 
 	public double getAvGain() {
 		return avGain;
@@ -159,6 +175,22 @@ public class Statistics {
 
 	public double getStartMonthMin() {
 		return startMonthMin;
+	}
+
+	public double getMonth12AvGain() {
+		return month12AvGain;
+	}
+
+	public double getMonth12StdDevGain() {
+		return month12StdDevGain;
+	}
+
+	public double getMonth12Min() {
+		return month12Min;
+	}
+
+	public double getMonth12Max() {
+		return month12Max;
 	}
 
 }
