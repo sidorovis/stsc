@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
@@ -199,6 +200,75 @@ public class StatisticsProcessor {
 				calculateStartMonthsStatistics();
 				calculate12MonthsStatistics();
 			}
+
+			calculateDrawDownStatistics();
+
+		}
+
+		private void calculateDrawDownStatistics() {
+			final StatisticsInit init = statisticsInit;
+			final int equityCurveSize = init.equityCurve.size();
+
+			EquityCurveElement ddStart = init.equityCurve.get(0);
+			boolean inDrawdown = false;
+			double ddSize = 0.0;
+			double lastValue = ddStart.value;
+			
+			int ddCount = 0;
+			double ddDurationSum = 0.0;
+			double ddValueSum = 0.0;
+
+			for (int i = 1; i < equityCurveSize; ++i) {
+				EquityCurveElement currentElement = init.equityCurve.get(i);
+				if (!inDrawdown) {
+					if (currentElement.value >= lastValue)
+						ddStart = currentElement;
+					else {
+						inDrawdown = true;
+						ddSize = ddStart.value - currentElement.value;
+					}
+				} else {
+					if (currentElement.value > lastValue) {
+						if (currentElement.value >= ddStart.value) {
+							final int ddLength = Days.daysBetween( new LocalDate( ddStart.date ), new LocalDate( currentElement.date )).getDays();
+							
+							ddCount +=1 ;
+							ddDurationSum += ddLength;
+							ddValueSum += ddSize;
+							
+							checkDdLengthSizeOnMax( ddSize, ddLength );
+
+							inDrawdown = false;
+							ddStart = currentElement;
+							ddSize = 0.0;
+						}
+					} else {
+						final double currentDdSize = ddStart.value - currentElement.value;
+						if (ddSize < currentDdSize)
+							ddSize = currentDdSize;
+					}
+				}
+				lastValue = currentElement.value;
+			}
+			if (inDrawdown){
+				final int ddLength = Days.daysBetween( new LocalDate( ddStart.date ), new LocalDate( init.equityCurve.getLastElement().date )).getDays();
+				ddCount += 1;
+				ddValueSum += ddSize;
+				ddDurationSum += ddLength;
+				
+				checkDdLengthSizeOnMax( ddSize, ddLength );
+			}
+			
+			init.ddDurationAvGain = ddDurationSum / ddCount;
+			init.ddValueAvGain = ddValueSum / ddCount;
+			
+		}
+
+		private void checkDdLengthSizeOnMax(double ddSize, int ddLength) {
+			if (ddSize > statisticsInit.ddValueMax )
+				statisticsInit.ddValueMax = ddSize;
+			if (ddLength > statisticsInit.ddDurationMax )
+				statisticsInit.ddDurationMax = ddLength;
 		}
 
 		private void collectElementsInStartMonths() {

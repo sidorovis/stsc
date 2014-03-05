@@ -37,6 +37,12 @@ public class Statistics {
 		public double month12Min = 0.0;
 		public double month12Max = 0.0;
 
+		public double ddDurationAvGain = 0.0;
+		public double ddDurationMax = 0.0;
+		
+		public double ddValueAvGain = 0.0;
+		public double ddValueMax = 0.0;
+
 		public String toString() {
 			return "curve(" + equityCurve.toString() + ")";
 		}
@@ -74,6 +80,11 @@ public class Statistics {
 	private double month12StdDevGain = 0.0;
 	private double month12Min = 0.0;
 	private double month12Max = 0.0;
+
+	private double ddDurationAvGain = 0.0;
+	private double ddDurationMax = 0.0;	
+	private double ddValueAvGain = 0.0;
+	private double ddValueMax = 0.0;
 	
 	static public StatisticsInit getInit() {
 		return new StatisticsInit();
@@ -115,6 +126,11 @@ public class Statistics {
 		month12StdDevGain = init.month12StdDevGain;
 		month12Max = init.month12Max;
 		month12Min = init.month12Min;
+		
+		ddDurationAvGain = init.ddDurationAvGain;
+		ddDurationMax = init.ddDurationMax;
+		ddValueAvGain = init.ddValueAvGain;
+		ddValueMax = init.ddValueMax;
 	}
 
 	public double getAvGain() {
@@ -191,6 +207,22 @@ public class Statistics {
 
 	public double getMonth12Max() {
 		return month12Max;
+	}
+
+	public double getDdDurationAvGain() {
+		return ddDurationAvGain;
+	}
+
+	public double getDdDurationMax() {
+		return ddDurationMax;
+	}
+
+	public double getDdValueAvGain() {
+		return ddValueAvGain;
+	}
+
+	public double getDdValueMax() {
+		return ddValueMax;
 	}
 
 }

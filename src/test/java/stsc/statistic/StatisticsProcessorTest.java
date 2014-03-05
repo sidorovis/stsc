@@ -175,7 +175,10 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(8.732297, stats.getMonth12Max()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(-18.664019, stats.getMonth12Min()));
 
-		
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(71.1, stats.getDdDurationAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(554.0, stats.getDdDurationMax()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(6.470206, stats.getDdValueAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(32.700528, stats.getDdValueMax()));		
 	}
 	public void testEquityCurveOn251DaysStatistics() throws IOException, StatisticsCalculationException {
 		Statistics stats = testTradingHelper( 251 );
@@ -196,7 +199,13 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getMonth12AvGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.0, stats.getMonth12StdDevGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getMonth12Max()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.0, stats.getMonth12Min()));	}
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.0, stats.getMonth12Min()));
+
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(32.4, stats.getDdDurationAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(167.0, stats.getDdDurationMax()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(6.098124, stats.getDdValueAvGain()));
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(19.762441, stats.getDdValueMax()));		
+	}
 
 	private Statistics testTradingHelper(int daysCount) throws IOException, StatisticsCalculationException {
 		

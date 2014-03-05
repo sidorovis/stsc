@@ -71,13 +71,21 @@ public class UnitedFormatStock extends Stock {
 	}
 
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
-		Date date = nullableTime(dateFormat.parse(line.substring(0, 10)));
-		String[] tokens = line.split(",");
-		double volume = Double.parseDouble(tokens[5]);
-		double adj_close = Double.parseDouble(tokens[6]);
+		Date date;
+		final String lineDate = line.substring(0, 10);
+		try {
+			date = nullableTime(dateFormat.parse(lineDate));
+			String[] tokens = line.split(",");
+			double volume = Double.parseDouble(tokens[5]);
+			double adj_close = Double.parseDouble(tokens[6]);
 
-		Day newDay = new Day(date, Prices.fromTokens(tokens), volume, adj_close);
-		stock.addDay(newDay);
+			Day newDay = new Day(date, Prices.fromTokens(tokens), volume, adj_close);
+			stock.addDay(newDay);
+		} catch (ParseException e) {
+			throw new ParseException(e.toString() + " while parsing data: " + lineDate, 1);
+		} catch (NumberFormatException e) {
+			throw new ParseException(e.toString() + " while parsing data: '" + line + "' ", 1);
+		}
 	}
 
 	public UnitedFormatStock(String name) {

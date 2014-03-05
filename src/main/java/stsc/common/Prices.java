@@ -1,6 +1,6 @@
 package stsc.common;
 
-public class Prices{
+public class Prices {
 
 	final double open;
 	final double high;
@@ -36,5 +36,10 @@ public class Prices{
 
 	public double getClose() {
 		return close;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%3f", open + close);
 	}
 }
