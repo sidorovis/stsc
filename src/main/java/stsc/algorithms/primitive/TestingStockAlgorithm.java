@@ -1,7 +1,9 @@
-package stsc.algorithms;
+package stsc.algorithms.primitive;
 
 import java.util.Date;
 
+import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockSignal;
 import stsc.common.Day;
 
 public class TestingStockAlgorithm extends StockAlgorithm {

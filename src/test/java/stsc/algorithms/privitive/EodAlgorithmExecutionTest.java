@@ -1,7 +1,7 @@
-package stsc.algorithms;
+package stsc.algorithms.privitive;
 
 import stsc.algorithms.EodAlgorithmExecution;
-import stsc.algorithms.TestingEodAlgorithm;
+import stsc.algorithms.primitive.TestingEodAlgorithm;
 import junit.framework.TestCase;
 
 public class EodAlgorithmExecutionTest extends TestCase {

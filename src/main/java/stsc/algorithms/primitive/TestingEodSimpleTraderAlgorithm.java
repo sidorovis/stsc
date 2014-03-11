@@ -1,4 +1,4 @@
-package stsc.algorithms;
+package stsc.algorithms.primitive;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +8,8 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import stsc.algorithms.EodAlgorithm;
+import stsc.algorithms.EodSignal;
 import stsc.common.Day;
 import stsc.trading.Side;
 

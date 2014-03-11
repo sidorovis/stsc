@@ -7,8 +7,8 @@ import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodSignal;
-import stsc.algorithms.TestingEodAlgorithm;
-import stsc.algorithms.TestingEodAlgorithmSignal;
+import stsc.algorithms.primitive.TestingEodAlgorithm;
+import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;

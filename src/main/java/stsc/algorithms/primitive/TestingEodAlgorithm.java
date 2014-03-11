@@ -1,4 +1,4 @@
-package stsc.algorithms;
+package stsc.algorithms.primitive;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.algorithms.EodAlgorithm;
+import stsc.algorithms.EodSignal;
 import stsc.common.Day;
 import stsc.storage.BadSignalException;
 

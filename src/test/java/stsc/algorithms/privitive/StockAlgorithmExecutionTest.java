@@ -1,5 +1,9 @@
-package stsc.algorithms;
+package stsc.algorithms.privitive;
 
+import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.StockAlgorithmExecution;
+import stsc.algorithms.StockAlgorithmInterface;
+import stsc.algorithms.primitive.TestingStockAlgorithm;
 import stsc.storage.SignalsStorage;
 import junit.framework.TestCase;
 

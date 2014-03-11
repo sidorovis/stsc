@@ -80,7 +80,18 @@
         <generateDirectory>${project.build.directory}/target/classes/stsc/algorithms</generateDirectory>
       </configuration>
     </execution>
-    <execution>
+     <execution>
+      <id>stsc-algorithms-primitive</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/main/java/stsc/algorithms/primitive</schemaDirectory>
+        <generatePackage>stsc.algorithms.primitive</generatePackage>
+        <generateDirectory>${project.build.directory}/target/classes/stsc/algorithms/primitive</generateDirectory>
+      </configuration>
+    </execution>
+   <execution>
       <id>stsc-trading</id>
       <goals>
         <goal>eclipse</goal>
@@ -156,6 +167,17 @@
         <schemaDirectory>src/test/java/stsc/algorithms</schemaDirectory>
         <generatePackage>stsc.algorithms</generatePackage>
         <generateDirectory>${project.build.directory}/target/test-classes/stsc/algorithms</generateDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <id>stsc-algorithms-primitive-tests</id>
+      <goals>
+        <goal>eclipse</goal>
+      </goals>
+      <configuration>
+        <schemaDirectory>src/test/java/stsc/algorithms/primitive</schemaDirectory>
+        <generatePackage>stsc.algorithms.primitive</generatePackage>
+        <generateDirectory>${project.build.directory}/target/test-classes/stsc/algorithms/primitive</generateDirectory>
       </configuration>
     </execution>
     <execution>
