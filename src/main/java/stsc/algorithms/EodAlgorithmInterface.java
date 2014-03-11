@@ -19,7 +19,7 @@ public interface EodAlgorithmInterface {
 
 	public abstract void setSignalsStorage(SignalsStorage signalsStorage);
 
-	public abstract Class<? extends EodExecutionSignal> registerSignalsClass();
+	public abstract Class<? extends EodSignal> registerSignalsClass();
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed);
 }

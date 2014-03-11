@@ -29,15 +29,15 @@ public abstract class EodAlgorithm implements EodAlgorithmInterface {
 		signalsStorage.registerSignalsFromExecution(executionName, registerSignalsClass());
 	}
 
-	protected final void addSignal(Date date, EodExecutionSignal signal) throws BadSignalException {
+	protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {
 		signalsStorage.addSignal(executionName, date, signal);
 	}
 
-	protected final EodExecutionSignal getSignal(Date date) {
+	protected final EodSignal getSignal(Date date) {
 		return signalsStorage.getSignal(executionName, date);
 	}
 
-	public abstract Class<? extends EodExecutionSignal> registerSignalsClass();
+	public abstract Class<? extends EodSignal> registerSignalsClass();
 	public abstract void process(Date date, HashMap<String, Day> datafeed);
 
 }

@@ -2,12 +2,12 @@ package stsc.storage;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.EodExecutionSignal;
+import stsc.algorithms.EodSignal;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {
 
-	class TestSignal extends EodExecutionSignal {
+	class TestSignal extends EodSignal {
 		public final int id;
 
 		public TestSignal(int id) {

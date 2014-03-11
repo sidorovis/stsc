@@ -17,7 +17,7 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public Class<? extends EodExecutionSignal> registerSignalsClass() {
+	public Class<? extends EodSignal> registerSignalsClass() {
 		return TestingAlgorithmSignal.class;
 	}
 

@@ -98,7 +98,7 @@ public class TestingTraderEodAlgorithm extends EodAlgorithm {
 
 
 	@Override
-	public Class<EodExecutionSignal> registerSignalsClass() {
+	public Class<EodSignal> registerSignalsClass() {
 		return null;
 	}
 

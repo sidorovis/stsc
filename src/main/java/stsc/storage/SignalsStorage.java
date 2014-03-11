@@ -3,22 +3,22 @@ package stsc.storage;
 import java.util.Date;
 import java.util.HashMap;
 
-import stsc.algorithms.EodExecutionSignal;
+import stsc.algorithms.EodSignal;
 
 public class SignalsStorage {
 	class ExecutionSignalsStorage {
-		private final Class<? extends EodExecutionSignal> signalClass;
-		private HashMap<Date, EodExecutionSignal> signals = new HashMap<Date, EodExecutionSignal>();
+		private final Class<? extends EodSignal> signalClass;
+		private HashMap<Date, EodSignal> signals = new HashMap<Date, EodSignal>();
 
-		public ExecutionSignalsStorage(Class<? extends EodExecutionSignal> signalClass) {
+		public ExecutionSignalsStorage(Class<? extends EodSignal> signalClass) {
 			this.signalClass = signalClass;
 		}
 
-		public HashMap<Date, EodExecutionSignal> getSignals() {
+		public HashMap<Date, EodSignal> getSignals() {
 			return signals;
 		}
 
-		public void addSignal(Date date, EodExecutionSignal signal) throws BadSignalException {
+		public void addSignal(Date date, EodSignal signal) throws BadSignalException {
 			if (signal.getClass() == signalClass)
 				signals.put(date, signal);
 			else
@@ -30,16 +30,16 @@ public class SignalsStorage {
 
 	private HashMap<String, ExecutionSignalsStorage> signals = new HashMap<>();
 
-	public void registerSignalsFromExecution(String executionName, Class<? extends EodExecutionSignal> signalsClass) {
+	public void registerSignalsFromExecution(String executionName, Class<? extends EodSignal> signalsClass) {
 		if (signalsClass != null)
 			signals.put(executionName, new ExecutionSignalsStorage(signalsClass));
 	}
 
-	public void addSignal(String executionName, Date date, EodExecutionSignal signal) throws BadSignalException {
+	public void addSignal(String executionName, Date date, EodSignal signal) throws BadSignalException {
 		signals.get(executionName).addSignal(date, signal);
 	}
 
-	public EodExecutionSignal getSignal(String executionName, Date date) {
+	public EodSignal getSignal(String executionName, Date date) {
 		ExecutionSignalsStorage ess = signals.get(executionName);
 		if (ess != null)
 			return signals.get(executionName).signals.get(date);

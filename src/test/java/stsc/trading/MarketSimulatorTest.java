@@ -6,7 +6,7 @@ import java.text.ParseException;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodAlgorithmExecution;
-import stsc.algorithms.EodExecutionSignal;
+import stsc.algorithms.EodSignal;
 import stsc.algorithms.TestingEodAlgorithm;
 import stsc.algorithms.TestingAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
@@ -55,19 +55,19 @@ public class MarketSimulatorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
-		EodExecutionSignal e1s1 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 30).toDate());
+		EodSignal e1s1 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 30).toDate());
 		assertEquals(true, e1s1.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingAlgorithmSignal) e1s1).dateRepresentation);
 
-		EodExecutionSignal e1s2 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 31).toDate());
+		EodSignal e1s2 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 31).toDate());
 		assertEquals(true, e1s2.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingAlgorithmSignal) e1s2).dateRepresentation);
 
-		EodExecutionSignal e1s3 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 01).toDate());
+		EodSignal e1s3 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 01).toDate());
 		assertEquals(true, e1s3.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingAlgorithmSignal) e1s3).dateRepresentation);
 
-		EodExecutionSignal e1s6 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 05).toDate());
+		EodSignal e1s6 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 05).toDate());
 		assertEquals(true, e1s6.getClass() == TestingAlgorithmSignal.class);
 		assertEquals("2013-11-05", ((TestingAlgorithmSignal) e1s6).dateRepresentation);
 
