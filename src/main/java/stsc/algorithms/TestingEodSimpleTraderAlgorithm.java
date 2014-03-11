@@ -11,7 +11,7 @@ import org.joda.time.Days;
 import stsc.common.Day;
 import stsc.trading.Side;
 
-public class TestingTraderEodAlgorithm extends EodAlgorithm {
+public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 
 	public class Position {
 		final String stockName;
@@ -45,7 +45,7 @@ public class TestingTraderEodAlgorithm extends EodAlgorithm {
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
-	public TestingTraderEodAlgorithm() {
+	public TestingEodSimpleTraderAlgorithm() {
 		openedPositions = new HashMap<String, Position>();
 	}
 

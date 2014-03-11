@@ -12,6 +12,8 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodAlgorithmInterface;
+import stsc.algorithms.StockAlgorithmExecution;
+import stsc.algorithms.StockAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.statistic.StatisticsProcessor;
@@ -28,8 +30,8 @@ public class MarketSimulator {
 	private StatisticsProcessor statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
-	// TODO private HashMap<String, StockAlgorithmInterface >
-	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<String, EodAlgorithmInterface>();
+	private HashMap<String, StockAlgorithmInterface> stockAlgorithms = new HashMap<>();
+	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<>();
 
 	private Date from;
 	private Date to;
@@ -50,7 +52,11 @@ public class MarketSimulator {
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
-		for (EodAlgorithmExecution execution : settings.getExecutionsList()) {
+		for (StockAlgorithmExecution execution : settings.getStockExecutionsList()) {
+			StockAlgorithmInterface algo = execution.getInstance(signalsStorage);
+			stockAlgorithms.put(execution.getName(), algo);
+		}
+		for (EodAlgorithmExecution execution : settings.getEodExecutionsList()) {
 			EodAlgorithmInterface algo = execution.getInstance(broker, signalsStorage);
 			tradeAlgorithms.put(execution.getName(), algo);
 		}
@@ -77,15 +83,19 @@ public class MarketSimulator {
 
 			broker.setToday(today);
 
-			for (Entry<String, DayIterator> i : stocks) {
-				DayIterator stockIterator = i.getValue();
+			for (Entry<String, DayIterator> stock : stocks) {
+				DayIterator stockIterator = stock.getValue();
 				Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
 				if (stockDay != null) {
-					String stockName = i.getKey();
+					String stockName = stock.getKey();
 
 					if (stockDay.compareTo(currentDay) == 0) {
 						statistics.setStockDay(stockName, stockDay);
 
+						for (Map.Entry<String, StockAlgorithmInterface> stockAlgorithm : stockAlgorithms.entrySet()) {
+							stockAlgorithm.getValue().process(today, stockName, stockDay);
+						}
+						
 						datafeed.put(stockName, stockDay);
 					} else {
 						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);

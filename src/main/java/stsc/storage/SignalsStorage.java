@@ -4,45 +4,64 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.algorithms.EodSignal;
+import stsc.algorithms.StockSignal;
 
 public class SignalsStorage {
-	class ExecutionSignalsStorage {
-		private final Class<? extends EodSignal> signalClass;
-		private HashMap<Date, EodSignal> signals = new HashMap<Date, EodSignal>();
+	class ExecutionSignalsStorage<SignalType> {
+		private final Class<? extends SignalType> signalClass;
+		private final HashMap<Date, SignalType> signals = new HashMap<>();
 
-		public ExecutionSignalsStorage(Class<? extends EodSignal> signalClass) {
+		public ExecutionSignalsStorage(Class<? extends SignalType> signalClass) {
 			this.signalClass = signalClass;
 		}
 
-		public HashMap<Date, EodSignal> getSignals() {
+		public HashMap<Date, SignalType> getSignals() {
 			return signals;
 		}
 
-		public void addSignal(Date date, EodSignal signal) throws BadSignalException {
+		public void addSignal(Date date, SignalType signal) throws BadSignalException {
 			if (signal.getClass() == signalClass)
 				signals.put(date, signal);
 			else
 				throw new BadSignalException("bad signal type was tried to be added expected("
-						+ signal.getClass().getCanonicalName() + "), received(" + signal.getClass().getCanonicalName()
+						+ signalClass.getCanonicalName() + "), received(" + signal.getClass().getCanonicalName()
 						+ ")");
 		}
 	}
 
-	private HashMap<String, ExecutionSignalsStorage> signals = new HashMap<>();
+	private HashMap<String, ExecutionSignalsStorage<StockSignal>> stockSignals = new HashMap<>();
+	private HashMap<String, ExecutionSignalsStorage<EodSignal>> eodSignals = new HashMap<>();
 
-	public void registerSignalsFromExecution(String executionName, Class<? extends EodSignal> signalsClass) {
+	public void registerStockSignalsType(String executionName, Class<? extends StockSignal> signalsClass) {
 		if (signalsClass != null)
-			signals.put(executionName, new ExecutionSignalsStorage(signalsClass));
+			stockSignals.put(executionName, new ExecutionSignalsStorage<StockSignal>(signalsClass));
 	}
 
-	public void addSignal(String executionName, Date date, EodSignal signal) throws BadSignalException {
-		signals.get(executionName).addSignal(date, signal);
+	public void addStockSignal(String executionName, Date date, StockSignal signal) throws BadSignalException {
+		stockSignals.get(executionName).addSignal(date, signal);
 	}
 
-	public EodSignal getSignal(String executionName, Date date) {
-		ExecutionSignalsStorage ess = signals.get(executionName);
+	public StockSignal getStockSignal(String executionName, Date date) {
+		ExecutionSignalsStorage<StockSignal> ess = stockSignals.get(executionName);
 		if (ess != null)
-			return signals.get(executionName).signals.get(date);
+			return ess.getSignals().get(date);
+		return null;
+	}
+	
+	
+	public void registerEodSignalsType(String executionName, Class<? extends EodSignal> signalsClass) {
+		if (signalsClass != null)
+			eodSignals.put(executionName, new ExecutionSignalsStorage<EodSignal>(signalsClass));
+	}
+
+	public void addEodSignal(String executionName, Date date, EodSignal signal) throws BadSignalException {
+		eodSignals.get(executionName).addSignal(date, signal);
+	}
+
+	public EodSignal getEodSignal(String executionName, Date date) {
+		ExecutionSignalsStorage<EodSignal> ess = eodSignals.get(executionName);
+		if (ess != null)
+			return ess.getSignals().get(date);
 		return null;
 	}
 }

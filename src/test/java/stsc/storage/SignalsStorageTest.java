@@ -17,9 +17,9 @@ public class SignalsStorageTest extends TestCase {
 
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
-		signalsStorage.registerSignalsFromExecution("e1", TestSignal.class);
-		signalsStorage.addSignal("e1", new LocalDate(2010, 10, 20).toDate(), new TestSignal(12));
-		TestSignal ts = (TestSignal)signalsStorage.getSignal("e1", new LocalDate(2010, 10, 20).toDate());
+		signalsStorage.registerEodSignalsType("e1", TestSignal.class);
+		signalsStorage.addEodSignal("e1", new LocalDate(2010, 10, 20).toDate(), new TestSignal(12));
+		TestSignal ts = (TestSignal)signalsStorage.getEodSignal("e1", new LocalDate(2010, 10, 20).toDate());
 		assertEquals(12, ts.id);
 	}
 }

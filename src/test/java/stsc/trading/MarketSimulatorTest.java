@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodSignal;
 import stsc.algorithms.TestingEodAlgorithm;
-import stsc.algorithms.TestingAlgorithmSignal;
+import stsc.algorithms.TestingEodAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
@@ -35,7 +35,7 @@ public class MarketSimulatorTest extends TestCase {
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("30-10-2013");
 		settings.setTo("06-11-2013");
-		settings.getExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
+		settings.getEodExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
 		settings.getStockList().add("aapl");
 		settings.getStockList().add("gfi");
 		settings.getStockList().add("no30");
@@ -55,25 +55,25 @@ public class MarketSimulatorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
-		EodSignal e1s1 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 30).toDate());
-		assertEquals(true, e1s1.getClass() == TestingAlgorithmSignal.class);
-		assertEquals("2013-10-30", ((TestingAlgorithmSignal) e1s1).dateRepresentation);
+		EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate());
+		assertEquals(true, e1s1.getClass() == TestingEodAlgorithmSignal.class);
+		assertEquals("2013-10-30", ((TestingEodAlgorithmSignal) e1s1).dateRepresentation);
 
-		EodSignal e1s2 = signalsStorage.getSignal("e1", new LocalDate(2013, 10, 31).toDate());
-		assertEquals(true, e1s2.getClass() == TestingAlgorithmSignal.class);
-		assertEquals("2013-10-31", ((TestingAlgorithmSignal) e1s2).dateRepresentation);
+		EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate());
+		assertEquals(true, e1s2.getClass() == TestingEodAlgorithmSignal.class);
+		assertEquals("2013-10-31", ((TestingEodAlgorithmSignal) e1s2).dateRepresentation);
 
-		EodSignal e1s3 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 01).toDate());
-		assertEquals(true, e1s3.getClass() == TestingAlgorithmSignal.class);
-		assertEquals("2013-11-01", ((TestingAlgorithmSignal) e1s3).dateRepresentation);
+		EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate());
+		assertEquals(true, e1s3.getClass() == TestingEodAlgorithmSignal.class);
+		assertEquals("2013-11-01", ((TestingEodAlgorithmSignal) e1s3).dateRepresentation);
 
-		EodSignal e1s6 = signalsStorage.getSignal("e1", new LocalDate(2013, 11, 05).toDate());
-		assertEquals(true, e1s6.getClass() == TestingAlgorithmSignal.class);
-		assertEquals("2013-11-05", ((TestingAlgorithmSignal) e1s6).dateRepresentation);
+		EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 05).toDate());
+		assertEquals(true, e1s6.getClass() == TestingEodAlgorithmSignal.class);
+		assertEquals("2013-11-05", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 
-		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 6).toDate()));
-		assertNull(signalsStorage.getSignal("e2", new LocalDate(2013, 11, 3).toDate()));
-		assertNull(signalsStorage.getSignal("e1", new LocalDate(2013, 11, 29).toDate()));
+		assertNull(signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 6).toDate()));
+		assertNull(signalsStorage.getEodSignal("e2", new LocalDate(2013, 11, 3).toDate()));
+		assertNull(signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 29).toDate()));
 	}
 
 	public void testMarketSimulatorWithStatistics() throws Exception {
@@ -88,7 +88,7 @@ public class MarketSimulatorTest extends TestCase {
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("02-09-2013");
 		settings.setTo("06-11-2013");
-		settings.getExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
+		settings.getEodExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
 		settings.getStockList().add("aapl");
 		settings.getStockList().add("adm");
 		settings.getStockList().add("spy");

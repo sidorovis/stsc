@@ -18,14 +18,14 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 
 	@Override
 	public Class<? extends EodSignal> registerSignalsClass() {
-		return TestingAlgorithmSignal.class;
+		return TestingEodAlgorithmSignal.class;
 	}
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) {
 		datafeeds.add(datafeed);
 		DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
-		TestingAlgorithmSignal signal = new TestingAlgorithmSignal(fd.format(date));
+		TestingEodAlgorithmSignal signal = new TestingEodAlgorithmSignal(fd.format(date));
 		try {
 			addSignal(date, signal);
 		} catch (BadSignalException e) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import stsc.algorithms.EodAlgorithmExecution;
+import stsc.algorithms.StockAlgorithmExecution;
 import stsc.storage.StockStorage;
 
 public class MarketSimulatorSettings {
@@ -19,7 +20,8 @@ public class MarketSimulatorSettings {
 	private Date from;
 	private Date to;
 
-	private ArrayList<EodAlgorithmExecution> executionsList = new ArrayList<EodAlgorithmExecution>();
+	private ArrayList<StockAlgorithmExecution> executionsStockList = new ArrayList<>();
+	private ArrayList<EodAlgorithmExecution> executionsEodList = new ArrayList<>();
 
 	private ArrayList<String> stockList = new ArrayList<String>();
 
@@ -51,8 +53,12 @@ public class MarketSimulatorSettings {
 		return to;
 	}
 
-	public ArrayList<EodAlgorithmExecution> getExecutionsList() {
-		return executionsList;
+	public ArrayList<StockAlgorithmExecution> getStockExecutionsList() {
+		return executionsStockList;
+	}
+
+	public ArrayList<EodAlgorithmExecution> getEodExecutionsList() {
+		return executionsEodList;
 	}
 
 	public StockStorage getStockStorage() {
