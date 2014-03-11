@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.Day;
+import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
@@ -21,5 +22,5 @@ public interface EodAlgorithmInterface {
 
 	public abstract Class<? extends EodSignal> registerSignalsClass();
 
-	public abstract void process(Date date, HashMap<String, Day> datafeed);
+	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 }

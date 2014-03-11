@@ -18,6 +18,7 @@ import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
+import stsc.storage.BadSignalException;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.DayIterator;
@@ -25,12 +26,33 @@ import stsc.storage.StockStorage;
 
 public class MarketSimulator {
 
+	class StockExecutions {
+		public HashMap<String, StockAlgorithmInterface> map = new HashMap<>();
+
+	}
+
+	class StockAlgorithms {
+		public HashMap<String, StockExecutions> algorithms = new HashMap<>();
+
+		public void addExecution(String executionName, String stockName, StockAlgorithmInterface algo) {
+			StockExecutions se = algorithms.get(executionName);
+			if (se == null) {
+				se = algorithms.put(executionName, new StockExecutions());
+			}
+			se.map.put(stockName, algo);
+		}
+
+		public StockExecutions get(String executionName) {
+			return algorithms.get(executionName);
+		}
+	}
+
 	private StockStorage stockStorage;
 	private Broker broker;
 	private StatisticsProcessor statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
-	private HashMap<String, StockAlgorithmInterface> stockAlgorithms = new HashMap<>();
+	StockAlgorithms stockAlgorithms = new StockAlgorithms();
 	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<>();
 
 	private Date from;
@@ -44,17 +66,21 @@ public class MarketSimulator {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
 		this.statistics = new StatisticsProcessor(broker.getTradingLog());
-		
-		loadAlgorithms(settings);
+
 		parseSimulationSettings(settings);
+		loadAlgorithms(settings);
 
 		this.stocks = new DayIteratorStorage(from);
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		for (StockAlgorithmExecution execution : settings.getStockExecutionsList()) {
-			StockAlgorithmInterface algo = execution.getInstance(signalsStorage);
-			stockAlgorithms.put(execution.getName(), algo);
+
+			for (String stockName : processingStockList) {
+				StockAlgorithmInterface algo = execution.getInstance(signalsStorage);
+				stockAlgorithms.addExecution(execution.getName(), stockName, algo);
+			}
+
 		}
 		for (EodAlgorithmExecution execution : settings.getEodExecutionsList()) {
 			EodAlgorithmInterface algo = execution.getInstance(broker, signalsStorage);
@@ -65,11 +91,10 @@ public class MarketSimulator {
 	private void parseSimulationSettings(MarketSimulatorSettings settings) {
 		from = settings.getFrom();
 		to = settings.getTo();
-
 		processingStockList.addAll(settings.getStockList());
 	}
 
-	public void simulate() throws StatisticsCalculationException {
+	public void simulate() throws StatisticsCalculationException, BadSignalException {
 		LocalDate dayIterator = new LocalDate(from);
 		LocalDate endDate = new LocalDate(to);
 
@@ -92,13 +117,16 @@ public class MarketSimulator {
 					if (stockDay.compareTo(currentDay) == 0) {
 						statistics.setStockDay(stockName, stockDay);
 
-						for (Map.Entry<String, StockAlgorithmInterface> stockAlgorithm : stockAlgorithms.entrySet()) {
-							stockAlgorithm.getValue().process(today, stockName, stockDay);
+						for(Map.Entry<String, StockExecutions> sPair : stockAlgorithms.algorithms.entrySet()){
+							for (Map.Entry<String, StockAlgorithmInterface> algo : sPair.getValue().map.entrySet()) {
+								algo.getValue().process(algo.getKey(), stockDay);
+							}
 						}
-						
+
 						datafeed.put(stockName, stockDay);
 					} else {
-						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);
+						throw new StatisticsCalculationException("Bad day returned for stock " + stockName
+								+ " for day " + today);
 						// TODO only for debugging, delete it later
 					}
 				}

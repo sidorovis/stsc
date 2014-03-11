@@ -7,7 +7,8 @@ import stsc.algorithms.EodSignal;
 import stsc.algorithms.StockSignal;
 
 public class SignalsStorage {
-	class ExecutionSignalsStorage<SignalType> {
+
+	private class ExecutionSignalsStorage<SignalType> {
 		private final Class<? extends SignalType> signalClass;
 		private final HashMap<Date, SignalType> signals = new HashMap<>();
 
@@ -23,9 +24,8 @@ public class SignalsStorage {
 			if (signal.getClass() == signalClass)
 				signals.put(date, signal);
 			else
-				throw new BadSignalException("bad signal type was tried to be added expected("
-						+ signalClass.getCanonicalName() + "), received(" + signal.getClass().getCanonicalName()
-						+ ")");
+				throw new BadSignalException("bad signal type, expected(" + signalClass.getCanonicalName()
+						+ "), received(" + signal.getClass().getCanonicalName() + ")");
 		}
 	}
 
@@ -47,7 +47,6 @@ public class SignalsStorage {
 			return ess.getSignals().get(date);
 		return null;
 	}
-	
 	
 	public void registerEodSignalsType(String executionName, Class<? extends EodSignal> signalsClass) {
 		if (signalsClass != null)

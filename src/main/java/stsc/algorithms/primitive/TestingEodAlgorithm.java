@@ -24,14 +24,10 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public void process(Date date, HashMap<String, Day> datafeed) {
+	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
 		datafeeds.add(datafeed);
 		DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
 		TestingEodAlgorithmSignal signal = new TestingEodAlgorithmSignal(fd.format(date));
-		try {
-			addSignal(date, signal);
-		} catch (BadSignalException e) {
-			// do nothing
-		}
+		addSignal(date, signal);
 	}
 }

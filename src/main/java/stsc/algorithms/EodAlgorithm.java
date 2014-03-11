@@ -41,6 +41,6 @@ public abstract class EodAlgorithm implements EodAlgorithmInterface {
 	public abstract Class<? extends EodSignal> registerSignalsClass();
 
 	@Override
-	public abstract void process(Date date, HashMap<String, Day> datafeed);
+	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 
 }

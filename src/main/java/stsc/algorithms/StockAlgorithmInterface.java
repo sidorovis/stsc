@@ -3,6 +3,7 @@ package stsc.algorithms;
 import java.util.Date;
 
 import stsc.common.Day;
+import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 
 public interface StockAlgorithmInterface {
@@ -13,6 +14,6 @@ public interface StockAlgorithmInterface {
 
 	public abstract Class<? extends StockSignal> registerSignalsClass();
 
-	public abstract void process(Date date, String stockName, Day day);
+	public abstract void process(String stockName, Day day) throws BadSignalException;
 
 }

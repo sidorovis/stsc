@@ -11,6 +11,7 @@ import org.joda.time.Days;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodSignal;
 import stsc.common.Day;
+import stsc.storage.BadSignalException;
 import stsc.trading.Side;
 
 public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
@@ -43,7 +44,6 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 		}
 	}
 
-	
 	Date boughtDate;
 	HashMap<String, Position> openedPositions;
 
@@ -52,7 +52,7 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public void process(Date date, HashMap<String, Day> datafeed) {
+	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
 		if (openedPositions.isEmpty()) {
 			buy(datafeed);
 		} else {
@@ -97,7 +97,6 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 			openedPositions.remove(string);
 		}
 	}
-
 
 	@Override
 	public Class<EodSignal> registerSignalsClass() {

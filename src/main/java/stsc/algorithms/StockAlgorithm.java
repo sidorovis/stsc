@@ -34,6 +34,6 @@ public abstract class StockAlgorithm implements StockAlgorithmInterface {
 	public abstract Class<? extends StockSignal> registerSignalsClass();
 
 	@Override
-	public abstract void process(Date date, String stockName, Day day);
+	public abstract void process(String stockName, Day day) throws BadSignalException;
 
 }
