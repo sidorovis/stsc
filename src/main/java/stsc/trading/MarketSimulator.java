@@ -26,24 +26,33 @@ import stsc.storage.StockStorage;
 
 public class MarketSimulator {
 
-	class StockExecutions {
+	class Executions {
+		// execution name to stock algorithms
 		public HashMap<String, StockAlgorithmInterface> map = new HashMap<>();
 
+		void install(String stockName, final Day newDay) throws BadSignalException {
+			for (Map.Entry<String, StockAlgorithmInterface> sPair : map.entrySet()) {
+				sPair.getValue().process(stockName, newDay);
+			}
+		}
 	}
 
 	class StockAlgorithms {
-		public HashMap<String, StockExecutions> algorithms = new HashMap<>();
+		// stock to execution map
+		public HashMap<String, Executions> executions = new HashMap<>();
 
 		public void addExecution(String executionName, String stockName, StockAlgorithmInterface algo) {
-			StockExecutions se = algorithms.get(executionName);
+			Executions se = executions.get(executionName);
 			if (se == null) {
-				se = algorithms.put(executionName, new StockExecutions());
+				se = executions.put(executionName, new Executions());
 			}
 			se.map.put(stockName, algo);
 		}
 
-		public StockExecutions get(String executionName) {
-			return algorithms.get(executionName);
+		public void install(String stockName, final Day newDay) throws BadSignalException {
+			Executions e = executions.get(stockName);
+			if (e != null)
+				e.install(stockName, newDay);
 		}
 	}
 
@@ -117,11 +126,7 @@ public class MarketSimulator {
 					if (stockDay.compareTo(currentDay) == 0) {
 						statistics.setStockDay(stockName, stockDay);
 
-						for(Map.Entry<String, StockExecutions> sPair : stockAlgorithms.algorithms.entrySet()){
-							for (Map.Entry<String, StockAlgorithmInterface> algo : sPair.getValue().map.entrySet()) {
-								algo.getValue().process(algo.getKey(), stockDay);
-							}
-						}
+						stockAlgorithms.install(stockName, stockDay);
 
 						datafeed.put(stockName, stockDay);
 					} else {

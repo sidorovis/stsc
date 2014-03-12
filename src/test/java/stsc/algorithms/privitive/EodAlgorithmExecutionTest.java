@@ -16,7 +16,7 @@ public class EodAlgorithmExecutionTest extends TestCase {
 
 	public void testExecution() {
 		EodAlgorithmExecution e3 = new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName());
-		assertEquals("stsc.algorithms.TestingEodAlgorithm", e3.getAlgorithmName());
+		assertEquals(TestingEodAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
 	}
 }

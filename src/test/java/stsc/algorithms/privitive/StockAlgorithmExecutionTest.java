@@ -15,7 +15,7 @@ public class StockAlgorithmExecutionTest extends TestCase {
 
 	public void testExecution() throws BadAlgorithmException {
 		StockAlgorithmExecution e3 = new StockAlgorithmExecution("e1", TestingStockAlgorithm.class.getName());
-		assertEquals("stsc.algorithms.TestingStockAlgorithm", e3.getAlgorithmName());
+		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
 		
 		SignalsStorage signalsStorage = new SignalsStorage();
