@@ -30,7 +30,7 @@ public class MarketSimulator {
 		// execution name to stock algorithms
 		public HashMap<String, StockAlgorithmInterface> map = new HashMap<>();
 
-		void install(String stockName, final Day newDay) throws BadSignalException {
+		void simulate(String stockName, final Day newDay) throws BadSignalException {
 			for (Map.Entry<String, StockAlgorithmInterface> sPair : map.entrySet()) {
 				sPair.getValue().process(stockName, newDay);
 			}
@@ -39,20 +39,20 @@ public class MarketSimulator {
 
 	class StockAlgorithms {
 		// stock to execution map
-		public HashMap<String, Executions> executions = new HashMap<>();
+		public HashMap<String, Executions> stockToExecution = new HashMap<>();
 
-		public void addExecution(String executionName, String stockName, StockAlgorithmInterface algo) {
-			Executions se = executions.get(executionName);
+		public void addExecutionOnStock(String stockName, String executionName, StockAlgorithmInterface algo) {
+			Executions se = stockToExecution.get(stockName);
 			if (se == null) {
-				se = executions.put(executionName, new Executions());
+				se = stockToExecution.put(stockName, new Executions());
 			}
-			se.map.put(stockName, algo);
+			se.map.put(executionName, algo);
 		}
 
-		public void install(String stockName, final Day newDay) throws BadSignalException {
-			Executions e = executions.get(stockName);
+		public void simulate(String stockName, final Day newDay) throws BadSignalException {
+			Executions e = stockToExecution.get(stockName);
 			if (e != null)
-				e.install(stockName, newDay);
+				e.simulate(stockName, newDay);
 		}
 	}
 
@@ -84,12 +84,10 @@ public class MarketSimulator {
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		for (StockAlgorithmExecution execution : settings.getStockExecutionsList()) {
-
 			for (String stockName : processingStockList) {
 				StockAlgorithmInterface algo = execution.getInstance(signalsStorage);
-				stockAlgorithms.addExecution(execution.getName(), stockName, algo);
+				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
-
 		}
 		for (EodAlgorithmExecution execution : settings.getEodExecutionsList()) {
 			EodAlgorithmInterface algo = execution.getInstance(broker, signalsStorage);
@@ -126,7 +124,7 @@ public class MarketSimulator {
 					if (stockDay.compareTo(currentDay) == 0) {
 						statistics.setStockDay(stockName, stockDay);
 
-						stockAlgorithms.install(stockName, stockDay);
+						stockAlgorithms.simulate(stockName, stockDay);
 
 						datafeed.put(stockName, stockDay);
 					} else {
