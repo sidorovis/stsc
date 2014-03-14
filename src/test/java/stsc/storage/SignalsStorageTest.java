@@ -1,8 +1,11 @@
 package stsc.storage;
 
+import java.util.Date;
+
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodSignal;
+import stsc.storage.SignalsStorage.Handler;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {
@@ -18,8 +21,11 @@ public class SignalsStorageTest extends TestCase {
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
 		signalsStorage.registerEodSignalsType("e1", TestSignal.class);
-		signalsStorage.addEodSignal("e1", new LocalDate(2010, 10, 20).toDate(), new TestSignal(12));
-		TestSignal ts = (TestSignal)signalsStorage.getEodSignal("e1", new LocalDate(2010, 10, 20).toDate());
-		assertEquals(12, ts.id);
+		final Date d = new LocalDate(2010, 10, 20).toDate();
+		signalsStorage.addEodSignal("e1", d, new TestSignal(12));
+		final Handler<? extends EodSignal> ts = signalsStorage.getEodSignal("e1", new LocalDate(2010, 10, 20).toDate());
+		assertEquals(12, ts.getSignal(TestSignal.class).id );
+		assertEquals(0, ts.index);
+		assertEquals(d, ts.date);
 	}
 }

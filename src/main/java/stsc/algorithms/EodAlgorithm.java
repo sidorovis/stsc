@@ -29,7 +29,7 @@ public abstract class EodAlgorithm {
 	}
 
 	protected final EodSignal getSignal(Date date) {
-		return signalsStorage.getEodSignal(executionName, date);
+		return signalsStorage.getEodSignal(executionName, date).getValue();
 	}
 
 	public abstract Class<? extends EodSignal> registerSignalsClass();

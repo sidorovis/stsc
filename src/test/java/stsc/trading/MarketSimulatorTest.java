@@ -55,19 +55,19 @@ public class MarketSimulatorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
-		EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate());
+		EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(EodSignal.class);
 		assertEquals(true, e1s1.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingEodAlgorithmSignal) e1s1).dateRepresentation);
 
-		EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate());
+		EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(EodSignal.class);
 		assertEquals(true, e1s2.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingEodAlgorithmSignal) e1s2).dateRepresentation);
 
-		EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate());
+		EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(EodSignal.class);
 		assertEquals(true, e1s3.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingEodAlgorithmSignal) e1s3).dateRepresentation);
 
-		EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 05).toDate());
+		EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 05).toDate()).getSignal(EodSignal.class);
 		assertEquals(true, e1s6.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-05", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 

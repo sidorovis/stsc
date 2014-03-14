@@ -21,7 +21,7 @@ public class Sma extends StockAlgorithm {
 
 	final int n = 5;
 
-	protected Sma(String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
+	public Sma(String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
 		super(executionName, signalsStorage, algorithmSettings);
 		algorithmSettings.get("n", n);
 	}

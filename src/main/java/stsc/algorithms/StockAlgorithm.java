@@ -24,7 +24,7 @@ public abstract class StockAlgorithm {
 	}
 
 	protected final StockSignal getSignal(Date date) {
-		return signalsStorage.getStockSignal(executionName, date);
+		return signalsStorage.getStockSignal(executionName, date). getValue();
 	}
 
 	public abstract Class<? extends StockSignal> registerSignalsClass();

@@ -22,7 +22,8 @@ public class AlgorithmSettings {
 	@SuppressWarnings("unchecked")
 	public <T> AlgorithmSettings get(final String key, T type) {
 		final Object o = settings.get(key);
-		type = (T) o;
+		if (o != null && o.getClass() == type.getClass())
+			type = (T) o;
 		return this;
 	}
 }

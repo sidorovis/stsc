@@ -39,8 +39,8 @@ public class SmaTest extends TestCase {
 		for (int i = days.size() - 5; i < days.size(); ++i) {
 			lastSum += days.get(i).getPrices().getOpen();
 		}
-		Day lastDay = days.get(days.size() - 1);
-		final double lastSma = ((Sma.Signal) signalsStorage.getStockSignal("testSma", lastDay.getDate())).value;
+		final Day lastDay = days.get(days.size() - 1);
+		final double lastSma = signalsStorage.getStockSignal("testSma", lastDay.getDate()).getSignal(Sma.Signal.class).value;
 		assertEquals(lastSum / 5, lastSma, 0.000001);
 	}
 }
