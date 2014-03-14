@@ -8,21 +8,15 @@ import stsc.storage.SignalsStorage;
 
 public abstract class StockAlgorithm {
 
-	private String executionName;
-	private SignalsStorage signalsStorage;
-	protected AlgorithmSettings algorithmSettings;
+	private final String executionName;
+	private final SignalsStorage signalsStorage;
+	protected final AlgorithmSettings settings;
 
-	public final void setExecutionName(String executionName) {
+	protected StockAlgorithm(String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
 		this.executionName = executionName;
-	}
-
-	public final void setSignalsStorage(SignalsStorage signalsStorage) {
 		this.signalsStorage = signalsStorage;
+		this.settings = algorithmSettings;
 		signalsStorage.registerStockSignalsType(executionName, registerSignalsClass());
-	}
-
-	public final void setSettings(final AlgorithmSettings settings) {
-		this.algorithmSettings = settings;
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {

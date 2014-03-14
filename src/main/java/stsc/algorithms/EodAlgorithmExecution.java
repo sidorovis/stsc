@@ -9,15 +9,23 @@ import stsc.trading.Broker;
 public class EodAlgorithmExecution {
 	private final String executionName;
 	private final String algorithmName;
+	private final Class<? extends EodAlgorithm> algorithmType;
 
-	public EodAlgorithmExecution(String executionName, String algorithmName) {
+	public EodAlgorithmExecution(String executionName, String algorithmName) throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
+		try {
+			Class<?> classType = Class.forName(algorithmName);
+			this.algorithmType = classType.asSubclass(EodAlgorithm.class);
+		} catch (ClassNotFoundException e) {
+			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
+		}
 	}
 
 	public EodAlgorithmExecution(String executionName, Class<? extends EodAlgorithm> algorithmType) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
+		this.algorithmType = algorithmType;
 	}
 
 	public String getName() {
@@ -28,20 +36,17 @@ public class EodAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public EodAlgorithmInterface getInstance(Broker broker, SignalsStorage signalsStorage) throws BadAlgorithmException {
+	public EodAlgorithm getInstance(final Broker broker, final SignalsStorage signalsStorage,
+			final AlgorithmSettings settings) throws BadAlgorithmException {
 		try {
-			Class<?> classType = Class.forName(algorithmName);
-			Constructor<?> constructor = classType.getConstructor();
+			final Class<? extends EodAlgorithm> classType = EodAlgorithm.class.asSubclass(algorithmType);
+			final Class<?>[] constructorParameters = { String.class, Broker.class, SignalsStorage.class,
+					AlgorithmSettings.class };
+			final Constructor<? extends EodAlgorithm> constructor = classType.getConstructor(constructorParameters);
+			final Object[] params = { executionName, broker, signalsStorage, settings };
 
-			EodAlgorithmInterface algo = (EodAlgorithmInterface) constructor.newInstance();
-
-			algo.setExecutionName(executionName);
-			algo.setBroker(broker);
-			algo.setSignalsStorage(signalsStorage);
-
+			final EodAlgorithm algo = constructor.newInstance(params);
 			return algo;
-		} catch (ClassNotFoundException e) {
-			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "
 					+ e.toString());

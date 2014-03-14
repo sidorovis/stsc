@@ -8,15 +8,23 @@ import stsc.storage.SignalsStorage;
 public class StockAlgorithmExecution {
 	private final String executionName;
 	private final String algorithmName;
+	private final Class<? extends StockAlgorithm> algorithmType;
 
-	public StockAlgorithmExecution(String executionName, String algorithmName) {
+	public StockAlgorithmExecution(final String executionName, final String algorithmName) throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
+		try {
+			Class<?> classType = Class.forName(algorithmName);
+			this.algorithmType = classType.asSubclass(StockAlgorithm.class);
+		} catch (ClassNotFoundException e) {
+			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
+		}
 	}
 
-	public StockAlgorithmExecution(String executionName, Class<? extends EodAlgorithm> algorithmType) {
+	public StockAlgorithmExecution(String executionName, Class<? extends StockAlgorithm> algorithmType) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
+		this.algorithmType = algorithmType;
 	}
 
 	public String getName() {
@@ -27,19 +35,16 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithm getInstance(SignalsStorage signalsStorage) throws BadAlgorithmException {
+	public StockAlgorithm getInstance(final SignalsStorage signalsStorage, final AlgorithmSettings settings) throws BadAlgorithmException {
 		try {
-			Class<?> classType = Class.forName(algorithmName);
-			Constructor<?> constructor = classType.getConstructor();
+			final Class<? extends StockAlgorithm> classType = StockAlgorithm.class.asSubclass(algorithmType);
+			final Class<?>[] constructorParameters = { String.class, SignalsStorage.class,
+					AlgorithmSettings.class };
+			final Constructor<? extends StockAlgorithm> constructor = classType.getConstructor(constructorParameters);
+			final Object[] params = { executionName, signalsStorage, settings };
 
-			StockAlgorithm algo = (StockAlgorithm) constructor.newInstance();
-
-			algo.setExecutionName(executionName);
-			algo.setSignalsStorage(signalsStorage);
-
+			final StockAlgorithm algo = constructor.newInstance(params);
 			return algo;
-		} catch (ClassNotFoundException e) {
-			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "
 					+ e.toString());

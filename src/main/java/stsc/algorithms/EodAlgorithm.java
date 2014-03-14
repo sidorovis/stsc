@@ -8,24 +8,19 @@ import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
-public abstract class EodAlgorithm implements EodAlgorithmInterface {
+public abstract class EodAlgorithm {
 
-	protected Broker broker;
-	private String executionName;
-	private SignalsStorage signalsStorage;
+	private final String executionName;
+	protected final Broker broker;
+	private final SignalsStorage signalsStorage;
+	protected final AlgorithmSettings settings;
 
-	@Override
-	public final void setBroker(Broker broker) {
-		this.broker = broker;
-	}
-
-	@Override
-	public final void setExecutionName(String executionName) {
+	protected EodAlgorithm(String executionName, Broker broker, SignalsStorage signalsStorage,
+			AlgorithmSettings algorithmSettings) {
 		this.executionName = executionName;
-	}
-
-	public final void setSignalsStorage(SignalsStorage signalsStorage) {
+		this.broker = broker;
 		this.signalsStorage = signalsStorage;
+		this.settings = algorithmSettings;
 		signalsStorage.registerEodSignalsType(executionName, registerSignalsClass());
 	}
 
@@ -37,10 +32,8 @@ public abstract class EodAlgorithm implements EodAlgorithmInterface {
 		return signalsStorage.getEodSignal(executionName, date);
 	}
 
-	@Override
 	public abstract Class<? extends EodSignal> registerSignalsClass();
 
-	@Override
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 
 }
