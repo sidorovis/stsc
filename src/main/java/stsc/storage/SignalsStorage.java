@@ -54,6 +54,12 @@ public class SignalsStorage {
 			}
 		}
 
+		public Handler<? extends SignalType> getSignal(final int index) {
+			synchronized (this) {
+				return signalList.get(index);
+			}
+		}
+
 		public void addSignal(Date date, SignalType signal) throws BadSignalException {
 			if (signal.getClass() == signalClass)
 				checkedAddSignal(date, signal);
@@ -89,12 +95,22 @@ public class SignalsStorage {
 	}
 
 	public Handler<? extends StockSignal> getStockSignal(final String executionName, final Date date) {
-		ExecutionSignalsStorage<StockSignal> ess = stockSignals.get(executionName);
+		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
 			ess = stockSignals.get(executionName);
 		}
 		if (ess != null)
 			return ess.getSignal(date);
+		return null;
+	}
+
+	public Handler<? extends StockSignal> getStockSignal(final String executionName, final int index) {
+		ExecutionSignalsStorage<StockSignal> ess;
+		synchronized (stockSignals) {
+			ess = stockSignals.get(executionName);
+		}
+		if (ess != null)
+			return ess.getSignal(index);
 		return null;
 	}
 
@@ -105,19 +121,33 @@ public class SignalsStorage {
 			}
 	}
 
-	public void addEodSignal(String executionName, Date date, EodSignal signal) throws BadSignalException {
+	public void addEodSignal(final String executionName, final Date date, EodSignal signal) throws BadSignalException {
 		synchronized (eodSignals) {
-			eodSignals.get(executionName).addSignal(date, signal);
+			ExecutionSignalsStorage<EodSignal> s = eodSignals.get(executionName);
+			if (s != null)
+				eodSignals.get(executionName).addSignal(date, signal);
+			else
+				throw new BadSignalException("No such exectuion '" + executionName + "'");
 		}
 	}
 
-	public Handler<? extends EodSignal> getEodSignal(String executionName, Date date) {
+	public Handler<? extends EodSignal> getEodSignal(final String executionName, final Date date) {
 		ExecutionSignalsStorage<EodSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
 		if (ess != null)
 			return ess.getSignal(date);
+		return null;
+	}
+
+	public Handler<? extends EodSignal> getEodSignal(final String executionName, final int index) {
+		ExecutionSignalsStorage<EodSignal> ess = null;
+		synchronized (eodSignals) {
+			ess = eodSignals.get(executionName);
+		}
+		if (ess != null)
+			return ess.getSignal(index);
 		return null;
 	}
 }
