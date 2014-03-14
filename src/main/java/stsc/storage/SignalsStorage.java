@@ -76,43 +76,74 @@ public class SignalsStorage {
 				signalMap.put(date, newHandler);
 			}
 		}
+
+		public int getIndex() {
+			synchronized (this) {
+				return signalList.size();
+			}
+		}
 	}
 
 	private HashMap<String, ExecutionSignalsStorage<StockSignal>> stockSignals = new HashMap<>();
 	private HashMap<String, ExecutionSignalsStorage<EodSignal>> eodSignals = new HashMap<>();
 
-	public void registerStockSignalsType(String executionName, Class<? extends StockSignal> signalsClass) {
-		if (signalsClass != null)
+	public void registerStockSignalsType(String stockName, String executionName, Class<? extends StockSignal> signalsClass) {
+		if (signalsClass != null) {
+			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
-				stockSignals.put(executionName, new ExecutionSignalsStorage<StockSignal>(signalsClass));
+				stockSignals.put(key, new ExecutionSignalsStorage<StockSignal>(signalsClass));
 			}
-	}
-
-	public void addStockSignal(String executionName, Date date, StockSignal signal) throws BadSignalException {
-		synchronized (stockSignals) {
-			stockSignals.get(executionName).addSignal(date, signal);
 		}
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String executionName, final Date date) {
+	public void addStockSignal(final String stockName, final String executionName, final Date date,
+			final StockSignal signal) throws BadSignalException {
+		final String key = stockAlgorithmKey(stockName, executionName);
+		synchronized (stockSignals) {
+			stockSignals.get(key).addSignal(date, signal);
+		}
+	}
+
+	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName,
+			final Date date) {
+		final String key = stockAlgorithmKey(stockName, executionName);
 		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
-			ess = stockSignals.get(executionName);
+			ess = stockSignals.get(key);
 		}
 		if (ess != null)
 			return ess.getSignal(date);
 		return null;
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String executionName, final int index) {
+	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName,
+			final int index) {
+		final String key = stockAlgorithmKey(stockName, executionName);
 		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
-			ess = stockSignals.get(executionName);
+			ess = stockSignals.get(key);
 		}
 		if (ess != null)
 			return ess.getSignal(index);
 		return null;
 	}
+
+	public int getCurrentStockIndex(String stockName, String executionName) {
+		final String key = stockAlgorithmKey(stockName, executionName);
+		ExecutionSignalsStorage<StockSignal> ess;
+		synchronized (stockSignals) {
+			ess = stockSignals.get(key);
+		}
+		if (ess != null)
+			return ess.getIndex();
+		return 0;
+	}
+
+	private String stockAlgorithmKey(String stockName, String executionName) {
+		return stockName + "#" + executionName;
+	}
+
+	// EOD
 
 	public void registerEodSignalsType(String executionName, Class<? extends EodSignal> signalsClass) {
 		if (signalsClass != null)
@@ -150,4 +181,5 @@ public class SignalsStorage {
 			return ess.getSignal(index);
 		return null;
 	}
+
 }

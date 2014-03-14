@@ -9,9 +9,9 @@ import stsc.storage.SignalsStorage;
 
 public class TestingStockAlgorithm extends StockAlgorithm {
 
-	public TestingStockAlgorithm(String executionName, SignalsStorage signalsStorage,
+	public TestingStockAlgorithm(String stockName, String executionName, SignalsStorage signalsStorage,
 			AlgorithmSettings algorithmSettings) {
-		super(executionName, signalsStorage, algorithmSettings);
+		super(stockName, executionName, signalsStorage, algorithmSettings);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class TestingStockAlgorithm extends StockAlgorithm {
 	}
 
 	@Override
-	public void process(String stockName, Day day) throws BadSignalException {
+	public void process(Day day) throws BadSignalException {
 	}
 
 }

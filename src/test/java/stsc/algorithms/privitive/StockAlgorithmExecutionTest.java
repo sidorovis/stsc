@@ -30,7 +30,7 @@ public class StockAlgorithmExecutionTest extends TestCase {
 		final AlgorithmSettings settings = new AlgorithmSettings();
 
 		try {
-			final StockAlgorithm sai = e3.getInstance(storage, settings);
+			final StockAlgorithm sai = e3.getInstance("aapl", storage, settings);
 			assertTrue(sai instanceof TestingStockAlgorithm);
 		} catch (BadAlgorithmException e) {
 			e.printStackTrace();

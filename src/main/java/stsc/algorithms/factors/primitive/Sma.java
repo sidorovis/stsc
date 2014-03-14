@@ -11,18 +11,10 @@ import stsc.storage.SignalsStorage;
 
 public class Sma extends StockAlgorithm {
 
-	static public class Signal extends StockSignal {
-		final public Double value;
-
-		public Signal(final double value) {
-			this.value = new Double(value);
-		}
-	}
-
 	final int n = 5;
 
-	public Sma(String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
-		super(executionName, signalsStorage, algorithmSettings);
+	public Sma(String stockName, String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
+		super(stockName, executionName, signalsStorage, algorithmSettings);
 		algorithmSettings.get("n", n);
 	}
 
@@ -31,20 +23,20 @@ public class Sma extends StockAlgorithm {
 
 	@Override
 	public Class<? extends StockSignal> registerSignalsClass() {
-		return Signal.class;
+		return DoubleSignal.class;
 	}
 
 	@Override
-	public void process(String stockName, Day day) throws BadSignalException {
+	public void process(Day day) throws BadSignalException {
 		final double price = day.prices.getOpen();
 		elements.push(price);
 		sum += price;
 		if (elements.size() == n) {
-			addSignal(day.getDate(), new Signal(sum / n));
+			addSignal(day.getDate(), new DoubleSignal(sum / n));
 		} else if (elements.size() > n) {
 			Double lastElement = elements.pollLast();
 			sum -= lastElement;
-			addSignal(day.getDate(), new Signal(sum / n));
+			addSignal(day.getDate(), new DoubleSignal(sum / n));
 		}
 	}
 }

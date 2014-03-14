@@ -35,13 +35,13 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithm getInstance(final SignalsStorage signalsStorage, final AlgorithmSettings settings)
+	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage, final AlgorithmSettings settings)
 			throws BadAlgorithmException {
 		try {
-			final Class<?>[] params = { String.class, SignalsStorage.class, AlgorithmSettings.class };
+			final Class<?>[] params = { String.class, String.class, SignalsStorage.class, AlgorithmSettings.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType
 					.getConstructor(params);
-			final Object[] values = { executionName, signalsStorage, settings };
+			final Object[] values = { stockName, executionName, signalsStorage, settings };
 
 			final StockAlgorithm algo = constructor.newInstance(values);
 			return algo;

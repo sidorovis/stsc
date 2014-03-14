@@ -24,9 +24,9 @@ public class ExecutionsStorage {
 			map.put(executionName, algo);
 		}
 		
-		void simulate(String stockName, final Day newDay) throws BadSignalException {
+		void simulate(final Day newDay) throws BadSignalException {
 			for (Map.Entry<String, StockAlgorithm> sPair : map.entrySet()) {
-				sPair.getValue().process(stockName, newDay);
+				sPair.getValue().process(newDay);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ public class ExecutionsStorage {
 		void simulate(String stockName, final Day newDay) throws BadSignalException {
 			Executions e = stockToExecution.get(stockName);
 			if (e != null)
-				e.simulate(stockName, newDay);
+				e.simulate(newDay);
 		}
 	}
 
@@ -60,7 +60,7 @@ public class ExecutionsStorage {
 
 		for (StockAlgorithmExecution execution : stockExecutions) {
 			for (String stockName : stocks) {
-				StockAlgorithm algo = execution.getInstance(signals, new AlgorithmSettings());
+				StockAlgorithm algo = execution.getInstance(stockName, signals, new AlgorithmSettings());
 				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
 		}
