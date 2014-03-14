@@ -35,15 +35,15 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithm getInstance(final SignalsStorage signalsStorage, final AlgorithmSettings settings) throws BadAlgorithmException {
+	public StockAlgorithm getInstance(final SignalsStorage signalsStorage, final AlgorithmSettings settings)
+			throws BadAlgorithmException {
 		try {
-			final Class<? extends StockAlgorithm> classType = StockAlgorithm.class.asSubclass(algorithmType);
-			final Class<?>[] constructorParameters = { String.class, SignalsStorage.class,
-					AlgorithmSettings.class };
-			final Constructor<? extends StockAlgorithm> constructor = classType.getConstructor(constructorParameters);
-			final Object[] params = { executionName, signalsStorage, settings };
+			final Class<?>[] params = { String.class, SignalsStorage.class, AlgorithmSettings.class };
+			final Constructor<? extends StockAlgorithm> constructor = algorithmType
+					.getConstructor(params);
+			final Object[] values = { executionName, signalsStorage, settings };
 
-			final StockAlgorithm algo = constructor.newInstance(params);
+			final StockAlgorithm algo = constructor.newInstance(values);
 			return algo;
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "

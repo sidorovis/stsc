@@ -39,10 +39,9 @@ public class EodAlgorithmExecution {
 	public EodAlgorithm getInstance(final Broker broker, final SignalsStorage signalsStorage,
 			final AlgorithmSettings settings) throws BadAlgorithmException {
 		try {
-			final Class<? extends EodAlgorithm> classType = EodAlgorithm.class.asSubclass(algorithmType);
 			final Class<?>[] constructorParameters = { String.class, Broker.class, SignalsStorage.class,
 					AlgorithmSettings.class };
-			final Constructor<? extends EodAlgorithm> constructor = classType.getConstructor(constructorParameters);
+			final Constructor<? extends EodAlgorithm> constructor = algorithmType.getConstructor(constructorParameters);
 			final Object[] params = { executionName, broker, signalsStorage, settings };
 
 			final EodAlgorithm algo = constructor.newInstance(params);

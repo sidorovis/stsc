@@ -8,10 +8,13 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodSignal;
 import stsc.common.Day;
 import stsc.storage.BadSignalException;
+import stsc.storage.SignalsStorage;
+import stsc.trading.Broker;
 import stsc.trading.Side;
 
 public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
@@ -44,11 +47,12 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 		}
 	}
 
-	Date boughtDate;
-	HashMap<String, Position> openedPositions;
+	Date boughtDate = null;
+	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
 
-	public TestingEodSimpleTraderAlgorithm() {
-		openedPositions = new HashMap<String, Position>();
+	public TestingEodSimpleTraderAlgorithm(String executionName, Broker broker, SignalsStorage signalsStorage,
+			AlgorithmSettings algorithmSettings) {
+		super(executionName, broker, signalsStorage, algorithmSettings);
 	}
 
 	@Override

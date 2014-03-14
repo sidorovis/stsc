@@ -1,5 +1,6 @@
 package stsc.algorithms.privitive;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
@@ -10,17 +11,29 @@ import junit.framework.TestCase;
 public class StockAlgorithmExecutionTest extends TestCase {
 
 	public void testStockAlgorithmExecutionConstructor() {
-		new StockAlgorithmExecution("execution1", "algorithm1");
+		boolean exception = false;
+		try{
+			new StockAlgorithmExecution("execution1", "algorithm1");
+		} catch( BadAlgorithmException e ){
+			exception = true;
+		}
+		assertTrue(exception);
 	}
 
 	public void testExecution() throws BadAlgorithmException {
-		StockAlgorithmExecution e3 = new StockAlgorithmExecution("e1", TestingStockAlgorithm.class.getName());
+		final StockAlgorithmExecution e3 = new StockAlgorithmExecution("e1", TestingStockAlgorithm.class.getName());
+
 		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
-		
-		SignalsStorage signalsStorage = new SignalsStorage();
-		
-		StockAlgorithm sai = e3.getInstance(signalsStorage);
-		assertTrue( sai instanceof TestingStockAlgorithm );
+
+		final SignalsStorage storage = new SignalsStorage();
+		final AlgorithmSettings settings = new AlgorithmSettings();
+
+		try {
+			final StockAlgorithm sai = e3.getInstance(storage, settings);
+			assertTrue(sai instanceof TestingStockAlgorithm);
+		} catch (BadAlgorithmException e) {
+			e.printStackTrace();
+		}
 	}
 }

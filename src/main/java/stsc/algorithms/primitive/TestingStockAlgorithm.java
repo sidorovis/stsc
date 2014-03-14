@@ -1,10 +1,18 @@
 package stsc.algorithms.primitive;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockSignal;
 import stsc.common.Day;
+import stsc.storage.BadSignalException;
+import stsc.storage.SignalsStorage;
 
 public class TestingStockAlgorithm extends StockAlgorithm {
+
+	public TestingStockAlgorithm(String executionName, SignalsStorage signalsStorage,
+			AlgorithmSettings algorithmSettings) {
+		super(executionName, signalsStorage, algorithmSettings);
+	}
 
 	@Override
 	public Class<? extends StockSignal> registerSignalsClass() {
@@ -12,7 +20,7 @@ public class TestingStockAlgorithm extends StockAlgorithm {
 	}
 
 	@Override
-	public void process(String stockName, Day day) {
+	public void process(String stockName, Day day) throws BadSignalException {
 	}
 
 }

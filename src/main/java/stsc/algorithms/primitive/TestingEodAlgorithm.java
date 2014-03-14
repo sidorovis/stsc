@@ -6,17 +6,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodSignal;
 import stsc.common.Day;
 import stsc.storage.BadSignalException;
+import stsc.storage.SignalsStorage;
+import stsc.trading.Broker;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
 
-	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
-
-	public TestingEodAlgorithm() {
+	public TestingEodAlgorithm(String executionName, Broker broker, SignalsStorage signalsStorage,
+			AlgorithmSettings algorithmSettings) {
+		super(executionName, broker, signalsStorage, algorithmSettings);
 	}
+
+	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
 	public Class<? extends EodSignal> registerSignalsClass() {

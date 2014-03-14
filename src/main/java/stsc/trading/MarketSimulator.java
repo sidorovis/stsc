@@ -9,9 +9,10 @@ import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodAlgorithmExecution;
-import stsc.algorithms.EodAlgorithmInterface;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
 import stsc.common.Day;
@@ -62,7 +63,7 @@ public class MarketSimulator {
 	private SignalsStorage signalsStorage = new SignalsStorage();
 
 	StockAlgorithms stockAlgorithms = new StockAlgorithms();
-	private HashMap<String, EodAlgorithmInterface> tradeAlgorithms = new HashMap<>();
+	private HashMap<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
 	private Date from;
 	private Date to;
@@ -85,12 +86,12 @@ public class MarketSimulator {
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		for (StockAlgorithmExecution execution : settings.getStockExecutionsList()) {
 			for (String stockName : processingStockList) {
-				StockAlgorithm algo = execution.getInstance(signalsStorage);
+				StockAlgorithm algo = execution.getInstance(signalsStorage,new AlgorithmSettings());
 				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
 		}
 		for (EodAlgorithmExecution execution : settings.getEodExecutionsList()) {
-			EodAlgorithmInterface algo = execution.getInstance(broker, signalsStorage);
+			EodAlgorithm algo = execution.getInstance(broker, signalsStorage, new AlgorithmSettings());
 			tradeAlgorithms.put(execution.getName(), algo);
 		}
 	}
@@ -134,7 +135,7 @@ public class MarketSimulator {
 					}
 				}
 			}
-			for (Map.Entry<String, EodAlgorithmInterface> i : tradeAlgorithms.entrySet()) {
+			for (Map.Entry<String, EodAlgorithm> i : tradeAlgorithms.entrySet()) {
 				i.getValue().process(today, datafeed);
 			}
 			statistics.processEod();
@@ -150,7 +151,7 @@ public class MarketSimulator {
 		}
 	}
 
-	public HashMap<String, EodAlgorithmInterface> getTradeAlgorithms() {
+	public HashMap<String, EodAlgorithm> getTradeAlgorithms() {
 		return tradeAlgorithms;
 	}
 

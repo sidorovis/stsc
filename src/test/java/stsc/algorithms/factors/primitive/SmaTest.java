@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
@@ -16,10 +17,9 @@ public class SmaTest extends TestCase {
 	public void testSma() throws IOException, BadSignalException {
 
 		final SignalsStorage signalsStorage = new SignalsStorage();
+		AlgorithmSettings settings = new AlgorithmSettings();
 
-		final Sma sma = new Sma();
-		sma.setExecutionName("testSma");
-		sma.setSignalsStorage(signalsStorage);
+		final Sma sma = new Sma("testSma",signalsStorage,settings.set("n", 5));
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
