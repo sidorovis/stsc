@@ -1,8 +1,8 @@
 package stsc.algorithms.privitive;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
-import stsc.algorithms.StockAlgorithmInterface;
 import stsc.algorithms.primitive.TestingStockAlgorithm;
 import stsc.storage.SignalsStorage;
 import junit.framework.TestCase;
@@ -20,7 +20,7 @@ public class StockAlgorithmExecutionTest extends TestCase {
 		
 		SignalsStorage signalsStorage = new SignalsStorage();
 		
-		StockAlgorithmInterface sai = e3.getInstance(signalsStorage);
+		StockAlgorithm sai = e3.getInstance(signalsStorage);
 		assertTrue( sai instanceof TestingStockAlgorithm );
 	}
 }

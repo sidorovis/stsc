@@ -24,17 +24,14 @@ public class AlgorithmSettings {
 		return settings.get(key);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T get(final String key) {
-		final String result = settings.get(key);
-		final T typedResult = (T) result;
-		return typedResult;
+	public String get(final String key) {
+		return settings.get(key);
 	}
 
 	public AlgorithmSettings get(final String key, final StringBuilder out) {
 		final String value = settings.get(key);
 		if (value != null)
-			out.append(settings.get(key));
+			out.append(value);
 		return this;
 	}
 

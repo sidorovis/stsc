@@ -27,12 +27,12 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithmInterface getInstance(SignalsStorage signalsStorage) throws BadAlgorithmException {
+	public StockAlgorithm getInstance(SignalsStorage signalsStorage) throws BadAlgorithmException {
 		try {
 			Class<?> classType = Class.forName(algorithmName);
 			Constructor<?> constructor = classType.getConstructor();
 
-			StockAlgorithmInterface algo = (StockAlgorithmInterface) constructor.newInstance();
+			StockAlgorithm algo = (StockAlgorithm) constructor.newInstance();
 
 			algo.setExecutionName(executionName);
 			algo.setSignalsStorage(signalsStorage);

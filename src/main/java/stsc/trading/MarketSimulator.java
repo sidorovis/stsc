@@ -12,8 +12,8 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.EodAlgorithmInterface;
+import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
-import stsc.algorithms.StockAlgorithmInterface;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.statistic.StatisticsProcessor;
@@ -28,10 +28,10 @@ public class MarketSimulator {
 
 	class Executions {
 		// execution name to stock algorithms
-		public HashMap<String, StockAlgorithmInterface> map = new HashMap<>();
+		public HashMap<String, StockAlgorithm> map = new HashMap<>();
 
 		void simulate(String stockName, final Day newDay) throws BadSignalException {
-			for (Map.Entry<String, StockAlgorithmInterface> sPair : map.entrySet()) {
+			for (Map.Entry<String, StockAlgorithm> sPair : map.entrySet()) {
 				sPair.getValue().process(stockName, newDay);
 			}
 		}
@@ -41,7 +41,7 @@ public class MarketSimulator {
 		// stock to execution map
 		public HashMap<String, Executions> stockToExecution = new HashMap<>();
 
-		public void addExecutionOnStock(String stockName, String executionName, StockAlgorithmInterface algo) {
+		public void addExecutionOnStock(String stockName, String executionName, StockAlgorithm algo) {
 			Executions se = stockToExecution.get(stockName);
 			if (se == null) {
 				se = stockToExecution.put(stockName, new Executions());
@@ -85,7 +85,7 @@ public class MarketSimulator {
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		for (StockAlgorithmExecution execution : settings.getStockExecutionsList()) {
 			for (String stockName : processingStockList) {
-				StockAlgorithmInterface algo = execution.getInstance(signalsStorage);
+				StockAlgorithm algo = execution.getInstance(signalsStorage);
 				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
 		}

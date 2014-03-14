@@ -6,20 +6,23 @@ import stsc.common.Day;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 
-public abstract class StockAlgorithm implements StockAlgorithmInterface {
+public abstract class StockAlgorithm {
 
 	private String executionName;
 	private SignalsStorage signalsStorage;
+	protected AlgorithmSettings algorithmSettings;
 
-	@Override
 	public final void setExecutionName(String executionName) {
 		this.executionName = executionName;
 	}
 
-	@Override
 	public final void setSignalsStorage(SignalsStorage signalsStorage) {
 		this.signalsStorage = signalsStorage;
 		signalsStorage.registerStockSignalsType(executionName, registerSignalsClass());
+	}
+
+	public final void setSettings(final AlgorithmSettings settings) {
+		this.algorithmSettings = settings;
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
@@ -30,10 +33,8 @@ public abstract class StockAlgorithm implements StockAlgorithmInterface {
 		return signalsStorage.getStockSignal(executionName, date);
 	}
 
-	@Override
 	public abstract Class<? extends StockSignal> registerSignalsClass();
 
-	@Override
 	public abstract void process(String stockName, Day day) throws BadSignalException;
 
 }
