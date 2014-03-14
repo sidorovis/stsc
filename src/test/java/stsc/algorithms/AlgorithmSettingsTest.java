@@ -9,7 +9,11 @@ public class AlgorithmSettingsTest extends TestCase {
 		assertNull(d);
 		assertNotNull(as.set("a", new Double(14.05)));
 		assertNotNull(as.set("b", 14.05));
-		assertEquals(as.get("a"), as.get("b"));
+		Double recD = new Double(0.0);
+		as.get("b", recD);
+		double recV = 0.0;
+		as.get("a", recV);
+		assertEquals(recD.doubleValue(), recV);
 
 		as.set("r", "14.56");
 		assertEquals(14.56, Double.valueOf(as.get("r")));
