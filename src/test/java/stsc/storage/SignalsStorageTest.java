@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.EodSignal;
+import stsc.signals.EodSignal;
 import stsc.storage.SignalsStorage.Handler;
 import junit.framework.TestCase;
 

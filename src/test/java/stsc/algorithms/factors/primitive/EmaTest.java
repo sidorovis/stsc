@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.DoubleSignal;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
+import stsc.signals.DoubleSignal;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 import junit.framework.TestCase;

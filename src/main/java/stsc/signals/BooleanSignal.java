@@ -1,4 +1,5 @@
-package stsc.algorithms;
+package stsc.signals;
+
 
 public class BooleanSignal extends StockSignal {
 

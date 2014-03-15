@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.Day;
+import stsc.signals.EodSignal;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;

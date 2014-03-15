@@ -2,8 +2,8 @@ package stsc.algorithms.primitive;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
-import stsc.algorithms.StockSignal;
 import stsc.common.Day;
+import stsc.signals.StockSignal;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 

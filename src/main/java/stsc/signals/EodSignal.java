@@ -1,4 +1,4 @@
-package stsc.algorithms;
+package stsc.signals;
 
 public class EodSignal {
 

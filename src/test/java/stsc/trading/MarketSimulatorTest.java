@@ -6,10 +6,10 @@ import java.text.ParseException;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.EodAlgorithmExecution;
-import stsc.algorithms.EodSignal;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
+import stsc.signals.EodSignal;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;

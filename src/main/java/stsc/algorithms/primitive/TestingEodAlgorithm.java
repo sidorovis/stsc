@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.EodSignal;
 import stsc.common.Day;
+import stsc.signals.EodSignal;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
