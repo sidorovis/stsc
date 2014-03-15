@@ -1,6 +1,5 @@
 package stsc.signals;
 
-
 public class DoubleSignal extends StockSignal {
 
 	final public Double value;

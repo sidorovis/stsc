@@ -1,6 +1,5 @@
 package stsc.signals;
 
-
 public class BooleanSignal extends StockSignal {
 
 	final public Boolean value;
