@@ -1,6 +1,5 @@
-package stsc.algorithms.factors.primitive;
+package stsc.algorithms;
 
-import stsc.algorithms.StockSignal;
 
 public class DoubleSignal extends StockSignal {
 

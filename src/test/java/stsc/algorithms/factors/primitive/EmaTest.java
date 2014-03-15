@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.AlgorithmSettings;
+import stsc.algorithms.DoubleSignal;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;

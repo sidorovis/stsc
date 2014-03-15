@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.AlgorithmSettings;
+import stsc.algorithms.DoubleSignal;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockSignal;
 import stsc.common.Day;
