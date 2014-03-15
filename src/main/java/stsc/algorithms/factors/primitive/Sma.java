@@ -2,6 +2,7 @@ package stsc.algorithms.factors.primitive;
 
 import java.util.LinkedList;
 
+import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockSignal;
@@ -11,9 +12,10 @@ import stsc.storage.SignalsStorage;
 
 public class Sma extends StockAlgorithm {
 
-	final int n = 5;
+	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(new Integer(5));
 
-	public Sma(String stockName, String executionName, SignalsStorage signalsStorage, AlgorithmSettings algorithmSettings) {
+	public Sma(String stockName, String executionName, SignalsStorage signalsStorage,
+			AlgorithmSettings algorithmSettings) {
 		super(stockName, executionName, signalsStorage, algorithmSettings);
 		algorithmSettings.get("n", n);
 	}
@@ -31,12 +33,12 @@ public class Sma extends StockAlgorithm {
 		final double price = day.prices.getOpen();
 		elements.push(price);
 		sum += price;
-		if (elements.size() == n) {
-			addSignal(day.getDate(), new DoubleSignal(sum / n));
-		} else if (elements.size() > n) {
+		if (elements.size() == n.getValue()) {
+			addSignal(day.getDate(), new DoubleSignal(sum / n.getValue()));
+		} else if (elements.size() > n.getValue()) {
 			Double lastElement = elements.pollLast();
 			sum -= lastElement;
-			addSignal(day.getDate(), new DoubleSignal(sum / n));
+			addSignal(day.getDate(), new DoubleSignal(sum / n.getValue()));
 		}
 	}
 }

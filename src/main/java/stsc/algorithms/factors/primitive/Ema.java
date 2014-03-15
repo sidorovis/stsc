@@ -1,5 +1,6 @@
 package stsc.algorithms.factors.primitive;
 
+import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockSignal;
@@ -10,14 +11,12 @@ import stsc.storage.SignalsStorage.Handler;
 
 public class Ema extends StockAlgorithm {
 
-	final String smaExecutionName = "sma#1";
-	final double alpha = 0.2;
+	private final AlgorithmSetting<Double> P = new AlgorithmSetting<Double>(0.2);
 
 	public Ema(String stockName, String executionName, SignalsStorage signalsStorage,
 			AlgorithmSettings algorithmSettings) {
 		super(stockName, executionName, signalsStorage, algorithmSettings);
-		algorithmSettings.get("smaExecutionName", smaExecutionName);
-		algorithmSettings.get("alpha", alpha);
+		algorithmSettings.get("P", P);
 	}
 
 	@Override
@@ -35,7 +34,7 @@ public class Ema extends StockAlgorithm {
 			final Handler<? extends StockSignal> previousEmaSignal = getSignal(signalIndex - 1);
 			if (previousEmaSignal != null) {
 				final double previousEmaValue = previousEmaSignal.getSignal(DoubleSignal.class).value;
-				final double value = alpha * price  + (1 - alpha) * previousEmaValue;
+				final double value = P.getValue() * price + (1.0 - P.getValue()) * previousEmaValue;
 				addSignal(day.getDate(), new DoubleSignal(value));
 			}
 		}

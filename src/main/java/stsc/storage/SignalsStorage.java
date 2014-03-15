@@ -35,6 +35,11 @@ public class SignalsStorage {
 		public SignalType getValue() {
 			return signal;
 		}
+		
+		@Override
+		public String toString() {
+			return signal.toString();
+		}
 	}
 
 	private class ExecutionSignalsStorage<SignalType> {

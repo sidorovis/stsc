@@ -15,15 +15,22 @@ public class AlgorithmSettings {
 		return this;
 	}
 
-	public String get(final String key) {
+	public <T> AlgorithmSettings get(final String key, AlgorithmSetting<T> setting) {
+		final Object o = settings.get(key);
+		if (o != null)
+			setting.setValue(o);
+		return this;
+	}
+
+	public String toString(final String key) {
 		return (String) settings.get(key);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> AlgorithmSettings get(final String key, T type) {
+	public String get(final String key) {
 		final Object o = settings.get(key);
-		if (o != null && o.getClass() == type.getClass())
-			type = (T) o;
-		return this;
+		if ( o != null )
+			return settings.get(key).toString();
+		else
+			return null;
 	}
 }

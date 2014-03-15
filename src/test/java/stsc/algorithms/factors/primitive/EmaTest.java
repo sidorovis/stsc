@@ -15,10 +15,10 @@ import junit.framework.TestCase;
 
 public class EmaTest extends TestCase {
 	public void testEma() throws IOException, BadSignalException {
-		final SignalsStorage signalsStorage = new SignalsStorage();
+		final SignalsStorage ss = new SignalsStorage();
 		AlgorithmSettings settings = new AlgorithmSettings();
 
-		final Sma sma = new Sma("aapl", "testSma", signalsStorage, settings.set("n", 5));
+		final Ema ema = new Ema("aapl", "testEma", ss, settings.set("P", 0.3));
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -26,7 +26,18 @@ public class EmaTest extends TestCase {
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
-			sma.process(day);
+			ema.process(day);
 		}
+
+		assertEquals(days.get(aaplIndex).getPrices().getOpen(),
+				ss.getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).value);
+
+		final double secondValue = days.get(aaplIndex).getPrices().getOpen() * 0.7 + 0.3
+				* days.get(aaplIndex + 1).getPrices().getOpen();
+
+		assertEquals(secondValue, ss.getStockSignal("aapl", "testEma", 1).getSignal(DoubleSignal.class).value);
+
+		final int size = ss.getCurrentStockIndex("aapl", "testEma");
+		assertEquals(531.20111321, ss.getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value, 0.000001);
 	}
 }
