@@ -3,6 +3,7 @@ package stsc.algorithms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 
 public class StockAlgorithmExecution {
@@ -35,13 +36,20 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage, final AlgorithmSettings settings)
-			throws BadAlgorithmException {
-		try {
-			final Class<?>[] params = { String.class, String.class, SignalsStorage.class, AlgorithmSettings.class };
-			final Constructor<? extends StockAlgorithm> constructor = algorithmType
-					.getConstructor(params);
-			final Object[] values = { stockName, executionName, signalsStorage, settings };
+	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage,
+			final AlgorithmSettings settings, final AlgorithmNamesStorage namesStorage) throws BadAlgorithmException {
+		try {			
+			final Class<?>[] params = { StockAlgorithm.Init.class };
+			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
+
+			final StockAlgorithm.Init init = new StockAlgorithm.Init();
+			init.stockName = stockName;
+			init.executionName = executionName;
+			init.signalsStorage = signalsStorage;
+			init.settings = settings;
+			init.namesStorage = namesStorage;
+			
+			final Object[] values = { init };
 
 			final StockAlgorithm algo = constructor.newInstance(values);
 			return algo;

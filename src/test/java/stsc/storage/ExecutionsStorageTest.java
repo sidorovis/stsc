@@ -19,10 +19,11 @@ public class ExecutionsStorageTest extends TestCase {
 				.asList(new StockAlgorithmExecution[] { new StockAlgorithmExecution("t2", Sma.class) });
 		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
 
-		StockStorage stockStorage = new ThreadSafeStockStorage();
-		SignalsStorage signals = new SignalsStorage();
-		Broker broker = new Broker(stockStorage);
-		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals);
+		final Broker broker = new Broker(new ThreadSafeStockStorage());
+		final SignalsStorage signals = new SignalsStorage();
+		final AlgorithmNamesStorage namesStorage = new AlgorithmNamesStorage();
+
+		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals, namesStorage);
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 

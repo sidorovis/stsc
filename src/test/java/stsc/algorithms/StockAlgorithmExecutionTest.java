@@ -1,11 +1,10 @@
 package stsc.algorithms;
 
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
 import stsc.algorithms.primitive.TestingStockAlgorithm;
-import stsc.storage.SignalsStorage;
+import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class StockAlgorithmExecutionTest extends TestCase {
@@ -26,11 +25,9 @@ public class StockAlgorithmExecutionTest extends TestCase {
 		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
 
-		final SignalsStorage storage = new SignalsStorage();
-		final AlgorithmSettings settings = new AlgorithmSettings();
-
 		try {
-			final StockAlgorithm sai = e3.getInstance("aapl", storage, settings);
+			final StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
+			final StockAlgorithm sai = e3.getInstance(init.stockName,init.signalsStorage,init.settings,init.namesStorage);
 			assertTrue(sai instanceof TestingStockAlgorithm);
 		} catch (BadAlgorithmException e) {
 			e.printStackTrace();

@@ -14,6 +14,7 @@ import stsc.common.Stock;
 import stsc.signals.BadSignalException;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
+import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.SignalsStorage;
@@ -27,6 +28,7 @@ public class MarketSimulator {
 	private StatisticsProcessor statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 	private ExecutionsStorage executionsStorage;
+	private AlgorithmNamesStorage namesStorage = new AlgorithmNamesStorage();
 
 	private Date from;
 	private Date to;
@@ -46,7 +48,7 @@ public class MarketSimulator {
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		executionsStorage = new ExecutionsStorage(settings.getStockExecutionsList(), settings.getEodExecutionsList(),
-				processingStockList, broker, signalsStorage);
+				processingStockList, broker, signalsStorage, namesStorage);
 	}
 
 	private void parseSimulationSettings(MarketSimulatorSettings settings) {
@@ -105,7 +107,7 @@ public class MarketSimulator {
 	public SignalsStorage getSignalsStorage() {
 		return signalsStorage;
 	}
-	
+
 	public ExecutionsStorage getExecutionStorage() {
 		return executionsStorage;
 	}

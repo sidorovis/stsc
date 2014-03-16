@@ -5,15 +5,14 @@ import java.util.Date;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage;
+import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class StockAlgorithmTest extends TestCase {
 	private static class StockAlgorithmHelper extends StockAlgorithm {
 
-		public StockAlgorithmHelper(String stockName, String executionName, SignalsStorage signalsStorage,
-				AlgorithmSettings algorithmSettings) {
-			super(stockName, executionName, signalsStorage, algorithmSettings);
+		public StockAlgorithmHelper(final StockAlgorithm.Init init) {
+			super(init, StockAlgorithmHelper.class);
 		}
 
 		@Override
@@ -28,11 +27,12 @@ public class StockAlgorithmTest extends TestCase {
 	}
 
 	public void testStockAlgorithm() throws BadSignalException {
-		SignalsStorage ss = new SignalsStorage();
-		AlgorithmSettings as = new AlgorithmSettings();
-		StockAlgorithmHelper sah = new StockAlgorithmHelper("a", "s", ss, as);
+		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
+		init.executionName = "s";
+		init.stockName = "a";
+		StockAlgorithmHelper sah = new StockAlgorithmHelper(init);
 		final Date d = new Date();
 		sah.process(new Day(d));
-		assertEquals(StockSignal.class, ss.getStockSignal("a", "s", 0).getValue().getClass());
+		assertEquals(StockSignal.class, init.signalsStorage.getStockSignal("a", "s", 0).getValue().getClass());
 	}
 }

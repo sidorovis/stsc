@@ -83,7 +83,7 @@ public class SignalsStorage {
 			}
 		}
 
-		public int getIndex() {
+		public int size() {
 			synchronized (this) {
 				return signalList.size();
 			}
@@ -134,14 +134,14 @@ public class SignalsStorage {
 		return null;
 	}
 
-	public int getCurrentStockIndex(String stockName, String executionName) {
+	public int getIndexSize(String stockName, String executionName) {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
 			ess = stockSignals.get(key);
 		}
 		if (ess != null)
-			return ess.getIndex();
+			return ess.size();
 		return 0;
 	}
 
@@ -188,4 +188,13 @@ public class SignalsStorage {
 		return null;
 	}
 
+	public int getSignalsSize(final String executionName) {
+		ExecutionSignalsStorage<EodSignal> ess = null;
+		synchronized (eodSignals) {
+			ess = eodSignals.get(executionName);
+		}
+		if (ess != null)
+			return ess.size();
+		return 0;
+	}
 }

@@ -3,6 +3,7 @@ package stsc.algorithms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
@@ -36,13 +37,19 @@ public class EodAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public EodAlgorithm getInstance(final Broker broker, final SignalsStorage signalsStorage,
-			final AlgorithmSettings settings) throws BadAlgorithmException {
+	public EodAlgorithm getInstance(Broker broker, SignalsStorage signals, AlgorithmSettings settings, AlgorithmNamesStorage namesStorage)
+			throws BadAlgorithmException {
 		try {
-			final Class<?>[] constructorParameters = { String.class, Broker.class, SignalsStorage.class,
-					AlgorithmSettings.class };
+			EodAlgorithm.Init init = new EodAlgorithm.Init();
+			init.executionName = executionName;
+			init.signalsStorage = signals;
+			init.broker = broker;
+			init.settings = settings;
+			init.namesStorage = namesStorage;
+
+			final Class<?>[] constructorParameters = { EodAlgorithm.Init.class };
 			final Constructor<? extends EodAlgorithm> constructor = algorithmType.getConstructor(constructorParameters);
-			final Object[] params = { executionName, broker, signalsStorage, settings };
+			final Object[] params = { init };
 
 			final EodAlgorithm algo = constructor.newInstance(params);
 			return algo;

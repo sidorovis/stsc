@@ -1,20 +1,17 @@
 package stsc.algorithms.primitive;
 
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.storage.SignalsStorage;
-import stsc.trading.Broker;
 import stsc.trading.Side;
 
 public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
@@ -50,9 +47,8 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 	Date boughtDate = null;
 	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
 
-	public TestingEodSimpleTraderAlgorithm(String executionName, Broker broker, SignalsStorage signalsStorage,
-			AlgorithmSettings algorithmSettings) {
-		super(executionName, broker, signalsStorage, algorithmSettings);
+	public TestingEodSimpleTraderAlgorithm(EodAlgorithm.Init init) {
+		super(init, TestingEodSimpleTraderAlgorithm.class);
 	}
 
 	@Override
@@ -69,7 +65,7 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 		int boughtStocks = 0;
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
-			int boughtAmount = broker.buy(stockName, Side.LONG, 500);
+			int boughtAmount = broker().buy(stockName, Side.LONG, 500);
 			if (boughtAmount > 0) {
 				boughtStocks += 1;
 				openedPositions.put(stockName, new Position(stockName, Side.LONG, boughtAmount));
@@ -92,7 +88,7 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 		for (Map.Entry<String, Position> i : openedPositions.entrySet()) {
 			Position p = i.getValue();
 			int allSharesAmount = p.getSharedAmount();
-			int soldAmount = broker.sell(i.getKey(), p.getSide(), allSharesAmount);
+			int soldAmount = broker().sell(i.getKey(), p.getSide(), allSharesAmount);
 			p.setSharedAmount(allSharesAmount - soldAmount);
 			if (allSharesAmount == soldAmount)
 				positionKeysToDelete.add(p.getStockName());

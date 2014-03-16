@@ -1,24 +1,20 @@
 package stsc.algorithms.factors.primitive;
 
 import java.util.LinkedList;
-
 import stsc.algorithms.AlgorithmSetting;
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage;
 
 public class Sma extends StockAlgorithm {
 
 	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(new Integer(5));
 
-	public Sma(String stockName, String executionName, SignalsStorage signalsStorage,
-			AlgorithmSettings algorithmSettings) {
-		super(stockName, executionName, signalsStorage, algorithmSettings);
-		algorithmSettings.get("n", n);
+	public Sma(final StockAlgorithm.Init init) {
+		super(init, Sma.class);
+		init.settings.get("n", n);
 	}
 
 	final LinkedList<Double> elements = new LinkedList<>();

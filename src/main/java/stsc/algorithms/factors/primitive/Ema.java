@@ -1,23 +1,20 @@
 package stsc.algorithms.factors.primitive;
 
 import stsc.algorithms.AlgorithmSetting;
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorage.Handler;
 
 public class Ema extends StockAlgorithm {
 
 	private final AlgorithmSetting<Double> P = new AlgorithmSetting<Double>(0.2);
 
-	public Ema(String stockName, String executionName, SignalsStorage signalsStorage,
-			AlgorithmSettings algorithmSettings) {
-		super(stockName, executionName, signalsStorage, algorithmSettings);
-		algorithmSettings.get("P", P);
+	public Ema( final StockAlgorithm.Init init ) {
+		super(init, Ema.class);
+		init.settings.get("P", P);
 	}
 
 	@Override

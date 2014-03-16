@@ -52,23 +52,36 @@ public class ExecutionsStorage {
 		}
 	}
 
+	private List<String> stockNames;
 	private StockExecutions stockAlgorithms = new StockExecutions();
 	private HashMap<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
-	public ExecutionsStorage(final List<StockAlgorithmExecution> stockExecutions,
-			final List<EodAlgorithmExecution> eodExecutions, final List<String> stocks, final Broker broker,
-			final SignalsStorage signals) throws BadAlgorithmException {
+	public ExecutionsStorage(final List<String> stockNames) {
+		this.stockNames = stockNames;
+	}
 
+	public ExecutionsStorage(final List<StockAlgorithmExecution> stockExecutions,
+			final List<EodAlgorithmExecution> eodExecutions, final List<String> stockNames, final Broker broker,
+			final SignalsStorage signals, final AlgorithmNamesStorage namesStorage) throws BadAlgorithmException {
+		this(stockNames);
+		generateExecutions(stockExecutions, eodExecutions, broker, signals, namesStorage);
+	}
+
+	public void generateExecutions(final List<StockAlgorithmExecution> stockExecutions,
+			final List<EodAlgorithmExecution> eodExecutions, final Broker broker, final SignalsStorage signals,
+			final AlgorithmNamesStorage namesStorage) throws BadAlgorithmException {
 		for (StockAlgorithmExecution execution : stockExecutions) {
-			for (String stockName : stocks) {
-				StockAlgorithm algo = execution.getInstance(stockName, signals, new AlgorithmSettings());
+			for (String stockName : stockNames) {
+				final StockAlgorithm algo = execution.getInstance(stockName, signals, new AlgorithmSettings(),
+						namesStorage);
 				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
 		}
 		for (EodAlgorithmExecution execution : eodExecutions) {
-			EodAlgorithm algo = execution.getInstance(broker, signals, new AlgorithmSettings());
+			final EodAlgorithm algo = execution.getInstance(broker, signals, new AlgorithmSettings(), namesStorage);
 			tradeAlgorithms.put(execution.getName(), algo);
 		}
+
 	}
 
 	public void runStockAlgorithms(final String stockName, final Day stockDay) throws BadSignalException {

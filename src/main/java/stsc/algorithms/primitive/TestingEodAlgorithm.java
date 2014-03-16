@@ -1,24 +1,20 @@
 package stsc.algorithms.primitive;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.storage.SignalsStorage;
-import stsc.trading.Broker;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
 
-	public TestingEodAlgorithm(String executionName, Broker broker, SignalsStorage signalsStorage,
-			AlgorithmSettings algorithmSettings) {
-		super(executionName, broker, signalsStorage, algorithmSettings);
+	public TestingEodAlgorithm(EodAlgorithm.Init init) {
+		super(init, TestingEodAlgorithm.class);
 	}
 
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
@@ -31,8 +27,8 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
 		datafeeds.add(datafeed);
-		DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
-		TestingEodAlgorithmSignal signal = new TestingEodAlgorithmSignal(fd.format(date));
+		final DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
+		final TestingEodAlgorithmSignal signal = new TestingEodAlgorithmSignal(fd.format(date));
 		addSignal(date, signal);
 	}
 }
