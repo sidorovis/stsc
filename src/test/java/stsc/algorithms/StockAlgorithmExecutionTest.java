@@ -1,4 +1,4 @@
-package stsc.algorithms.privitive;
+package stsc.algorithms;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;

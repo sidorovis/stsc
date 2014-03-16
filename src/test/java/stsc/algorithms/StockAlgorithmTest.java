@@ -3,7 +3,6 @@ package stsc.algorithms;
 import java.util.Date;
 
 import stsc.common.Day;
-import stsc.common.Stock;
 import stsc.signals.StockSignal;
 import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;

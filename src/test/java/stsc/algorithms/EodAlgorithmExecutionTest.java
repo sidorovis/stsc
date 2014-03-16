@@ -1,4 +1,4 @@
-package stsc.algorithms.privitive;
+package stsc.algorithms;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithmExecution;
