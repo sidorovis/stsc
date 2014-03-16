@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 public class BadAlgorithmExceptionTest extends TestCase {
 	public void testBadAlgorithmException() {
-		BadAlgorithmException exception = new BadAlgorithmException("my exception message");
+		final BadAlgorithmException exception = new BadAlgorithmException("my exception message");
 		assertEquals("my exception message", exception.getMessage());
 		boolean bae = false;
 		boolean e = false;

@@ -6,9 +6,9 @@ import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
+import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.StockSignal;
-import stsc.storage.BadSignalException;
 import stsc.storage.SignalsStorage;
 
 public class Sma extends StockAlgorithm {

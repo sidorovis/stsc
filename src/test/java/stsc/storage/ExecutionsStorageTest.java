@@ -24,6 +24,19 @@ public class ExecutionsStorageTest extends TestCase {
 		Broker broker = new Broker(stockStorage);
 		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals);
 
-		assertEquals(1, es.tradeAlgorithms.size());
+		assertEquals(1, es.getEodAlgorithmsSize());
+
+		assertNotNull(es.getEodAlgorithm("t1"));
+		assertNull(es.getEodAlgorithm("t2"));
+
+		assertNotNull(es.getStockAlgorithm("t2", "aapl"));
+		assertNotNull(es.getStockAlgorithm("t2", "goog"));
+		assertNotNull(es.getStockAlgorithm("t2", "epl"));
+
+		assertNull(es.getStockAlgorithm("t1", "aapl"));
+		assertNull(es.getStockAlgorithm("t1", "goog"));
+		assertNull(es.getStockAlgorithm("t1", "epl"));
+
+		assertNull(es.getStockAlgorithm("t2", "epl2"));
 	}
 }

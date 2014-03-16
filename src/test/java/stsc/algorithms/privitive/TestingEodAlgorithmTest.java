@@ -6,7 +6,7 @@ import java.util.HashMap;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.common.Day;
-import stsc.storage.BadSignalException;
+import stsc.signals.BadSignalException;
 import stsc.storage.SignalsStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;

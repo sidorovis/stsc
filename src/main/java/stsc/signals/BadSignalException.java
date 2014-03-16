@@ -1,4 +1,4 @@
-package stsc.storage;
+package stsc.signals;
 
 public class BadSignalException extends Exception {
 	/**

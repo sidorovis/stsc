@@ -9,12 +9,11 @@ import java.util.Map.Entry;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
 import stsc.common.Day;
 import stsc.common.Stock;
+import stsc.signals.BadSignalException;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
-import stsc.storage.BadSignalException;
 import stsc.storage.DayIteratorStorage;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.SignalsStorage;
@@ -103,11 +102,11 @@ public class MarketSimulator {
 		}
 	}
 
-	HashMap<String, EodAlgorithm> getTradeAlgorithms() {
-		return executionsStorage.tradeAlgorithms;
-	}
-
 	public SignalsStorage getSignalsStorage() {
 		return signalsStorage;
+	}
+	
+	public ExecutionsStorage getExecutionStorage() {
+		return executionsStorage;
 	}
 }

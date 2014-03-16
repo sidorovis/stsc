@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
 import stsc.signals.StockSignal;
 

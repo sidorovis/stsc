@@ -10,6 +10,7 @@ import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.EodSignal;
+import stsc.storage.ExecutionsStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
@@ -22,15 +23,14 @@ public class MarketSimulatorTest extends TestCase {
 	}
 
 	public void atestMarketSimulator() throws Exception {
-
-		StockStorage ss = new ThreadSafeStockStorage();
+		final StockStorage ss = new ThreadSafeStockStorage();
 
 		csvReaderHelper(ss, "aapl");
 		csvReaderHelper(ss, "gfi");
 		csvReaderHelper(ss, "oldstock");
 		csvReaderHelper(ss, "no30");
 
-		MarketSimulatorSettings settings = new MarketSimulatorSettings();
+		final MarketSimulatorSettings settings = new MarketSimulatorSettings();
 		settings.setStockStorage(ss);
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("30-10-2013");
@@ -42,11 +42,14 @@ public class MarketSimulatorTest extends TestCase {
 		settings.getStockList().add("unexisted_stock");
 		settings.getStockList().add("oldstock");
 
-		MarketSimulator marketSimulator = new MarketSimulator(settings);
+		final MarketSimulator marketSimulator = new MarketSimulator(settings);
 		marketSimulator.simulate();
-		assertEquals(1, marketSimulator.getTradeAlgorithms().size());
 
-		TestingEodAlgorithm ta = (TestingEodAlgorithm) marketSimulator.getTradeAlgorithms().get("e1");
+		final ExecutionsStorage es = marketSimulator.getExecutionStorage();
+
+		assertEquals(1, marketSimulator.getExecutionStorage().getEodAlgorithmsSize());
+
+		final TestingEodAlgorithm ta = (TestingEodAlgorithm) es.getEodAlgorithm("e1");
 		assertEquals(ta.datafeeds.size(), 7);
 
 		int[] expectedDatafeedSizes = { 1, 1, 2, 2, 3, 2, 0 };
@@ -54,20 +57,24 @@ public class MarketSimulatorTest extends TestCase {
 		for (int i = 0; i < expectedDatafeedSizes.length; ++i)
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
-		SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
-		EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(EodSignal.class);
+		final SignalsStorage signalsStorage = marketSimulator.getSignalsStorage();
+		final EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(
+				EodSignal.class);
 		assertEquals(true, e1s1.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingEodAlgorithmSignal) e1s1).dateRepresentation);
 
-		EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(EodSignal.class);
+		final EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(
+				EodSignal.class);
 		assertEquals(true, e1s2.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingEodAlgorithmSignal) e1s2).dateRepresentation);
 
-		EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(EodSignal.class);
+		final EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(
+				EodSignal.class);
 		assertEquals(true, e1s3.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingEodAlgorithmSignal) e1s3).dateRepresentation);
 
-		EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 05).toDate()).getSignal(EodSignal.class);
+		final EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 05).toDate()).getSignal(
+				EodSignal.class);
 		assertEquals(true, e1s6.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-05", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 
@@ -77,13 +84,13 @@ public class MarketSimulatorTest extends TestCase {
 	}
 
 	public void testMarketSimulatorWithStatistics() throws Exception {
-		StockStorage ss = new ThreadSafeStockStorage();
+		final StockStorage ss = new ThreadSafeStockStorage();
 
 		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
 		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
 		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
 
-		MarketSimulatorSettings settings = new MarketSimulatorSettings();
+		final MarketSimulatorSettings settings = new MarketSimulatorSettings();
 		settings.setStockStorage(ss);
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("02-09-2013");
@@ -93,8 +100,7 @@ public class MarketSimulatorTest extends TestCase {
 		settings.getStockList().add("adm");
 		settings.getStockList().add("spy");
 
-		MarketSimulator marketSimulator = new MarketSimulator(settings);
+		final MarketSimulator marketSimulator = new MarketSimulator(settings);
 		marketSimulator.simulate();
-
 	}
 }
