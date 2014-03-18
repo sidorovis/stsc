@@ -48,7 +48,7 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
 
 	public TestingEodSimpleTraderAlgorithm(EodAlgorithm.Init init) {
-		super(init, TestingEodSimpleTraderAlgorithm.class);
+		super(init);
 	}
 
 	@Override

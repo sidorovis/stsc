@@ -19,49 +19,52 @@ public abstract class StockAlgorithm {
 		public AlgorithmSettings settings;
 		public AlgorithmNamesStorage namesStorage;
 
-		final void registerStockSignalsType(Class<? extends StockSignal> classType) {
+		private final void registerStockSignalsType(Class<? extends StockSignal> classType) {
 			signalsStorage.registerStockSignalsType(stockName, executionName, classType);
 		}
-		
-		final void registerAlgorithmClass( Class<? extends StockAlgorithm> algorithmClass ){
+
+		private final void registerAlgorithmClass(Class<? extends StockAlgorithm> algorithmClass) {
 			namesStorage.addStockAlgorithm(algorithmClass);
 		}
 
-		final void addSignal(Date date, StockSignal signal) throws BadSignalException {
+		private final void addSignal(Date date, StockSignal signal) throws BadSignalException {
 			signalsStorage.addStockSignal(stockName, executionName, date, signal);
 		}
 
-		protected final Handler<? extends StockSignal> getSignal(final Date date) {
+		private final Handler<? extends StockSignal> getSignal(final Date date) {
 			return signalsStorage.getStockSignal(stockName, executionName, date);
 		}
 
-		protected final Handler<? extends StockSignal> getSignal(final String executionName, final Date date) {
+		private final Handler<? extends StockSignal> getSignal(final String executionName, final Date date) {
 			return signalsStorage.getStockSignal(stockName, executionName, date);
 		}
 
-		protected final Handler<? extends StockSignal> getSignal(final int index) {
+		private final Handler<? extends StockSignal> getSignal(final int index) {
 			return signalsStorage.getStockSignal(stockName, executionName, index);
 		}
 
-		protected final Handler<? extends StockSignal> getSignal(final String executionName, final int index) {
+		private final Handler<? extends StockSignal> getSignal(final String executionName, final int index) {
 			return signalsStorage.getStockSignal(stockName, executionName, index);
 		}
 
-		protected final int getIndexSize() {
+		private final int getIndexSize() {
 			return signalsStorage.getIndexSize(stockName, executionName);
 		}
 
-		protected final int getStockIndexSize(String stockName) {
+		private final int getIndexSize(String stockName) {
 			return signalsStorage.getIndexSize(stockName, executionName);
 		}
 	}
 
 	private final Init init;
 
-	public StockAlgorithm(final Init initialize, Class<? extends StockAlgorithm> classType) {
+	public StockAlgorithm(final Init initialize) {
 		init = initialize;
 		init.registerStockSignalsType(registerSignalsClass());
-		init.registerAlgorithmClass(classType);
+	}
+
+	public final void registerAlgorithmClass() {
+		init.registerAlgorithmClass(this.getClass());
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
@@ -86,6 +89,10 @@ public abstract class StockAlgorithm {
 
 	protected final int getCurrentIndex() {
 		return init.getIndexSize();
+	}
+
+	protected final int getIndexForStock(final String stockName) {
+		return init.getIndexSize(stockName);
 	}
 
 	public abstract Class<? extends StockSignal> registerSignalsClass();

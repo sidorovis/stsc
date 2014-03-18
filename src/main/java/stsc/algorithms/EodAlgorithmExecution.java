@@ -52,6 +52,7 @@ public class EodAlgorithmExecution {
 			final Object[] params = { init };
 
 			final EodAlgorithm algo = constructor.newInstance(params);
+			algo.registerAlgorithmClass();
 			return algo;
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "

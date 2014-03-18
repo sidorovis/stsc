@@ -14,7 +14,7 @@ import stsc.signals.EodSignal;
 public class TestingEodAlgorithm extends EodAlgorithm {
 
 	public TestingEodAlgorithm(EodAlgorithm.Init init) {
-		super(init, TestingEodAlgorithm.class);
+		super(init);
 	}
 
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();

@@ -13,7 +13,7 @@ public class Sma extends StockAlgorithm {
 	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(new Integer(5));
 
 	public Sma(final StockAlgorithm.Init init) {
-		super(init, Sma.class);
+		super(init);
 		init.settings.get("n", n);
 	}
 

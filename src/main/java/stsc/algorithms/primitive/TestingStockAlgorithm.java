@@ -8,7 +8,7 @@ import stsc.signals.StockSignal;
 public class TestingStockAlgorithm extends StockAlgorithm {
 
 	public TestingStockAlgorithm(StockAlgorithm.Init init) {
-		super(init, TestingStockAlgorithm.class);
+		super(init);
 	}
 
 	@Override

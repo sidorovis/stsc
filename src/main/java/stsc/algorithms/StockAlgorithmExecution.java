@@ -52,6 +52,7 @@ public class StockAlgorithmExecution {
 			final Object[] values = { init };
 
 			final StockAlgorithm algo = constructor.newInstance(values);
+			algo.registerAlgorithmClass();
 			return algo;
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "

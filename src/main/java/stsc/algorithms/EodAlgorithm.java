@@ -24,7 +24,7 @@ public abstract class EodAlgorithm {
 			signalsStorage.registerEodSignalsType(executionName, signalsClass);
 		}
 
-		final void registerEodAlgorithm(final Class<? extends EodAlgorithm> algorithmClass) {
+		private final void registerAlgorithmClass(Class<? extends EodAlgorithm> algorithmClass) {
 			namesStorage.addEodAlgorithm(algorithmClass);
 		}
 
@@ -55,10 +55,13 @@ public abstract class EodAlgorithm {
 
 	private final Init init;
 
-	protected EodAlgorithm(final Init init, Class<? extends EodAlgorithm> classType) {
+	protected EodAlgorithm(final Init init) {
 		this.init = init;
 		init.registerEodSignalsType(registerSignalsClass());
-		init.registerEodAlgorithm(classType);
+	}
+
+	public final void registerAlgorithmClass() {
+		init.registerAlgorithmClass(this.getClass());
 	}
 
 	protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {

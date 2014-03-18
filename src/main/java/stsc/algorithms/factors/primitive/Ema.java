@@ -13,7 +13,7 @@ public class Ema extends StockAlgorithm {
 	private final AlgorithmSetting<Double> P = new AlgorithmSetting<Double>(0.2);
 
 	public Ema( final StockAlgorithm.Init init ) {
-		super(init, Ema.class);
+		super(init);
 		init.settings.get("P", P);
 	}
 

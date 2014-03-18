@@ -14,7 +14,7 @@ public class EodAlgorithmTest extends TestCase {
 	private static class EodAlgorithmHelper extends EodAlgorithm {
 
 		protected EodAlgorithmHelper(EodAlgorithm.Init init) {
-			super(init, EodAlgorithmHelper.class);
+			super(init);
 		}
 
 		@Override
