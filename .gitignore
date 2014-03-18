@@ -9,5 +9,6 @@
 /target
 /data/*.uf
 /filtered_data/*.uf
+/logs
 
 _*.log
