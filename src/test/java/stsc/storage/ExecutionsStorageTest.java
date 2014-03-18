@@ -21,9 +21,8 @@ public class ExecutionsStorageTest extends TestCase {
 
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
 		final SignalsStorage signals = new SignalsStorage();
-		final AlgorithmNamesStorage namesStorage = new AlgorithmNamesStorage();
 
-		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals, namesStorage);
+		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals);
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 

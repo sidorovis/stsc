@@ -31,7 +31,6 @@ public class StockAlgorithmTest extends TestCase {
 		init.executionName = "s";
 		init.stockName = "a";
 		StockAlgorithmHelper sah = new StockAlgorithmHelper(init);
-		sah.registerAlgorithmClass();
 		final Date d = new Date();
 		sah.process(new Day(d));
 		assertEquals(StockSignal.class, init.signalsStorage.getStockSignal("a", "s", 0).getValue().getClass());

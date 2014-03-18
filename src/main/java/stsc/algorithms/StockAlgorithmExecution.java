@@ -3,7 +3,6 @@ package stsc.algorithms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 
 public class StockAlgorithmExecution {
@@ -37,7 +36,7 @@ public class StockAlgorithmExecution {
 	}
 
 	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage,
-			final AlgorithmSettings settings, final AlgorithmNamesStorage namesStorage) throws BadAlgorithmException {
+			final AlgorithmSettings settings) throws BadAlgorithmException {
 		try {			
 			final Class<?>[] params = { StockAlgorithm.Init.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
@@ -47,12 +46,10 @@ public class StockAlgorithmExecution {
 			init.executionName = executionName;
 			init.signalsStorage = signalsStorage;
 			init.settings = settings;
-			init.namesStorage = namesStorage;
 			
 			final Object[] values = { init };
 
 			final StockAlgorithm algo = constructor.newInstance(values);
-			algo.registerAlgorithmClass();
 			return algo;
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "

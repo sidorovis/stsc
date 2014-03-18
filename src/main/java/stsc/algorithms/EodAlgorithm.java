@@ -6,7 +6,6 @@ import java.util.HashMap;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorage.Handler;
 import stsc.trading.Broker;
@@ -18,14 +17,9 @@ public abstract class EodAlgorithm {
 		public SignalsStorage signalsStorage;
 		public Broker broker;
 		public AlgorithmSettings settings;
-		public AlgorithmNamesStorage namesStorage;
 
 		final void registerEodSignalsType(final Class<? extends EodSignal> signalsClass) {
 			signalsStorage.registerEodSignalsType(executionName, signalsClass);
-		}
-
-		private final void registerAlgorithmClass(Class<? extends EodAlgorithm> algorithmClass) {
-			namesStorage.addEodAlgorithm(algorithmClass);
 		}
 
 		final void addSignal(Date date, EodSignal signal) throws BadSignalException {
@@ -58,10 +52,6 @@ public abstract class EodAlgorithm {
 	protected EodAlgorithm(final Init init) {
 		this.init = init;
 		init.registerEodSignalsType(registerSignalsClass());
-	}
-
-	public final void registerAlgorithmClass() {
-		init.registerAlgorithmClass(this.getClass());
 	}
 
 	protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {

@@ -10,7 +10,7 @@ import stsc.signals.BadSignalException;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class TestingEodAlgorithmTest extends TestCase {
+public class SimpleTradingAlgorithmTest extends TestCase {
 	public void testTestingEodAlgorithm() throws BadSignalException {
 
 		final EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();

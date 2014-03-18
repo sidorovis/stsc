@@ -14,7 +14,7 @@ import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
 import stsc.trading.Side;
 
-public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
+public class SimpleTradingAlgorithm extends EodAlgorithm {
 
 	public class Position {
 		final String stockName;
@@ -47,7 +47,7 @@ public class TestingEodSimpleTraderAlgorithm extends EodAlgorithm {
 	Date boughtDate = null;
 	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
 
-	public TestingEodSimpleTraderAlgorithm(EodAlgorithm.Init init) {
+	public SimpleTradingAlgorithm(EodAlgorithm.Init init) {
 		super(init);
 	}
 

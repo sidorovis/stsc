@@ -5,7 +5,6 @@ import java.util.Date;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.StockSignal;
-import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorage.Handler;
 
@@ -17,14 +16,9 @@ public abstract class StockAlgorithm {
 		public String executionName;
 		public SignalsStorage signalsStorage;
 		public AlgorithmSettings settings;
-		public AlgorithmNamesStorage namesStorage;
 
 		private final void registerStockSignalsType(Class<? extends StockSignal> classType) {
 			signalsStorage.registerStockSignalsType(stockName, executionName, classType);
-		}
-
-		private final void registerAlgorithmClass(Class<? extends StockAlgorithm> algorithmClass) {
-			namesStorage.addStockAlgorithm(algorithmClass);
 		}
 
 		private final void addSignal(Date date, StockSignal signal) throws BadSignalException {
@@ -61,10 +55,6 @@ public abstract class StockAlgorithm {
 	public StockAlgorithm(final Init initialize) {
 		init = initialize;
 		init.registerStockSignalsType(registerSignalsClass());
-	}
-
-	public final void registerAlgorithmClass() {
-		init.registerAlgorithmClass(this.getClass());
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {

@@ -1,5 +1,6 @@
 package stsc.trading;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,8 +21,9 @@ public class ExecutionsLoader {
 	}
 	private static Logger logger = LogManager.getLogger("AlgorithmsLoader");
 
-	private static String configFilePath = "./config/algs.ini";
-	
+	public static String configFilePath = "./config/algs.ini";
+	private File configFileFolder;
+
 	private ExecutionsStorage executionsStorage;
 
 	public ExecutionsLoader(final List<String> stockNames) throws FileNotFoundException, IOException {
@@ -31,6 +33,7 @@ public class ExecutionsLoader {
 
 	private void loadAlgorithms() throws FileNotFoundException, IOException {
 		logger.info("start algorithm loader");
+		configFileFolder = new File(configFilePath).getParentFile();
 		try (FileInputStream in = new FileInputStream(configFilePath)) {
 			final Properties p = new Properties();
 			logger.debug("properties file found");
@@ -40,7 +43,8 @@ public class ExecutionsLoader {
 		logger.info("stop algorithm loader");
 	}
 
-	private void processProperties(final Properties p) {
+	private void processProperties(final Properties p) throws FileNotFoundException, IOException {
+		processIncludes(p);
 		final String algorithmsNames = p.getProperty("Algorithms");
 		for (String algoName : algorithmsNames.split(",")) {
 			final String loadLine = p.getProperty(algoName + ".loadLine");
@@ -48,13 +52,25 @@ public class ExecutionsLoader {
 		}
 	}
 
+	private void processIncludes(final Properties p) throws FileNotFoundException, IOException {
+		final String[] includesFileNames = p.getProperty("Includes").split(",");
+		for (String fileName : includesFileNames) {
+			try (FileInputStream in = new FileInputStream(configFileFolder + fileName.trim())) {
+				final Properties includeProperty = new Properties();
+				logger.debug("read include property file '{}'", fileName);
+				includeProperty.load(in);
+				processProperties(includeProperty);
+			}
+		}
+	}
+
 	private void processAlgorithmLine(final String algoName, final String loadLine) {
-// TODO		final Regexp divideLoadLine = new Regexp("(\\w+)\\((.*)\\)");
+		final Regexp divideLoadLine = new Regexp("(\\w+)\\((.*)\\)");
+
 	}
 
 	public ExecutionsStorage getExecutionsStorage() {
 		return executionsStorage;
 	}
-	
-	
+
 }

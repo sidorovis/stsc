@@ -3,7 +3,6 @@ package stsc.testhelper;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
-import stsc.storage.AlgorithmNamesStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
@@ -13,7 +12,6 @@ public class TestHelper {
 		EodAlgorithm.Init init = new EodAlgorithm.Init();
 		init.broker = new Broker(new ThreadSafeStockStorage());
 		init.executionName = "eName";
-		init.namesStorage = new AlgorithmNamesStorage();
 		init.settings = new AlgorithmSettings();
 		init.signalsStorage = new SignalsStorage();
 		return init;
@@ -22,7 +20,6 @@ public class TestHelper {
 	public static StockAlgorithm.Init getStockAlgorithmInit() {
 		StockAlgorithm.Init init = new StockAlgorithm.Init();
 		init.executionName = "eName";
-		init.namesStorage = new AlgorithmNamesStorage();
 		init.settings = new AlgorithmSettings();
 		init.signalsStorage = new SignalsStorage();
 		init.stockName = "sName";
