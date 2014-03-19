@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-public class AlgorithmNamesStorageTest extends TestCase {
+public class AlgorithmsStorageTest extends TestCase {
 	public void testAlgorithmNamesStorage() throws ClassNotFoundException, IOException {
-		AlgorithmNamesStorage ans = new AlgorithmNamesStorage();
+		AlgorithmsStorage ans = new AlgorithmsStorage();
 		assertNotNull(ans.getStock("Sma"));
 		assertNotNull(ans.getStock("Ema"));
 		assertNull(ans.getEod("TestingEodAlgorithm"));

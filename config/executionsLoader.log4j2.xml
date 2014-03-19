@@ -6,18 +6,18 @@
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
 		</Console>
-		<File name="AlgorithmsLoader" fileName="./logs/algorithms_loader.log">
+		<File name="ExecutionsLoader" fileName="./logs/executions_loader.log">
 			<PatternLayout>
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
 		</File>
     </Appenders>
     <Loggers>
-    	<Root level="debug">
-    		<AppenderRef ref="AlgorithmsLoader"/>
+    	<Root level="info">
+    		<AppenderRef ref="ExecutionsLoader"/>
     	</Root>
-    	<Logger name="AlgorithmsLoader" level="trace" additivity="false">
-    		<AppenderRef ref="AlgorithmsLoader"/>
+    	<Logger name="ExecutionsLoader" level="trace" additivity="false">
+    		<AppenderRef ref="ExecutionsLoader"/>
     	</Logger>
     </Loggers>
 </Configuration>

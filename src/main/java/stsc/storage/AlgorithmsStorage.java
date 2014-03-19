@@ -10,18 +10,18 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
 
-public final class AlgorithmNamesStorage {
+public final class AlgorithmsStorage {
 
 	private String containerPackageName = "stsc.algorithm";
 
 	private HashMap<String, Class<? extends StockAlgorithm>> stockNames = new HashMap<>();
 	private HashMap<String, Class<? extends EodAlgorithm>> eodNames = new HashMap<>();
 
-	public AlgorithmNamesStorage() throws ClassNotFoundException, IOException {
+	public AlgorithmsStorage() throws ClassNotFoundException, IOException {
 		loadAlgorithms();
 	}
 
-	public AlgorithmNamesStorage(final String containerPackageName) throws ClassNotFoundException, IOException {
+	public AlgorithmsStorage(final String containerPackageName) throws ClassNotFoundException, IOException {
 		this.containerPackageName = containerPackageName;
 		loadAlgorithms();
 	}
