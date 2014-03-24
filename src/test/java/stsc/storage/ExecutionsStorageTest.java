@@ -16,12 +16,14 @@ public class ExecutionsStorageTest extends TestCase {
 	public void testExecutionsStorage() throws BadAlgorithmException {
 		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
 
+		final SignalsStorage signalsStorage = new SignalsStorage();
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
-		final SignalsStorage signals = new SignalsStorage();
 
-		final ExecutionsStorage es = new ExecutionsStorage(stocks, broker, signals);
+		final ExecutionsStorage es = new ExecutionsStorage(stocks);
 		es.addStockAlgorithmExecution(new StockAlgorithmExecution("t2", Sma.class, new AlgorithmSettings()));
 		es.addEodAlgorithmExecution(new EodAlgorithmExecution("t1", TestingEodAlgorithm.class, new AlgorithmSettings()));
+
+		es.initializeExecutions(signalsStorage, broker);
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 

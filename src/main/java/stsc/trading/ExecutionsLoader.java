@@ -22,6 +22,7 @@ import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmExecution;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
+import stsc.storage.SignalsStorage;
 
 public class ExecutionsLoader {
 
@@ -49,11 +50,12 @@ public class ExecutionsLoader {
 	private AlgorithmsStorage algorithmsStorage;
 	private Set<String> openedPropertyFileNames = new HashSet<>();
 
-	public ExecutionsLoader(final List<String> stockNames, final AlgorithmsStorage algorithmsStorage)
-			throws FileNotFoundException, IOException, BadAlgorithmException {
+	public ExecutionsLoader(List<String> stockNames, AlgorithmsStorage algorithmsStorage, Broker broker,
+			SignalsStorage signalsStorage) throws FileNotFoundException, IOException, BadAlgorithmException {
 		this.executionsStorage = new ExecutionsStorage(stockNames);
 		this.algorithmsStorage = algorithmsStorage;
 		loadAlgorithms();
+		this.executionsStorage.initializeExecutions(signalsStorage, broker);
 	}
 
 	private void loadAlgorithms() throws FileNotFoundException, IOException, BadAlgorithmException {
@@ -160,9 +162,9 @@ public class ExecutionsLoader {
 		}
 		final String executionName = generateExecutionName(algorithmName, algorithmSettings);
 		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
-		final StockAlgorithmExecution stockAlgorithmExecution = new StockAlgorithmExecution(executionName,
-				stockAlgorithm, algorithmSettings);
-		executionsStorage.addStockAlgorithmExecution(stockAlgorithmExecution);
+		final StockAlgorithmExecution execution = new StockAlgorithmExecution(executionName, stockAlgorithm,
+				algorithmSettings);
+		executionsStorage.addStockAlgorithmExecution(execution);
 		return executionName;
 	}
 

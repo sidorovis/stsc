@@ -33,6 +33,11 @@ public class AlgorithmSettings {
 		return (String) settings.get(key);
 	}
 
+	@Override
+	public String toString() {
+		return settings.toString() + " " + subExecutions.toString();
+	}
+	
 	public String get(final String key) {
 		final Object o = settings.get(key);
 		if (o != null)

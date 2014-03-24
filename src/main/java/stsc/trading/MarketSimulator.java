@@ -47,13 +47,14 @@ public class MarketSimulator {
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
-		executionsStorage = new ExecutionsStorage(processingStockList, broker, signalsStorage);
+		executionsStorage = new ExecutionsStorage(processingStockList);
 		for (StockAlgorithmExecution i : settings.getStockExecutionsList()) {
 			executionsStorage.addStockAlgorithmExecution(i);
 		}
 		for (EodAlgorithmExecution i : settings.getEodExecutionsList()) {
 			executionsStorage.addEodAlgorithmExecution(i);
 		}
+		executionsStorage.initializeExecutions(signalsStorage, broker);
 	}
 
 	private void parseSimulationSettings(MarketSimulatorSettings settings) {
