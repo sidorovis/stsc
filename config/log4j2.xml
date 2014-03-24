@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<Properties>
-		<Property name="market_data_downloader_filename">./_market_data_downloader.log</Property>
-		<Property name="downloaded_stock_filter_filename">./_downloaded_stock_filter.log</Property>
+		<Property name="market_data_downloader_filename">./logs/_market_data_downloader.log</Property>
+		<Property name="downloaded_stock_filter_filename">./logs/_downloaded_stock_filter.log</Property>
 	</Properties>
     <Appenders>
  		<Console name="Console" target="SYSTEM_OUT">
@@ -20,12 +20,12 @@
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
 		</File>
-		<File name="StockFilterWarnFile" fileName="./_stock_filter.log">
+		<File name="StockFilterWarnFile" fileName="./logs/_stock_filter.log">
 			<PatternLayout>
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
 		</File>
-		<File name="StockStorageFile" fileName="./_stock_storage.log">
+		<File name="StockStorageFile" fileName="./logs/_stock_storage.log">
 			<PatternLayout>
 				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>

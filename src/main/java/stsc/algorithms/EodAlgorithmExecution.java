@@ -10,8 +10,9 @@ public class EodAlgorithmExecution {
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends EodAlgorithm> algorithmType;
+	private AlgorithmSettings algorithmSettings;
 
-	public EodAlgorithmExecution(String executionName, String algorithmName) throws BadAlgorithmException {
+	public EodAlgorithmExecution(String executionName, String algorithmName, AlgorithmSettings algorithmSettings) throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		try {
@@ -20,12 +21,14 @@ public class EodAlgorithmExecution {
 		} catch (ClassNotFoundException e) {
 			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
 		}
+		this.algorithmSettings = algorithmSettings;
 	}
 
-	public EodAlgorithmExecution(String executionName, Class<? extends EodAlgorithm> algorithmType) {
+	public EodAlgorithmExecution(String executionName, Class<? extends EodAlgorithm> algorithmType, AlgorithmSettings algorithmSettings) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
+		this.algorithmSettings = algorithmSettings;
 	}
 
 	public String getName() {
@@ -36,14 +39,14 @@ public class EodAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public EodAlgorithm getInstance(Broker broker, SignalsStorage signals, AlgorithmSettings settings)
+	public EodAlgorithm getInstance(Broker broker, SignalsStorage signals)
 			throws BadAlgorithmException {
 		try {
 			EodAlgorithm.Init init = new EodAlgorithm.Init();
 			init.executionName = executionName;
 			init.signalsStorage = signals;
 			init.broker = broker;
-			init.settings = settings;
+			init.settings = algorithmSettings;
 
 			final Class<?>[] constructorParameters = { EodAlgorithm.Init.class };
 			final Constructor<? extends EodAlgorithm> constructor = algorithmType.getConstructor(constructorParameters);

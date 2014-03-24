@@ -3,6 +3,7 @@ package stsc.storage;
 import java.util.Arrays;
 import java.util.List;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.StockAlgorithmExecution;
@@ -13,16 +14,14 @@ import junit.framework.TestCase;
 
 public class ExecutionsStorageTest extends TestCase {
 	public void testExecutionsStorage() throws BadAlgorithmException {
-		final List<EodAlgorithmExecution> eae = Arrays.asList(new EodAlgorithmExecution[] { new EodAlgorithmExecution(
-				"t1", TestingEodAlgorithm.class) });
-		final List<StockAlgorithmExecution> sae = Arrays
-				.asList(new StockAlgorithmExecution[] { new StockAlgorithmExecution("t2", Sma.class) });
 		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
 
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
 		final SignalsStorage signals = new SignalsStorage();
 
-		ExecutionsStorage es = new ExecutionsStorage(sae, eae, stocks, broker, signals);
+		final ExecutionsStorage es = new ExecutionsStorage(stocks, broker, signals);
+		es.addStockAlgorithmExecution(new StockAlgorithmExecution("t2", Sma.class, new AlgorithmSettings()));
+		es.addEodAlgorithmExecution(new EodAlgorithmExecution("t1", TestingEodAlgorithm.class, new AlgorithmSettings()));
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 

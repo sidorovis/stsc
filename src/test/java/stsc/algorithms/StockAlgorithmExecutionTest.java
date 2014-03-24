@@ -11,23 +11,26 @@ public class StockAlgorithmExecutionTest extends TestCase {
 
 	public void testStockAlgorithmExecutionConstructor() {
 		boolean exception = false;
-		try{
-			new StockAlgorithmExecution("execution1", "algorithm1");
-		} catch( BadAlgorithmException e ){
+		try {
+			AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+			new StockAlgorithmExecution("execution1", "algorithm1", algorithmSettings);
+		} catch (BadAlgorithmException e) {
 			exception = true;
 		}
 		assertTrue(exception);
 	}
 
 	public void testExecution() throws BadAlgorithmException {
-		final StockAlgorithmExecution e3 = new StockAlgorithmExecution("e1", TestingStockAlgorithm.class.getName());
+		AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+		final StockAlgorithmExecution e3 = new StockAlgorithmExecution("e1", TestingStockAlgorithm.class.getName(),
+				algorithmSettings);
 
 		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());
 
 		try {
 			final StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
-			final StockAlgorithm sai = e3.getInstance(init.stockName,init.signalsStorage,init.settings);
+			final StockAlgorithm sai = e3.getInstance(init.stockName, init.signalsStorage);
 			assertTrue(sai instanceof TestingStockAlgorithm);
 		} catch (BadAlgorithmException e) {
 			e.printStackTrace();

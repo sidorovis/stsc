@@ -10,9 +10,13 @@ public class StockAlgorithmExecution {
 	private final String algorithmName;
 	private final Class<? extends StockAlgorithm> algorithmType;
 
-	public StockAlgorithmExecution(final String executionName, final String algorithmName) throws BadAlgorithmException {
+	private final AlgorithmSettings settings;
+
+	public StockAlgorithmExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
+			throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
+		this.settings = settings;
 		try {
 			Class<?> classType = Class.forName(algorithmName);
 			this.algorithmType = classType.asSubclass(StockAlgorithm.class);
@@ -21,10 +25,12 @@ public class StockAlgorithmExecution {
 		}
 	}
 
-	public StockAlgorithmExecution(String executionName, Class<? extends StockAlgorithm> algorithmType) {
+	public StockAlgorithmExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
+			AlgorithmSettings settings) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
+		this.settings = settings;
 	}
 
 	public String getName() {
@@ -35,9 +41,9 @@ public class StockAlgorithmExecution {
 		return algorithmName;
 	}
 
-	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage,
-			final AlgorithmSettings settings) throws BadAlgorithmException {
-		try {			
+	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage)
+			throws BadAlgorithmException {
+		try {
 			final Class<?>[] params = { StockAlgorithm.Init.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
 
@@ -46,7 +52,7 @@ public class StockAlgorithmExecution {
 			init.executionName = executionName;
 			init.signalsStorage = signalsStorage;
 			init.settings = settings;
-			
+
 			final Object[] values = { init };
 
 			final StockAlgorithm algo = constructor.newInstance(values);

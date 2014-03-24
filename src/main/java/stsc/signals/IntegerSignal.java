@@ -1,6 +1,6 @@
 package stsc.signals;
 
-public class IntegerSignal extends StockSignal{
+public class IntegerSignal extends StockSignal {
 
 	final public Integer value;
 
@@ -13,5 +13,4 @@ public class IntegerSignal extends StockSignal{
 		return value.toString();
 	}
 
-	
 }

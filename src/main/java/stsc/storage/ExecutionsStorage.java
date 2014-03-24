@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodAlgorithmExecution;
@@ -53,6 +52,8 @@ public class ExecutionsStorage {
 	}
 
 	private List<String> stockNames;
+	private SignalsStorage signalsStorage;
+	private Broker broker;
 	private StockExecutions stockAlgorithms = new StockExecutions();
 	private HashMap<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
@@ -60,27 +61,42 @@ public class ExecutionsStorage {
 		this.stockNames = stockNames;
 	}
 
-	public ExecutionsStorage(final List<StockAlgorithmExecution> stockExecutions,
-			final List<EodAlgorithmExecution> eodExecutions, final List<String> stockNames, final Broker broker,
-			final SignalsStorage signals) throws BadAlgorithmException {
+	public ExecutionsStorage(final List<String> stockNames, final Broker broker, SignalsStorage signalsStorage)
+			throws BadAlgorithmException {
 		this(stockNames);
-		generateExecutions(stockExecutions, eodExecutions, broker, signals);
+		this.signalsStorage = signalsStorage;
+		this.broker = broker;
 	}
 
-	public void generateExecutions(final List<StockAlgorithmExecution> stockExecutions,
-			final List<EodAlgorithmExecution> eodExecutions, final Broker broker, final SignalsStorage signals)
-			throws BadAlgorithmException {
-		for (StockAlgorithmExecution execution : stockExecutions) {
-			for (String stockName : stockNames) {
-				final StockAlgorithm algo = execution.getInstance(stockName, signals, new AlgorithmSettings());
-				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
-			}
-		}
-		for (EodAlgorithmExecution execution : eodExecutions) {
-			final EodAlgorithm algo = execution.getInstance(broker, signals, new AlgorithmSettings());
-			tradeAlgorithms.put(execution.getName(), algo);
-		}
+	// private void generateExecutions(final List<StockAlgorithmExecution>
+	// stockExecutions,
+	// final List<EodAlgorithmExecution> eodExecutions, final Broker broker)
+	// throws BadAlgorithmException {
+	// for (StockAlgorithmExecution execution : stockExecutions) {
+	// for (String stockName : stockNames) {
+	// final StockAlgorithm algo = execution.getInstance(stockName,
+	// signalsStorage);
+	// stockAlgorithms.addExecutionOnStock(stockName, execution.getName(),
+	// algo);
+	// }
+	// }
+	// for (EodAlgorithmExecution execution : eodExecutions) {
+	// final EodAlgorithm algo = execution.getInstance(broker, signalsStorage,
+	// new AlgorithmSettings());
+	// tradeAlgorithms.put(execution.getName(), algo);
+	// }
+	// }
 
+	public void addStockAlgorithmExecution(StockAlgorithmExecution execution) throws BadAlgorithmException {
+		for (String stockName : stockNames) {
+			final StockAlgorithm algo = execution.getInstance(stockName, signalsStorage);
+			stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
+		}
+	}
+
+	public void addEodAlgorithmExecution(EodAlgorithmExecution execution) throws BadAlgorithmException {
+		final EodAlgorithm algo = execution.getInstance(broker, signalsStorage);
+		tradeAlgorithms.put(execution.getName(), algo);
 	}
 
 	public void runStockAlgorithms(final String stockName, final Day stockDay) throws BadSignalException {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -15,19 +16,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.Logger;
 
+import stsc.algorithms.AlgorithmSettings;
+import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmExecution;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
-import sun.misc.Regexp;
 
 public class ExecutionsLoader {
 
 	public static final class PropertyNames {
 		public static String INCLUDES_LINE = "Includes";
-		public static String ALGORITHMS_LINE = "Algorithms";
+		public static String STOCK_EXECUTIONS_LINE = "StockExecutions";
+		public static String EOD_EXECUTIONS_LINE = "EodExecutions";
 	}
 
 	public static final class Regexps {
 		public static final Pattern loadLine = Pattern.compile("^(\\w+)\\((.*)\\)$");
+		public static final Pattern subAlgoParameter = Pattern.compile("^([^\\(]+)\\((.*)\\)(\\s)*$");
+		public static final Pattern dataParameter = Pattern.compile("^(.+)=(.+)$");
 	}
 
 	static {
@@ -42,14 +49,14 @@ public class ExecutionsLoader {
 	private AlgorithmsStorage algorithmsStorage;
 	private Set<String> openedPropertyFileNames = new HashSet<>();
 
-	public ExecutionsLoader(final List<String> stockNames, AlgorithmsStorage algorithmsStorage)
-			throws FileNotFoundException, IOException {
+	public ExecutionsLoader(final List<String> stockNames, final AlgorithmsStorage algorithmsStorage)
+			throws FileNotFoundException, IOException, BadAlgorithmException {
 		this.executionsStorage = new ExecutionsStorage(stockNames);
 		this.algorithmsStorage = algorithmsStorage;
 		loadAlgorithms();
 	}
 
-	private void loadAlgorithms() throws FileNotFoundException, IOException {
+	private void loadAlgorithms() throws FileNotFoundException, IOException, BadAlgorithmException {
 		logger.info("start executions loader");
 		final File configFile = new File(configFilePath);
 		configFileFolder = new File(configFile.getParent()).toString() + File.separatorChar;
@@ -64,12 +71,12 @@ public class ExecutionsLoader {
 		logger.info("stop executions loader");
 	}
 
-	private void processProperties(final Properties p) throws FileNotFoundException, IOException {
+	private void processProperties(final Properties p) throws FileNotFoundException, IOException, BadAlgorithmException {
 		processIncludes(p);
-		processAlgoritms(p);
+		processStockExecutions(p);
 	}
 
-	private void processIncludes(final Properties p) throws FileNotFoundException, IOException {
+	private void processIncludes(final Properties p) throws FileNotFoundException, IOException, BadAlgorithmException {
 		final String includes = p.getProperty(PropertyNames.INCLUDES_LINE);
 		if (includes == null)
 			return;
@@ -88,29 +95,83 @@ public class ExecutionsLoader {
 		}
 	}
 
-	private void processAlgoritms(final Properties p) {
-		final String algorithmsNames = p.getProperty(PropertyNames.ALGORITHMS_LINE);
-		if (algorithmsNames == null)
+	private void processStockExecutions(final Properties p) throws BadAlgorithmException {
+		final String executionsNames = p.getProperty(PropertyNames.STOCK_EXECUTIONS_LINE);
+		if (executionsNames == null)
 			return;
-		for (String algoName : algorithmsNames.split(",")) {
-			final String loadLine = p.getProperty(algoName + ".loadLine");
+		for (String executionName : executionsNames.split(",")) {
+			final String loadLine = p.getProperty(executionName + ".loadLine");
 			if (loadLine == null) {
-				logger.warn("bad algorithm registration, no {}.loadLine property", algoName);
+				logger.warn("bad execution registration, no {}.loadLine property", executionName);
 				continue;
 			}
-			processAlgorithmLine(algoName, loadLine);
+			processStockExecution(executionName, loadLine);
 		}
 	}
 
-	private void processAlgorithmLine(final String algoName, final String loadLine) {
+	private void processStockExecution(final String executionName, final String loadLine) throws BadAlgorithmException {
 		final Matcher loadLineMatch = Regexps.loadLine.matcher(loadLine);
 		if (loadLineMatch.matches()) {
-			System.out.println(loadLineMatch.group(1).trim());
-			System.out.println(loadLineMatch.group(2).trim());
+			final String algorithmName = loadLineMatch.group(1).trim();
+			final String paramsString = loadLineMatch.group(2).trim();
+			processSubExecution(algorithmName, paramsString);
 		}
 	}
 
-	
+	private String processSubExecution(final String algorithmName, final String paramsString)
+			throws BadAlgorithmException {
+		int inBracketsStack = 0;
+		int lastParamIndex = 0;
+		final ArrayList<String> params = new ArrayList<>();
+		for (int i = 0; i < paramsString.length(); ++i) {
+			if (paramsString.charAt(i) == '(') {
+				inBracketsStack += 1;
+			} else if (paramsString.charAt(i) == ')') {
+				inBracketsStack -= 1;
+			} else if (paramsString.charAt(i) == ',' && inBracketsStack == 0) {
+				params.add(paramsString.substring(lastParamIndex, i).trim());
+				lastParamIndex = i + 1;
+			}
+		}
+		if (lastParamIndex != paramsString.length()) {
+			params.add(paramsString.substring(lastParamIndex, paramsString.length()).trim());
+		}
+		return processStockExecution(algorithmName, params);
+	}
+
+	private String processStockExecution(final String algorithmName, final List<String> params)
+			throws BadAlgorithmException {
+		final Class<? extends StockAlgorithm> stockAlgo = algorithmsStorage.getStock(algorithmName);
+		if (stockAlgo == null)
+			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
+
+		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+
+		for (final String parameter : params) {
+			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);
+			final Matcher dataMatch = Regexps.dataParameter.matcher(parameter);
+			if (subAlgoMatch.matches()) {
+				final String subAlgoName = subAlgoMatch.group(1).trim();
+				final String subAlgoParams = subAlgoMatch.group(2).trim();
+				algorithmSettings.addSubExecutionName(processSubExecution(subAlgoName, subAlgoParams));
+			} else if (dataMatch.matches()) {
+				algorithmSettings.set(dataMatch.group(1).trim(), dataMatch.group(2).trim());
+			}
+		}
+		final String executionName = generateExecutionName(algorithmName, algorithmSettings);
+		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
+		final StockAlgorithmExecution stockAlgorithmExecution = new StockAlgorithmExecution(executionName,
+				stockAlgorithm, algorithmSettings);
+		executionsStorage.addStockAlgorithmExecution(stockAlgorithmExecution);
+		return executionName;
+	}
+
+	private String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
+		final String name = new Integer(algorithmName.hashCode() * 31).toString()
+				+ new Integer(algorithmSettings.hashCode()).toString();
+		return name;
+	}
+
 	public ExecutionsStorage getExecutionsStorage() {
 		return executionsStorage;
 	}

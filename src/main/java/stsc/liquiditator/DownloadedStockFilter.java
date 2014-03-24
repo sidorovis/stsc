@@ -16,7 +16,7 @@ import stsc.common.MarketDataContext;
 public class DownloadedStockFilter {
 
 	static {
-		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./log4j2.xml");
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 	}
 
 	static int processThreadSize = 8;
@@ -36,7 +36,7 @@ public class DownloadedStockFilter {
 	}
 
 	private void readProperties() throws IOException {
-		FileInputStream in = new FileInputStream("conf_liquiditator.ini");
+		FileInputStream in = new FileInputStream("./config/liquiditator.ini");
 
 		Properties p = new Properties();
 		p.load(in);

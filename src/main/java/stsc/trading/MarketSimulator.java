@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.EodAlgorithmExecution;
+import stsc.algorithms.StockAlgorithmExecution;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.signals.BadSignalException;
@@ -27,7 +29,6 @@ public class MarketSimulator {
 	private StatisticsProcessor statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 	private ExecutionsStorage executionsStorage;
-// TODO private AlgorithmNamesStorage namesStorage = new AlgorithmNamesStorage();
 
 	private Date from;
 	private Date to;
@@ -46,8 +47,13 @@ public class MarketSimulator {
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
-		executionsStorage = new ExecutionsStorage(settings.getStockExecutionsList(), settings.getEodExecutionsList(),
-				processingStockList, broker, signalsStorage);
+		executionsStorage = new ExecutionsStorage(processingStockList, broker, signalsStorage);
+		for (StockAlgorithmExecution i : settings.getStockExecutionsList()) {
+			executionsStorage.addStockAlgorithmExecution(i);
+		}
+		for (EodAlgorithmExecution i : settings.getEodExecutionsList()) {
+			executionsStorage.addEodAlgorithmExecution(i);
+		}
 	}
 
 	private void parseSimulationSettings(MarketSimulatorSettings settings) {

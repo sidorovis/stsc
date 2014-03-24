@@ -3,12 +3,14 @@ package stsc.trading;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import stsc.algorithms.BadAlgorithmException;
 import stsc.storage.AlgorithmsStorage;
 import junit.framework.TestCase;
 
 public class ExecutionsLoaderTest extends TestCase {
 
-	public void testAlgorithmLoader() throws FileNotFoundException, IOException, ClassNotFoundException {
+	public void testAlgorithmLoader() throws FileNotFoundException, IOException, ClassNotFoundException, BadAlgorithmException {
 		
 		AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
 		

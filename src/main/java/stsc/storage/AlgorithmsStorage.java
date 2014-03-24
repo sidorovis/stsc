@@ -46,11 +46,11 @@ public final class AlgorithmsStorage {
 
 	}
 
-	public void addStockAlgorithm(Class<? extends StockAlgorithm> algorithmClass) {
+	private void addStockAlgorithm(Class<? extends StockAlgorithm> algorithmClass) {
 		add(algorithmClass, stockNames);
 	}
 
-	public void addEodAlgorithm(Class<? extends EodAlgorithm> algorithmClass) {
+	private void addEodAlgorithm(Class<? extends EodAlgorithm> algorithmClass) {
 		add(algorithmClass, eodNames);
 	}
 

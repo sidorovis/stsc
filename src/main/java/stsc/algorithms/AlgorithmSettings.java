@@ -1,9 +1,16 @@
 package stsc.algorithms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AlgorithmSettings {
-	private HashMap<String, Object> settings = new HashMap<>();
+
+	private final HashMap<String, Object> settings = new HashMap<>();
+	private final ArrayList<String> subExecutions = new ArrayList<>();
+
+	public void addSubExecutionName(final String subExecutionName) {
+		subExecutions.add(subExecutionName);
+	}
 
 	public AlgorithmSettings set(final String key, final String value) {
 		settings.put(key, value);
@@ -28,7 +35,7 @@ public class AlgorithmSettings {
 
 	public String get(final String key) {
 		final Object o = settings.get(key);
-		if ( o != null )
+		if (o != null)
 			return settings.get(key).toString();
 		else
 			return null;

@@ -5,6 +5,7 @@ import java.text.ParseException;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithmExecution;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
@@ -35,7 +36,8 @@ public class MarketSimulatorTest extends TestCase {
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("30-10-2013");
 		settings.setTo("06-11-2013");
-		settings.getEodExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
+		settings.getEodExecutionsList().add(
+				new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName(), new AlgorithmSettings()));
 		settings.getStockList().add("aapl");
 		settings.getStockList().add("gfi");
 		settings.getStockList().add("no30");
@@ -95,7 +97,8 @@ public class MarketSimulatorTest extends TestCase {
 		settings.setBroker(new Broker(ss));
 		settings.setFrom("02-09-2013");
 		settings.setTo("06-11-2013");
-		settings.getEodExecutionsList().add(new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName()));
+		settings.getEodExecutionsList().add(
+				new EodAlgorithmExecution("e1", TestingEodAlgorithm.class.getName(), new AlgorithmSettings()));
 		settings.getStockList().add("aapl");
 		settings.getStockList().add("adm");
 		settings.getStockList().add("spy");
