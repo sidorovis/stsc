@@ -28,6 +28,11 @@ public class ExecutionsLoaderTest extends TestCase {
 		final ExecutionsStorage executions = el.getExecutionsStorage();
 
 		assertEquals(0, executions.getEodAlgorithmsSize());
-		assertEquals(3, executions.getStockAlgorithmsSize());
+		assertEquals(4, executions.getStockAlgorithmsSize());
 	}
+
+	public void testSeveralAlgorithmLoader() {
+
+	}
+
 }

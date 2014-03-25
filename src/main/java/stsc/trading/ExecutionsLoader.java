@@ -122,6 +122,11 @@ public class ExecutionsLoader {
 
 	private String processSubExecution(final String algorithmName, final String paramsString)
 			throws BadAlgorithmException {
+		final List<String> params = parseParams(paramsString);
+		return processStockExecution(algorithmName, params);
+	}
+
+	private List<String> parseParams(final String paramsString) {
 		int inBracketsStack = 0;
 		int lastParamIndex = 0;
 		final ArrayList<String> params = new ArrayList<>();
@@ -138,7 +143,8 @@ public class ExecutionsLoader {
 		if (lastParamIndex != paramsString.length()) {
 			params.add(paramsString.substring(lastParamIndex, paramsString.length()).trim());
 		}
-		return processStockExecution(algorithmName, params);
+
+		return params;
 	}
 
 	private String processStockExecution(final String algorithmName, final List<String> params)
@@ -153,9 +159,9 @@ public class ExecutionsLoader {
 			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);
 			final Matcher dataMatch = Regexps.dataParameter.matcher(parameter);
 			if (subAlgoMatch.matches()) {
-				final String subAlgoName = subAlgoMatch.group(1).trim();
-				final String subAlgoParams = subAlgoMatch.group(2).trim();
-				algorithmSettings.addSubExecutionName(processSubExecution(subAlgoName, subAlgoParams));
+				final String subExecutionName = processSubExecution(subAlgoMatch.group(1).trim(), subAlgoMatch.group(2)
+						.trim());
+				algorithmSettings.addSubExecutionName(subExecutionName);
 			} else if (dataMatch.matches()) {
 				algorithmSettings.set(dataMatch.group(1).trim(), dataMatch.group(2).trim());
 			}
