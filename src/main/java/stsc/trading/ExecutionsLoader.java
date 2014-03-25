@@ -168,7 +168,7 @@ public class ExecutionsLoader {
 		return executionName;
 	}
 
-	private String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
+	private static String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
 		final String name = new Integer(algorithmName.hashCode() * 31).toString()
 				+ new Integer(algorithmSettings.hashCode()).toString();
 		return name;

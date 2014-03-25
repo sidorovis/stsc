@@ -6,13 +6,15 @@ import java.util.Arrays;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.storage.AlgorithmsStorage;
+import stsc.storage.ExecutionsStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
 
 public class ExecutionsLoaderTest extends TestCase {
 
-	public void testAlgorithmLoader() throws FileNotFoundException, IOException, BadAlgorithmException, ClassNotFoundException {
+	public void testAlgorithmLoader() throws FileNotFoundException, IOException, BadAlgorithmException,
+			ClassNotFoundException {
 
 		AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
 		Broker broker = new Broker(new ThreadSafeStockStorage());
@@ -23,5 +25,9 @@ public class ExecutionsLoaderTest extends TestCase {
 				broker, signalsStorage);
 
 		assertNotNull(el.getExecutionsStorage());
+		final ExecutionsStorage executions = el.getExecutionsStorage();
+
+		assertEquals(0, executions.getEodAlgorithmsSize());
+		assertEquals(3, executions.getStockAlgorithmsSize());
 	}
 }

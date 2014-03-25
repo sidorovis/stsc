@@ -30,6 +30,10 @@ public class ExecutionsStorage {
 				sPair.getValue().process(newDay);
 			}
 		}
+
+		int size() {
+			return map.size();
+		}
 	}
 
 	private class StockExecutions {
@@ -101,6 +105,13 @@ public class ExecutionsStorage {
 
 	public EodAlgorithm getEodAlgorithm(final String key) {
 		return tradeAlgorithms.get(key);
+	}
+
+	public int getStockAlgorithmsSize(){
+		if ( stockAlgorithms.stockToExecution.isEmpty() )
+			return 0;
+		else
+			return stockAlgorithms.stockToExecution.entrySet().iterator().next().getValue().size();
 	}
 
 	public StockAlgorithm getStockAlgorithm(final String executionName, final String stockName) {
