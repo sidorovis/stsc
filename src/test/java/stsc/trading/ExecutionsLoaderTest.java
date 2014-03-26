@@ -15,10 +15,9 @@ public class ExecutionsLoaderTest extends TestCase {
 
 	public void testAlgorithmLoader() throws FileNotFoundException, IOException, BadAlgorithmException,
 			ClassNotFoundException {
-
-		AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
-		Broker broker = new Broker(new ThreadSafeStockStorage());
-		SignalsStorage signalsStorage = new SignalsStorage();
+		final AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
+		final Broker broker = new Broker(new ThreadSafeStockStorage());
+		final SignalsStorage signalsStorage = new SignalsStorage();
 
 		ExecutionsLoader.configFilePath = "./test_data/executions_loader_tests/algs_t1.ini";
 		final ExecutionsLoader el = new ExecutionsLoader(Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage,
@@ -27,12 +26,24 @@ public class ExecutionsLoaderTest extends TestCase {
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
 
-		assertEquals(0, executions.getEodAlgorithmsSize());
 		assertEquals(4, executions.getStockAlgorithmsSize());
+		assertEquals(0, executions.getEodAlgorithmsSize());
 	}
 
-	public void testSeveralAlgorithmLoader() {
+	public void testSeveralAlgorithmLoader() throws ClassNotFoundException, IOException, BadAlgorithmException {
+		final AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
+		final Broker broker = new Broker(new ThreadSafeStockStorage());
+		final SignalsStorage signalsStorage = new SignalsStorage();
 
+		ExecutionsLoader.configFilePath = "./test_data/executions_loader_tests/algs_t2.ini";
+		final ExecutionsLoader el = new ExecutionsLoader(Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage,
+				broker, signalsStorage);
+
+		assertNotNull(el.getExecutionsStorage());
+		final ExecutionsStorage executions = el.getExecutionsStorage();
+		
+		assertEquals(5, executions.getStockAlgorithmsSize());
+		assertEquals(0, executions.getEodAlgorithmsSize());
 	}
 
 }
