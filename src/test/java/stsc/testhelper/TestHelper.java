@@ -17,12 +17,25 @@ public class TestHelper {
 		return init;
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit() {
+	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName,
+			SignalsStorage storage) {
 		StockAlgorithm.Init init = new StockAlgorithm.Init();
-		init.executionName = "eName";
+		init.executionName = executionName;
 		init.settings = new AlgorithmSettings();
-		init.signalsStorage = new SignalsStorage();
-		init.stockName = "sName";
+		init.signalsStorage = storage;
+		init.stockName = stockName;
 		return init;
+	}
+
+	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName) {
+		return getStockAlgorithmInit(executionName, stockName, new SignalsStorage());
+	}
+
+	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName) {
+		return getStockAlgorithmInit(executionName, "sName");
+	}
+
+	public static StockAlgorithm.Init getStockAlgorithmInit() {
+		return getStockAlgorithmInit("eName");
 	}
 }

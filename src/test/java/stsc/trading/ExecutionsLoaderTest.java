@@ -26,7 +26,7 @@ public class ExecutionsLoaderTest extends TestCase {
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
 
-		assertEquals(4, executions.getStockAlgorithmsSize());
+		assertEquals(3, executions.getStockAlgorithmsSize());
 		assertEquals(0, executions.getEodAlgorithmsSize());
 	}
 
@@ -41,7 +41,7 @@ public class ExecutionsLoaderTest extends TestCase {
 
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
-		
+
 		assertEquals(5, executions.getStockAlgorithmsSize());
 		assertEquals(0, executions.getEodAlgorithmsSize());
 	}

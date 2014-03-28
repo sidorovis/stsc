@@ -19,8 +19,11 @@ public class ExecutionsStorageTest extends TestCase {
 		final SignalsStorage signalsStorage = new SignalsStorage();
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
 
+		AlgorithmSettings smaSettings = new AlgorithmSettings();
+		smaSettings.addSubExecutionName("asd");
+
 		final ExecutionsStorage es = new ExecutionsStorage(stocks);
-		es.addStockAlgorithmExecution(new StockAlgorithmExecution("t2", Sma.class, new AlgorithmSettings()));
+		es.addStockAlgorithmExecution(new StockAlgorithmExecution("t2", Sma.class, smaSettings));
 		es.addEodAlgorithmExecution(new EodAlgorithmExecution("t1", TestingEodAlgorithm.class, new AlgorithmSettings()));
 
 		es.initializeExecutions(signalsStorage, broker);
@@ -39,5 +42,21 @@ public class ExecutionsStorageTest extends TestCase {
 		assertNull(es.getStockAlgorithm("t1", "epl"));
 
 		assertNull(es.getStockAlgorithm("t2", "epl2"));
+	}
+
+	public void testExceptionOnInit() throws BadAlgorithmException {
+		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
+		final ExecutionsStorage es = new ExecutionsStorage(stocks);
+		es.addStockAlgorithmExecution(new StockAlgorithmExecution("t2", Sma.class, new AlgorithmSettings()));
+		final SignalsStorage signalsStorage = new SignalsStorage();
+		final Broker broker = new Broker(new ThreadSafeStockStorage());
+
+		boolean throwed = false;
+		try {
+			es.initializeExecutions(signalsStorage, broker);
+		} catch (BadAlgorithmException e) {
+			throwed = true;
+		}
+		assertEquals(true, throwed);
 	}
 }

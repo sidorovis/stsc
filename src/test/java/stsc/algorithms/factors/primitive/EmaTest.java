@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.common.Stock;
@@ -15,12 +17,15 @@ import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class EmaTest extends TestCase {
-	public void testEma() throws IOException, BadSignalException {
+	public void testEma() throws IOException, BadSignalException, BadAlgorithmException {
 
-		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
-		init.executionName = "testEma";
-		init.stockName = "aapl";
+		StockAlgorithm.Init stockInit = TestHelper.getStockAlgorithmInit("testIn", "aapl");
+		stockInit.settings.set("e", "open");
+		final In inAlgo = new In(stockInit);
+
+		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit("testEma", "aapl", stockInit.signalsStorage);
 		init.settings.set("P", 0.3);
+		init.settings.addSubExecutionName("testIn");
 
 		final Ema ema = new Ema(init);
 
@@ -30,19 +35,22 @@ public class EmaTest extends TestCase {
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
+			inAlgo.process(day);
 			ema.process(day);
 		}
 
-		assertEquals(days.get(aaplIndex).getPrices().getOpen(),
-				init.signalsStorage.getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).value);
+		assertEquals(days.get(aaplIndex).getPrices().getOpen(), init.signalsStorage
+				.getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).value);
 
 		final double secondValue = days.get(aaplIndex).getPrices().getOpen() * 0.7 + 0.3
 				* days.get(aaplIndex + 1).getPrices().getOpen();
 
-		assertEquals(secondValue, init.signalsStorage.getStockSignal("aapl", "testEma", 1).getSignal(DoubleSignal.class).value);
+		assertEquals(secondValue, init.signalsStorage.getStockSignal("aapl", "testEma", 1)
+				.getSignal(DoubleSignal.class).value);
 
 		final int size = init.signalsStorage.getIndexSize("aapl", "testEma");
-		assertEquals(531.20111321, init.signalsStorage.getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value,
+		assertEquals(531.20111321,
+				init.signalsStorage.getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value,
 				0.000001);
 	}
 }

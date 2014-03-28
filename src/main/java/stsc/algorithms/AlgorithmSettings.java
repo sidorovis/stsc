@@ -2,6 +2,7 @@ package stsc.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AlgorithmSettings {
 
@@ -10,6 +11,10 @@ public class AlgorithmSettings {
 
 	public void addSubExecutionName(final String subExecutionName) {
 		subExecutions.add(subExecutionName);
+	}
+
+	public List<String> getSubExecutions() {
+		return subExecutions;
 	}
 
 	public AlgorithmSettings set(final String key, final String value) {
@@ -37,7 +42,7 @@ public class AlgorithmSettings {
 	public String toString() {
 		return settings.toString() + " " + subExecutions.toString();
 	}
-	
+
 	public String get(final String key) {
 		final Object o = settings.get(key);
 		if (o != null)

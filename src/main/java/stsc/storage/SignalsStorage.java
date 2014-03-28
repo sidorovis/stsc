@@ -36,7 +36,7 @@ public class SignalsStorage {
 		public SignalType getValue() {
 			return signal;
 		}
-		
+
 		@Override
 		public String toString() {
 			return signal.toString();
@@ -93,7 +93,8 @@ public class SignalsStorage {
 	private HashMap<String, ExecutionSignalsStorage<StockSignal>> stockSignals = new HashMap<>();
 	private HashMap<String, ExecutionSignalsStorage<EodSignal>> eodSignals = new HashMap<>();
 
-	public void registerStockSignalsType(String stockName, String executionName, Class<? extends StockSignal> signalsClass) {
+	public void registerStockSignalsType(String stockName, String executionName,
+			Class<? extends StockSignal> signalsClass) {
 		if (signalsClass != null) {
 			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
