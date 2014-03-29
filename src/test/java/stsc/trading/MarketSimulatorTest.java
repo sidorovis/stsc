@@ -49,7 +49,7 @@ public class MarketSimulatorTest extends TestCase {
 
 		final ExecutionsStorage es = marketSimulator.getExecutionStorage();
 
-		assertEquals(1, marketSimulator.getExecutionStorage().getEodAlgorithmsSize());
+		assertEquals(1, es.getEodAlgorithmsSize());
 
 		final TestingEodAlgorithm ta = (TestingEodAlgorithm) es.getEodAlgorithm("e1");
 		assertEquals(ta.datafeeds.size(), 7);

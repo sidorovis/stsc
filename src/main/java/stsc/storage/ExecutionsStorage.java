@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
@@ -20,19 +21,20 @@ public class ExecutionsStorage {
 	private static class Executions {
 		// execution name to stock algorithms
 		private final HashMap<String, StockAlgorithm> map = new HashMap<>();
+		private final ArrayList<StockAlgorithm> orderedAlgorithms = new ArrayList<>();
 
 		void add(final String executionName, final StockAlgorithm algo) {
 			map.put(executionName, algo);
 		}
 
 		void simulate(final Day newDay) throws BadSignalException {
-			for (Map.Entry<String, StockAlgorithm> sPair : map.entrySet()) {
-				sPair.getValue().process(newDay);
+			for (StockAlgorithm algo : orderedAlgorithms) {
+				algo.process(newDay);
 			}
 		}
 
 		int size() {
-			return map.size();
+			return orderedAlgorithms.size();
 		}
 	}
 
@@ -107,8 +109,12 @@ public class ExecutionsStorage {
 		return tradeAlgorithms.get(key);
 	}
 
-	public int getStockAlgorithmsSize(){
-		if ( stockAlgorithms.stockToExecution.isEmpty() )
+	public Set<String> getEodAlgorithmNames() {
+		return tradeAlgorithms.keySet();
+	}
+
+	public int getStockAlgorithmsSize() {
+		if (stockAlgorithms.stockToExecution.isEmpty())
 			return 0;
 		else
 			return stockAlgorithms.stockToExecution.entrySet().iterator().next().getValue().size();

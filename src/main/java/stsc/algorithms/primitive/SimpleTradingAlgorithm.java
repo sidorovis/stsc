@@ -67,6 +67,7 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 			String stockName = i.getKey();
 			int boughtAmount = broker().buy(stockName, Side.LONG, 500);
 			if (boughtAmount > 0) {
+				boughtDate = i.getValue().getDate();
 				boughtStocks += 1;
 				openedPositions.put(stockName, new Position(stockName, Side.LONG, boughtAmount));
 			}

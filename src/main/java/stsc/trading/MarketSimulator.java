@@ -1,5 +1,8 @@
 package stsc.trading;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import stsc.algorithms.StockExecution;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.signals.BadSignalException;
+import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.DayIteratorStorage;
@@ -26,7 +30,8 @@ public class MarketSimulator {
 
 	private StockStorage stockStorage;
 	private Broker broker;
-	private StatisticsProcessor statistics;
+	private StatisticsProcessor statisticsProcessor;
+	private Statistics statistics;
 	private SignalsStorage signalsStorage = new SignalsStorage();
 	private ExecutionsStorage executionsStorage;
 
@@ -40,10 +45,22 @@ public class MarketSimulator {
 	public MarketSimulator(MarketSimulatorSettings settings) throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
-		this.statistics = new StatisticsProcessor(broker.getTradingLog());
+		this.statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
 		parseSimulationSettings(settings);
 		this.stocks = new DayIteratorStorage(from);
 		loadAlgorithms(settings);
+	}
+
+	public MarketSimulator(MarketSimulatorSettings settings, ExecutionsStorage executionsStorage)
+			throws BadAlgorithmException {
+		this.stockStorage = settings.getStockStorage();
+		this.broker = settings.getBroker();
+		this.statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
+		parseSimulationSettings(settings);
+		this.stocks = new DayIteratorStorage(from);
+		this.executionsStorage = executionsStorage;
+		executionsStorage.initializeExecutions(signalsStorage, broker);
+
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
@@ -84,7 +101,7 @@ public class MarketSimulator {
 					String stockName = stock.getKey();
 
 					if (stockDay.compareTo(currentDay) == 0) {
-						statistics.setStockDay(stockName, stockDay);
+						statisticsProcessor.setStockDay(stockName, stockDay);
 
 						executionsStorage.runStockAlgorithms(stockName, stockDay);
 
@@ -97,10 +114,10 @@ public class MarketSimulator {
 				}
 			}
 			executionsStorage.runEodAlgorithms(today, datafeed);
-			statistics.processEod();
+			statisticsProcessor.processEod();
 			dayIterator = dayIterator.plusDays(1);
 		}
-		statistics.calculate();
+		statistics = statisticsProcessor.calculate();
 	}
 
 	private void collectStocksFromStorage() {
@@ -117,4 +134,14 @@ public class MarketSimulator {
 	public ExecutionsStorage getExecutionStorage() {
 		return executionsStorage;
 	}
+
+	public void printStatistics(final String outputFile) throws IOException, IllegalArgumentException,
+			IllegalAccessException {
+		if (statistics == null)
+			return;
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+			statistics.print(writer);
+		}
+	}
+
 }

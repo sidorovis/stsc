@@ -1,5 +1,9 @@
 package stsc.statistic;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 public class Statistics {
 
 	static public class StatisticsInit {
@@ -39,7 +43,7 @@ public class Statistics {
 
 		public double ddDurationAvGain = 0.0;
 		public double ddDurationMax = 0.0;
-		
+
 		public double ddValueAvGain = 0.0;
 		public double ddValueMax = 0.0;
 
@@ -82,10 +86,10 @@ public class Statistics {
 	private double month12Max = 0.0;
 
 	private double ddDurationAvGain = 0.0;
-	private double ddDurationMax = 0.0;	
+	private double ddDurationMax = 0.0;
 	private double ddValueAvGain = 0.0;
 	private double ddValueMax = 0.0;
-	
+
 	static public StatisticsInit getInit() {
 		return new StatisticsInit();
 	}
@@ -126,7 +130,7 @@ public class Statistics {
 		month12StdDevGain = init.month12StdDevGain;
 		month12Max = init.month12Max;
 		month12Min = init.month12Min;
-		
+
 		ddDurationAvGain = init.ddDurationAvGain;
 		ddDurationMax = init.ddDurationMax;
 		ddValueAvGain = init.ddValueAvGain;
@@ -225,4 +229,11 @@ public class Statistics {
 		return ddValueMax;
 	}
 
+	public void print(BufferedWriter outfile) throws IOException, IllegalArgumentException, IllegalAccessException {
+		final Field[] fields = this.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			outfile.append(field.getName()).append('\t');
+			outfile.append(field.get(this).toString()).append('\n');
+		}
+	}
 }
