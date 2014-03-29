@@ -21,7 +21,7 @@ public class Sma extends StockAlgorithm {
 		init.settings.get("n", n);
 		List<String> subExecutionNames = init.settings.getSubExecutions();
 		if (subExecutionNames.size() < 1)
-			throw new BadAlgorithmException("sub executions parameters not enought");
+			throw new BadAlgorithmException("Sma algorithm should receive at least one sub algorithm");
 		subAlgoName = subExecutionNames.get(0);
 	}
 

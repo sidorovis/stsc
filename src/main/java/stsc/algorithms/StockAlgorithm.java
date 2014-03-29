@@ -52,7 +52,7 @@ public abstract class StockAlgorithm {
 
 	private final Init init;
 
-	public StockAlgorithm(final Init initialize) {
+	public StockAlgorithm(final Init initialize) throws BadAlgorithmException {
 		init = initialize;
 		init.registerStockSignalsType(registerSignalsClass());
 	}

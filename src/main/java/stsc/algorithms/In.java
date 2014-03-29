@@ -12,6 +12,8 @@ public class In extends StockAlgorithm {
 	};
 
 	private static DayField fromString(String dayField) {
+		if ( dayField == null )
+			return DayField.OPEN;
 		switch (dayField) {
 		case "open":
 			return DayField.OPEN;
@@ -30,7 +32,7 @@ public class In extends StockAlgorithm {
 
 	DayField dayField;
 
-	public In(Init initialize) {
+	public In(Init initialize) throws BadAlgorithmException {
 		super(initialize);
 		dayField = fromString(initialize.settings.get("e"));
 	}

@@ -130,7 +130,7 @@ public class ExecutionsLoader {
 	}
 
 	private void checkNewExecution(final String executionName) throws BadAlgorithmException {
-		if (registeredExecutions.contains(executionName))
+		if (namedExecutions.containsKey(executionName))
 			throw new BadAlgorithmException("algorithm " + executionName + " already registered");
 	}
 

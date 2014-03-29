@@ -55,8 +55,13 @@ public class StockAlgorithmExecution {
 
 			final Object[] values = { init };
 
-			final StockAlgorithm algo = constructor.newInstance(values);
-			return algo;
+			try {
+				final StockAlgorithm algo = constructor.newInstance(values);
+				return algo;
+			} catch (InvocationTargetException e) {
+				throw new BadAlgorithmException("Exception while loading algo: " + algorithmName + "( " + executionName
+						+ " ) , exception: " + e.getTargetException().toString());
+			}
 		} catch (NoSuchMethodException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "
 					+ e.toString());
@@ -71,9 +76,6 @@ public class StockAlgorithmExecution {
 					+ "', instantiation impossible due to illegal access: " + e.toString());
 		} catch (IllegalArgumentException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', illegal arguments: " + e.toString());
-		} catch (InvocationTargetException e) {
-			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', invocation target exception: "
-					+ e.toString());
 		}
 	}
 }

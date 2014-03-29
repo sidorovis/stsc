@@ -1,5 +1,6 @@
 package stsc.algorithms.primitive;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -7,7 +8,7 @@ import stsc.signals.StockSignal;
 
 public class TestingStockAlgorithm extends StockAlgorithm {
 
-	public TestingStockAlgorithm(StockAlgorithm.Init init) {
+	public TestingStockAlgorithm(StockAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);
 	}
 

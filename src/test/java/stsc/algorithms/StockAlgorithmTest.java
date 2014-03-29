@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 public class StockAlgorithmTest extends TestCase {
 	private static class StockAlgorithmHelper extends StockAlgorithm {
 
-		public StockAlgorithmHelper(final StockAlgorithm.Init init) {
+		public StockAlgorithmHelper(final StockAlgorithm.Init init) throws BadAlgorithmException {
 			super(init);
 		}
 
@@ -26,7 +26,7 @@ public class StockAlgorithmTest extends TestCase {
 		}
 	}
 
-	public void testStockAlgorithm() throws BadSignalException {
+	public void testStockAlgorithm() throws BadSignalException, BadAlgorithmException {
 		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
 		init.executionName = "s";
 		init.stockName = "a";
