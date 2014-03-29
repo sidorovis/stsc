@@ -113,8 +113,10 @@ public class MarketSimulator {
 					}
 				}
 			}
-			executionsStorage.runEodAlgorithms(today, datafeed);
-			statisticsProcessor.processEod();
+			if (!datafeed.isEmpty()) {
+				executionsStorage.runEodAlgorithms(today, datafeed);
+				statisticsProcessor.processEod();
+			}
 			dayIterator = dayIterator.plusDays(1);
 		}
 		statistics = statisticsProcessor.calculate();

@@ -24,6 +24,7 @@ public class ExecutionsStorage {
 		private final ArrayList<StockAlgorithm> orderedAlgorithms = new ArrayList<>();
 
 		void add(final String executionName, final StockAlgorithm algo) {
+			orderedAlgorithms.add(algo);
 			map.put(executionName, algo);
 		}
 
