@@ -19,8 +19,10 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.EodAlgorithm;
+import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockAlgorithm;
-import stsc.algorithms.StockAlgorithmExecution;
+import stsc.algorithms.StockExecution;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.SignalsStorage;
@@ -52,8 +54,10 @@ public class ExecutionsLoader {
 	private AlgorithmsStorage algorithmsStorage;
 	private Set<String> openedPropertyFileNames = new HashSet<>();
 
-	private Set<String> registeredExecutions = new HashSet<>();
-	private HashMap<String, String> namedExecutions = new HashMap<>();
+	private Set<String> registeredStockExecutions = new HashSet<>();
+	private HashMap<String, String> namedStockExecutions = new HashMap<>();
+
+	private Set<String> eodExecutions = new HashSet<>();
 
 	public ExecutionsLoader(List<String> stockNames, AlgorithmsStorage algorithmsStorage, Broker broker,
 			SignalsStorage signalsStorage) throws FileNotFoundException, IOException, BadAlgorithmException {
@@ -80,7 +84,8 @@ public class ExecutionsLoader {
 
 	private void processProperties(final Properties p) throws FileNotFoundException, IOException, BadAlgorithmException {
 		processIncludes(p);
-		processStockExecutions(p);
+		processStocksLoadLines(p);
+		processEodLoadLines(p);
 	}
 
 	private void processIncludes(final Properties p) throws FileNotFoundException, IOException, BadAlgorithmException {
@@ -102,41 +107,140 @@ public class ExecutionsLoader {
 		}
 	}
 
-	private void processStockExecutions(final Properties p) throws BadAlgorithmException {
-		final String executionsNames = p.getProperty(PropertyNames.STOCK_EXECUTIONS_LINE);
-		if (executionsNames == null)
+	private void processStocksLoadLines(final Properties p) throws BadAlgorithmException {
+		final String stockNames = p.getProperty(PropertyNames.STOCK_EXECUTIONS_LINE);
+		if (stockNames == null)
 			return;
-		for (String rawExecutionName : executionsNames.split(",")) {
+		for (String rawExecutionName : stockNames.split(",")) {
 			final String executionName = rawExecutionName.trim();
 			final String loadLine = p.getProperty(executionName + ".loadLine");
 			if (loadLine == null)
-				throw new BadAlgorithmException("bad execution registration, no " + executionName
+				throw new BadAlgorithmException("bad stock execution registration, no " + executionName
 						+ ".loadLine property");
-			checkNewExecution(executionName);
+			checkNewStockExecution(executionName);
 			final String generatedName = processStockExecution(loadLine);
-			namedExecutions.put(executionName, generatedName);
-			registeredExecutions.add(generatedName);
+			namedStockExecutions.put(executionName, generatedName);
+			registeredStockExecutions.add(generatedName);
 		}
+	}
+
+	private void checkNewStockExecution(final String executionName) throws BadAlgorithmException {
+		if (namedStockExecutions.containsKey(executionName))
+			throw new BadAlgorithmException("algorithm " + executionName + " already registered");
 	}
 
 	private String processStockExecution(String loadLine) throws BadAlgorithmException {
 		final Matcher loadLineMatch = Regexps.loadLine.matcher(loadLine);
 		if (loadLineMatch.matches()) {
-			final String algorithmName = loadLineMatch.group(1).trim();
-			final String paramsString = loadLineMatch.group(2).trim();
-			return processSubExecution(algorithmName, paramsString);
+			return processStockSubExecution(loadLineMatch);
 		} else
 			throw new BadAlgorithmException("bad algorithm load line: " + loadLine);
 	}
 
-	private void checkNewExecution(final String executionName) throws BadAlgorithmException {
-		if (namedExecutions.containsKey(executionName))
-			throw new BadAlgorithmException("algorithm " + executionName + " already registered");
+	private String processStockSubExecution(Matcher match) throws BadAlgorithmException {
+		final List<String> params = parseParams(match.group(2).trim());
+		return processStockExecution(match.group(1).trim(), params);
 	}
 
-	private String processSubExecution(String algorithmName, String paramsString) throws BadAlgorithmException {
-		final List<String> params = parseParams(paramsString);
-		return processStockExecution(algorithmName, params);
+	private String processStockExecution(String algorithmName, final List<String> params) throws BadAlgorithmException {
+		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
+		if (stockAlgorithm == null)
+			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
+
+		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
+
+		final String executionName = generateExecutionName(algorithmName, algorithmSettings);
+		if (registeredStockExecutions.contains(executionName))
+			return executionName;
+		final StockExecution execution = new StockExecution(executionName, stockAlgorithm, algorithmSettings);
+		executionsStorage.addStockExecution(execution);
+		return executionName;
+	}
+
+	private void processEodLoadLines(final Properties p) throws BadAlgorithmException {
+		final String eodNames = p.getProperty(PropertyNames.EOD_EXECUTIONS_LINE);
+		if (eodNames == null)
+			return;
+		for (String rawExecutionName : eodNames.split(",")) {
+			final String executionName = rawExecutionName.trim();
+			final String loadLine = p.getProperty(executionName + ".loadLine");
+			if (loadLine == null)
+				throw new BadAlgorithmException("bad eod algorithm execution registration, no " + executionName
+						+ ".loadLine property");
+			checkNewEodExecution(executionName);
+			processEodExecution(executionName, loadLine);
+			eodExecutions.add(executionName);
+		}
+	}
+
+	private void checkNewEodExecution(final String executionName) throws BadAlgorithmException {
+		if (eodExecutions.contains(executionName))
+			throw new BadAlgorithmException("eod algorithm " + executionName + " already registered");
+	}
+
+	private void processEodExecution(final String executionName, final String loadLine) throws BadAlgorithmException {
+		final Matcher loadLineMatch = Regexps.loadLine.matcher(loadLine);
+		if (loadLineMatch.matches()) {
+			processEodSubExecution(executionName, loadLineMatch);
+		} else
+			throw new BadAlgorithmException("bad algorithm load line: " + loadLine);
+	}
+
+	private void processEodSubExecution(final String executionName, final Matcher match) throws BadAlgorithmException {
+		final List<String> params = parseParams(match.group(2).trim());
+		processEodExecution(executionName, match.group(1).trim(), params);
+	}
+
+	private void processEodExecution(String executionName, String algorithmName, final List<String> params)
+			throws BadAlgorithmException {
+		final Class<? extends EodAlgorithm> eodAlgorithm = algorithmsStorage.getEod(algorithmName);
+		if (eodAlgorithm == null)
+			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
+
+		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
+
+		final EodExecution execution = new EodExecution(executionName, eodAlgorithm, algorithmSettings);
+		executionsStorage.addEodExecution(execution);
+	}
+
+	private AlgorithmSettings generateStockAlgorithmSettings(final List<String> params) throws BadAlgorithmException {
+		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+
+		for (final String parameter : params) {
+			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);
+			final Matcher dataMatch = Regexps.dataParameter.matcher(parameter);
+			final Matcher subExecutionMatch = Regexps.subExecutionParameter.matcher(parameter);
+			if (subAlgoMatch.matches()) {
+				final String subName = processStockSubExecution(subAlgoMatch);
+				registeredStockExecutions.add(subName);
+				algorithmSettings.addSubExecutionName(subName);
+			} else if (dataMatch.matches()) {
+				algorithmSettings.set(dataMatch.group(1).trim(), dataMatch.group(2).trim());
+			} else if (subExecutionMatch.matches()) {
+				final String subExecutionName = subExecutionMatch.group(1).trim();
+				final String executionCode = namedStockExecutions.get(subExecutionName);
+				if (executionCode != null)
+					algorithmSettings.addSubExecutionName(executionCode);
+				else
+					throw new BadAlgorithmException("unknown sub execution name: " + parameter);
+			} else
+				throw new BadAlgorithmException("bad sub execution line: " + parameter);
+		}
+		return algorithmSettings;
+	}
+
+	private static String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
+		final String name = new Integer(algorithmName.toLowerCase().hashCode() * 31).toString()
+				+ new Integer(algorithmSettings.toString().hashCode()).toString();
+		return name;
+	}
+
+	public ExecutionsStorage getExecutionsStorage() {
+		return executionsStorage;
+	}
+
+	public HashMap<String, String> getNamedExecutions() {
+		return namedStockExecutions;
 	}
 
 	private List<String> parseParams(final String paramsString) {
@@ -159,61 +263,4 @@ public class ExecutionsLoader {
 
 		return params;
 	}
-
-	private String processStockExecution(String algorithmName, final List<String> params) throws BadAlgorithmException {
-		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
-		if (stockAlgorithm == null)
-			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
-
-		final AlgorithmSettings algorithmSettings = generateAlgorithmSettings(params);
-
-		final String executionName = generateExecutionName(algorithmName, algorithmSettings);
-		if (registeredExecutions.contains(executionName))
-			return executionName;
-		final StockAlgorithmExecution execution = new StockAlgorithmExecution(executionName, stockAlgorithm,
-				algorithmSettings);
-		executionsStorage.addStockAlgorithmExecution(execution);
-		return executionName;
-	}
-
-	private AlgorithmSettings generateAlgorithmSettings(final List<String> params) throws BadAlgorithmException {
-		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
-
-		for (final String parameter : params) {
-			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);
-			final Matcher dataMatch = Regexps.dataParameter.matcher(parameter);
-			final Matcher subExecutionMatch = Regexps.subExecutionParameter.matcher(parameter);
-			if (subAlgoMatch.matches()) {
-				final String subName = processSubExecution(subAlgoMatch.group(1).trim(), subAlgoMatch.group(2).trim());
-				registeredExecutions.add(subName);
-				algorithmSettings.addSubExecutionName(subName);
-			} else if (dataMatch.matches()) {
-				algorithmSettings.set(dataMatch.group(1).trim(), dataMatch.group(2).trim());
-			} else if (subExecutionMatch.matches()) {
-				final String subExecutionName = subExecutionMatch.group(1).trim();
-				final String executionCode = namedExecutions.get(subExecutionName);
-				if (executionCode != null)
-					algorithmSettings.addSubExecutionName(executionCode);
-				else
-					throw new BadAlgorithmException("unknown sub execution name: " + parameter);
-			} else
-				throw new BadAlgorithmException("bad sub execution line: " + parameter);
-		}
-		return algorithmSettings;
-	}
-
-	private static String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
-		final String name = new Integer(algorithmName.hashCode() * 31).toString()
-				+ new Integer(algorithmSettings.toString().hashCode()).toString();
-		return name;
-	}
-
-	public ExecutionsStorage getExecutionsStorage() {
-		return executionsStorage;
-	}
-
-	public HashMap<String, String> getNamedExecutions() {
-		return namedExecutions;
-	}
-
 }

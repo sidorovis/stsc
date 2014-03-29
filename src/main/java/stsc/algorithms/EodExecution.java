@@ -6,13 +6,13 @@ import java.lang.reflect.InvocationTargetException;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
-public class EodAlgorithmExecution {
+public class EodExecution {
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends EodAlgorithm> algorithmType;
 	private AlgorithmSettings algorithmSettings;
 
-	public EodAlgorithmExecution(String executionName, String algorithmName, AlgorithmSettings algorithmSettings) throws BadAlgorithmException {
+	public EodExecution(String executionName, String algorithmName, AlgorithmSettings algorithmSettings) throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		try {
@@ -24,7 +24,7 @@ public class EodAlgorithmExecution {
 		this.algorithmSettings = algorithmSettings;
 	}
 
-	public EodAlgorithmExecution(String executionName, Class<? extends EodAlgorithm> algorithmType, AlgorithmSettings algorithmSettings) {
+	public EodExecution(String executionName, Class<? extends EodAlgorithm> algorithmType, AlgorithmSettings algorithmSettings) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;

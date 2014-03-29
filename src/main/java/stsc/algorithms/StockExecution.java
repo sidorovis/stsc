@@ -5,14 +5,14 @@ import java.lang.reflect.InvocationTargetException;
 
 import stsc.storage.SignalsStorage;
 
-public class StockAlgorithmExecution {
+public class StockExecution {
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends StockAlgorithm> algorithmType;
 
 	private final AlgorithmSettings settings;
 
-	public StockAlgorithmExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
+	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
 			throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
@@ -25,7 +25,7 @@ public class StockAlgorithmExecution {
 		}
 	}
 
-	public StockAlgorithmExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
+	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
 			AlgorithmSettings settings) {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
