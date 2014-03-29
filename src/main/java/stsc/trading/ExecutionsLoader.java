@@ -212,4 +212,8 @@ public class ExecutionsLoader {
 		return executionsStorage;
 	}
 
+	public HashMap<String, String> getNamedExecutions() {
+		return namedExecutions;
+	}
+
 }
