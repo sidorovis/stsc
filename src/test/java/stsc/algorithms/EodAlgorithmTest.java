@@ -13,7 +13,7 @@ public class EodAlgorithmTest extends TestCase {
 
 	private static class EodAlgorithmHelper extends EodAlgorithm {
 
-		protected EodAlgorithmHelper(EodAlgorithm.Init init) {
+		protected EodAlgorithmHelper(EodAlgorithm.Init init) throws BadAlgorithmException {
 			super(init);
 		}
 
@@ -29,7 +29,7 @@ public class EodAlgorithmTest extends TestCase {
 
 	}
 
-	public void testEodAlgorithm() throws BadSignalException {
+	public void testEodAlgorithm() throws BadSignalException, BadAlgorithmException {
 		EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();
 		init.executionName = "a";
 		EodAlgorithmHelper eah = new EodAlgorithmHelper(init);

@@ -3,6 +3,7 @@ package stsc.algorithms.privitive;
 import java.util.HashMap;
 import java.util.Date;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.common.Day;
@@ -11,7 +12,7 @@ import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class SimpleTradingAlgorithmTest extends TestCase {
-	public void testTestingEodAlgorithm() throws BadSignalException {
+	public void testTestingEodAlgorithm() throws BadSignalException, BadAlgorithmException {
 
 		final EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();
 

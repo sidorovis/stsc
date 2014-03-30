@@ -49,7 +49,7 @@ public abstract class EodAlgorithm {
 
 	private final Init init;
 
-	protected EodAlgorithm(final Init init) {
+	public EodAlgorithm(final Init init) throws BadAlgorithmException {
 		this.init = init;
 		init.registerEodSignalsType(registerSignalsClass());
 	}

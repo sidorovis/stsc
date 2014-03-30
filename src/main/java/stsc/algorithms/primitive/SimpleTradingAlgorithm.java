@@ -8,6 +8,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -47,7 +48,7 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 	Date boughtDate = null;
 	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
 
-	public SimpleTradingAlgorithm(EodAlgorithm.Init init) {
+	public SimpleTradingAlgorithm(EodAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);
 	}
 

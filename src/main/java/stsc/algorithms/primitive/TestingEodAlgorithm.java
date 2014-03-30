@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -13,7 +14,7 @@ import stsc.signals.EodSignal;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
 
-	public TestingEodAlgorithm(EodAlgorithm.Init init) {
+	public TestingEodAlgorithm(EodAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);
 	}
 
