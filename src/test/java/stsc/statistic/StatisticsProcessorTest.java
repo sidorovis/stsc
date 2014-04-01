@@ -1,5 +1,8 @@
 package stsc.statistic;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
@@ -155,8 +158,8 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	public void testEquityCurveOn518DaysStatistics() throws IOException, StatisticsCalculationException {
-		Statistics stats = testTradingHelper( 518 );
-		
+		Statistics stats = testTradingHelper(518, true);
+
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(-13.738679, stats.getAvGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.301158, stats.getFreq()));
 
@@ -178,10 +181,11 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(71.1, stats.getDdDurationAvGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(554.0, stats.getDdDurationMax()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(6.470206, stats.getDdValueAvGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(32.700528, stats.getDdValueMax()));		
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(32.700528, stats.getDdValueMax()));
 	}
+
 	public void testEquityCurveOn251DaysStatistics() throws IOException, StatisticsCalculationException {
-		Statistics stats = testTradingHelper( 251 );
+		Statistics stats = testTradingHelper(251, true);
 
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(12.609344, stats.getAvGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(0.310756, stats.getFreq()));
@@ -204,11 +208,24 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(32.4, stats.getDdDurationAvGain()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(167.0, stats.getDdDurationMax()));
 		assertEquals(true, StatisticsProcessor.isDoubleEqual(6.098124, stats.getDdValueAvGain()));
-		assertEquals(true, StatisticsProcessor.isDoubleEqual(19.762441, stats.getDdValueMax()));		
+		assertEquals(true, StatisticsProcessor.isDoubleEqual(19.762441, stats.getDdValueMax()));
 	}
 
-	private Statistics testTradingHelper(int daysCount) throws IOException, StatisticsCalculationException {
-		
+	public void testStatisticsOnLastClose() throws IOException, StatisticsCalculationException,
+			IllegalArgumentException, IllegalAccessException {
+		final Statistics stats = testTradingHelper(3, false);
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter("./test/out.csv"))) {
+			stats.print(writer);
+		}
+		final File file = new File("./test/out.csv");
+		assertTrue(file.exists());
+		assertEquals(536, file.length());
+		file.delete();
+	}
+
+	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException,
+			StatisticsCalculationException {
+
 		loadStocksForTest();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2008, 9, 4).toDate());
@@ -241,7 +258,7 @@ public class StatisticsProcessorTest extends TestCase {
 				opened = false;
 			}
 
-			if ((i == (daysCount - 1)) && opened) {
+			if ((i == (daysCount - 1)) && opened && closeOnExit) {
 				tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 100);
 				tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 200);
 				tradingLog.addSellRecord(new Date(), "spy", Side.SHORT, 100);
@@ -253,7 +270,7 @@ public class StatisticsProcessorTest extends TestCase {
 
 		Statistics stats = statisticsProcessor.calculate();
 		assertEquals(daysCount, stats.getPeriod());
-		
+
 		return stats;
 	}
 }

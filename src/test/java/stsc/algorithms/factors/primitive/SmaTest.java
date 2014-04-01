@@ -51,12 +51,15 @@ public class SmaTest extends TestCase {
 			smaClose.process(day);
 		}
 
-		assertNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
-		assertNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
+		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
+		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
 		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()));
 		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(days.size() - 1).getDate()));
 
 		assertEquals(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()),
+				init.signalsStorage.getStockSignal("aapl", "testSma", 4));
+
+		assertEquals(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()),
 				init.signalsStorage.getStockSignal("aapl", "testSma", 0));
 
 		Double lastSum = 0.0;

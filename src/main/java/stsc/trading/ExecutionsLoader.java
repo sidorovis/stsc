@@ -47,11 +47,12 @@ public class ExecutionsLoader {
 	}
 	private static Logger logger = LogManager.getLogger("ExecutionsLoader");
 
-	public static String configFilePath = "./config/algs.ini";
+	public String configFilePath = "./config/algs.ini";
 	private String configFileFolder;
 
 	private ExecutionsStorage executionsStorage;
 	private AlgorithmsStorage algorithmsStorage;
+	private AlgorithmSettings settings;
 	private Set<String> openedPropertyFileNames = new HashSet<>();
 
 	private Set<String> registeredStockExecutions = new HashSet<>();
@@ -59,10 +60,13 @@ public class ExecutionsLoader {
 
 	private Set<String> eodExecutions = new HashSet<>();
 
-	public ExecutionsLoader(List<String> stockNames, AlgorithmsStorage algorithmsStorage, Broker broker,
-			SignalsStorage signalsStorage) throws FileNotFoundException, IOException, BadAlgorithmException {
+	public ExecutionsLoader(String configFilePath, List<String> stockNames, AlgorithmsStorage algorithmsStorage,
+			Broker broker, SignalsStorage signalsStorage, AlgorithmSettings settings) throws FileNotFoundException,
+			IOException, BadAlgorithmException {
+		this.configFilePath = configFilePath;
 		this.executionsStorage = new ExecutionsStorage(stockNames);
 		this.algorithmsStorage = algorithmsStorage;
+		this.settings = settings;
 		loadAlgorithms();
 		this.executionsStorage.initializeExecutions(signalsStorage, broker);
 	}
@@ -204,7 +208,8 @@ public class ExecutionsLoader {
 	}
 
 	private AlgorithmSettings generateStockAlgorithmSettings(final List<String> params) throws BadAlgorithmException {
-		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+		settings.clone();
+		final AlgorithmSettings algorithmSettings = settings.clone();
 
 		for (final String parameter : params) {
 			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);

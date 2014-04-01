@@ -13,7 +13,7 @@ public class AlgorithmSettingsTest extends TestCase {
 		assertEquals(Double.valueOf(as.get("b")), Double.valueOf(as.get("a")));
 
 		final AlgorithmSetting<Double> asd = new AlgorithmSetting<Double>(0.0);
-		as.get("a", asd);
+		asd.setValue(Double.valueOf(as.get("a")));
 		assertEquals(14.05, asd.getValue());
 	}
 }

@@ -3,12 +3,17 @@ package stsc.statistic;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+
+import stsc.statistic.EquityCurve.EquityCurveElement;
 
 public class Statistics {
 
 	static public class StatisticsInit {
 
 		public EquityCurve equityCurve = new EquityCurve();
+		public EquityCurve equityCurveInMoney;
 
 		public int period = 0;
 
@@ -50,6 +55,10 @@ public class Statistics {
 		public String toString() {
 			return "curve(" + equityCurve.toString() + ")";
 		}
+
+		public void copyMoneyEquityCurve() {
+			equityCurveInMoney = equityCurve.clone();
+		}
 	};
 
 	static private double division(double a, double b) {
@@ -90,6 +99,9 @@ public class Statistics {
 	private double ddValueAvGain = 0.0;
 	private double ddValueMax = 0.0;
 
+	@NotPrint
+	private EquityCurve equityCurveInMoney;
+
 	static public StatisticsInit getInit() {
 		return new StatisticsInit();
 	}
@@ -97,6 +109,7 @@ public class Statistics {
 	public Statistics(StatisticsInit init) throws StatisticsCalculationException {
 		calculateProbabilityStatistics(init);
 		calculateEquityStatistics(init);
+		equityCurveInMoney = init.equityCurveInMoney;
 	}
 
 	private void calculateProbabilityStatistics(StatisticsInit init) throws StatisticsCalculationException {
@@ -230,10 +243,26 @@ public class Statistics {
 	}
 
 	public void print(BufferedWriter outfile) throws IOException, IllegalArgumentException, IllegalAccessException {
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		final DecimalFormat decimalFormat = new DecimalFormat("#0.000");
+
 		final Field[] fields = this.getClass().getDeclaredFields();
 		for (Field field : fields) {
+
+			if (field.getAnnotation(NotPrint.class) != null)
+				continue;
+
 			outfile.append(field.getName()).append('\t');
-			outfile.append(field.get(this).toString()).append('\n');
+			if (field.getType() == double.class)
+				outfile.append(decimalFormat.format(field.get(this))).append('\n');
+			else
+				outfile.append(field.get(this).toString()).append('\n');
+		}
+		outfile.append('\n');
+
+		for (int i = 0; i < equityCurveInMoney.size(); ++i) {
+			final EquityCurveElement e = equityCurveInMoney.get(i);
+			outfile.append(dateFormat.format(e.date)).append('\t').append(decimalFormat.format(e.value)).append('\n');
 		}
 	}
 }

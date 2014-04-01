@@ -88,10 +88,18 @@ public class SignalsStorage {
 				return signalList.size();
 			}
 		}
+
+		@Override
+		public String toString() {
+			return signalMap.toString();
+		}
 	}
 
 	private HashMap<String, ExecutionSignalsStorage<StockSignal>> stockSignals = new HashMap<>();
 	private HashMap<String, ExecutionSignalsStorage<EodSignal>> eodSignals = new HashMap<>();
+
+	public SignalsStorage() {
+	}
 
 	public void registerStockSignalsType(String stockName, String executionName,
 			Class<? extends StockSignal> signalsClass) {

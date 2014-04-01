@@ -16,6 +16,9 @@ public class Sma extends StockAlgorithm {
 	private final String subAlgoName;
 	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(new Integer(5));
 
+	final LinkedList<Double> elements = new LinkedList<>();
+	Double sum = new Double(0.0);
+
 	public Sma(final StockAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);
 		init.settings.get("n", n);
@@ -24,9 +27,6 @@ public class Sma extends StockAlgorithm {
 			throw new BadAlgorithmException("Sma algorithm should receive at least one sub algorithm");
 		subAlgoName = subExecutionNames.get(0);
 	}
-
-	final LinkedList<Double> elements = new LinkedList<>();
-	Double sum = new Double(0.0);
 
 	@Override
 	public Class<? extends StockSignal> registerSignalsClass() {
@@ -38,8 +38,8 @@ public class Sma extends StockAlgorithm {
 		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).value;
 		elements.push(price);
 		sum += price;
-		if (elements.size() == n.getValue()) {
-			addSignal(day.getDate(), new DoubleSignal(sum / n.getValue()));
+		if (elements.size() <= n.getValue()) {
+			addSignal(day.getDate(), new DoubleSignal(sum / elements.size()));
 		} else if (elements.size() > n.getValue()) {
 			Double lastElement = elements.pollLast();
 			sum -= lastElement;

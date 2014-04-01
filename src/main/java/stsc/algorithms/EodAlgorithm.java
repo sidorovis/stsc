@@ -6,6 +6,7 @@ import java.util.HashMap;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
+import stsc.signals.StockSignal;
 import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorage.Handler;
 import stsc.trading.Broker;
@@ -18,11 +19,11 @@ public abstract class EodAlgorithm {
 		public Broker broker;
 		public AlgorithmSettings settings;
 
-		final void registerEodSignalsType(final Class<? extends EodSignal> signalsClass) {
+		protected final void registerEodSignalsType(final Class<? extends EodSignal> signalsClass) {
 			signalsStorage.registerEodSignalsType(executionName, signalsClass);
 		}
 
-		final void addSignal(Date date, EodSignal signal) throws BadSignalException {
+		protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {
 			signalsStorage.addEodSignal(executionName, date, signal);
 		}
 
@@ -45,6 +46,14 @@ public abstract class EodAlgorithm {
 		protected final int getSignalsSize() {
 			return signalsStorage.getSignalsSize(executionName);
 		}
+
+		protected final Handler<? extends StockSignal> getStockSignal(String stockName, String executionName, Date date) {
+			return signalsStorage.getStockSignal(stockName, executionName, date);
+		}
+
+		protected final Handler<? extends StockSignal> getStockSignal(String stockName, String executionName, int index) {
+			return signalsStorage.getStockSignal(stockName, executionName, index);
+		}
 	}
 
 	private final Init init;
@@ -60,6 +69,14 @@ public abstract class EodAlgorithm {
 
 	protected final EodSignal getSignal(Date date) {
 		return init.getSignal(date).getValue();
+	}
+
+	protected final Handler<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
+		return init.getStockSignal(stockName, executionName, date);
+	}
+
+	protected final Handler<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
+		return init.getStockSignal(stockName, executionName, index);
 	}
 
 	protected final Broker broker() {

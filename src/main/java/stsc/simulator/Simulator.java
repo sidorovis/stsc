@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.common.MarketDataContext;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.AlgorithmsStorage;
@@ -30,18 +31,17 @@ public class Simulator {
 	}
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
-	
+
 	final private AlgorithmsStorage algorithmsStorage;
 	final private SignalsStorage signalsStorage;
 	private List<String> stockNames = new ArrayList<>();
 	private StockStorage stockStorage;
-	private Broker broker;
 	private ExecutionsStorage executionsStorage;
 
-	public Simulator() throws Exception {
+	public Simulator(final String configFile) throws Exception {
 		final Properties p = new Properties();
 		logger.info("Simulator starting");
-		try (FileInputStream in = new FileInputStream("./config/simulator.ini")) {
+		try (FileInputStream in = new FileInputStream(configFile)) {
 			p.load(in);
 		}
 		algorithmsStorage = new AlgorithmsStorage();
@@ -51,12 +51,12 @@ public class Simulator {
 
 		logger.info("Settings readed");
 
-		final MarketSimulator simulator = new MarketSimulator(settings, executionsStorage);
+		final MarketSimulator simulator = new MarketSimulator(settings, executionsStorage, signalsStorage);
 		simulator.simulate();
-		
+
 		logger.info("Simulated finished");
 
-		simulator.printStatistics(p.getProperty("Statistics.file","./logs/statistics.csv"));
+		simulator.printStatistics(p.getProperty("Statistics.file", "./logs/statistics.csv"));
 
 		logger.info("Statistics printed");
 	}
@@ -71,15 +71,20 @@ public class Simulator {
 		stockNames = settings.getStockList();
 		createStockStorage(p);
 		settings.setStockStorage(stockStorage);
-		broker = new Broker(stockStorage);
-
-		ExecutionsLoader.configFilePath = p.getProperty("Executions.path", "./config/algs.ini");
-		final ExecutionsLoader loader = new ExecutionsLoader(stockNames, algorithmsStorage, broker, signalsStorage);
-		executionsStorage = loader.getExecutionsStorage();
+		final Broker broker = new Broker(stockStorage);
 
 		settings.setBroker(broker);
 		settings.setFrom(p.getProperty("Period.from"));
 		settings.setTo(p.getProperty("Period.to"));
+
+		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+		algorithmSettings.set("Period.from", settings.getFrom());
+		algorithmSettings.set("Period.to", settings.getTo());
+
+		String configFilePath = p.getProperty("Executions.path", "./config/algs.ini");
+		final ExecutionsLoader loader = new ExecutionsLoader(configFilePath, stockNames, algorithmsStorage, broker, signalsStorage,
+				algorithmSettings);
+		executionsStorage = loader.getExecutionsStorage();
 
 		return settings;
 	}
@@ -102,11 +107,11 @@ public class Simulator {
 		}
 	}
 
-	public static void main(String[] args) {
-		try {
-			new Simulator();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		try {
+//			new Simulator("./config/simulator.ini");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

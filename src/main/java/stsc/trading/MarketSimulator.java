@@ -32,7 +32,7 @@ public class MarketSimulator {
 	private Broker broker;
 	private StatisticsProcessor statisticsProcessor;
 	private Statistics statistics;
-	private SignalsStorage signalsStorage = new SignalsStorage();
+	private SignalsStorage signalsStorage;
 	private ExecutionsStorage executionsStorage;
 
 	private Date from;
@@ -46,21 +46,22 @@ public class MarketSimulator {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
 		this.statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
+		this.signalsStorage = new SignalsStorage();
 		parseSimulationSettings(settings);
 		this.stocks = new DayIteratorStorage(from);
 		loadAlgorithms(settings);
 	}
 
-	public MarketSimulator(MarketSimulatorSettings settings, ExecutionsStorage executionsStorage)
+	public MarketSimulator(MarketSimulatorSettings settings, ExecutionsStorage executionsStorage, SignalsStorage signalsStorage)
 			throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
 		this.statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
+		this.signalsStorage = signalsStorage;
 		parseSimulationSettings(settings);
 		this.stocks = new DayIteratorStorage(from);
 		this.executionsStorage = executionsStorage;
 		executionsStorage.initializeExecutions(signalsStorage, broker);
-
 	}
 
 	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
@@ -20,8 +19,8 @@ public class StatisticsProcessor {
 	public final static double EPSILON = 0.000001;
 	private final static double PERCENTS = 100.0;
 
-	private class Positions {
-		private class Position {
+	protected class Positions {
+		public class Position {
 			private int shares = 0;
 			private double spentMoney = 0.0;
 
@@ -47,7 +46,7 @@ public class StatisticsProcessor {
 			}
 		}
 
-		private HashMap<String, Position> positions = new HashMap<>();
+		public HashMap<String, Position> positions = new HashMap<>();
 
 		void increment(String stockName, int shares, double sharesPrice) {
 			Position position = positions.get(stockName);
@@ -76,6 +75,16 @@ public class StatisticsProcessor {
 			}
 			return result;
 		}
+
+		public int size() {
+			return positions.size();
+		}
+
+		@Override
+		public String toString() {
+			return "(" + Integer.toString(positions.size()) + "): " + positions.toString();
+		}
+
 	}
 
 	public static boolean isDoubleEqual(double l, double r) {
@@ -147,7 +156,7 @@ public class StatisticsProcessor {
 				}
 			}
 			tradingRecordsIndex = tradingRecordSize;
-			double dayCache = spentLongCash + spentShortCash;
+			double dayCache = spentShortCash + spentLongCash;
 			if (maximumSpentMoney < dayCache)
 				maximumSpentMoney = dayCache;
 			double moneyInLongs = longPositions.cost(lastPrice);
@@ -183,17 +192,54 @@ public class StatisticsProcessor {
 			maximumSpentMoney /= PERCENTS;
 			if (isDoubleEqual(maximumSpentMoney, 0.0))
 				return null;
+			statisticsInit.period = statisticsInit.equityCurve.size();
+			closeAllPositions();
+			statisticsInit.copyMoneyEquityCurve();
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);
-
 			calculateEquityStatistics();
-
 			return new Statistics(statisticsInit);
 		}
+		private void closeAllPositions() {
+			final int MINIMAL_DAY_IN_PERIOD = 2;
+			if (statisticsInit.period > MINIMAL_DAY_IN_PERIOD
+					&& (longPositions.size() > 0 || shortPositions.size() > 0)) {
+				while (longPositions.size() > 0) {
+					final String stockName = longPositions.positions.keySet().iterator().next();
+					final Positions.Position p = longPositions.positions.get(stockName);
 
+					double price = lastPrice.get(stockName);
+					int shares = p.shares;
+					double sharesPrice = shares * price;
+
+					double oldPrice = longPositions.sharePrice(stockName);
+					double priceDiff = shares * (price - oldPrice);
+					addPositionClose(priceDiff);
+					spentLongCash -= sharesPrice;
+					longPositions.decrement(stockName, shares, sharesPrice);
+				}
+				while (shortPositions.size() > 0) {
+					final String stockName = shortPositions.positions.keySet().iterator().next();
+					final Positions.Position p = shortPositions.positions.get(stockName);
+
+					double price = lastPrice.get(stockName);
+					int shares = p.shares;
+					double sharesPrice = shares * price;
+
+					double oldPrice = shortPositions.sharePrice(stockName);
+					double priceDiff = shares * (oldPrice - price);
+					addPositionClose(priceDiff);
+					spentShortCash -= (sharesPrice + 2 * priceDiff);
+					shortPositions.decrement(stockName, shares, sharesPrice);
+				}
+				double dayCache = spentShortCash + spentLongCash;
+				if (maximumSpentMoney < dayCache)
+					maximumSpentMoney = dayCache;
+				statisticsInit.equityCurve.setLast(dayCache);
+			}
+		}
+		
 		private void calculateEquityStatistics() {
 			final int DAYS_PER_YEAR = 250;
-			statisticsInit.period = statisticsInit.equityCurve.size();
-
 			if (statisticsInit.period > DAYS_PER_YEAR) {
 				calculateMonthsStatistics();
 				collectElementsInStartMonths();
@@ -202,7 +248,6 @@ public class StatisticsProcessor {
 			}
 
 			calculateDrawDownStatistics();
-
 		}
 
 		private void calculateDrawDownStatistics() {
@@ -213,7 +258,7 @@ public class StatisticsProcessor {
 			boolean inDrawdown = false;
 			double ddSize = 0.0;
 			double lastValue = ddStart.value;
-			
+
 			int ddCount = 0;
 			double ddDurationSum = 0.0;
 			double ddValueSum = 0.0;
@@ -230,13 +275,14 @@ public class StatisticsProcessor {
 				} else {
 					if (currentElement.value > lastValue) {
 						if (currentElement.value >= ddStart.value) {
-							final int ddLength = Days.daysBetween( new LocalDate( ddStart.date ), new LocalDate( currentElement.date )).getDays();
-							
-							ddCount +=1 ;
+							final int ddLength = Days.daysBetween(new LocalDate(ddStart.date),
+									new LocalDate(currentElement.date)).getDays();
+
+							ddCount += 1;
 							ddDurationSum += ddLength;
 							ddValueSum += ddSize;
-							
-							checkDdLengthSizeOnMax( ddSize, ddLength );
+
+							checkDdLengthSizeOnMax(ddSize, ddLength);
 
 							inDrawdown = false;
 							ddStart = currentElement;
@@ -250,24 +296,25 @@ public class StatisticsProcessor {
 				}
 				lastValue = currentElement.value;
 			}
-			if (inDrawdown){
-				final int ddLength = Days.daysBetween( new LocalDate( ddStart.date ), new LocalDate( init.equityCurve.getLastElement().date )).getDays();
+			if (inDrawdown) {
+				final int ddLength = Days.daysBetween(new LocalDate(ddStart.date),
+						new LocalDate(init.equityCurve.getLastElement().date)).getDays();
 				ddCount += 1;
 				ddValueSum += ddSize;
 				ddDurationSum += ddLength;
-				
-				checkDdLengthSizeOnMax( ddSize, ddLength );
+
+				checkDdLengthSizeOnMax(ddSize, ddLength);
 			}
-			
+
 			init.ddDurationAvGain = ddDurationSum / ddCount;
 			init.ddValueAvGain = ddValueSum / ddCount;
-			
+
 		}
 
 		private void checkDdLengthSizeOnMax(double ddSize, int ddLength) {
-			if (ddSize > statisticsInit.ddValueMax )
+			if (ddSize > statisticsInit.ddValueMax)
 				statisticsInit.ddValueMax = ddSize;
-			if (ddLength > statisticsInit.ddDurationMax )
+			if (ddLength > statisticsInit.ddDurationMax)
 				statisticsInit.ddDurationMax = ddLength;
 		}
 

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
+import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
@@ -19,9 +20,8 @@ public class ExecutionsLoaderTest extends TestCase {
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
 		final SignalsStorage signalsStorage = new SignalsStorage();
 
-		ExecutionsLoader.configFilePath = filename;
-		final ExecutionsLoader el = new ExecutionsLoader(Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage,
-				broker, signalsStorage);
+		final ExecutionsLoader el = new ExecutionsLoader(filename, Arrays.asList("aapl,goog,spy".split(",")),
+				algorithmsStorage, broker, signalsStorage, new AlgorithmSettings());
 
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
@@ -47,10 +47,10 @@ public class ExecutionsLoaderTest extends TestCase {
 		final Broker broker = new Broker(new ThreadSafeStockStorage());
 		final SignalsStorage signalsStorage = new SignalsStorage();
 
-		ExecutionsLoader.configFilePath = file;
 		boolean throwed = false;
 		try {
-			new ExecutionsLoader(Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage, broker, signalsStorage);
+			new ExecutionsLoader(file, Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage, broker,
+					signalsStorage, new AlgorithmSettings());
 		} catch (BadAlgorithmException e) {
 			assertEquals(message, e.getMessage());
 			throwed = true;

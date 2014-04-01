@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-public class EquityCurve {
+public class EquityCurve implements Cloneable {
 
-	static public class EquityCurveElement {
+	static public class EquityCurveElement implements Cloneable {
 
 		public Date date;
 		public double value;
@@ -34,6 +34,11 @@ public class EquityCurve {
 			return "ece(" + String.format("%03f", value) + ")";
 		}
 
+		@Override
+		public EquityCurveElement clone() {
+			return new EquityCurveElement(this.date, this.value);
+		}
+
 	};
 
 	static public class ElementComparator implements Comparator<EquityCurveElement> {
@@ -47,6 +52,20 @@ public class EquityCurve {
 	static final ElementComparator equityCurveElementComparator = new ElementComparator();
 
 	private ArrayList<EquityCurveElement> elements = new ArrayList<>();
+
+	public EquityCurve() {
+	}
+
+	@Override
+	public EquityCurve clone() {
+		return new EquityCurve(this);
+	}
+
+	private EquityCurve(final EquityCurve equityCurve) {
+		for (EquityCurveElement e : equityCurve.elements) {
+			this.elements.add(e.clone());
+		}
+	}
 
 	public int size() {
 		return elements.size();
@@ -78,7 +97,12 @@ public class EquityCurve {
 		return index;
 	}
 
+	@Override
 	public String toString() {
 		return elements.toString();
+	}
+
+	public void setLast(final double value) {
+		elements.get(elements.size() - 1).value = value;
 	}
 }

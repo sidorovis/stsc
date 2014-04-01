@@ -10,6 +10,7 @@ import org.joda.time.Days;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
+import stsc.algorithms.EodPosition;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
@@ -17,36 +18,8 @@ import stsc.trading.Side;
 
 public class SimpleTradingAlgorithm extends EodAlgorithm {
 
-	public class Position {
-		final String stockName;
-		final Side side;
-		int sharedAmount;
-
-		public int getSharedAmount() {
-			return sharedAmount;
-		}
-
-		public void setSharedAmount(int sharedAmount) {
-			this.sharedAmount = sharedAmount;
-		}
-
-		public String getStockName() {
-			return stockName;
-		}
-
-		public Side getSide() {
-			return side;
-		}
-
-		public Position(String stockName, Side side, int sharedAmount) {
-			this.stockName = stockName;
-			this.side = side;
-			this.sharedAmount = sharedAmount;
-		}
-	}
-
 	Date boughtDate = null;
-	final HashMap<String, Position> openedPositions = new HashMap<String, Position>();
+	final HashMap<String, EodPosition> openedPositions = new HashMap<String, EodPosition>();
 
 	public SimpleTradingAlgorithm(EodAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);
@@ -70,7 +43,7 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 			if (boughtAmount > 0) {
 				boughtDate = i.getValue().getDate();
 				boughtStocks += 1;
-				openedPositions.put(stockName, new Position(stockName, Side.LONG, boughtAmount));
+				openedPositions.put(stockName, new EodPosition(stockName, Side.LONG, boughtAmount));
 			}
 			if (boughtStocks == toBuy) {
 				break;
@@ -87,8 +60,8 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 
 	private void sell(HashMap<String, Day> datafeed) {
 		HashSet<String> positionKeysToDelete = new HashSet<String>();
-		for (Map.Entry<String, Position> i : openedPositions.entrySet()) {
-			Position p = i.getValue();
+		for (Map.Entry<String, EodPosition> i : openedPositions.entrySet()) {
+			EodPosition p = i.getValue();
 			int allSharesAmount = p.getSharedAmount();
 			int soldAmount = broker().sell(i.getKey(), p.getSide(), allSharesAmount);
 			p.setSharedAmount(allSharesAmount - soldAmount);
