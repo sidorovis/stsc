@@ -27,7 +27,7 @@ public class SignalsStorage {
 
 		@SuppressWarnings("unchecked")
 		public <T> T getSignal(Class<T> expectedClass) {
-			if (signal.getClass() == expectedClass) {
+			if (expectedClass.isInstance(signal)) {
 				return (T) signal;
 			} else
 				return null;

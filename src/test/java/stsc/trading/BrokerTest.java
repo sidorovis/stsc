@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 public class BrokerTest extends TestCase {
 	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException {
-		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, "./test_data/market_simulator_tests/" + stockName
+		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, "./test_data/trade_processor_tests/" + stockName
 				+ ".csv"));
 	}
 

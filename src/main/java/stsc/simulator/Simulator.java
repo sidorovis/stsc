@@ -13,6 +13,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.common.MarketDataContext;
 import stsc.common.UnitedFormatStock;
+import stsc.statistic.Statistics;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.SignalsStorage;
@@ -21,8 +22,8 @@ import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.YahooFileStockStorage;
 import stsc.trading.Broker;
 import stsc.trading.ExecutionsLoader;
-import stsc.trading.MarketSimulator;
-import stsc.trading.MarketSimulatorSettings;
+import stsc.trading.TradeProcessor;
+import stsc.trading.TradeProcessorSettings;
 
 public class Simulator {
 
@@ -36,7 +37,10 @@ public class Simulator {
 	final private SignalsStorage signalsStorage;
 	private List<String> stockNames = new ArrayList<>();
 	private StockStorage stockStorage;
+	final private TradeProcessor marketSimulator;
 	private ExecutionsStorage executionsStorage;
+
+	private String statisticsFile;
 
 	public Simulator(final String configFile) throws Exception {
 		final Properties p = new Properties();
@@ -47,22 +51,28 @@ public class Simulator {
 		algorithmsStorage = new AlgorithmsStorage();
 		signalsStorage = new SignalsStorage();
 
-		final MarketSimulatorSettings settings = generateSettings(p);
+		final TradeProcessorSettings settings = generateSettings(p);
 
 		logger.info("Settings readed");
 
-		final MarketSimulator simulator = new MarketSimulator(settings, executionsStorage, signalsStorage);
-		simulator.simulate();
+		this.marketSimulator = new TradeProcessor(settings, executionsStorage, signalsStorage);
+		marketSimulator.simulate();
 
 		logger.info("Simulated finished");
 
-		simulator.printStatistics(p.getProperty("Statistics.file", "./logs/statistics.csv"));
-
-		logger.info("Statistics printed");
+		statisticsFile = p.getProperty("Statistics.file", "./logs/statistics.csv");
 	}
 
-	private MarketSimulatorSettings generateSettings(final Properties p) throws Exception {
-		final MarketSimulatorSettings settings = new MarketSimulatorSettings();
+	public void print() throws IllegalArgumentException, IllegalAccessException, IOException {
+		marketSimulator.printStatistics(statisticsFile);
+	}
+	
+	public Statistics getStatistics() {
+		return marketSimulator.getStatistics();
+	}
+
+	private TradeProcessorSettings generateSettings(final Properties p) throws Exception {
+		final TradeProcessorSettings settings = new TradeProcessorSettings();
 
 		final String[] stockList = p.getProperty("Stocks").split(",");
 		for (String string : stockList) {
@@ -82,8 +92,8 @@ public class Simulator {
 		algorithmSettings.set("Period.to", settings.getTo());
 
 		String configFilePath = p.getProperty("Executions.path", "./config/algs.ini");
-		final ExecutionsLoader loader = new ExecutionsLoader(configFilePath, stockNames, algorithmsStorage, broker, signalsStorage,
-				algorithmSettings);
+		final ExecutionsLoader loader = new ExecutionsLoader(configFilePath, stockNames, algorithmsStorage, broker,
+				signalsStorage, algorithmSettings);
 		executionsStorage = loader.getExecutionsStorage();
 
 		return settings;
@@ -107,11 +117,11 @@ public class Simulator {
 		}
 	}
 
-//	public static void main(String[] args) {
-//		try {
-//			new Simulator("./config/simulator.ini");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	// public static void main(String[] args) {
+	// try {
+	// new Simulator("./config/simulator.ini");
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
 }

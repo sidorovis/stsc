@@ -26,7 +26,7 @@ import stsc.storage.SignalsStorage;
 import stsc.storage.DayIterator;
 import stsc.storage.StockStorage;
 
-public class MarketSimulator {
+public class TradeProcessor {
 
 	private StockStorage stockStorage;
 	private Broker broker;
@@ -42,7 +42,7 @@ public class MarketSimulator {
 
 	private DayIteratorStorage stocks;
 
-	public MarketSimulator(MarketSimulatorSettings settings) throws BadAlgorithmException {
+	public TradeProcessor(TradeProcessorSettings settings) throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
 		this.statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
@@ -52,7 +52,7 @@ public class MarketSimulator {
 		loadAlgorithms(settings);
 	}
 
-	public MarketSimulator(MarketSimulatorSettings settings, ExecutionsStorage executionsStorage, SignalsStorage signalsStorage)
+	public TradeProcessor(TradeProcessorSettings settings, ExecutionsStorage executionsStorage, SignalsStorage signalsStorage)
 			throws BadAlgorithmException {
 		this.stockStorage = settings.getStockStorage();
 		this.broker = settings.getBroker();
@@ -64,7 +64,7 @@ public class MarketSimulator {
 		executionsStorage.initializeExecutions(signalsStorage, broker);
 	}
 
-	private void loadAlgorithms(MarketSimulatorSettings settings) throws BadAlgorithmException {
+	private void loadAlgorithms(TradeProcessorSettings settings) throws BadAlgorithmException {
 		executionsStorage = new ExecutionsStorage(processingStockList);
 		for (StockExecution i : settings.getStockExecutionsList()) {
 			executionsStorage.addStockExecution(i);
@@ -75,7 +75,7 @@ public class MarketSimulator {
 		executionsStorage.initializeExecutions(signalsStorage, broker);
 	}
 
-	private void parseSimulationSettings(MarketSimulatorSettings settings) {
+	private void parseSimulationSettings(TradeProcessorSettings settings) {
 		from = settings.getFrom();
 		to = settings.getTo();
 		processingStockList.addAll(settings.getStockList());
@@ -145,6 +145,10 @@ public class MarketSimulator {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
 			statistics.print(writer);
 		}
+	}
+	
+	public Statistics getStatistics() {
+		return statistics;
 	}
 
 }

@@ -7,27 +7,27 @@ import java.util.Date;
 
 public class EquityCurve implements Cloneable {
 
-	static public class EquityCurveElement implements Cloneable {
+	static public class Element implements Cloneable {
 
 		public Date date;
 		public double value;
 
-		public EquityCurveElement(Date date, double value) {
+		public Element(Date date, double value) {
 			super();
 			this.date = date;
 			this.value = value;
 		}
 
-		public static EquityCurveElement makeForSearch(Date date) {
-			return new EquityCurveElement(date);
+		public static Element makeForSearch(Date date) {
+			return new Element(date);
 		}
 
-		private EquityCurveElement(Date date) {
+		private Element(Date date) {
 			this.date = date;
 		}
 
-		public void reverse(double divider) {
-			value = -value / divider;
+		public void recalculatePercent(double divider) {
+			value = value / divider;
 		}
 
 		public String toString() {
@@ -35,34 +35,35 @@ public class EquityCurve implements Cloneable {
 		}
 
 		@Override
-		public EquityCurveElement clone() {
-			return new EquityCurveElement(this.date, this.value);
+		public Element clone() {
+			return new Element(this.date, this.value);
 		}
-
 	};
 
-	static public class ElementComparator implements Comparator<EquityCurveElement> {
+	static public class ElementComparator implements Comparator<Element> {
 
 		@Override
-		public int compare(EquityCurveElement o1, EquityCurveElement o2) {
+		public int compare(Element o1, Element o2) {
 			return o1.date.compareTo(o2.date);
 		}
 	}
 
 	static final ElementComparator equityCurveElementComparator = new ElementComparator();
 
-	private ArrayList<EquityCurveElement> elements = new ArrayList<>();
+	private ArrayList<Element> elements = new ArrayList<>();
 
 	public EquityCurve() {
 	}
 
 	@Override
 	public EquityCurve clone() {
-		return new EquityCurve(this);
+		final EquityCurve equityCurve = new EquityCurve();
+		equityCurve.setCopy(this);
+		return equityCurve;
 	}
 
-	private EquityCurve(final EquityCurve equityCurve) {
-		for (EquityCurveElement e : equityCurve.elements) {
+	private void setCopy(EquityCurve copyFrom) {
+		for (Element e : copyFrom.elements) {
 			this.elements.add(e.clone());
 		}
 	}
@@ -72,25 +73,25 @@ public class EquityCurve implements Cloneable {
 	}
 
 	public void add(Date date, double value) {
-		elements.add(new EquityCurveElement(date, value));
+		elements.add(new Element(date, value));
 	}
 
-	public EquityCurveElement getLastElement() {
+	public Element getLastElement() {
 		return elements.get(elements.size() - 1);
 	}
 
 	public void recalculateWithMax(double maximumSpentMoney) {
 		for (int i = 0; i < size(); ++i) {
-			elements.get(i).reverse(maximumSpentMoney);
+			elements.get(i).recalculatePercent(maximumSpentMoney);
 		}
 	}
 
-	public EquityCurveElement get(int i) {
+	public Element get(int i) {
 		return elements.get(i);
 	}
 
 	public int find(Date date) {
-		int index = Collections.binarySearch(elements, EquityCurveElement.makeForSearch(date),
+		int index = Collections.binarySearch(elements, Element.makeForSearch(date),
 				equityCurveElementComparator);
 		if (index < 0)
 			index = -index - 1;

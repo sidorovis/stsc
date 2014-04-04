@@ -9,7 +9,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
-import stsc.statistic.EquityCurve.EquityCurveElement;
+import stsc.statistic.EquityCurve.Element;
 import stsc.statistic.Statistics.StatisticsInit;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord;
@@ -43,6 +43,11 @@ public class StatisticsProcessor {
 
 			public double sharePrice() {
 				return spentMoney / shares;
+			}
+
+			@Override
+			public String toString() {
+				return Double.toString(shares);
 			}
 		}
 
@@ -127,9 +132,9 @@ public class StatisticsProcessor {
 				TradingRecord record = tradingRecords.get(i);
 				String stockName = record.getStockName();
 
-				double price = lastPrice.get(stockName);
-				int shares = record.getAmount();
-				double sharesPrice = shares * price;
+				final double price = lastPrice.get(stockName);
+				final int shares = record.getAmount();
+				final double sharesPrice = shares * price;
 
 				if (record.isPurchase()) {
 					if (record.isLong()) {
@@ -141,28 +146,45 @@ public class StatisticsProcessor {
 					}
 				} else {
 					if (record.isLong()) {
-						double oldPrice = longPositions.sharePrice(stockName);
-						double priceDiff = shares * (price - oldPrice);
-						addPositionClose(priceDiff);
-						spentLongCash -= sharesPrice;
-						longPositions.decrement(stockName, shares, sharesPrice);
+						processLong(stockName, shares, price, sharesPrice);
 					} else {
-						double oldPrice = shortPositions.sharePrice(stockName);
-						double priceDiff = shares * (oldPrice - price);
-						addPositionClose(priceDiff);
-						spentShortCash -= (sharesPrice + 2 * priceDiff);
-						shortPositions.decrement(stockName, shares, sharesPrice);
+						processShort(stockName, shares, price, sharesPrice);
 					}
 				}
 			}
 			tradingRecordsIndex = tradingRecordSize;
-			double dayCache = spentShortCash + spentLongCash;
-			if (maximumSpentMoney < dayCache)
-				maximumSpentMoney = dayCache;
+
+			calculateMaximumSpentMoney();
+			final double dayResult = calculateDayCash();
+			statisticsInit.equityCurve.add(lastDate, dayResult);
+		}
+
+		private void processLong(String stockName, int shares, double price, double sharesPrice) {
+			double oldPrice = longPositions.sharePrice(stockName);
+			double priceDiff = shares * (price - oldPrice);
+			addPositionClose(priceDiff);
+			spentLongCash -= sharesPrice;
+			longPositions.decrement(stockName, shares, sharesPrice);
+		}
+
+		private void processShort(String stockName, int shares, double price, double sharesPrice) {
+			final double oldPrice = shortPositions.sharePrice(stockName);
+			final double priceDiff = shares * (oldPrice - price);
+			addPositionClose(priceDiff);
+			spentShortCash -= (sharesPrice + 2 * priceDiff);
+			shortPositions.decrement(stockName, shares, sharesPrice);
+		}
+
+		private double calculateDayCash() {
 			double moneyInLongs = longPositions.cost(lastPrice);
 			double moneyInShorts = shortPositions.cost(lastPrice);
+			return spentShortCash - spentLongCash + moneyInLongs - moneyInShorts;
+		}
 
-			statisticsInit.equityCurve.add(lastDate, dayCache - moneyInLongs - moneyInShorts);
+		private void calculateMaximumSpentMoney() {
+			double spentCache = spentShortCash + spentLongCash;
+			if (maximumSpentMoney < spentCache)
+				maximumSpentMoney = spentCache;
 		}
 
 		private void addPositionClose(double moneyDiff) {
@@ -189,16 +211,17 @@ public class StatisticsProcessor {
 		}
 
 		public Statistics calculate() throws StatisticsCalculationException {
-			maximumSpentMoney /= PERCENTS;
 			if (isDoubleEqual(maximumSpentMoney, 0.0))
 				return null;
 			statisticsInit.period = statisticsInit.equityCurve.size();
 			closeAllPositions();
 			statisticsInit.copyMoneyEquityCurve();
+			maximumSpentMoney /= PERCENTS;
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);
 			calculateEquityStatistics();
 			return new Statistics(statisticsInit);
 		}
+
 		private void closeAllPositions() {
 			final int MINIMAL_DAY_IN_PERIOD = 2;
 			if (statisticsInit.period > MINIMAL_DAY_IN_PERIOD
@@ -211,11 +234,7 @@ public class StatisticsProcessor {
 					int shares = p.shares;
 					double sharesPrice = shares * price;
 
-					double oldPrice = longPositions.sharePrice(stockName);
-					double priceDiff = shares * (price - oldPrice);
-					addPositionClose(priceDiff);
-					spentLongCash -= sharesPrice;
-					longPositions.decrement(stockName, shares, sharesPrice);
+					processLong(stockName, shares, price, sharesPrice);
 				}
 				while (shortPositions.size() > 0) {
 					final String stockName = shortPositions.positions.keySet().iterator().next();
@@ -225,19 +244,16 @@ public class StatisticsProcessor {
 					int shares = p.shares;
 					double sharesPrice = shares * price;
 
-					double oldPrice = shortPositions.sharePrice(stockName);
-					double priceDiff = shares * (oldPrice - price);
-					addPositionClose(priceDiff);
-					spentShortCash -= (sharesPrice + 2 * priceDiff);
-					shortPositions.decrement(stockName, shares, sharesPrice);
+					processShort(stockName, shares, price, sharesPrice);
 				}
-				double dayCache = spentShortCash + spentLongCash;
-				if (maximumSpentMoney < dayCache)
-					maximumSpentMoney = dayCache;
+				final double cashSum = spentLongCash + spentShortCash;
+				final double dayCache = -(spentLongCash + spentShortCash);
+				if (maximumSpentMoney < cashSum)
+					maximumSpentMoney = cashSum;
 				statisticsInit.equityCurve.setLast(dayCache);
 			}
 		}
-		
+
 		private void calculateEquityStatistics() {
 			final int DAYS_PER_YEAR = 250;
 			if (statisticsInit.period > DAYS_PER_YEAR) {
@@ -254,7 +270,7 @@ public class StatisticsProcessor {
 			final StatisticsInit init = statisticsInit;
 			final int equityCurveSize = init.equityCurve.size();
 
-			EquityCurveElement ddStart = init.equityCurve.get(0);
+			Element ddStart = init.equityCurve.get(0);
 			boolean inDrawdown = false;
 			double ddSize = 0.0;
 			double lastValue = ddStart.value;
@@ -264,7 +280,7 @@ public class StatisticsProcessor {
 			double ddValueSum = 0.0;
 
 			for (int i = 1; i < equityCurveSize; ++i) {
-				EquityCurveElement currentElement = init.equityCurve.get(i);
+				Element currentElement = init.equityCurve.get(i);
 				if (!inDrawdown) {
 					if (currentElement.value >= lastValue)
 						ddStart = currentElement;
@@ -406,7 +422,7 @@ public class StatisticsProcessor {
 
 			while (monthAgo.isBefore(endDate)) {
 				index = init.equityCurve.find(monthAgo.toDate()) - 1;
-				EquityCurveElement element = init.equityCurve.get(index);
+				Element element = init.equityCurve.get(index);
 
 				double lastValue = element.value;
 				double differentForMonth = lastValue - indexValue;

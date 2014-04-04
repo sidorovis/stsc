@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-import stsc.statistic.EquityCurve.EquityCurveElement;
+import stsc.statistic.EquityCurve.Element;
 
 public class Statistics {
 
@@ -261,7 +261,7 @@ public class Statistics {
 		outfile.append('\n');
 
 		for (int i = 0; i < equityCurveInMoney.size(); ++i) {
-			final EquityCurveElement e = equityCurveInMoney.get(i);
+			final Element e = equityCurveInMoney.get(i);
 			outfile.append(dateFormat.format(e.date)).append('\t').append(decimalFormat.format(e.value)).append('\n');
 		}
 	}

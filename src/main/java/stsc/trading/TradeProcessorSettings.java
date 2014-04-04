@@ -10,7 +10,7 @@ import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.storage.StockStorage;
 
-public class MarketSimulatorSettings {
+public class TradeProcessorSettings {
 
 	private StockStorage stockStorage;
 	private Broker broker;
