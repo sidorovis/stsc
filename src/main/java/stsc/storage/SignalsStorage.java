@@ -12,8 +12,8 @@ import stsc.signals.StockSignal;
  * @mark Thread Safe
  * 
  */
-public class SignalsStorage {
 
+public class SignalsStorage {
 	static public class Handler<SignalType> {
 		final int index;
 		final Date date;

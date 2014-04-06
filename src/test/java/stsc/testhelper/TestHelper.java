@@ -12,7 +12,7 @@ public class TestHelper {
 		EodAlgorithm.Init init = new EodAlgorithm.Init();
 		init.broker = new Broker(new ThreadSafeStockStorage());
 		init.executionName = "eName";
-		init.settings = new AlgorithmSettings();
+		init.settings = AlgorithmSettings.create00s();
 		init.signalsStorage = new SignalsStorage();
 		return init;
 	}
@@ -21,7 +21,7 @@ public class TestHelper {
 			SignalsStorage storage) {
 		StockAlgorithm.Init init = new StockAlgorithm.Init();
 		init.executionName = executionName;
-		init.settings = new AlgorithmSettings();
+		init.settings = AlgorithmSettings.create00s();
 		init.signalsStorage = storage;
 		init.stockName = stockName;
 		return init;

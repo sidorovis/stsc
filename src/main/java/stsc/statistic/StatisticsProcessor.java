@@ -211,13 +211,15 @@ public class StatisticsProcessor {
 		}
 
 		public Statistics calculate() throws StatisticsCalculationException {
-			if (isDoubleEqual(maximumSpentMoney, 0.0))
-				return null;
 			statisticsInit.period = statisticsInit.equityCurve.size();
 			closeAllPositions();
 			statisticsInit.copyMoneyEquityCurve();
+
+			if (isDoubleEqual(maximumSpentMoney, 0.0))
+				return new Statistics(statisticsInit);
 			maximumSpentMoney /= PERCENTS;
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);
+
 			calculateEquityStatistics();
 			return new Statistics(statisticsInit);
 		}
@@ -473,7 +475,7 @@ public class StatisticsProcessor {
 		return statisticsData;
 	}
 
-	public double calculateStdDev(List<Double> elements) {
+	public static double calculateStdDev(List<Double> elements) {
 		double summ = 0.0;
 		for (Double i : elements) {
 			summ += i;
@@ -481,7 +483,7 @@ public class StatisticsProcessor {
 		return calculateStdDev(summ, elements);
 	}
 
-	public double calculateStdDev(double summ, List<Double> elements) {
+	public static double calculateStdDev(double summ, List<Double> elements) {
 		double result = 0.0;
 		int size = elements.size();
 		double average = summ / size;

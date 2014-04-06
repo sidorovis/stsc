@@ -59,18 +59,21 @@ public class ExecutionsStorage {
 			if (e != null)
 				e.simulate(newDay);
 		}
+
+		int size() {
+			return stockToExecution.size();
+		}
 	}
 
-	private List<String> stockNames;
+	final SignalsStorage signalsStorage = new SignalsStorage();
 
-	private ArrayList<StockExecution> stockExecutions = new ArrayList<>();
-	private ArrayList<EodExecution> eodExecutions = new ArrayList<>();
+	private List<StockExecution> stockExecutions = new ArrayList<>();
+	private List<EodExecution> eodExecutions = new ArrayList<>();
 
 	private StockExecutions stockAlgorithms = new StockExecutions();
-	private HashMap<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
+	private Map<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
-	public ExecutionsStorage(final List<String> stockNames) throws BadAlgorithmException {
-		this.stockNames = stockNames;
+	public ExecutionsStorage() throws BadAlgorithmException {
 	}
 
 	public void addStockExecution(StockExecution execution) throws BadAlgorithmException {
@@ -81,9 +84,10 @@ public class ExecutionsStorage {
 		eodExecutions.add(execution);
 	}
 
-	public void initializeExecutions(SignalsStorage signalsStorage, Broker broker) throws BadAlgorithmException {
+	public void initialize(Broker broker) throws BadAlgorithmException {
+		final StockStorage stocks = broker.getStockStorage();
 		for (StockExecution execution : stockExecutions) {
-			for (String stockName : stockNames) {
+			for (String stockName : stocks.getStockNames()) {
 				final StockAlgorithm algo = execution.getInstance(stockName, signalsStorage);
 				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
 			}
@@ -128,5 +132,15 @@ public class ExecutionsStorage {
 		if (e != null)
 			return e.map.get(executionName);
 		return null;
+	}
+
+	public SignalsStorage getSignalsStorage() {
+		return signalsStorage;
+	}
+
+	@Override
+	public String toString() {
+		return "Stocks: " + Integer.toString(stockExecutions.size()) + " EodAlgos: "
+				+ Integer.toString(tradeAlgorithms.size()) + " StockAlgos:" + Integer.toString(stockAlgorithms.size());
 	}
 }

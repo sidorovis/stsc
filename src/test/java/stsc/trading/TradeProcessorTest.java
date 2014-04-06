@@ -5,13 +5,17 @@ import java.text.ParseException;
 
 import org.joda.time.LocalDate;
 
+import com.google.common.collect.Sets;
+
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
 import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
+import stsc.common.FromToPeriod;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.EodSignal;
 import stsc.storage.ExecutionsStorage;
+import stsc.storage.StockStorageFactory;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
@@ -31,24 +35,18 @@ public class TradeProcessorTest extends TestCase {
 		csvReaderHelper(ss, "oldstock");
 		csvReaderHelper(ss, "no30");
 
-		final TradeProcessorSettings settings = new TradeProcessorSettings();
-		settings.setStockStorage(ss);
-		settings.setBroker(new Broker(ss));
-		settings.setFrom("30-10-2013");
-		settings.setTo("06-11-2013");
-		settings.getEodExecutionsList().add(
-				new EodExecution("e1", TestingEodAlgorithm.class.getName(), new AlgorithmSettings()));
-		settings.getStockList().add("aapl");
-		settings.getStockList().add("gfi");
-		settings.getStockList().add("no30");
-		settings.getStockList().add("unexisted_stock");
-		settings.getStockList().add("oldstock");
+		final FromToPeriod period = new FromToPeriod("30-10-2013", "06-11-2013");
+		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+
+		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
+		executionsStorage.addEodExecution(new EodExecution("e1", TestingEodAlgorithm.class.getName(), algoSettings));
+
+		final TradeProcessorInit settings = new TradeProcessorInit(ss, period, executionsStorage);
 
 		final TradeProcessor tradeProcessor = new TradeProcessor(settings);
-		tradeProcessor.simulate();
+		tradeProcessor.simulate(period);
 
 		final ExecutionsStorage es = tradeProcessor.getExecutionStorage();
-
 		assertEquals(1, es.getEodAlgorithmsSize());
 
 		final TestingEodAlgorithm ta = (TestingEodAlgorithm) es.getEodAlgorithm("e1");
@@ -59,7 +57,7 @@ public class TradeProcessorTest extends TestCase {
 		for (int i = 0; i < expectedDatafeedSizes.length; ++i)
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
-		final SignalsStorage signalsStorage = tradeProcessor.getSignalsStorage();
+		final SignalsStorage signalsStorage = tradeProcessor.getExecutionStorage().getSignalsStorage();
 		final EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(
 				EodSignal.class);
 		assertTrue(e1s1.getClass() == TestingEodAlgorithmSignal.class);
@@ -86,24 +84,15 @@ public class TradeProcessorTest extends TestCase {
 	}
 
 	public void testTradeProcessorWithStatistics() throws Exception {
-		final StockStorage ss = new ThreadSafeStockStorage();
+		final StockStorage ss = StockStorageFactory.createStockStorage(
+				Sets.newHashSet(new String[] { "aapl", "adm", "spy" }), "./test_data/");
+		final FromToPeriod period = new FromToPeriod("02-09-2013", "06-11-2013");
+		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
+		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
 
-		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
-		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
-		ss.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
-
-		final TradeProcessorSettings settings = new TradeProcessorSettings();
-		settings.setStockStorage(ss);
-		settings.setBroker(new Broker(ss));
-		settings.setFrom("02-09-2013");
-		settings.setTo("06-11-2013");
-		settings.getEodExecutionsList().add(
-				new EodExecution("e1", TestingEodAlgorithm.class.getName(), new AlgorithmSettings()));
-		settings.getStockList().add("aapl");
-		settings.getStockList().add("adm");
-		settings.getStockList().add("spy");
-
-		final TradeProcessor marketSimulator = new TradeProcessor(settings);
-		marketSimulator.simulate();
+		executionsStorage.addEodExecution(new EodExecution("e1", TestingEodAlgorithm.class.getName(), algoSettings));
+		final TradeProcessorInit init = new TradeProcessorInit(ss, period, executionsStorage);
+		final TradeProcessor marketSimulator = new TradeProcessor(init);
+		marketSimulator.simulate(period);
 	}
 }

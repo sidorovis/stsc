@@ -11,6 +11,7 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 
 	private HashMap<String, DayIterator> stocks = new HashMap<String, DayIterator>();
 	private Date from;
+
 	private class IteratorOnStocks implements Iterator<Entry<String, DayIterator>> {
 
 		private Iterator<Entry<String, DayIterator>> stocksIterator;
@@ -40,10 +41,10 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 		return new IteratorOnStocks(stocks);
 	}
 
-	public DayIteratorStorage( Date from ){
+	public DayIteratorStorage(Date from) {
 		this.from = from;
 	}
-	
+
 	public void add(Stock stock) {
 		if (stock != null) {
 			DayIterator stockIterator = new DayIterator(stock, from);
@@ -57,5 +58,10 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 		for (Entry<String, DayIterator> i : this) {
 			i.getValue().reset();
 		}
+	}
+
+	@Override
+	public String toString() {
+		return from.toString() + " " + stocks.toString();
 	}
 }

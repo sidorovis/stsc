@@ -1,56 +1,40 @@
 package stsc.trading;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
-import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.SignalsStorage;
-import stsc.storage.ThreadSafeStockStorage;
+import stsc.storage.StockStorage;
+import stsc.testhelper.StockStorageHelper;
 import junit.framework.TestCase;
 
 public class ExecutionsLoaderTest extends TestCase {
 
-	private ExecutionsStorage helperForSuccessLoadTests(String filename) throws ClassNotFoundException, IOException,
-			BadAlgorithmException {
-		final AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
-		final Broker broker = new Broker(new ThreadSafeStockStorage());
-		final SignalsStorage signalsStorage = new SignalsStorage();
-
-		final ExecutionsLoader el = new ExecutionsLoader(filename, Arrays.asList("aapl,goog,spy".split(",")),
-				algorithmsStorage, broker, signalsStorage, new AlgorithmSettings());
-
+	private ExecutionsStorage helperForSuccessLoadTests(String filename) throws Exception {
+		final StockStorage ss = new StockStorageHelper();
+		final ExecutionsLoader el = new ExecutionsLoader(filename, AlgorithmSettings.create00s().getPeriod());
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
+		executions.initialize(new Broker(ss));
 		return executions;
 	}
 
-	public void testAlgorithmLoader() throws FileNotFoundException, IOException, BadAlgorithmException,
-			ClassNotFoundException {
+	public void testAlgorithmLoader() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/algs_t1.ini");
 		assertEquals(3, executions.getStockAlgorithmsSize());
 		assertEquals(0, executions.getEodAlgorithmsSize());
 	}
 
-	public void testSeveralAlgorithmLoader() throws ClassNotFoundException, IOException, BadAlgorithmException {
+	public void testSeveralAlgorithmLoader() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/algs_t2.ini");
 		assertEquals(5, executions.getStockAlgorithmsSize());
 		assertEquals(0, executions.getEodAlgorithmsSize());
 	}
 
-	private void throwTesthelper(String file, String message) throws FileNotFoundException, IOException,
-			ClassNotFoundException {
-		final AlgorithmsStorage algorithmsStorage = new AlgorithmsStorage();
-		final Broker broker = new Broker(new ThreadSafeStockStorage());
-		final SignalsStorage signalsStorage = new SignalsStorage();
-
+	private void throwTesthelper(String file, String message) throws Exception {
 		boolean throwed = false;
 		try {
-			new ExecutionsLoader(file, Arrays.asList("aapl,goog,spy".split(",")), algorithmsStorage, broker,
-					signalsStorage, new AlgorithmSettings());
+			ExecutionsLoader loader = new ExecutionsLoader(file, AlgorithmSettings.create00s().getPeriod());
+			loader.getExecutionsStorage().initialize(new Broker(new StockStorageHelper()));
 		} catch (BadAlgorithmException e) {
 			assertEquals(message, e.getMessage());
 			throwed = true;
@@ -71,7 +55,7 @@ public class ExecutionsLoaderTest extends TestCase {
 				"Exception while loading algo: stsc.algorithms.factors.primitive.Sma( 3533721117350624 ) , exception: stsc.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
 	}
 
-	public void testAlgorithmLoaderWithEod() throws ClassNotFoundException, IOException, BadAlgorithmException {
+	public void testAlgorithmLoaderWithEod() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/trade_algs.ini");
 		assertEquals(2, executions.getStockAlgorithmsSize());
 		assertNotNull(executions.getEodAlgorithm("a1"));

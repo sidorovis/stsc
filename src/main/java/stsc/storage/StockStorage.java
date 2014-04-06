@@ -1,5 +1,7 @@
 package stsc.storage;
 
+import java.util.Set;
+
 import stsc.common.Stock;
 
 public interface StockStorage {
@@ -8,4 +10,5 @@ public interface StockStorage {
 
 	public abstract void updateStock(Stock stock);
 
+	public abstract Set<String> getStockNames();
 }

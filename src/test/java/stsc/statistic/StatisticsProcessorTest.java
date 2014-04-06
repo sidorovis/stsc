@@ -1,8 +1,6 @@
 package stsc.statistic;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
@@ -63,6 +61,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertTrue(StatisticsProcessor.isDoubleEqual(0.246987, statisticsData.getAvGain()));
 	}
 
+	// TODO fix tests
 //	public void testReverseStatistics() throws Exception {
 //		loadStocksForTest();
 //
@@ -94,7 +93,7 @@ public class StatisticsProcessorTest extends TestCase {
 //		assertEquals(2, statisticsData.getPeriod());
 //		assertTrue(StatisticsProcessor.isDoubleEqual(0.005255, statisticsData.getAvGain()));
 //	}
-
+// TODO
 //	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
 //		loadStocksForTest();
 //
@@ -154,7 +153,7 @@ public class StatisticsProcessorTest extends TestCase {
 //		assertTrue(StatisticsProcessor.isDoubleEqual(4.102564, statisticsData.getAvWinAvLoss()));
 //		assertTrue(StatisticsProcessor.isDoubleEqual(0.585417, statisticsData.getKelly()));
 //	}
-
+// TODO
 //	private void testEquityCurveOn518DaysStatistics() throws IOException, StatisticsCalculationException {
 //		Statistics stats = testTradingHelper(518, true);
 //
@@ -181,7 +180,7 @@ public class StatisticsProcessorTest extends TestCase {
 //		assertTrue(StatisticsProcessor.isDoubleEqual(6.470206, stats.getDdValueAvGain()));
 //		assertTrue(StatisticsProcessor.isDoubleEqual(32.700528, stats.getDdValueMax()));
 //	}
-//
+// TODO
 //	private void testEquityCurveOn251DaysStatistics() throws IOException, StatisticsCalculationException {
 //		Statistics stats = testTradingHelper(251, true);
 //
@@ -212,9 +211,8 @@ public class StatisticsProcessorTest extends TestCase {
 	public void testStatisticsOnLastClose() throws IOException, StatisticsCalculationException,
 			IllegalArgumentException, IllegalAccessException {
 		final Statistics stats = testTradingHelper(3, false);
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter("./test/out.csv"))) {
-			stats.print(writer);
-		}
+		stats.print("./test/out.csv");
+
 		assertTrue(StatisticsProcessor.isDoubleEqual(2.595008, stats.getDdValueMax()));
 		final File file = new File("./test/out.csv");
 		assertTrue(file.exists());

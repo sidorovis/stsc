@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class AlgorithmSettingsTest extends TestCase {
 
 	public void testAlgorithmsSettings() {
-		final AlgorithmSettings as = new AlgorithmSettings();
+		final AlgorithmSettings as = AlgorithmSettings.create00s();
 		assertNull(as.get("a"));
 		assertNotNull(as.set("a", new Double(14.05)));
 		assertNotNull(as.set("b", 14.05));

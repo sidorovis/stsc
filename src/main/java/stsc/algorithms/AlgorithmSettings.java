@@ -5,17 +5,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import stsc.common.FromToPeriod;
+
 public class AlgorithmSettings implements Cloneable {
 
+	private final FromToPeriod period;
 	private final HashMap<String, String> settings;
 	private final ArrayList<String> subExecutions;
 
-	public AlgorithmSettings() {
+	public static AlgorithmSettings create00s() {
+		try {
+			return new AlgorithmSettings(new FromToPeriod("01-01-2000", "31-12-2009"));
+		} catch (Exception e) {
+		}
+		return null;
+	}
+
+	public AlgorithmSettings(final FromToPeriod period) {
+		this.period = period;
 		this.settings = new HashMap<>();
 		this.subExecutions = new ArrayList<>();
 	}
 
-	private AlgorithmSettings(HashMap<String, String> settings, ArrayList<String> subExecutions) {
+	private AlgorithmSettings(final FromToPeriod period, HashMap<String, String> settings,
+			ArrayList<String> subExecutions) {
+		this.period = period;
 		this.settings = new HashMap<String, String>(settings);
 		this.subExecutions = new ArrayList<String>(subExecutions);
 	}
@@ -70,7 +84,11 @@ public class AlgorithmSettings implements Cloneable {
 
 	@Override
 	public AlgorithmSettings clone() {
-		return new AlgorithmSettings(settings, subExecutions);
+		return new AlgorithmSettings(period, settings, subExecutions);
+	}
+
+	public FromToPeriod getPeriod() {
+		return period;
 	}
 
 }

@@ -63,4 +63,8 @@ public class DayIterator {
 		}
 		return null;
 	}
+
+	public String toString() {
+		return Integer.toString(currentIterator) + "/" + Integer.toString(days.size());
+	}
 }

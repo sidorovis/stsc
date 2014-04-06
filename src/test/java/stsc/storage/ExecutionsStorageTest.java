@@ -1,7 +1,6 @@
 package stsc.storage;
 
-import java.util.Arrays;
-import java.util.List;
+import java.text.ParseException;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
@@ -9,24 +8,20 @@ import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.algorithms.factors.primitive.Sma;
 import stsc.algorithms.primitive.TestingEodAlgorithm;
+import stsc.testhelper.StockStorageHelper;
 import stsc.trading.Broker;
 import junit.framework.TestCase;
 
 public class ExecutionsStorageTest extends TestCase {
-	public void testExecutionsStorage() throws BadAlgorithmException {
-		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
 
-		final SignalsStorage signalsStorage = new SignalsStorage();
-		final Broker broker = new Broker(new ThreadSafeStockStorage());
-
-		AlgorithmSettings smaSettings = new AlgorithmSettings();
+	public void testExecutionsStorage() throws BadAlgorithmException, ParseException {
+		AlgorithmSettings smaSettings = AlgorithmSettings.create00s();
 		smaSettings.addSubExecutionName("asd");
 
-		final ExecutionsStorage es = new ExecutionsStorage(stocks);
+		final ExecutionsStorage es = new ExecutionsStorage();
 		es.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
-		es.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, new AlgorithmSettings()));
-
-		es.initializeExecutions(signalsStorage, broker);
+		es.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, AlgorithmSettings.create00s()));
+		es.initialize(new Broker(new StockStorageHelper()));
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 
@@ -44,16 +39,13 @@ public class ExecutionsStorageTest extends TestCase {
 		assertNull(es.getStockAlgorithm("t2", "epl2"));
 	}
 
-	public void testExceptionOnInit() throws BadAlgorithmException {
-		final List<String> stocks = Arrays.asList(new String[] { "aapl", "goog", "epl" });
-		final ExecutionsStorage es = new ExecutionsStorage(stocks);
-		es.addStockExecution(new StockExecution("t2", Sma.class, new AlgorithmSettings()));
-		final SignalsStorage signalsStorage = new SignalsStorage();
-		final Broker broker = new Broker(new ThreadSafeStockStorage());
+	public void testExceptionOnInit() throws BadAlgorithmException, ParseException {
+		final ExecutionsStorage es = new ExecutionsStorage();
+		es.addStockExecution(new StockExecution("t2", Sma.class, AlgorithmSettings.create00s()));
 
 		boolean throwed = false;
 		try {
-			es.initializeExecutions(signalsStorage, broker);
+			es.initialize(new Broker(new StockStorageHelper()));
 		} catch (BadAlgorithmException e) {
 			throwed = true;
 		}

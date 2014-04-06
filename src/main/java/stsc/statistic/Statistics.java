@@ -1,6 +1,7 @@
 package stsc.statistic;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -242,7 +243,13 @@ public class Statistics {
 		return ddValueMax;
 	}
 
-	public void print(BufferedWriter outfile) throws IOException, IllegalArgumentException, IllegalAccessException {
+	public void print(final String outputFile) throws IOException, IllegalArgumentException, IllegalAccessException {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+			print(writer);
+		}
+	}
+
+	private void print(BufferedWriter outfile) throws IOException, IllegalArgumentException, IllegalAccessException {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		final DecimalFormat decimalFormat = new DecimalFormat("#0.000");
 

@@ -2,28 +2,22 @@ package stsc.simulator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.common.MarketDataContext;
-import stsc.common.UnitedFormatStock;
+import stsc.common.FromToPeriod;
 import stsc.statistic.Statistics;
-import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.SignalsStorage;
 import stsc.storage.StockStorage;
-import stsc.storage.ThreadSafeStockStorage;
-import stsc.storage.YahooFileStockStorage;
-import stsc.trading.Broker;
+import stsc.storage.StockStorageFactory;
 import stsc.trading.ExecutionsLoader;
 import stsc.trading.TradeProcessor;
-import stsc.trading.TradeProcessorSettings;
+import stsc.trading.TradeProcessorInit;
 
 public class Simulator {
 
@@ -33,88 +27,58 @@ public class Simulator {
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
 
-	final private AlgorithmsStorage algorithmsStorage;
-	final private SignalsStorage signalsStorage;
-	private List<String> stockNames = new ArrayList<>();
-	private StockStorage stockStorage;
-	final private TradeProcessor marketSimulator;
-	private ExecutionsStorage executionsStorage;
+	private final Statistics statistics;
 
-	private String statisticsFile;
-
-	public Simulator(final String configFile) throws Exception {
-		final Properties p = new Properties();
+	public Simulator(final TradeProcessorInit settings) throws Exception {
 		logger.info("Simulator starting");
-		try (FileInputStream in = new FileInputStream(configFile)) {
-			p.load(in);
-		}
-		algorithmsStorage = new AlgorithmsStorage();
-		signalsStorage = new SignalsStorage();
-
-		final TradeProcessorSettings settings = generateSettings(p);
-
-		logger.info("Settings readed");
-
-		this.marketSimulator = new TradeProcessor(settings, executionsStorage, signalsStorage);
-		marketSimulator.simulate();
-
+		final TradeProcessor tradeProcessor = new TradeProcessor(settings);
+		statistics = tradeProcessor.simulate(settings.getPeriod());
 		logger.info("Simulated finished");
-
-		statisticsFile = p.getProperty("Statistics.file", "./logs/statistics.csv");
 	}
 
-	public void print() throws IllegalArgumentException, IllegalAccessException, IOException {
-		marketSimulator.printStatistics(statisticsFile);
-	}
-	
-	public Statistics getStatistics() {
-		return marketSimulator.getStatistics();
+	public Simulator(final String configPath) throws Exception {
+		final Properties properties = loadProperties(configPath);
+		final TradeProcessorInit tps = generateTradeProcessorSettings(properties);
+		logger.info("Settings readed");
+		final TradeProcessor tradeProcessor = new TradeProcessor(tps);
+		statistics = tradeProcessor.simulate(tps.getPeriod());
+		logger.info("Simulated finished");
 	}
 
-	private TradeProcessorSettings generateSettings(final Properties p) throws Exception {
-		final TradeProcessorSettings settings = new TradeProcessorSettings();
-
-		final String[] stockList = p.getProperty("Stocks").split(",");
-		for (String string : stockList) {
-			settings.getStockList().add(string.trim());
+	private Properties loadProperties(final String configPath) throws ClassNotFoundException, IOException {
+		final Properties properties = new Properties();
+		logger.info("Simulator starting");
+		try (FileInputStream in = new FileInputStream(configPath)) {
+			properties.load(in);
 		}
-		stockNames = settings.getStockList();
-		createStockStorage(p);
-		settings.setStockStorage(stockStorage);
-		final Broker broker = new Broker(stockStorage);
+		return properties;
+	}
 
-		settings.setBroker(broker);
-		settings.setFrom(p.getProperty("Period.from"));
-		settings.setTo(p.getProperty("Period.to"));
+	private TradeProcessorInit generateTradeProcessorSettings(final Properties p) throws Exception {
+		final Set<String> stockNamesSet = getStockSet(p);
+		final String filterDataFolderPath = p.getProperty("Data.filter.folder");
+		final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet, filterDataFolderPath);
 
-		final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
-		algorithmSettings.set("Period.from", settings.getFrom());
-		algorithmSettings.set("Period.to", settings.getTo());
-
-		String configFilePath = p.getProperty("Executions.path", "./config/algs.ini");
-		final ExecutionsLoader loader = new ExecutionsLoader(configFilePath, stockNames, algorithmsStorage, broker,
-				signalsStorage, algorithmSettings);
-		executionsStorage = loader.getExecutionsStorage();
+		final String algsConfig = p.getProperty("Executions.path", "./algs.ini");
+		final FromToPeriod period = new FromToPeriod(p);
+		final ExecutionsLoader executionsLoader = new ExecutionsLoader(algsConfig, period);
+		final ExecutionsStorage executionsStorage = executionsLoader.getExecutionsStorage();
+		final TradeProcessorInit settings = new TradeProcessorInit(stockStorage, period, executionsStorage);
 
 		return settings;
 	}
 
-	private void createStockStorage(final Properties p) throws ClassNotFoundException, IOException,
-			InterruptedException {
-		final int AMOUNT_TO_MULTI_THREAD_LOAD = 100;
-		if (stockNames.size() > AMOUNT_TO_MULTI_THREAD_LOAD) {
-			final MarketDataContext context = new MarketDataContext();
-			context.dataFolder = p.getProperty("Data.folder");
-			context.filteredDataFolder = p.getProperty("Data.filter.folder");
-			stockStorage = new YahooFileStockStorage(context);
-		} else {
-			stockStorage = new ThreadSafeStockStorage();
-			final String folder = p.getProperty("Data.filter.folder");
-			for (String name : stockNames) {
-				final String path = folder + name + ".uf";
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile(path));
-			}
+	private Set<String> getStockSet(final Properties p) {
+		final String[] rawStockSet = p.getProperty("Stocks").split(",");
+		Set<String> stockSet = new HashSet<>();
+		for (String string : rawStockSet) {
+			stockSet.add(string.trim());
 		}
+		return stockSet;
+	}
+
+	public Statistics getStatistics() {
+		return statistics;
 	}
 
 	// public static void main(String[] args) {

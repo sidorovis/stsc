@@ -1,11 +1,11 @@
 package stsc.storage;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import stsc.common.Stock;
 
-public class ThreadSafeStockStorage implements StockStorage{
-
+public class ThreadSafeStockStorage implements StockStorage {
 	protected ConcurrentHashMap<String, StockLock> datafeed = new ConcurrentHashMap<String, StockLock>();
 
 	public ThreadSafeStockStorage() {
@@ -31,4 +31,8 @@ public class ThreadSafeStockStorage implements StockStorage{
 			stockLock.updateStock(stock);
 	}
 
+	@Override
+	public Set<String> getStockNames() {
+		return datafeed.keySet();
+	}
 }

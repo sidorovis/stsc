@@ -12,8 +12,7 @@ public class StockExecutionTest extends TestCase {
 	public void testStockAlgorithmExecutionConstructor() {
 		boolean exception = false;
 		try {
-			AlgorithmSettings algorithmSettings = new AlgorithmSettings();
-			new StockExecution("execution1", "algorithm1", algorithmSettings);
+			new StockExecution("execution1", "algorithm1", AlgorithmSettings.create00s());
 		} catch (BadAlgorithmException e) {
 			exception = true;
 		}
@@ -21,9 +20,8 @@ public class StockExecutionTest extends TestCase {
 	}
 
 	public void testExecution() throws BadAlgorithmException {
-		AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 		final StockExecution e3 = new StockExecution("e1", TestingStockAlgorithm.class.getName(),
-				algorithmSettings);
+				AlgorithmSettings.create00s());
 
 		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());

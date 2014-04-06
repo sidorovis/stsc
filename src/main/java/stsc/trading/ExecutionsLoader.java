@@ -23,9 +23,9 @@ import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockExecution;
+import stsc.common.FromToPeriod;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.SignalsStorage;
 
 public class ExecutionsLoader {
 
@@ -49,26 +49,29 @@ public class ExecutionsLoader {
 
 	public String configFilePath = "./config/algs.ini";
 	private String configFileFolder;
-
-	private ExecutionsStorage executionsStorage;
+	final private AlgorithmSettings settings;
 	private AlgorithmsStorage algorithmsStorage;
-	private AlgorithmSettings settings;
-	private Set<String> openedPropertyFileNames = new HashSet<>();
+	final private ExecutionsStorage executionsStorage = new ExecutionsStorage();
 
-	private Set<String> registeredStockExecutions = new HashSet<>();
-	private HashMap<String, String> namedStockExecutions = new HashMap<>();
+	final private Set<String> openedPropertyFileNames = new HashSet<>();
 
-	private Set<String> eodExecutions = new HashSet<>();
+	final private Set<String> registeredStockExecutions = new HashSet<>();
+	final private HashMap<String, String> namedStockExecutions = new HashMap<>();
 
-	public ExecutionsLoader(String configFilePath, List<String> stockNames, AlgorithmsStorage algorithmsStorage,
-			Broker broker, SignalsStorage signalsStorage, AlgorithmSettings settings) throws FileNotFoundException,
-			IOException, BadAlgorithmException {
-		this.configFilePath = configFilePath;
-		this.executionsStorage = new ExecutionsStorage(stockNames);
-		this.algorithmsStorage = algorithmsStorage;
-		this.settings = settings;
+	final private Set<String> eodExecutions = new HashSet<>();
+
+	public ExecutionsLoader(String configPath, FromToPeriod period) throws Exception {
+		this.configFilePath = configPath;
+		this.settings = new AlgorithmSettings(period);
+		this.algorithmsStorage = new AlgorithmsStorage();
 		loadAlgorithms();
-		this.executionsStorage.initializeExecutions(signalsStorage, broker);
+	}
+
+	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws Exception {
+		this.configFilePath = configPath;
+		this.settings = new AlgorithmSettings(period);
+		this.algorithmsStorage = new AlgorithmsStorage(algoPackageName);
+		loadAlgorithms();
 	}
 
 	private void loadAlgorithms() throws FileNotFoundException, IOException, BadAlgorithmException {
@@ -208,7 +211,6 @@ public class ExecutionsLoader {
 	}
 
 	private AlgorithmSettings generateStockAlgorithmSettings(final List<String> params) throws BadAlgorithmException {
-		settings.clone();
 		final AlgorithmSettings algorithmSettings = settings.clone();
 
 		for (final String parameter : params) {
@@ -240,14 +242,6 @@ public class ExecutionsLoader {
 		return name;
 	}
 
-	public ExecutionsStorage getExecutionsStorage() {
-		return executionsStorage;
-	}
-
-	public HashMap<String, String> getNamedExecutions() {
-		return namedStockExecutions;
-	}
-
 	private List<String> parseParams(final String paramsString) {
 		int inBracketsStack = 0;
 		int lastParamIndex = 0;
@@ -267,5 +261,13 @@ public class ExecutionsLoader {
 		}
 
 		return params;
+	}
+
+	public ExecutionsStorage getExecutionsStorage() {
+		return executionsStorage;
+	}
+
+	public HashMap<String, String> getNamedExecutions() {
+		return namedStockExecutions;
 	}
 }

@@ -47,6 +47,10 @@ public class Broker {
 		this.today = today;
 	}
 
+	public StockStorage getStockStorage() {
+		return stockStorage;
+	}
+
 	public TradingLog getTradingLog() {
 		return tradingLog;
 	}
