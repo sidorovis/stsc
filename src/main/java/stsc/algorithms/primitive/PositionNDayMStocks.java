@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
+
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
@@ -18,6 +20,7 @@ import stsc.signals.DoubleSignal;
 import stsc.signals.EodSignal;
 import stsc.signals.StockSignal;
 import stsc.storage.SignalsStorage.Handler;
+import stsc.trading.Side;
 
 /*
  * PositionNDayMStocks open position for n days on m stocks in long and short sides
@@ -30,7 +33,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	private final AlgorithmSetting<Double> ps = new AlgorithmSetting<Double>(100000.0);
 	private final String factorExecutionName;
 
-	class Factor implements Comparable<Factor> {
+	private class Factor implements Comparable<Factor> {
 		Double factor;
 		String stockName;
 
@@ -49,11 +52,11 @@ public class PositionNDayMStocks extends EodAlgorithm {
 			DecimalFormat decimalFormatter = new DecimalFormat("#0.00");
 			return stockName + ":" + decimalFormatter.format(factor);
 		}
-
 	}
 
-	private final ArrayList<Factor> sortedStocks = new ArrayList<>();
-	private final HashMap<String, EodPosition> openPositions = new HashMap<>();
+	private final HashMap<String, EodPosition> shortPositions = new HashMap<>();
+	private final HashMap<String, EodPosition> longPositions = new HashMap<>();
+	private Date openDate;
 
 	public PositionNDayMStocks(Init init) throws BadAlgorithmException {
 		super(init);
@@ -69,16 +72,17 @@ public class PositionNDayMStocks extends EodAlgorithm {
 
 	@Override
 	public void process(final Date date, final HashMap<String, Day> datafeed) throws BadSignalException {
-		if (openPositions.isEmpty()) {
+		if (longPositions.isEmpty()) {
 			open(date, datafeed);
 		} else {
+			if (new LocalDate(openDate).plusDays(n.getValue()).isBefore(new LocalDate(date))) {
+				reopen(date, datafeed);
+			}
 		}
-
-		sortedStocks.clear();
 	}
 
-	private void open(final Date date, final HashMap<String, Day> datafeed) {
-		sortedStocks.clear();
+	private ArrayList<Factor> getSortedStocks(final Date date, final HashMap<String, Day> datafeed) {
+		final ArrayList<Factor> sortedStocks = new ArrayList<>();
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
 			Handler<? extends StockSignal> signal = getSignal(stockName, factorExecutionName, date);
@@ -86,11 +90,45 @@ public class PositionNDayMStocks extends EodAlgorithm {
 				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).value, stockName));
 		}
 		Collections.sort(sortedStocks);
+		return sortedStocks;
+	}
+
+	private void reopen(final Date date, final HashMap<String, Day> datafeed) {
+		for (Map.Entry<String, EodPosition> i : shortPositions.entrySet()) {
+			final EodPosition p = i.getValue();
+			broker().sell(i.getKey(), Side.SHORT, p.getSharedAmount());
+		}
+		for (Map.Entry<String, EodPosition> i : longPositions.entrySet()) {
+			final EodPosition p = i.getValue();
+			broker().sell(i.getKey(), Side.LONG, p.getSharedAmount());
+		}
+		shortPositions.clear();
+		longPositions.clear();
+		open(date, datafeed);
+	}
+
+	private void open(final Date date, final HashMap<String, Day> datafeed) {
+		final ArrayList<Factor> sortedStocks = getSortedStocks(date, datafeed);
 
 		if (sortedStocks.size() < m.getValue() * 2) {
 			return;
 		}
 
+		for (int i = 0; i < m.getValue(); ++i) {
+			final String stockName = sortedStocks.get(i).stockName;
+			final double price = datafeed.get(stockName).getPrices().getOpen();
+			final int sharesAmount = (int) (ps.getValue() / price);
+			broker().buy(sortedStocks.get(i).stockName, Side.SHORT, sharesAmount);
+			shortPositions.put(stockName, new EodPosition(stockName, Side.SHORT, sharesAmount));
+		}
+		for (int i = sortedStocks.size() - m.getValue(); i < sortedStocks.size(); ++i) {
+			final String stockName = sortedStocks.get(i).stockName;
+			final double price = datafeed.get(stockName).getPrices().getOpen();
+			final int sharesAmount = (int) (ps.getValue() / price);
+			broker().buy(sortedStocks.get(i).stockName, Side.LONG, sharesAmount);
+			longPositions.put(stockName, new EodPosition(stockName, Side.LONG, sharesAmount));
+		}
+		openDate = date;
 	}
 
 	@Override

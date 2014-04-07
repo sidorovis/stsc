@@ -5,14 +5,14 @@ import stsc.trading.Side;
 public class EodPosition {
 	final String stockName;
 	final Side side;
-	int sharedAmount;
+	int sharesAmount;
 
 	public int getSharedAmount() {
-		return sharedAmount;
+		return sharesAmount;
 	}
 
 	public void setSharedAmount(int sharedAmount) {
-		this.sharedAmount = sharedAmount;
+		this.sharesAmount = sharedAmount;
 	}
 
 	public String getStockName() {
@@ -23,9 +23,9 @@ public class EodPosition {
 		return side;
 	}
 
-	public EodPosition(String stockName, Side side, int sharedAmount) {
+	public EodPosition(String stockName, Side side, int sharesAmount) {
 		this.stockName = stockName;
 		this.side = side;
-		this.sharedAmount = sharedAmount;
+		this.sharesAmount = sharesAmount;
 	}
 }

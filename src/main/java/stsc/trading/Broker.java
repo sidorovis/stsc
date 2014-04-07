@@ -148,9 +148,9 @@ public class Broker {
 	}
 
 	private boolean dataExist(String stockName) {
-		Stock stock = stockStorage.getStock(stockName);
-		ArrayList<Day> days = stock.getDays();
-		int index = Collections.binarySearch(days, new Day(today));
+		final Stock stock = stockStorage.getStock(stockName);
+		final ArrayList<Day> days = stock.getDays();
+		final int index = Collections.binarySearch(days, new Day(today));
 		return index >= 0 && index < days.size();
 	}
 }
