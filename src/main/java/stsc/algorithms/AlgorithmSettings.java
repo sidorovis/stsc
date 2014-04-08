@@ -34,8 +34,9 @@ public class AlgorithmSettings implements Cloneable {
 		this.subExecutions = new ArrayList<String>(subExecutions);
 	}
 
-	public void addSubExecutionName(final String subExecutionName) {
+	public AlgorithmSettings addSubExecutionName(final String subExecutionName) {
 		subExecutions.add(subExecutionName);
+		return this;
 	}
 
 	public List<String> getSubExecutions() {
