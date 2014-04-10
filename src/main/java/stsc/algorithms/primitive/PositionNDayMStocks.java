@@ -57,12 +57,14 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	private final HashMap<String, EodPosition> shortPositions = new HashMap<>();
 	private final HashMap<String, EodPosition> longPositions = new HashMap<>();
 	private Date openDate;
+	private Date lastDate;
 
 	public PositionNDayMStocks(Init init) throws BadAlgorithmException {
 		super(init);
 		init.settings.get("n", n);
 		init.settings.get("ps", ps);
 		init.settings.get("m", m);
+		lastDate = init.settings.getPeriod().getTo();
 		final List<String> subExecutions = init.settings.getSubExecutions();
 		if (subExecutions.size() < 1)
 			throw new BadAlgorithmException(
@@ -72,10 +74,13 @@ public class PositionNDayMStocks extends EodAlgorithm {
 
 	@Override
 	public void process(final Date date, final HashMap<String, Day> datafeed) throws BadSignalException {
-		if (longPositions.isEmpty()) {
+		if (new LocalDate(date).plusDays( 10 ).isAfter(new LocalDate(lastDate))) {
+			close();
+			openDate = null;
+		} else if (longPositions.isEmpty()) {
 			open(date, datafeed);
 		} else {
-			if (new LocalDate(openDate).plusDays(n.getValue()).isBefore(new LocalDate(date))) {
+			if (openDate != null && new LocalDate(openDate).plusDays(n.getValue()).isBefore(new LocalDate(date))) {
 				reopen(date, datafeed);
 			}
 		}
@@ -94,6 +99,11 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	}
 
 	private void reopen(final Date date, final HashMap<String, Day> datafeed) {
+		close();
+		open(date, datafeed);
+	}
+
+	private void close() {
 		for (Map.Entry<String, EodPosition> i : shortPositions.entrySet()) {
 			final EodPosition p = i.getValue();
 			broker().sell(i.getKey(), Side.SHORT, p.getSharedAmount());
@@ -104,7 +114,6 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		}
 		shortPositions.clear();
 		longPositions.clear();
-		open(date, datafeed);
 	}
 
 	private void open(final Date date, final HashMap<String, Day> datafeed) {

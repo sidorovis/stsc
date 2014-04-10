@@ -38,4 +38,5 @@ public class TestHelper {
 	public static StockAlgorithm.Init getStockAlgorithmInit() {
 		return getStockAlgorithmInit("eName");
 	}
+	
 }

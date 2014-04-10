@@ -1,0 +1,28 @@
+package stsc.algorithms.privitive;
+
+import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.EodAlgorithm;
+import stsc.algorithms.primitive.PositionNDayMStocks;
+import stsc.simulator.Simulator;
+import stsc.statistic.Statistics;
+import stsc.testhelper.TestHelper;
+import junit.framework.TestCase;
+
+public class PositionNDayMStocksTest extends TestCase {
+	public void testPositionNDayMStocksException() {
+		try {
+			final EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();
+			new PositionNDayMStocks(init);
+			fail("PositionNDayMStocks algo ");
+		} catch (Exception e) {
+			assertTrue(e instanceof BadAlgorithmException);
+		}
+	}
+
+	public void testPositionNDayMStocks() throws Exception {
+		Statistics s = new Simulator("./test_data/simulator_tests/ndays.ini").getStatistics();
+		assertNotNull(s);
+		assertEquals(550, s.getPeriod());
+		assertEquals(90.341283, s.getAvGain(), 0.000001);
+	}
+}

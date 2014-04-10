@@ -20,7 +20,7 @@ public class StockStorageHelper implements StockStorage {
 
 	@Override
 	public Set<String> getStockNames() {
-		return Sets.newHashSet(new String[] { "aapl", "goog", "epl" });
+		return Sets.newHashSet(new String[] { "aapl", "adm", "spy" });
 	}
 
 }

@@ -28,4 +28,9 @@ public class EodPosition {
 		this.side = side;
 		this.sharesAmount = sharesAmount;
 	}
+
+	@Override
+	public String toString() {
+		return stockName + "(" + side.name() + ":" + String.valueOf(sharesAmount) + ")";
+	}
 }
