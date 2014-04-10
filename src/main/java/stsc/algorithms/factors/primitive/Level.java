@@ -10,12 +10,12 @@ import stsc.signals.SideSignal;
 import stsc.signals.StockSignal;
 import stsc.trading.Side;
 
-public class LevelAlgorithm extends StockAlgorithm {
+public class Level extends StockAlgorithm {
 
 	final double level;
 	final String factorName;
 
-	public LevelAlgorithm(Init initialize) throws BadAlgorithmException {
+	public Level(Init initialize) throws BadAlgorithmException {
 		super(initialize);
 		AlgorithmSetting<Double> factorLevel = new AlgorithmSetting<Double>(0.0);
 		initialize.settings.get("f", factorLevel);
