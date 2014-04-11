@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MPString implements MPIterator<String> {
+public class MpString implements MpIterator<String> {
+	private final String name;
 	private final List<String> domen;
 	private Iterator<String> iterator;
 
-	public MPString(final List<String> domen) {
+	public MpString(String name, final List<String> domen) {
 		super();
+		this.name = name;
 		this.domen = new ArrayList<String>(domen);
 		this.iterator = this.domen.iterator();
 	}
@@ -20,8 +22,9 @@ public class MPString implements MPIterator<String> {
 	}
 
 	@Override
-	public String next() {
-		return iterator.next();
+	public Parameter<String> next() {
+		final Parameter<String> result = new Parameter<>(name, iterator.next());
+		return result;
 	}
 
 	@Override

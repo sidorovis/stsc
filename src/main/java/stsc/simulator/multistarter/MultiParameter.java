@@ -1,15 +1,17 @@
 package stsc.simulator.multistarter;
 
-public class MultiParameter<T> implements Iterable<T> {
+import java.util.Iterator;
 
-	final private MPIterator<T> multiParameter;
+public class MultiParameter<T> implements Iterable<Parameter<T>> {
 
-	public MultiParameter(final MPIterator<T> multiParameter) {
+	final private MpIterator<T> multiParameter;
+
+	public MultiParameter(final MpIterator<T> multiParameter) {
 		this.multiParameter = multiParameter;
 	}
 
 	@Override
-	public MPIterator<T> iterator() {
+	public Iterator<Parameter<T>> iterator() {
 		return multiParameter;
 	}
 
