@@ -15,10 +15,14 @@ public class Parameter<T> {
 		return name;
 	}
 
+	public String getStringName() {
+		return value.toString();
+	}
+
 	public T getValue() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name + " = " + value.toString();

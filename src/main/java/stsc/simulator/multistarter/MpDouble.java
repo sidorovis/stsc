@@ -8,13 +8,20 @@ public class MpDouble implements MpIterator<Double> {
 	private final Double step;
 	private Double iterator;
 
-	public MpDouble(String name, Double from, Double to, Double step) {
+	public MpDouble(String name, Double from, Double to, Double step) throws BadParameterException {
 		super();
 		this.name = name;
 		this.from = from;
 		this.to = to;
+		if (from >= to)
+			throw new BadParameterException("Double from should be smaller than to for " + name);
 		this.step = step;
 		iterator = from;
+	}
+
+	@Override
+	public String toString() {
+		return name + "(" + from.toString() + "->" + to.toString() + ":" + step.toString() + ")";
 	}
 
 	@Override
@@ -28,14 +35,13 @@ public class MpDouble implements MpIterator<Double> {
 	}
 
 	@Override
-	public Parameter<Double> next() {
+	public Parameter<Double> current() {
 		final Parameter<Double> result = new Parameter<Double>(name, iterator);
-		iterator = iterator + step;
 		return result;
 	}
 
 	@Override
-	public void remove() {
+	public void increment() {
+		iterator += step;
 	}
-
 }

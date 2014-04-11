@@ -8,13 +8,20 @@ public class MpInteger implements MpIterator<Integer> {
 	private final Integer step;
 	private Integer iterator;
 
-	public MpInteger(String name, Integer from, Integer to, Integer step) {
+	public MpInteger(String name, Integer from, Integer to, Integer step) throws BadParameterException {
 		super();
 		this.name = name;
 		this.from = from;
 		this.to = to;
+		if (from >= to)
+			throw new BadParameterException("Integer from should be smaller than to for " + name);
 		this.step = step;
 		iterator = from;
+	}
+
+	@Override
+	public String toString() {
+		return name + "(" + from.toString() + "->" + to.toString() + ":" + step.toString() + ")";
 	}
 
 	@Override
@@ -23,19 +30,17 @@ public class MpInteger implements MpIterator<Integer> {
 	}
 
 	@Override
-	public void remove() {
-	}
-
-	@Override
 	public void reset() {
 		iterator = from;
 	}
 
 	@Override
-	public Parameter<Integer> next() {
-		final Parameter<Integer> result = new Parameter<Integer>(name, iterator);
-		iterator = iterator + step;
-		return result;
+	public Parameter<Integer> current() {
+		return new Parameter<Integer>(name, iterator);
 	}
 
+	@Override
+	public void increment() {
+		iterator += step;
+	}
 }

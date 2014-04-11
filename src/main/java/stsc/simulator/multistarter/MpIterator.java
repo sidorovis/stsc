@@ -1,7 +1,8 @@
 package stsc.simulator.multistarter;
 
-import java.util.Iterator;
-
-public interface MpIterator<T> extends Iterator<Parameter<T>> {
+public interface MpIterator<T> {
+	public Parameter<T> current();
+	public boolean hasNext();
+	public void increment();
 	public void reset();
 }

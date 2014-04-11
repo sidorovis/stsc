@@ -1,39 +1,45 @@
 package stsc.simulator.multistarter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MpString implements MpIterator<String> {
 	private final String name;
 	private final List<String> domen;
-	private Iterator<String> iterator;
+	int index;
 
-	public MpString(String name, final List<String> domen) {
+	public MpString(String name, final List<String> domen) throws BadParameterException {
 		super();
 		this.name = name;
+		if (domen.isEmpty())
+			throw new BadParameterException("String parameter should have at least one element: " + name);
 		this.domen = new ArrayList<String>(domen);
-		this.iterator = this.domen.iterator();
+		this.index = 0;
+	}
+
+	@Override
+	public String toString() {
+		return name + "(" + domen.toString() + ")";
 	}
 
 	@Override
 	public boolean hasNext() {
-		return iterator.hasNext();
+		return index < domen.size();
 	}
 
 	@Override
-	public Parameter<String> next() {
-		final Parameter<String> result = new Parameter<>(name, iterator.next());
-		return result;
-	}
-
-	@Override
-	public void remove() {
+	public Parameter<String> current() {
+		return new Parameter<String>(name, domen.get(index));
 	}
 
 	@Override
 	public void reset() {
-		iterator = this.domen.iterator();
+		index = 0;
+	}
+
+	@Override
+	public void increment() {
+		index += 1;
 	}
 
 }
