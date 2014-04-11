@@ -15,8 +15,7 @@ import junit.framework.TestCase;
 public class ExecutionsStorageTest extends TestCase {
 
 	public void testExecutionsStorage() throws BadAlgorithmException, ParseException {
-		AlgorithmSettings smaSettings = AlgorithmSettings.create00s();
-		smaSettings.addSubExecutionName("asd");
+		final AlgorithmSettings smaSettings = AlgorithmSettings.create00s().addSubExecutionName("asd");
 
 		final ExecutionsStorage es = new ExecutionsStorage();
 		es.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
@@ -29,14 +28,14 @@ public class ExecutionsStorageTest extends TestCase {
 		assertNull(es.getEodAlgorithm("t2"));
 
 		assertNotNull(es.getStockAlgorithm("t2", "aapl"));
-		assertNotNull(es.getStockAlgorithm("t2", "goog"));
-		assertNotNull(es.getStockAlgorithm("t2", "epl"));
+		assertNotNull(es.getStockAlgorithm("t2", "adm"));
+		assertNotNull(es.getStockAlgorithm("t2", "spy"));
 
 		assertNull(es.getStockAlgorithm("t1", "aapl"));
-		assertNull(es.getStockAlgorithm("t1", "goog"));
-		assertNull(es.getStockAlgorithm("t1", "epl"));
+		assertNull(es.getStockAlgorithm("t1", "adm"));
+		assertNull(es.getStockAlgorithm("t1", "spy"));
 
-		assertNull(es.getStockAlgorithm("t2", "epl2"));
+		assertNull(es.getStockAlgorithm("t2", "non"));
 	}
 
 	public void testExceptionOnInit() throws BadAlgorithmException, ParseException {
