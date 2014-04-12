@@ -19,12 +19,12 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public String toString() {
-		return name + "(" + domen.toString() + ")";
+		return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
 	}
 
 	@Override
 	public boolean hasNext() {
-		return index < domen.size();
+		return index + 1 < domen.size();
 	}
 
 	@Override

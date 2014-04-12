@@ -2,6 +2,7 @@ package stsc.simulator.multistarter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
@@ -26,54 +27,106 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 	private final String executionName;
 	private final String algorithmName;
 	private final FromToPeriod period;
+	private boolean finished;
 
-	private final ArrayList<MpInteger> integerParameters = new ArrayList<>();
-	private final ArrayList<MpDouble> doubleParameters = new ArrayList<>();
-	private final ArrayList<MpString> stringParameters = new ArrayList<>();
-	private final ArrayList<MpSubExecution> subExecutionParameters = new ArrayList<>();
+	private class ParameterList {
+		private final ArrayList<MpIterator<?>> params = new ArrayList<MpIterator<?>>();
+		private int index;
 
-	private int integerIndex;
-	private int doubleIndex;
-	private int stringIndex;
-	private int subExecutionIndex;
+		public ParameterList() {
+			index = 0;
+		}
 
-	public MultiStockExecution(String executionName, String algorithmName, FromToPeriod period) {
+		public void add(final MpIterator<?> mpi) {
+			params.add(mpi);
+		}
+
+		public void reset() {
+			index = 0;
+		}
+
+		public void increment() {
+			index += 1;
+		}
+
+		public boolean empty() {
+			return params.isEmpty();
+		}
+
+		public boolean hasNext() {
+			return index + 1 < params.size();
+		}
+
+		public MpIterator<?> getCurrentParam() {
+			return params.get(index);
+		}
+
+		public List<MpIterator<?>> getParams() {
+			return params;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(index) + ": " + params.toString();
+		}
+
+	}
+
+	private enum ParameterType {
+		integerType(0), doubleType(1), stringType(2), subExecutionType(3), size(4);
+		public static int typesSize = 3;
+
+		private int value;
+
+		ParameterType(final int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+	}
+
+	private final ParameterList[] parameters = { new ParameterList(), new ParameterList(), new ParameterList(),
+			new ParameterList() };
+
+	public MultiStockExecution(String executionName, String algorithmName, FromToPeriod period)
+			throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		this.period = period;
+		this.finished = false;
 
-		integerIndex = 0;
-		doubleIndex = 0;
-		stringIndex = 0;
-		subExecutionIndex = 0;
+		// generate algorithm just for testing
+		StockExecution.generateAlgorithm(algorithmName);
 	}
 
 	public void addIntegerParameter(final MpInteger parameter) {
-		integerParameters.add(parameter);
+		parameters[ParameterType.integerType.getValue()].add(parameter);
 	}
 
 	public void addDoubleParameter(final MpDouble parameter) {
-		doubleParameters.add(parameter);
+		parameters[ParameterType.doubleType.getValue()].add(parameter);
 	}
 
 	public void addStringParameter(final MpString parameter) {
-		stringParameters.add(parameter);
+		parameters[ParameterType.stringType.getValue()].add(parameter);
 	}
 
 	public void addSubExecutionParameter(final MpSubExecution parameter) {
-		subExecutionParameters.add(parameter);
+		parameters[ParameterType.subExecutionType.getValue()].add(parameter);
 	}
 
 	@Override
 	public boolean hasNext() {
-		if (integerIndex < integerParameters.size())
-			return true;
-		if (doubleIndex < doubleParameters.size())
-			return true;
-		if (stringIndex < stringParameters.size())
-			return true;
-		if (subExecutionIndex < subExecutionParameters.size())
-			return true;
+		if (finished)
+			return false;
+		for (int i = 0; i < ParameterType.size.getValue(); ++i) {
+			ParameterList list = parameters[i];
+			if (list.index < list.params.size())
+				return true;
+		}
 		return false;
 	}
 
@@ -103,22 +156,16 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 	private AlgorithmSettings generageSettings() {
 		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
 
-		for (MpInteger p : integerParameters) {
-			final String name = p.current().getName();
-			final String value = p.current().getStringName();
-			algoSettings.set(name, value);
+		for (int i = 0; i < ParameterType.typesSize; ++i) {
+			final ParameterList list = parameters[i];
+			for (MpIterator<?> p : list.getParams()) {
+				final String name = p.current().getName();
+				final String value = p.current().getStringName();
+				algoSettings.set(name, value);
+			}
 		}
-		for (MpDouble p : doubleParameters) {
-			final String name = p.current().getName();
-			final String value = p.current().getStringName();
-			algoSettings.set(name, value);
-		}
-		for (MpString p : stringParameters) {
-			final String name = p.current().getName();
-			final String value = p.current().getStringName();
-			algoSettings.set(name, "'" + value + "'");
-		}
-		for (MpSubExecution p : subExecutionParameters) {
+		final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
+		for (MpIterator<?> p : list.getParams()) {
 			final String subExecutionName = p.current().getStringName();
 			algoSettings.addSubExecutionName(subExecutionName);
 		}
@@ -126,39 +173,29 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 	}
 
 	private void generateNext() {
-		boolean stepFinishElement = false;
-//		stepFinishElement = makeStep(integerIndex, integerParameters);
-//		if (stepFinishElement)
-//			return;
-//		stepFinishElement = makeStep(doubleIndex, doubleParameters);
-//		if (stepFinishElement)
-//			return;
-//		stepFinishElement = makeStep(stringIndex, stringParameters);
-//		if (stepFinishElement)
-//			return;
-//		stepFinishElement = makeStep(subExecutionIndex, subExecutionParameters);
-//		if (stepFinishElement)
-//			return;
+		int parameterIndex = 0;
+		while (parameterIndex < ParameterType.size.getValue()) {
+			final ParameterList list = parameters[parameterIndex];
+			if (list.empty()) {
+				parameterIndex += 1;
+				continue;
+			}
+			final MpIterator<?> iterator = list.getCurrentParam();
+			if (iterator.hasNext()) {
+				iterator.increment();
+				list.reset();
+				return;
+			} else {
+				iterator.reset();
+				if (list.hasNext()) {
+					list.increment();
+				} else {
+					list.reset();
+					parameterIndex += 1;
+				}
+			}
+		}
+		finished = true;
+		return;
 	}
-//
-//	private boolean makeStep(int index, ArrayList<? extends MpIterator<?>> list) {
-//		if (index < list.size()) {
-//			final MpIterator<?> subList = list.get(index);
-//			if (!makeStep(subList))
-//				index += 1;
-//			if (index == list.size())
-//				return false;
-//		}
-//		return false;
-//	}
-//
-//	private boolean makeStep(MpIterator<?> parameter) {
-//		if (parameter.hasNext()) {
-//			parameter.increment();
-//			return true;
-//		} else {
-//			parameter.reset();
-//			return false;
-//		}
-//	}
 }

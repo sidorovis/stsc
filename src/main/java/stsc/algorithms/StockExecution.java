@@ -12,17 +12,22 @@ public class StockExecution {
 
 	private final AlgorithmSettings settings;
 
+	public static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName)
+			throws BadAlgorithmException {
+		try {
+			Class<?> classType = Class.forName(algorithmName);
+			return classType.asSubclass(StockAlgorithm.class);
+		} catch (ClassNotFoundException e) {
+			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
+		}
+	}
+
 	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
 			throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		this.settings = settings;
-		try {
-			Class<?> classType = Class.forName(algorithmName);
-			this.algorithmType = classType.asSubclass(StockAlgorithm.class);
-		} catch (ClassNotFoundException e) {
-			throw new BadAlgorithmException("Algorithm class '" + algorithmName + "' was not found: " + e.toString());
-		}
+		this.algorithmType = generateAlgorithm(algorithmName);
 	}
 
 	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
@@ -39,6 +44,10 @@ public class StockExecution {
 
 	public String getAlgorithmName() {
 		return algorithmName;
+	}
+	
+	public AlgorithmSettings getSettings() {
+		return settings;
 	}
 
 	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage)

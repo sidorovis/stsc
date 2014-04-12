@@ -21,7 +21,8 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public String toString() {
-		return name + "(" + from.toString() + "->" + to.toString() + ":" + step.toString() + ")";
+		return name + ":" + iterator.toString() + " from (" + step.toString() + "|" + from.toString() + ":"
+				+ to.toString() + ")";
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public boolean hasNext() {
-		return iterator < to;
+		return iterator + step < to;
 	}
 
 	@Override
