@@ -42,4 +42,27 @@ public class MultiStockExecutionTest extends TestCase {
 		testHelperNlmParameters("1", "ibm", "-2", settings.get(6));
 		testHelperNlmParameters("2", "ibm", "-2", settings.get(7));
 	}
+
+	public void testMultiStockExecutionALotOfParameters() throws ParseException, BadParameterException,
+			BadAlgorithmException {
+		final FromToPeriod period = new FromToPeriod("01-01-2000", "31-12-2009");
+		MultiStockExecution mse = new MultiStockExecution("e", "stsc.algorithms.factors.primitive.Sma", period);
+		mse.addIntegerParameter(new MpInteger("q", 0, 5, 1));
+		mse.addIntegerParameter(new MpInteger("w", -4, 1, 1));
+		mse.addDoubleParameter(new MpDouble("a", 0.0, 100.0, 7.0));
+		mse.addDoubleParameter(new MpDouble("s", -100.0, 101.0, 25.0));
+		mse.addStringParameter(new MpString("z", Arrays.asList(new String[] { "asd", "ibm", "yhoo" })));
+		mse.addStringParameter(new MpString("z", Arrays.asList(new String[] { "vokrug", "fileName" })));
+		mse.addSubExecutionParameter(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423",
+				"234535-23424", "35345-234234135", "24454-65462245" })));
+
+		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
+
+		for (StockExecution se : mse.getEntry()) {
+			assertNotNull(se);
+			assertEquals("stsc.algorithms.factors.primitive.Sma", se.getAlgorithmName());
+			settings.add(se.getSettings());
+		}
+		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
+	}
 }
