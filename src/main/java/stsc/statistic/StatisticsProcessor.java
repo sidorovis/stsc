@@ -5,10 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
+import com.google.common.math.DoubleMath;
+
 import stsc.common.Day;
+import stsc.common.Settings;
 import stsc.statistic.EquityCurve.Element;
 import stsc.statistic.Statistics.StatisticsInit;
 import stsc.trading.TradingLog;
@@ -16,7 +20,6 @@ import stsc.trading.TradingRecord;
 
 public class StatisticsProcessor {
 
-	public final static double EPSILON = 0.000001;
 	private final static double PERCENTS = 100.0;
 
 	protected class Positions {
@@ -90,10 +93,6 @@ public class StatisticsProcessor {
 			return "(" + Integer.toString(positions.size()) + "): " + positions.toString();
 		}
 
-	}
-
-	public static boolean isDoubleEqual(double l, double r) {
-		return (Math.abs(l - r) < EPSILON);
 	}
 
 	private class EquityProcessor {
@@ -215,7 +214,7 @@ public class StatisticsProcessor {
 			closeAllPositions();
 			statisticsInit.copyMoneyEquityCurve();
 
-			if (isDoubleEqual(maximumSpentMoney, 0.0))
+			if (DoubleMath.fuzzyEquals(maximumSpentMoney, 0.0, Settings.doubleEpsilon))
 				return new Statistics(statisticsInit);
 			maximumSpentMoney /= PERCENTS;
 			statisticsInit.equityCurve.recalculateWithMax(maximumSpentMoney);

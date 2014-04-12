@@ -24,7 +24,7 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public boolean hasNext() {
-		return index + 1 < domen.size();
+		return index < domen.size();
 	}
 
 	@Override

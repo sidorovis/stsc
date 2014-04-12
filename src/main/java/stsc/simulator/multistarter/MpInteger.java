@@ -27,7 +27,7 @@ public class MpInteger implements MpIterator<Integer> {
 
 	@Override
 	public boolean hasNext() {
-		return iterator + step < to;
+		return iterator < to;
 	}
 
 	@Override

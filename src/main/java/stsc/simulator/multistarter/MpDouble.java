@@ -1,5 +1,9 @@
 package stsc.simulator.multistarter;
 
+import stsc.common.Settings;
+
+import com.google.common.math.DoubleMath;
+
 public class MpDouble implements MpIterator<Double> {
 
 	private final String name;
@@ -32,7 +36,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public boolean hasNext() {
-		return iterator + step < to;
+		return DoubleMath.fuzzyCompare(iterator, to, Settings.doubleEpsilon) < 0;
 	}
 
 	@Override

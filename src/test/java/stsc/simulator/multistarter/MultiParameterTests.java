@@ -14,8 +14,8 @@ public class MultiParameterTests extends TestCase {
 			count += 1;
 			mpDouble.increment();
 		}
-		assertEquals(5.5, sum);
-		assertEquals(10, count);
+		assertEquals(4.5, sum);
+		assertEquals(9, count);
 	}
 
 	public void testMultiParameterInteger() throws BadParameterException {

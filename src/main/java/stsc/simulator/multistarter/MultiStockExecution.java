@@ -132,7 +132,7 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 
 	@Override
 	public StockExecution next() {
-		StockExecution result = getCurrentExecution();
+		final StockExecution result = getCurrentExecution();
 		generateNext();
 		return result;
 	}
@@ -181,18 +181,17 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 				continue;
 			}
 			final MpIterator<?> iterator = list.getCurrentParam();
+			iterator.increment();
 			if (iterator.hasNext()) {
-				iterator.increment();
 				list.reset();
 				return;
+			}
+			iterator.reset();
+			if (list.hasNext()) {
+				list.increment();
 			} else {
-				iterator.reset();
-				if (list.hasNext()) {
-					list.increment();
-				} else {
-					list.reset();
-					parameterIndex += 1;
-				}
+				list.reset();
+				parameterIndex += 1;
 			}
 		}
 		finished = true;
