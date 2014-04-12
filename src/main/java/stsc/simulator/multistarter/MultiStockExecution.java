@@ -1,8 +1,6 @@
 package stsc.simulator.multistarter;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
@@ -28,49 +26,6 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 	private final String algorithmName;
 	private final FromToPeriod period;
 	private boolean finished;
-
-	private class ParameterList {
-		private final ArrayList<MpIterator<?>> params = new ArrayList<MpIterator<?>>();
-		private int index;
-
-		public ParameterList() {
-			index = 0;
-		}
-
-		public void add(final MpIterator<?> mpi) {
-			params.add(mpi);
-		}
-
-		public void reset() {
-			index = 0;
-		}
-
-		public void increment() {
-			index += 1;
-		}
-
-		public boolean empty() {
-			return params.isEmpty();
-		}
-
-		public boolean hasNext() {
-			return index + 1 < params.size();
-		}
-
-		public MpIterator<?> getCurrentParam() {
-			return params.get(index);
-		}
-
-		public List<MpIterator<?>> getParams() {
-			return params;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(index) + ": " + params.toString();
-		}
-
-	}
 
 	private enum ParameterType {
 		integerType(0), doubleType(1), stringType(2), subExecutionType(3), size(4);
@@ -124,7 +79,7 @@ public class MultiStockExecution implements Iterator<StockExecution> {
 			return false;
 		for (int i = 0; i < ParameterType.size.getValue(); ++i) {
 			ParameterList list = parameters[i];
-			if (list.index < list.params.size())
+			if (list.hasNext())
 				return true;
 		}
 		return false;
