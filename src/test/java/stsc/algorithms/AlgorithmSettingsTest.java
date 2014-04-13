@@ -1,11 +1,12 @@
 package stsc.algorithms;
 
+import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class AlgorithmSettingsTest extends TestCase {
 
 	public void testAlgorithmsSettings() {
-		final AlgorithmSettings as = AlgorithmSettings.create00s();
+		final AlgorithmSettings as = TestHelper.getAlgorithmSettings();
 		assertNull(as.get("a"));
 		assertNotNull(as.set("a", new Double(14.05)));
 		assertNotNull(as.set("b", 14.05));

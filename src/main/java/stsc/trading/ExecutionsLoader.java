@@ -29,13 +29,13 @@ import stsc.storage.ExecutionsStorage;
 
 public class ExecutionsLoader {
 
-	public static final class PropertyNames {
+	private static final class PropertyNames {
 		public static String INCLUDES_LINE = "Includes";
 		public static String STOCK_EXECUTIONS_LINE = "StockExecutions";
 		public static String EOD_EXECUTIONS_LINE = "EodExecutions";
 	}
 
-	public static final class Regexps {
+	private static final class Regexps {
 		public static final Pattern loadLine = Pattern.compile("^(\\w+)\\((.*)\\)$");
 		public static final Pattern subAlgoParameter = Pattern.compile("^([^\\(]+)\\((.*)\\)(\\s)*$");
 		public static final Pattern dataParameter = Pattern.compile("^(.+)=(.+)$");
@@ -63,14 +63,14 @@ public class ExecutionsLoader {
 	public ExecutionsLoader(String configPath, FromToPeriod period) throws Exception {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
-		this.algorithmsStorage = new AlgorithmsStorage();
+		this.algorithmsStorage = AlgorithmsStorage.getInstance();
 		loadAlgorithms();
 	}
 
 	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws Exception {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
-		this.algorithmsStorage = new AlgorithmsStorage(algoPackageName);
+		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);
 		loadAlgorithms();
 	}
 

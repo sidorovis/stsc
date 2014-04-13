@@ -4,7 +4,7 @@ import java.io.File;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodExecution;
-import stsc.algorithms.primitive.OneSideOpenAlgorithm;
+import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.common.FromToPeriod;
 import stsc.statistic.Statistics;
 import stsc.storage.ExecutionsStorage;

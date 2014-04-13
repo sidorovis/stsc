@@ -1,4 +1,4 @@
-package stsc.algorithms.factors.primitive;
+package stsc.algorithms.stock.factors.primitive;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 
 import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;

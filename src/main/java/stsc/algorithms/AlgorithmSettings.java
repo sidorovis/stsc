@@ -13,14 +13,6 @@ public class AlgorithmSettings implements Cloneable {
 	private final HashMap<String, String> settings;
 	private final ArrayList<String> subExecutions;
 
-	public static AlgorithmSettings create00s() {
-		try {
-			return new AlgorithmSettings(new FromToPeriod("01-01-2000", "31-12-2009"));
-		} catch (Exception e) {
-		}
-		return null;
-	}
-
 	public AlgorithmSettings(final FromToPeriod period) {
 		this.period = period;
 		this.settings = new HashMap<>();

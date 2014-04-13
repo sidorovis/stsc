@@ -1,12 +1,17 @@
 package stsc.simulator.multistarter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MpString implements MpIterator<String> {
 	private final String name;
 	private final List<String> domen;
 	int index;
+
+	public MpString(String name, final String singleElement) throws BadParameterException {
+		this(name, Arrays.asList(new String[] { singleElement }));
+	}
 
 	public MpString(String name, final List<String> domen) throws BadParameterException {
 		super();

@@ -1,4 +1,4 @@
-package stsc.algorithms.factors.primitive;
+package stsc.algorithms.stock.factors.primitive;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +8,9 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.stock.factors.primitive.Diff;
+import stsc.algorithms.stock.factors.primitive.Ema;
+import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;

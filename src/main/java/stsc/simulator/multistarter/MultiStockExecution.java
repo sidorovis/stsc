@@ -9,7 +9,9 @@ public class MultiStockExecution extends MultiExecution<StockExecution> {
 	public MultiStockExecution(String executionName, String algorithmName, FromToPeriod period)
 			throws BadAlgorithmException {
 		super(executionName, algorithmName, period);
-		// generate algorithm just for testing
+	}
+
+	protected void testAlgorithmOnInstantiation(String algorithmName) throws BadAlgorithmException {
 		StockExecution.generateAlgorithm(algorithmName);
 	}
 

@@ -1,8 +1,8 @@
-package stsc.algorithms.privitive;
+package stsc.algorithms.eod.privitive;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.primitive.PositionNDayMStocks;
+import stsc.algorithms.eod.primitive.PositionNDayMStocks;
 import stsc.simulator.Simulator;
 import stsc.statistic.Statistics;
 import stsc.testhelper.TestHelper;

@@ -9,8 +9,8 @@ import com.google.common.collect.Sets;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodExecution;
-import stsc.algorithms.primitive.TestingEodAlgorithm;
-import stsc.algorithms.primitive.TestingEodAlgorithmSignal;
+import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
+import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
 import stsc.common.FromToPeriod;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.EodSignal;

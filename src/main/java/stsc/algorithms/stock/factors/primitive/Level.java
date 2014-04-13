@@ -1,4 +1,4 @@
-package stsc.algorithms.factors.primitive;
+package stsc.algorithms.stock.factors.primitive;
 
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;

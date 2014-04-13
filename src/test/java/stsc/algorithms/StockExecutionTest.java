@@ -3,7 +3,6 @@ package stsc.algorithms;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockExecution;
-import stsc.algorithms.primitive.TestingStockAlgorithm;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
@@ -12,7 +11,7 @@ public class StockExecutionTest extends TestCase {
 	public void testStockAlgorithmExecutionConstructor() {
 		boolean exception = false;
 		try {
-			new StockExecution("execution1", "algorithm1", AlgorithmSettings.create00s());
+			new StockExecution("execution1", "algorithm1", TestHelper.getAlgorithmSettings());
 		} catch (BadAlgorithmException e) {
 			exception = true;
 		}
@@ -21,7 +20,7 @@ public class StockExecutionTest extends TestCase {
 
 	public void testExecution() throws BadAlgorithmException {
 		final StockExecution e3 = new StockExecution("e1", TestingStockAlgorithm.class.getName(),
-				AlgorithmSettings.create00s());
+				TestHelper.getAlgorithmSettings());
 
 		assertEquals(TestingStockAlgorithm.class.getName(), e3.getAlgorithmName());
 		assertEquals("e1", e3.getName());

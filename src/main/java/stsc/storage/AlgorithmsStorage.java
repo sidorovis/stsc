@@ -7,6 +7,7 @@ import java.util.Map;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
 
@@ -17,33 +18,53 @@ public final class AlgorithmsStorage {
 	private HashMap<String, Class<? extends StockAlgorithm>> stockNames = new HashMap<>();
 	private HashMap<String, Class<? extends EodAlgorithm>> eodNames = new HashMap<>();
 
-	public AlgorithmsStorage() throws ClassNotFoundException, IOException {
+	private static AlgorithmsStorage instance = null;
+
+	public static AlgorithmsStorage getInstance() throws BadAlgorithmException {
+		if (instance == null)
+			instance = new AlgorithmsStorage();
+		return instance;
+	}
+
+	public static AlgorithmsStorage getInstance(final String containerPackageName) throws BadAlgorithmException {
+		if (instance == null)
+			instance = new AlgorithmsStorage(containerPackageName);
+		return instance;
+	}
+
+	private AlgorithmsStorage() throws BadAlgorithmException {
 		loadAlgorithms();
 	}
 
-	public AlgorithmsStorage(final String containerPackageName) throws ClassNotFoundException, IOException {
+	private AlgorithmsStorage(final String containerPackageName) throws BadAlgorithmException {
 		this.containerPackageName = containerPackageName;
 		loadAlgorithms();
 	}
 
-	private void loadAlgorithms() throws ClassNotFoundException, IOException {
-		for (ClassInfo e : ClassPath.from(ClassLoader.getSystemClassLoader()).getAllClasses()) {
-			final String eName = e.getName().toLowerCase();
-			if (eName.contains("$") || eName.contains("test"))
-				continue;
-			else if (eName.startsWith(containerPackageName)) {
-				final Class<?> classType = Class.forName(e.getName());
-				if (classType.getSuperclass() == StockAlgorithm.class) {
-					final Class<? extends StockAlgorithm> stockAlgorithm = classType.asSubclass(StockAlgorithm.class);
-					addStockAlgorithm(stockAlgorithm);
-				}
-				if (classType.getSuperclass() == EodAlgorithm.class) {
-					final Class<? extends EodAlgorithm> eodAlgorithm = classType.asSubclass(EodAlgorithm.class);
-					addEodAlgorithm(eodAlgorithm);
+	private void loadAlgorithms() throws BadAlgorithmException {
+		try {
+			for (ClassInfo e : ClassPath.from(ClassLoader.getSystemClassLoader()).getAllClasses()) {
+				final String eName = e.getName().toLowerCase();
+				if (eName.contains("$") || eName.contains("test"))
+					continue;
+				else if (eName.startsWith(containerPackageName)) {
+					final Class<?> classType = Class.forName(e.getName());
+					if (classType.getSuperclass() == StockAlgorithm.class) {
+						final Class<? extends StockAlgorithm> stockAlgorithm = classType
+								.asSubclass(StockAlgorithm.class);
+						addStockAlgorithm(stockAlgorithm);
+					}
+					if (classType.getSuperclass() == EodAlgorithm.class) {
+						final Class<? extends EodAlgorithm> eodAlgorithm = classType.asSubclass(EodAlgorithm.class);
+						addEodAlgorithm(eodAlgorithm);
+					}
 				}
 			}
+		} catch (ClassNotFoundException e) {
+			throw new BadAlgorithmException(e.getMessage());
+		} catch (IOException e) {
+			throw new BadAlgorithmException(e.getMessage());
 		}
-
 	}
 
 	private void addStockAlgorithm(Class<? extends StockAlgorithm> algorithmClass) {

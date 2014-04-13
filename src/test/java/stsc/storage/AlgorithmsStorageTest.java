@@ -1,12 +1,11 @@
 package stsc.storage;
 
-import java.io.IOException;
-
+import stsc.algorithms.BadAlgorithmException;
 import junit.framework.TestCase;
 
 public class AlgorithmsStorageTest extends TestCase {
-	public void testAlgorithmNamesStorage() throws ClassNotFoundException, IOException {
-		AlgorithmsStorage ans = new AlgorithmsStorage();
+	public void testAlgorithmNamesStorage() throws BadAlgorithmException {
+		AlgorithmsStorage ans = AlgorithmsStorage.getInstance();
 		assertNotNull(ans.getStock("Sma"));
 		assertNotNull(ans.getStock("Ema"));
 		assertNull(ans.getEod("TestingEodAlgorithm"));

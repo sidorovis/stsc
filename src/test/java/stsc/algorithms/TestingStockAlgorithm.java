@@ -1,4 +1,4 @@
-package stsc.algorithms.primitive;
+package stsc.algorithms;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;

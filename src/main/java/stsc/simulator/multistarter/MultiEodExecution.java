@@ -9,8 +9,9 @@ public class MultiEodExecution extends MultiExecution<EodExecution> {
 	public MultiEodExecution(String executionName, String algorithmName, FromToPeriod period)
 			throws BadAlgorithmException {
 		super(executionName, algorithmName, period);
+	}
 
-		// generate algorithm just for testing
+	protected void testAlgorithmOnInstantiation(String algorithmName) throws BadAlgorithmException {
 		EodExecution.generateAlgorithm(algorithmName);
 	}
 

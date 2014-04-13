@@ -10,7 +10,7 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 
 	protected final String executionName;
 	protected final String algorithmName;
-	protected final FromToPeriod period;
+	private final FromToPeriod period;
 	private boolean finished;
 
 	private final ParameterList[] parameters = { new ParameterList(), new ParameterList(), new ParameterList(),
@@ -21,7 +21,10 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 		this.algorithmName = algorithmName;
 		this.period = period;
 		this.finished = false;
+		testAlgorithmOnInstantiation(algorithmName);
 	}
+
+	protected abstract void testAlgorithmOnInstantiation(String algorithmName) throws BadAlgorithmException;
 
 	@Override
 	public boolean hasNext() {
@@ -48,19 +51,19 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 	public void remove() {
 	}
 
-	public void addIntegerParameter(final MpInteger parameter) {
+	public void addParameter(final MpInteger parameter) {
 		parameters[ParameterType.integerType.getValue()].add(parameter);
 	}
 
-	public void addDoubleParameter(final MpDouble parameter) {
+	public void addParameter(final MpDouble parameter) {
 		parameters[ParameterType.doubleType.getValue()].add(parameter);
 	}
 
-	public void addStringParameter(final MpString parameter) {
+	public void addParameter(final MpString parameter) {
 		parameters[ParameterType.stringType.getValue()].add(parameter);
 	}
 
-	public void addSubExecutionParameter(final MpSubExecution parameter) {
+	public void addParameter(final MpSubExecution parameter) {
 		parameters[ParameterType.subExecutionType.getValue()].add(parameter);
 	}
 
@@ -109,7 +112,14 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 		return;
 	}
 
-	private class MeIterator extends ExecutionIterator<ExecutionType> {
+	public void reset() {
+		finished = false;
+		for (ParameterList list : parameters) {
+			list.reset();
+		}
+	}
+
+	public class MeIterator extends ExecutionIterator<ExecutionType> {
 		public MeIterator(Iterator<ExecutionType> execution) {
 			super(execution);
 		}

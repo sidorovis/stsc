@@ -1,11 +1,11 @@
-package stsc.algorithms.privitive;
+package stsc.algorithms.eod.privitive;
 
 import java.util.HashMap;
 import java.util.Date;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.primitive.TestingEodAlgorithm;
+import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.testhelper.TestHelper;
