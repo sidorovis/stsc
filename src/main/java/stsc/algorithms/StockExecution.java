@@ -26,8 +26,8 @@ public class StockExecution {
 			throws BadAlgorithmException {
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
-		this.settings = settings;
 		this.algorithmType = generateAlgorithm(algorithmName);
+		this.settings = settings;
 	}
 
 	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
@@ -45,7 +45,7 @@ public class StockExecution {
 	public String getAlgorithmName() {
 		return algorithmName;
 	}
-	
+
 	public AlgorithmSettings getSettings() {
 		return settings;
 	}
