@@ -37,7 +37,7 @@ public class SimulatorTest extends TestCase {
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		Simulator simulator = new Simulator(tpi);
+		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18, statistics.getPeriod());
 		assertEquals(4.209799, statistics.getAvGain(), 0.000001);
@@ -52,7 +52,7 @@ public class SimulatorTest extends TestCase {
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		Simulator simulator = new Simulator(tpi);
+		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18, statistics.getPeriod());
 		assertEquals(-4.209799, statistics.getAvGain(), 0.000001);

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-public class MultiParameterTests extends TestCase {
+public class MultiParameterTest extends TestCase {
 	public void testMultiParameterDouble() throws BadParameterException {
 		Double sum = 0.0;
 		int count = 0;

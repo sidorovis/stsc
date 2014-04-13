@@ -3,28 +3,20 @@ package stsc.simulator.multistarter;
 import java.util.Iterator;
 
 import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
 
-public abstract class MultiExecution<ExecutionType> implements Iterator<ExecutionType> {
+public class MultiAlgorithmSettings implements Iterator<AlgorithmSettings> {
 
-	protected final String executionName;
-	protected final String algorithmName;
 	private final FromToPeriod period;
 	private boolean finished;
 
 	private final ParameterList[] parameters = { new ParameterList(), new ParameterList(), new ParameterList(),
 			new ParameterList() };
 
-	public MultiExecution(String executionName, String algorithmName, FromToPeriod period) throws BadAlgorithmException {
-		this.executionName = executionName;
-		this.algorithmName = algorithmName;
+	public MultiAlgorithmSettings(final FromToPeriod period) {
 		this.period = period;
 		this.finished = false;
-		testAlgorithmOnInstantiation(algorithmName);
 	}
-
-	protected abstract void testAlgorithmOnInstantiation(String algorithmName) throws BadAlgorithmException;
 
 	@Override
 	public boolean hasNext() {
@@ -39,31 +31,29 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 	}
 
 	@Override
-	public ExecutionType next() {
-		final ExecutionType result = getCurrentExecution();
+	public AlgorithmSettings next() {
+		final AlgorithmSettings result = generageSettings();
 		generateNext();
 		return result;
 	}
-
-	protected abstract ExecutionType getCurrentExecution();
 
 	@Override
 	public void remove() {
 	}
 
-	public void addParameter(final MpInteger parameter) {
+	public void add(final MpInteger parameter) {
 		parameters[ParameterType.integerType.getValue()].add(parameter);
 	}
 
-	public void addParameter(final MpDouble parameter) {
+	public void add(final MpDouble parameter) {
 		parameters[ParameterType.doubleType.getValue()].add(parameter);
 	}
 
-	public void addParameter(final MpString parameter) {
+	public void add(final MpString parameter) {
 		parameters[ParameterType.stringType.getValue()].add(parameter);
 	}
 
-	public void addParameter(final MpSubExecution parameter) {
+	public void add(final MpSubExecution parameter) {
 		parameters[ParameterType.subExecutionType.getValue()].add(parameter);
 	}
 
@@ -119,14 +109,14 @@ public abstract class MultiExecution<ExecutionType> implements Iterator<Executio
 		}
 	}
 
-	public class MeIterator extends ExecutionIterator<ExecutionType> {
-		public MeIterator(Iterator<ExecutionType> execution) {
+	public class AlgorithmSettingsIterator extends ExecutionIterator<AlgorithmSettings> {
+		public AlgorithmSettingsIterator(Iterator<AlgorithmSettings> execution) {
 			super(execution);
 		}
 	}
 
-	public MeIterator getEntry() {
-		return new MeIterator(this);
+	public AlgorithmSettingsIterator getEntry() {
+		return new AlgorithmSettingsIterator(this);
 	}
 
 }

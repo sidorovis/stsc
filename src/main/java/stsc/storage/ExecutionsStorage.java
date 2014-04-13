@@ -73,7 +73,7 @@ public class ExecutionsStorage {
 	private StockExecutions stockAlgorithms = new StockExecutions();
 	private Map<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
-	public ExecutionsStorage() throws BadAlgorithmException {
+	public ExecutionsStorage() {
 	}
 
 	public void addStockExecution(StockExecution execution) throws BadAlgorithmException {

@@ -14,19 +14,19 @@ public class Simulator {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/simulator.log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
+	private static Logger logger = LogManager.getLogger("Simulator");
 
 	private final Statistics statistics;
 
-	public Simulator(final TradeProcessorInit settings) throws Exception {
+	public Simulator(final SimulatorSettings settings) throws Exception {
 		logger.info("Simulator starting");
-		final TradeProcessor tradeProcessor = new TradeProcessor(settings);
-		statistics = tradeProcessor.simulate(settings.getPeriod());
+		final TradeProcessor tradeProcessor = new TradeProcessor(settings.getInit());
+		statistics = tradeProcessor.simulate(settings.getInit().getPeriod());
 		logger.info("Simulated finished");
 	}
 
 	public static Simulator fromFile(final String filePath) throws Exception {
-		return new Simulator(new TradeProcessorInit(filePath));
+		return new Simulator(new SimulatorSettings(new TradeProcessorInit(filePath)));
 	}
 
 	public Statistics getStatistics() {

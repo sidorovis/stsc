@@ -10,7 +10,7 @@
 /data/*.uf
 /filtered_data/*.uf
 /logs
-
+/test/*.uf
 /.*
 
 _*.log
