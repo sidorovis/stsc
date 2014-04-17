@@ -17,10 +17,17 @@ public class MpDouble implements MpIterator<Double> {
 		this.name = name;
 		this.from = from;
 		this.to = to;
+		if (step == 0)
+			throw new BadParameterException("Step can't be zero");
 		if (from >= to)
 			throw new BadParameterException("Double 'from' should be smaller than 'to' for " + name);
 		this.step = step;
 		this.iterator = 0;
+	}
+
+	@Override
+	public long size() {
+		return Math.round((to - from) / step);
 	}
 
 	@Override

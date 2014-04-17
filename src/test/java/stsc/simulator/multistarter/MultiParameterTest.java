@@ -38,9 +38,9 @@ public class MultiParameterTest extends TestCase {
 		while (mpString.hasNext()) {
 			sum += mpString.current();
 			count += 1;
-			mpString.next();
+			sum += mpString.next();
 		}
-		assertEquals("asdxcv", sum);
+		assertEquals("asdasdxcvxcv", sum);
 		assertEquals(2, count);
 	}
 

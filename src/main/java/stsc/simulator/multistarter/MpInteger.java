@@ -20,6 +20,11 @@ public class MpInteger implements MpIterator<Integer> {
 	}
 
 	@Override
+	public long size() {
+		return Math.round((to - from) / step);
+	}
+
+	@Override
 	public String toString() {
 		return name + ":" + String.valueOf(current()) + " from (" + step.toString() + "|" + from.toString() + ":"
 				+ to.toString() + ")";

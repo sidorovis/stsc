@@ -23,6 +23,11 @@ public class MpString implements MpIterator<String> {
 	}
 
 	@Override
+	public long size() {
+		return domen.size();
+	}
+
+	@Override
 	public String toString() {
 		if (index < domen.size())
 			return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
