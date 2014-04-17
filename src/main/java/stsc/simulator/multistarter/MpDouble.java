@@ -10,7 +10,7 @@ public class MpDouble implements MpIterator<Double> {
 	private final Double from;
 	private final Double to;
 	private final Double step;
-	private Double iterator;
+	private Integer iterator;
 
 	public MpDouble(String name, Double from, Double to, Double step) throws BadParameterException {
 		super();
@@ -18,35 +18,51 @@ public class MpDouble implements MpIterator<Double> {
 		this.from = from;
 		this.to = to;
 		if (from >= to)
-			throw new BadParameterException("Double from should be smaller than to for " + name);
+			throw new BadParameterException("Double 'from' should be smaller than 'to' for " + name);
 		this.step = step;
-		iterator = from;
+		this.iterator = 0;
 	}
 
 	@Override
 	public String toString() {
-		return name + ":" + iterator.toString() + " from (" + step.toString() + "|" + from.toString() + ":"
+		return name + ":" + String.valueOf(current()) + " from (" + step.toString() + "|" + from.toString() + ":"
 				+ to.toString() + ")";
 	}
 
 	@Override
 	public void reset() {
-		iterator = from;
+		iterator = 0;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return DoubleMath.fuzzyCompare(iterator, to, Settings.doubleEpsilon) < 0;
+		return DoubleMath.fuzzyCompare(current(), to, Settings.doubleEpsilon) < 0;
 	}
 
 	@Override
-	public Parameter<Double> current() {
-		final Parameter<Double> result = new Parameter<Double>(name, iterator);
+	public Parameter<Double> currentParameter() {
+		final Parameter<Double> result = new Parameter<Double>(name, current());
 		return result;
 	}
 
 	@Override
+	public Double current() {
+		return from + step * iterator;
+	}
+
+	@Override
 	public void increment() {
-		iterator += step;
+		iterator += 1;
+	}
+
+	@Override
+	public Double next() {
+		Double result = current();
+		increment();
+		return result;
+	}
+
+	@Override
+	public void remove() {
 	}
 }

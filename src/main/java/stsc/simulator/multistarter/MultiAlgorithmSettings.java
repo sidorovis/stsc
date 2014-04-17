@@ -1,122 +1,156 @@
 package stsc.simulator.multistarter;
 
-import java.util.Iterator;
-
 import stsc.algorithms.AlgorithmSettings;
 import stsc.common.FromToPeriod;
 
-public class MultiAlgorithmSettings implements Iterator<AlgorithmSettings> {
+public class MultiAlgorithmSettings implements ResetableIterable<AlgorithmSettings> {
+
+	public class Element implements ResetableIterator<AlgorithmSettings> {
+
+		private final ParameterList[] parameters;
+		private boolean finished;
+
+		public Element(ParameterList parameterList[], boolean finished) {
+			this.parameters = parameterList;
+			this.finished = finished;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (finished)
+				return false;
+			for (int i = 0; i < ParameterType.size.getValue(); ++i) {
+				ParameterList list = parameters[i];
+				if (list.hasCurrent())
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public AlgorithmSettings next() {
+			final AlgorithmSettings result = generateSettings();
+			generateNext();
+			return result;
+		}
+
+		@Override
+		public void remove() {
+		}
+
+		public AlgorithmSettings current() {
+			return generateSettings();
+		}
+
+		protected void generateNext() {
+			int parameterIndex = 0;
+			while (parameterIndex < ParameterType.size.getValue()) {
+				final ParameterList list = parameters[parameterIndex];
+				if (list.empty()) {
+					parameterIndex += 1;
+					continue;
+				}
+				final MpIterator<?> iterator = list.getCurrentParam();
+				iterator.increment();
+				if (iterator.hasNext()) {
+					list.reset();
+					return;
+				}
+				iterator.reset();
+				if (list.hasNext()) {
+					list.increment();
+				} else {
+					list.reset();
+					parameterIndex += 1;
+				}
+			}
+			finished = true;
+			return;
+		}
+
+		protected AlgorithmSettings generateSettings() {
+			final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+
+			for (int i = 0; i < ParameterType.typesSize; ++i) {
+				final ParameterList list = parameters[i];
+				for (MpIterator<?> p : list.getParams()) {
+					final String name = p.currentParameter().getName();
+					final String value = p.currentParameter().getStringName();
+					algoSettings.set(name, value);
+				}
+			}
+			final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
+			for (MpIterator<?> p : list.getParams()) {
+				final String subExecutionName = p.currentParameter().getStringName();
+				algoSettings.addSubExecutionName(subExecutionName);
+			}
+			return algoSettings;
+		}
+
+		public void reset() {
+			finished = false;
+			for (ParameterList list : parameters) {
+				list.reset();
+			}
+		}
+	}
 
 	private final FromToPeriod period;
 	private boolean finished;
 
-	private final ParameterList[] parameters = { new ParameterList(), new ParameterList(), new ParameterList(),
-			new ParameterList() };
+	private final ParameterList[] parameters = { new ParameterList(ParameterType.integerType),
+			new ParameterList(ParameterType.doubleType), new ParameterList(ParameterType.stringType),
+			new ParameterList(ParameterType.subExecutionType) };
 
 	public MultiAlgorithmSettings(final FromToPeriod period) {
 		this.period = period;
 		this.finished = false;
 	}
 
-	@Override
-	public boolean hasNext() {
-		if (finished)
-			return false;
-		for (int i = 0; i < ParameterType.size.getValue(); ++i) {
-			ParameterList list = parameters[i];
-			if (list.hasNext())
-				return true;
-		}
-		return false;
-	}
-
-	@Override
-	public AlgorithmSettings next() {
-		final AlgorithmSettings result = generageSettings();
-		generateNext();
-		return result;
-	}
-
-	@Override
-	public void remove() {
-	}
-
 	public void add(final MpInteger parameter) {
+		if (parameter.hasNext())
+			this.finished = false;
 		parameters[ParameterType.integerType.getValue()].add(parameter);
 	}
 
 	public void add(final MpDouble parameter) {
+		if (parameter.hasNext())
+			this.finished = false;
 		parameters[ParameterType.doubleType.getValue()].add(parameter);
 	}
 
 	public void add(final MpString parameter) {
+		if (parameter.hasNext())
+			this.finished = false;
 		parameters[ParameterType.stringType.getValue()].add(parameter);
 	}
 
 	public void add(final MpSubExecution parameter) {
+		if (parameter.hasNext())
+			this.finished = false;
 		parameters[ParameterType.subExecutionType.getValue()].add(parameter);
 	}
 
-	protected AlgorithmSettings generageSettings() {
-		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
-
-		for (int i = 0; i < ParameterType.typesSize; ++i) {
-			final ParameterList list = parameters[i];
-			for (MpIterator<?> p : list.getParams()) {
-				final String name = p.current().getName();
-				final String value = p.current().getStringName();
-				algoSettings.set(name, value);
-			}
-		}
-		final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
-		for (MpIterator<?> p : list.getParams()) {
-			final String subExecutionName = p.current().getStringName();
-			algoSettings.addSubExecutionName(subExecutionName);
-		}
-		return algoSettings;
+	@Override
+	public Element iterator() {
+		return new Element(this.parameters, this.finished);
 	}
 
-	protected void generateNext() {
-		int parameterIndex = 0;
-		while (parameterIndex < ParameterType.size.getValue()) {
-			final ParameterList list = parameters[parameterIndex];
-			if (list.empty()) {
-				parameterIndex += 1;
-				continue;
-			}
-			final MpIterator<?> iterator = list.getCurrentParam();
-			iterator.increment();
-			if (iterator.hasNext()) {
-				list.reset();
-				return;
-			}
-			iterator.reset();
-			if (list.hasNext()) {
-				list.increment();
-			} else {
-				list.reset();
-				parameterIndex += 1;
-			}
+	public Element getResetIterator() {
+		return new Element(this.parameters, this.finished);
+	}
+
+	public boolean getFinished() {
+		return this.finished;
+	}
+
+	@Override
+	public String toString() {
+		String result = period.toString();
+		parameters.toString();
+		for (ParameterList p : parameters) {
+			result += "\n" + p.type.toString() + " " + p.toString();
 		}
-		finished = true;
-		return;
+		return result;
 	}
-
-	public void reset() {
-		finished = false;
-		for (ParameterList list : parameters) {
-			list.reset();
-		}
-	}
-
-	public class AlgorithmSettingsIterator extends ExecutionIterator<AlgorithmSettings> {
-		public AlgorithmSettingsIterator(Iterator<AlgorithmSettings> execution) {
-			super(execution);
-		}
-	}
-
-	public AlgorithmSettingsIterator getEntry() {
-		return new AlgorithmSettingsIterator(this);
-	}
-
 }

@@ -3,8 +3,6 @@ package stsc.simulator.multistarter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
@@ -21,14 +19,14 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 
 	public void testMultiAlgorithmSettings() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
+		final MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
 		mas.add(new MpInteger("n", 1, 3, 1));
 		mas.add(new MpInteger("m", -4, -1, 2));
 		mas.add(new MpString("l", Arrays.asList(new String[] { "asd", "ibm" })));
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
 
-		for (AlgorithmSettings se : mas.getEntry()) {
+		for (AlgorithmSettings se : mas) {
 			settings.add(se);
 		}
 		assertEquals(8, settings.size());
@@ -57,7 +55,7 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
 
-		Iterator<AlgorithmSettings> i = mas.getEntry().iterator();
+		MultiAlgorithmSettings.Element i = mas.iterator();
 		int sum = 0;
 		while (i.hasNext()) {
 			i.next();
@@ -65,12 +63,39 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 		}
 		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, sum);
 
-		mas.reset();
+		i.reset();
 
-		for (AlgorithmSettings se : mas.getEntry()) {
+		for (AlgorithmSettings se : mas) {
 			assertNotNull(se);
 			settings.add(se);
 		}
 		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
+	}
+
+	public void testMultiStockWithStrings() throws BadParameterException {
+		final FromToPeriod period = TestHelper.getPeriod();
+		MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
+		final String[] arr = new String[] { "asd", "ibm" };
+		mas.add(new MpString("z", Arrays.asList(arr)));
+
+		MultiAlgorithmSettings.Element i = mas.iterator();
+		int sum = 0;
+		while (i.hasNext()) {
+			AlgorithmSettings as = i.next();
+			assertEquals(as.get("z"), arr[sum]);
+			sum += 1;
+		}
+		assertEquals(2, sum);
+		i.reset();
+
+		mas.add(new MpString("y", Arrays.asList(new String[] { "asd", "ibm", "yhoo" })));
+
+		i = mas.iterator();
+
+		while (i.hasNext()) {
+			i.next();
+			sum += 1;
+		}
+		assertEquals(8, sum);
 	}
 }

@@ -48,6 +48,11 @@ public abstract class StockAlgorithm {
 		private final int getIndexSize(String stockName) {
 			return signalsStorage.getIndexSize(stockName, executionName);
 		}
+
+		@Override
+		public String toString() {
+			return stockName + ": " + executionName + "\n" + settings;
+		}
 	}
 
 	private final Init init;
@@ -88,5 +93,10 @@ public abstract class StockAlgorithm {
 	public abstract Class<? extends StockSignal> registerSignalsClass();
 
 	public abstract void process(Day day) throws BadSignalException;
+
+	@Override
+	public String toString() {
+		return init.toString();
+	}
 
 }

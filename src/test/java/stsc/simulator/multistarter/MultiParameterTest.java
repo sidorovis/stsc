@@ -10,11 +10,11 @@ public class MultiParameterTest extends TestCase {
 		int count = 0;
 		final MpDouble mpDouble = new MpDouble("double", 0.1, 1.0, 0.1);
 		while (mpDouble.hasNext()) {
-			sum += mpDouble.current().getValue();
+			sum += mpDouble.currentParameter().getValue();
 			count += 1;
 			mpDouble.increment();
 		}
-		assertEquals(4.5, sum);
+		assertEquals(4.5, sum, 0.000001);
 		assertEquals(9, count);
 	}
 
@@ -23,7 +23,7 @@ public class MultiParameterTest extends TestCase {
 		int count = 0;
 		final MpInteger mpInteger = new MpInteger("int", -4, 13, 2);
 		while (mpInteger.hasNext()) {
-			sum += mpInteger.current().getValue();
+			sum += mpInteger.current();
 			count += 1;
 			mpInteger.increment();
 		}
@@ -36,9 +36,9 @@ public class MultiParameterTest extends TestCase {
 		int count = 0;
 		final MpString mpString = new MpString("str", Arrays.asList("asd", "xcv"));
 		while (mpString.hasNext()) {
-			sum += mpString.current().getValue();
+			sum += mpString.current();
 			count += 1;
-			mpString.increment();
+			mpString.next();
 		}
 		assertEquals("asdxcv", sum);
 		assertEquals(2, count);
@@ -50,8 +50,8 @@ public class MultiParameterTest extends TestCase {
 		int count = 0;
 		final MpSubExecution exe = new MpSubExecution("se", Arrays.asList("ter", "vlo"));
 		while (exe.hasNext()) {
-			sum += exe.current().getValue();
-			names += exe.current().toString();
+			sum += exe.current();
+			names += exe.currentParameter().toString();
 			count += 1;
 			exe.increment();
 		}

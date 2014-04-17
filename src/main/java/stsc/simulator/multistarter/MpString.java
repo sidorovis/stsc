@@ -24,7 +24,10 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public String toString() {
-		return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
+		if (index < domen.size())
+			return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
+		else
+			return name + "(" + domen.toString() + ")[ END ]";
 	}
 
 	@Override
@@ -33,8 +36,8 @@ public class MpString implements MpIterator<String> {
 	}
 
 	@Override
-	public Parameter<String> current() {
-		return new Parameter<String>(name, domen.get(index));
+	public Parameter<String> currentParameter() {
+		return new Parameter<String>(name, current());
 	}
 
 	@Override
@@ -45,6 +48,22 @@ public class MpString implements MpIterator<String> {
 	@Override
 	public void increment() {
 		index += 1;
+	}
+
+	@Override
+	public String next() {
+		String result = current();
+		increment();
+		return result;
+	}
+
+	@Override
+	public void remove() {
+	}
+
+	@Override
+	public String current() {
+		return domen.get(index);
 	}
 
 }

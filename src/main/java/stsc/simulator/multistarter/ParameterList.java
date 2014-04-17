@@ -6,8 +6,10 @@ import java.util.List;
 class ParameterList {
 	private final List<MpIterator<?>> params = new ArrayList<MpIterator<?>>();
 	private int index;
+	public final ParameterType type;
 
-	public ParameterList() {
+	public ParameterList(ParameterType type) {
+		this.type = type;
 		index = 0;
 	}
 
@@ -31,6 +33,10 @@ class ParameterList {
 		return index + 1 < params.size();
 	}
 
+	public boolean hasCurrent() {
+		return index < params.size();
+	}
+
 	public MpIterator<?> getCurrentParam() {
 		return params.get(index);
 	}
@@ -43,5 +49,4 @@ class ParameterList {
 	public String toString() {
 		return String.valueOf(index) + ": " + params.toString();
 	}
-
 }

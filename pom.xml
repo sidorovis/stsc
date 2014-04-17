@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>Stsc</artifactId>
-  <version>0.0.6-MORE-GENEROUS-NUMBER-PARSING-ON-DOUNLOAD</version>
+  <version>0.0.7-MULTI-GENERATOR</version>
   <packaging>jar</packaging>
 
   <name>Stsc</name>
@@ -88,6 +88,16 @@
 		<artifactId>antlr4-runtime</artifactId>
 		<version>4.2</version>
 	</dependency>
+	<dependency>
+		<groupId>commons-validator</groupId>
+		<artifactId>commons-validator</artifactId>
+		<version>1.4.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.3.1</version>
+	</dependency>        
   </dependencies>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>

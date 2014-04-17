@@ -16,32 +16,49 @@ public class MpInteger implements MpIterator<Integer> {
 		if (from >= to)
 			throw new BadParameterException("Integer from should be smaller than to for " + name);
 		this.step = step;
-		iterator = from;
+		this.iterator = 0;
 	}
 
 	@Override
 	public String toString() {
-		return name + ":" + iterator.toString() + " from (" + step.toString() + "|" + from.toString() + ":"
+		return name + ":" + String.valueOf(current()) + " from (" + step.toString() + "|" + from.toString() + ":"
 				+ to.toString() + ")";
 	}
 
 	@Override
 	public boolean hasNext() {
-		return iterator < to;
+		return current() < to;
 	}
 
 	@Override
 	public void reset() {
-		iterator = from;
+		iterator = 0;
 	}
 
 	@Override
-	public Parameter<Integer> current() {
-		return new Parameter<Integer>(name, iterator);
+	public Parameter<Integer> currentParameter() {
+		return new Parameter<Integer>(name, current());
 	}
 
 	@Override
 	public void increment() {
-		iterator += step;
+		iterator += 1;
+	}
+
+	@Override
+	public Integer current() {
+		return from + iterator * step;
+	}
+
+	@Override
+	public Integer next() {
+		final Integer result = current();
+		increment();
+		return result;
+	}
+
+	@Override
+	public void remove() {
+		iterator = 0;
 	}
 }

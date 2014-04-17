@@ -3,6 +3,8 @@ package stsc.algorithms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang3.Validate;
+
 import stsc.storage.SignalsStorage;
 
 public class StockExecution {
@@ -24,6 +26,9 @@ public class StockExecution {
 
 	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
 			throws BadAlgorithmException {
+		Validate.notNull(executionName);
+		Validate.notNull(algorithmName);
+		Validate.notNull(settings);
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		this.algorithmType = generateAlgorithm(algorithmName);
@@ -32,6 +37,9 @@ public class StockExecution {
 
 	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
 			AlgorithmSettings settings) {
+		Validate.notNull(executionName);
+		Validate.notNull(algorithmType);
+		Validate.notNull(settings);
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
