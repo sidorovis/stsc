@@ -26,20 +26,18 @@ public class MultiSimulatorSettingsTest extends TestCase {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
-	// public void testEmptyMultiSimulatorSettings() throws
-	// BadAlgorithmException, BadParameterException {
-	// final StockStorage stockStorage = new StockStorageHelper();
-	// final FromToPeriod period = TestHelper.getPeriod();
-	//
-	// final MultiSimulatorSettings settings = new
-	// MultiSimulatorSettings(stockStorage, period);
-	// int count = 0;
-	// for (SimulatorSettings simulatorSettings : settings) {
-	// count += 1;
-	// assertNotNull(simulatorSettings);
-	// }
-	// assertEquals(0, count);
-	// }
+	public void testEmptyMultiSimulatorSettings() throws BadAlgorithmException, BadParameterException {
+		final StockStorage stockStorage = new StockStorageHelper();
+		final FromToPeriod period = TestHelper.getPeriod();
+
+		final MultiSimulatorSettings settings = new MultiSimulatorSettings(stockStorage, period);
+		int count = 0;
+		for (SimulatorSettings simulatorSettings : settings) {
+			count += 1;
+			assertNotNull(simulatorSettings);
+		}
+		assertEquals(0, count);
+	}
 
 	public void testMultiSimulatorSettings() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageHelper();
