@@ -6,9 +6,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.LocalDate;
+
 public class TradingRecord {
 	public enum TradingType {
-		BUY, SELL
+		BUY, SELL;
+
+		@Override
+		public String toString() {
+			if (this == BUY)
+				return "BUY ";
+			else
+				return "SELL";
+		}
 	}
 
 	private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -71,12 +81,18 @@ public class TradingRecord {
 	public Side getSide() {
 		return side;
 	}
-	
-	public boolean isLong(){
+
+	public boolean isLong() {
 		return side == Side.LONG;
 	}
 
 	public int getAmount() {
 		return amount;
+	}
+
+	@Override
+	public String toString() {
+		return new LocalDate(date).toString() + ": (" + type.toString() + ") " + stockName + " | " + side.toString()
+				+ " " + String.valueOf(amount);
 	}
 }

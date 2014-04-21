@@ -10,11 +10,28 @@ import stsc.trading.Broker;
 
 public class TestHelper {
 	public static EodAlgorithm.Init getEodAlgorithmInit() {
+		return getEodAlgorithmInit(new Broker(new ThreadSafeStockStorage()));
+	}
+
+	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker) {
+		return getEodAlgorithmInit(broker, "eName");
+	}
+
+	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName) {
+		return getEodAlgorithmInit(broker, executionName, getAlgorithmSettings());
+	}
+
+	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings) {
+		return getEodAlgorithmInit(broker, executionName, getAlgorithmSettings(), new SignalsStorage());
+	}
+
+	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName,
+			AlgorithmSettings settings, SignalsStorage signalsStorage) {
 		EodAlgorithm.Init init = new EodAlgorithm.Init();
-		init.broker = new Broker(new ThreadSafeStockStorage());
-		init.executionName = "eName";
-		init.settings = getAlgorithmSettings();
-		init.signalsStorage = new SignalsStorage();
+		init.broker = broker;
+		init.executionName = executionName;
+		init.settings = settings;
+		init.signalsStorage = signalsStorage;
 		return init;
 	}
 

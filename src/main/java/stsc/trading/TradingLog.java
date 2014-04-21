@@ -26,4 +26,13 @@ public class TradingLog {
 		return records;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (TradingRecord i : records) {
+			sb.append(i.toString()).append("\n");
+		}
+		return sb.toString();
+	}
+
 }
