@@ -1,9 +1,13 @@
 package stsc.algorithms;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import stsc.common.FromToPeriod;
 
@@ -17,6 +21,24 @@ public class AlgorithmSettings implements Cloneable {
 		this.period = period;
 		this.settings = new HashMap<>();
 		this.subExecutions = new ArrayList<>();
+	}
+
+	public static AlgorithmSettings read(ObjectInput in) throws IOException {
+		final FromToPeriod period = FromToPeriod.read(in);
+		final int settingsSize = in.readInt();
+		final HashMap<String, String> settings = new HashMap<>();
+		for (int i = 0; i < settingsSize; ++i) {
+			final String key = in.readUTF();
+			final String value = in.readUTF();
+			settings.put(key, value);
+		}
+		final int subExecutionsSize = in.readInt();
+		final ArrayList<String> subExecutions = new ArrayList<>();
+		for (int i = 0; i < subExecutionsSize; ++i) {
+			final String name = in.readUTF();
+			subExecutions.add(name);
+		}
+		return new AlgorithmSettings(period, settings, subExecutions);
 	}
 
 	private AlgorithmSettings(final FromToPeriod period, HashMap<String, String> settings,
@@ -82,6 +104,19 @@ public class AlgorithmSettings implements Cloneable {
 
 	public FromToPeriod getPeriod() {
 		return period;
+	}
+
+	public void writeExternal(ObjectOutput out) throws IOException {
+		period.writeExternal(out);
+		out.writeInt(settings.size());
+		for (Map.Entry<String, String> i : settings.entrySet()) {
+			out.writeUTF(i.getKey());
+			out.writeUTF(i.getValue());
+		}
+		out.writeInt(subExecutions.size());
+		for (String i : subExecutions) {
+			out.writeUTF(i);
+		}
 	}
 
 }

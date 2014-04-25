@@ -40,6 +40,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
+
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			final String stockName = i.getKey();
 			final Handler<? extends StockSignal> isSignal = getSignal(stockName, sideSignalAlgoName, date);
@@ -52,7 +53,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 					longPositions.remove(stockName);
 				}
 			} else {
-				final SideSignal ss = isSignal.getSignal(SideSignal.class);				
+				final SideSignal ss = isSignal.getSignal(SideSignal.class);
 				final Side signalSide = ss.getSide();
 				if (signalSide == Side.LONG && !longPositions.containsKey(stockName)) {
 					final int sharesSize = getSharesSize(i.getValue().getPrices().getOpen());

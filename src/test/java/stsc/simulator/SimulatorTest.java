@@ -72,4 +72,12 @@ public class SimulatorTest extends TestCase {
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
+	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
+		deleteFileIfExists("./test/statistics.csv");
+		Simulator.fromFile("./test_data/simulator_tests/open_while_signal.ini").getStatistics()
+				.print("./test/statistics.csv");
+		assertEquals(513, new File("./test/statistics.csv").length());
+		deleteFileIfExists("./test/statistics.csv");
+	}
+
 }
