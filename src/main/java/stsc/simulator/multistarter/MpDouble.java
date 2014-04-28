@@ -72,4 +72,9 @@ public class MpDouble implements MpIterator<Double> {
 	@Override
 	public void remove() {
 	}
+
+	@Override
+	public Double parameter(int index) {
+		return from + step * index;
+	}
 }

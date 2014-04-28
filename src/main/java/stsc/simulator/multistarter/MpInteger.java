@@ -66,4 +66,9 @@ public class MpInteger implements MpIterator<Integer> {
 	public void remove() {
 		iterator = 0;
 	}
+
+	@Override
+	public Integer parameter(int index) {
+		return from + step * index;
+	}
 }

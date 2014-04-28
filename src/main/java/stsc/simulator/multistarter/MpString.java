@@ -71,4 +71,9 @@ public class MpString implements MpIterator<String> {
 		return domen.get(index);
 	}
 
+	@Override
+	public String parameter(int index) {
+		return domen.get(index);
+	}
+
 }

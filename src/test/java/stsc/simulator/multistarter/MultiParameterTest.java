@@ -16,6 +16,10 @@ public class MultiParameterTest extends TestCase {
 		}
 		assertEquals(4.5, sum, 0.000001);
 		assertEquals(9, count);
+
+		assertEquals(0.4, mpDouble.parameter(3));
+		assertEquals(0.9, mpDouble.parameter(8));
+		assertEquals(1.1, mpDouble.parameter(10));
 	}
 
 	public void testMultiParameterInteger() throws BadParameterException {
@@ -29,6 +33,10 @@ public class MultiParameterTest extends TestCase {
 		}
 		assertEquals(36, sum.intValue());
 		assertEquals(9, count);
+
+		assertEquals(2, mpInteger.parameter(3).intValue());
+		assertEquals(6, mpInteger.parameter(5).intValue());
+		assertEquals(14, mpInteger.parameter(9).intValue());
 	}
 
 	public void testMultiParameterString() throws BadParameterException {
@@ -42,6 +50,9 @@ public class MultiParameterTest extends TestCase {
 		}
 		assertEquals("asdasdxcvxcv", sum);
 		assertEquals(2, count);
+
+		assertEquals("xcv", mpString.parameter(1));
+		assertEquals("asd", mpString.parameter(0));
 	}
 
 	public void testMultiParameterSubExecution() throws BadParameterException {
@@ -58,5 +69,8 @@ public class MultiParameterTest extends TestCase {
 		assertEquals("tervlo", sum);
 		assertEquals("se = terse = vlo", names);
 		assertEquals(2, count);
+
+		assertEquals("ter", exe.parameter(0));
+		assertEquals("vlo", exe.parameter(1));
 	}
 }
