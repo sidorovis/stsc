@@ -9,7 +9,7 @@ import stsc.common.FromToPeriod;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class MultiAlgorithmSettingsTest extends TestCase {
+public class GridAlgorithmSettingsTest extends TestCase {
 
 	private void testHelperNlmParameters(String n, String l, String m, AlgorithmSettings s) {
 		assertEquals(n, s.get("n"));
@@ -17,9 +17,9 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 		assertEquals(m, s.get("m"));
 	}
 
-	public void testMultiAlgorithmSettings() throws ParseException, BadParameterException, BadAlgorithmException {
+	public void testGridAlgorithmSettings() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		final MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
+		final GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
 		mas.add(new MpInteger("n", 1, 3, 1));
 		mas.add(new MpInteger("m", -4, -1, 2));
 		mas.add(new MpString("l", Arrays.asList(new String[] { "asd", "ibm" })));
@@ -40,10 +40,10 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 		testHelperNlmParameters("2", "ibm", "-2", settings.get(7));
 	}
 
-	public void testMultiStockExecutionALotOfParameters() throws ParseException, BadParameterException,
+	public void testGridStockExecutionALotOfParameters() throws ParseException, BadParameterException,
 			BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
+		GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
 		mas.add(new MpInteger("q", 0, 5, 1));
 		mas.add(new MpInteger("w", -4, 1, 1));
 		mas.add(new MpDouble("a", 0.0, 100.0, 7.0));
@@ -55,7 +55,7 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
 
-		MultiAlgorithmSettings.Element i = mas.iterator();
+		GridAlgorithmSettings.Element i = mas.iterator();
 		int sum = 0;
 		while (i.hasNext()) {
 			i.next();
@@ -72,13 +72,13 @@ public class MultiAlgorithmSettingsTest extends TestCase {
 		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
 	}
 
-	public void testMultiStockWithStrings() throws BadParameterException {
+	public void testGridStockWithStrings() throws BadParameterException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		MultiAlgorithmSettings mas = new MultiAlgorithmSettings(period);
+		GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
 		final String[] arr = new String[] { "asd", "ibm" };
 		mas.add(new MpString("z", Arrays.asList(arr)));
 
-		MultiAlgorithmSettings.Element i = mas.iterator();
+		GridAlgorithmSettings.Element i = mas.iterator();
 		int sum = 0;
 		while (i.hasNext()) {
 			AlgorithmSettings as = i.next();

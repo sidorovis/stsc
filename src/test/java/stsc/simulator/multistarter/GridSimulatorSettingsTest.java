@@ -6,7 +6,7 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.FromToPeriod;
-import stsc.simulator.MultiSimulatorSettings;
+import stsc.simulator.GridSimulatorSettings;
 import stsc.simulator.SimulatorSettings;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
@@ -16,7 +16,7 @@ import stsc.testhelper.TestHelper;
 import stsc.trading.Broker;
 import junit.framework.TestCase;
 
-public class MultiSimulatorSettingsTest extends TestCase {
+public class GridSimulatorSettingsTest extends TestCase {
 
 	private String algoStockName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getStock(aname).getName();
@@ -26,11 +26,11 @@ public class MultiSimulatorSettingsTest extends TestCase {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
-	public void testEmptyMultiSimulatorSettings() throws BadAlgorithmException, BadParameterException {
+	public void testEmptyGridSimulatorSettings() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageHelper();
 		final FromToPeriod period = TestHelper.getPeriod();
 
-		final MultiSimulatorSettings settings = new MultiSimulatorSettings(stockStorage, period);
+		final GridSimulatorSettings settings = new GridSimulatorSettings(stockStorage, period);
 		int count = 0;
 		for (SimulatorSettings simulatorSettings : settings) {
 			count += 1;
@@ -39,30 +39,30 @@ public class MultiSimulatorSettingsTest extends TestCase {
 		assertEquals(0, count);
 	}
 
-	public void testMultiSimulatorSettings() throws BadAlgorithmException, BadParameterException {
+	public void testGridSimulatorSettings() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageHelper();
 		final FromToPeriod period = TestHelper.getPeriod();
 
-		final MultiSimulatorSettings settings = new MultiSimulatorSettings(stockStorage, period);
-		final MultiAlgorithmSettings in = new MultiAlgorithmSettings(period);
+		final GridSimulatorSettings settings = new GridSimulatorSettings(stockStorage, period);
+		final GridAlgorithmSettings in = new GridAlgorithmSettings(period);
 		in.add(new MpString("e", Arrays.asList(new String[] { "open", "high", "low", "close", "value" })));
 		settings.addStock("in", algoStockName("In"), in);
 
-		final MultiAlgorithmSettings ema = new MultiAlgorithmSettings(period);
+		final GridAlgorithmSettings ema = new GridAlgorithmSettings(period);
 		ema.add(new MpDouble("P", 0.1, 0.6, 0.1));
 		ema.add(new MpSubExecution("", Arrays.asList(new String[] { "e" })));
 		settings.addStock("ema", algoStockName("Ema"), ema);
 
-		final MultiAlgorithmSettings level = new MultiAlgorithmSettings(period);
+		final GridAlgorithmSettings level = new GridAlgorithmSettings(period);
 		level.add(new MpDouble("f", 15.0, 20.0, 1.0));
 		level.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "ema" })));
 		settings.addStock("level", algoStockName("Level"), level);
 
-		final MultiAlgorithmSettings oneSide = new MultiAlgorithmSettings(period);
+		final GridAlgorithmSettings oneSide = new GridAlgorithmSettings(period);
 		oneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
 		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), oneSide);
 
-		final MultiAlgorithmSettings positionSide = new MultiAlgorithmSettings(period);
+		final GridAlgorithmSettings positionSide = new GridAlgorithmSettings(period);
 		positionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "level", "ema" })));
 		positionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
 		positionSide.add(new MpInteger("n", 1, 32, 10));

@@ -1,16 +1,16 @@
 package stsc.simulator;
 
 import stsc.algorithms.AlgorithmSettings;
-import stsc.simulator.multistarter.MultiAlgorithmSettings;
+import stsc.simulator.multistarter.GridAlgorithmSettings;
 import stsc.simulator.multistarter.ResetableIterable;
 import stsc.simulator.multistarter.ResetableIterator;
 
 class ExecutionInitializer implements ResetableIterator<AlgorithmSettings>, ResetableIterable<AlgorithmSettings> {
 	public String executionName;
 	public String algorithmName;
-	public MultiAlgorithmSettings.Element iterator;
+	public GridAlgorithmSettings.Element iterator;
 
-	public ExecutionInitializer(String eName, String algorithmName, MultiAlgorithmSettings mas) {
+	public ExecutionInitializer(String eName, String algorithmName, GridAlgorithmSettings mas) {
 		super();
 		this.executionName = eName;
 		this.algorithmName = algorithmName;
