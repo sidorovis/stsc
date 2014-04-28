@@ -8,13 +8,13 @@ import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
 import stsc.simulator.multistarter.MpString;
 import stsc.simulator.multistarter.MpSubExecution;
-import stsc.simulator.multistarter.GridAlgorithmSettings;
+import stsc.simulator.multistarter.AlgorithmSettingsGridSearcher;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class ExecutionInitializerTest extends TestCase {
 	public void testExecutionInitializer() throws BadParameterException {
-		final GridAlgorithmSettings mas = new GridAlgorithmSettings(TestHelper.getPeriod());
+		final AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(TestHelper.getPeriod());
 		mas.add(new MpInteger("n", 1, 10, 2));
 		mas.add(new MpDouble("d", 0.1, 1.0, 0.2));
 		final ExecutionInitializer ei = new ExecutionInitializer("e", "a", mas);
@@ -44,7 +44,7 @@ public class ExecutionInitializerTest extends TestCase {
 	}
 
 	public void testExecutionInitializerWithStrings() throws BadParameterException {
-		final GridAlgorithmSettings mas = new GridAlgorithmSettings(TestHelper.getPeriod());
+		final AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(TestHelper.getPeriod());
 		mas.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
 		mas.add(new MpString("d", Arrays.asList(new String[] { "asd", "dfg", "rty" })));
 		mas.add(new MpString("o", Arrays.asList(new String[] { "hello", "world", "my", "dear" })));
@@ -58,7 +58,7 @@ public class ExecutionInitializerTest extends TestCase {
 	}
 
 	public void testExecutionInitializerWithEverything() throws BadParameterException {
-		final GridAlgorithmSettings mas = new GridAlgorithmSettings(TestHelper.getPeriod());
+		final AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(TestHelper.getPeriod());
 		mas.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
 		mas.add(new MpString("d", Arrays.asList(new String[] { "asd", "dfg", "rty" })));
 		mas.add(new MpString("o", Arrays.asList(new String[] { "hello", "world", "my", "dear" })));

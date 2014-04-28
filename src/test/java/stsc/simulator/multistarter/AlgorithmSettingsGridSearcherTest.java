@@ -9,7 +9,7 @@ import stsc.common.FromToPeriod;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class GridAlgorithmSettingsTest extends TestCase {
+public class AlgorithmSettingsGridSearcherTest extends TestCase {
 
 	private void testHelperNlmParameters(String n, String l, String m, AlgorithmSettings s) {
 		assertEquals(n, s.get("n"));
@@ -17,9 +17,9 @@ public class GridAlgorithmSettingsTest extends TestCase {
 		assertEquals(m, s.get("m"));
 	}
 
-	public void testGridAlgorithmSettings() throws ParseException, BadParameterException, BadAlgorithmException {
+	public void testAlgorithmSettingsGridSearcher() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		final GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
+		final AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(period);
 		mas.add(new MpInteger("n", 1, 3, 1));
 		mas.add(new MpInteger("m", -4, -1, 2));
 		mas.add(new MpString("l", Arrays.asList(new String[] { "asd", "ibm" })));
@@ -40,10 +40,10 @@ public class GridAlgorithmSettingsTest extends TestCase {
 		testHelperNlmParameters("2", "ibm", "-2", settings.get(7));
 	}
 
-	public void testGridStockExecutionALotOfParameters() throws ParseException, BadParameterException,
+	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException,
 			BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
+		AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(period);
 		mas.add(new MpInteger("q", 0, 5, 1));
 		mas.add(new MpInteger("w", -4, 1, 1));
 		mas.add(new MpDouble("a", 0.0, 100.0, 7.0));
@@ -55,7 +55,7 @@ public class GridAlgorithmSettingsTest extends TestCase {
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
 
-		GridAlgorithmSettings.Element i = mas.iterator();
+		AlgorithmSettingsGridSearcher.Element i = mas.iterator();
 		int sum = 0;
 		while (i.hasNext()) {
 			i.next();
@@ -72,13 +72,13 @@ public class GridAlgorithmSettingsTest extends TestCase {
 		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
 	}
 
-	public void testGridStockWithStrings() throws BadParameterException {
+	public void testGridSearcherStockWithStrings() throws BadParameterException {
 		final FromToPeriod period = TestHelper.getPeriod();
-		GridAlgorithmSettings mas = new GridAlgorithmSettings(period);
+		AlgorithmSettingsGridSearcher mas = new AlgorithmSettingsGridSearcher(period);
 		final String[] arr = new String[] { "asd", "ibm" };
 		mas.add(new MpString("z", Arrays.asList(arr)));
 
-		GridAlgorithmSettings.Element i = mas.iterator();
+		AlgorithmSettingsGridSearcher.Element i = mas.iterator();
 		int sum = 0;
 		while (i.hasNext()) {
 			AlgorithmSettings as = i.next();

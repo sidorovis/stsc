@@ -7,12 +7,12 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.common.FromToPeriod;
-import stsc.simulator.multistarter.GridAlgorithmSettings;
+import stsc.simulator.multistarter.AlgorithmSettingsGridSearcher;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
-public class GridSimulatorSettings implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
+public class SimulatorSettingsGridSearcher implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
 
 	private final ArrayList<ExecutionInitializer> stockInitializers = new ArrayList<>();
 	private final ArrayList<ExecutionInitializer> eodInitializers = new ArrayList<>();
@@ -22,18 +22,18 @@ public class GridSimulatorSettings implements Iterable<SimulatorSettings>, Itera
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
 
-	public GridSimulatorSettings(StockStorage stockStorage, FromToPeriod period) {
+	public SimulatorSettingsGridSearcher(StockStorage stockStorage, FromToPeriod period) {
 		this.finished = true;
 		this.stockStorage = stockStorage;
 		this.period = period;
 	}
 
-	public GridSimulatorSettings addStock(String eName, String aName, GridAlgorithmSettings multiAlgorithmSettings) {
+	public SimulatorSettingsGridSearcher addStock(String eName, String aName, AlgorithmSettingsGridSearcher multiAlgorithmSettings) {
 		addInitializer(stockInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}
 
-	public GridSimulatorSettings addEod(String eName, String aName, GridAlgorithmSettings multiAlgorithmSettings) {
+	public SimulatorSettingsGridSearcher addEod(String eName, String aName, AlgorithmSettingsGridSearcher multiAlgorithmSettings) {
 		addInitializer(eodInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}
