@@ -7,12 +7,12 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.common.FromToPeriod;
-import stsc.simulator.multistarter.AlgorithmSettingsGridSearcher;
+import stsc.simulator.multistarter.AlgorithmSettingsGridIterator;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
-public class SimulatorSettingsGridSearcher implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
+public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
 
 	private final ArrayList<ExecutionInitializer> stockInitializers = new ArrayList<>();
 	private final ArrayList<ExecutionInitializer> eodInitializers = new ArrayList<>();
@@ -22,18 +22,18 @@ public class SimulatorSettingsGridSearcher implements Iterable<SimulatorSettings
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
 
-	public SimulatorSettingsGridSearcher(StockStorage stockStorage, FromToPeriod period) {
+	public SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period) {
 		this.finished = true;
 		this.stockStorage = stockStorage;
 		this.period = period;
 	}
 
-	public SimulatorSettingsGridSearcher addStock(String eName, String aName, AlgorithmSettingsGridSearcher multiAlgorithmSettings) {
+	public SimulatorSettingsGridIterator addStock(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		addInitializer(stockInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}
 
-	public SimulatorSettingsGridSearcher addEod(String eName, String aName, AlgorithmSettingsGridSearcher multiAlgorithmSettings) {
+	public SimulatorSettingsGridIterator addEod(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		addInitializer(eodInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}

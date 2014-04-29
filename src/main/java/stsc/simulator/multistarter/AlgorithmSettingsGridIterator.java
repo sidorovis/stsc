@@ -3,7 +3,7 @@ package stsc.simulator.multistarter;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.common.FromToPeriod;
 
-public class AlgorithmSettingsGridSearcher implements ResetableIterable<AlgorithmSettings> {
+public class AlgorithmSettingsGridIterator implements ResetableIterable<AlgorithmSettings> {
 
 	public class Element implements ResetableIterator<AlgorithmSettings> {
 
@@ -102,7 +102,7 @@ public class AlgorithmSettingsGridSearcher implements ResetableIterable<Algorith
 			new ParameterList(ParameterType.doubleType), new ParameterList(ParameterType.stringType),
 			new ParameterList(ParameterType.subExecutionType) };
 
-	public AlgorithmSettingsGridSearcher(final FromToPeriod period) {
+	public AlgorithmSettingsGridIterator(final FromToPeriod period) {
 		this.period = period;
 		this.finished = false;
 	}
