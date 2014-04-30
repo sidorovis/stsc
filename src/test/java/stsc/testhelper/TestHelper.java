@@ -80,6 +80,10 @@ public class TestHelper {
 	}
 
 	public static Statistics getStatistics() {
+		return getStatistics(100, 200);
+	}
+
+	public static Statistics getStatistics(int applSize, int admSize) {
 		Statistics statisticsData = null;
 		try {
 			Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
@@ -95,16 +99,16 @@ public class TestHelper {
 			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-			tradingLog.addBuyRecord(new Date(), "aapl", Side.LONG, 100);
-			tradingLog.addBuyRecord(new Date(), "adm", Side.SHORT, 200);
+			tradingLog.addBuyRecord(new Date(), "aapl", Side.LONG, applSize);
+			tradingLog.addBuyRecord(new Date(), "adm", Side.SHORT, admSize);
 
 			statistics.processEod();
 
 			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-			tradingLog.addSellRecord(new Date(), "aapl", Side.LONG, 100);
-			tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, 200);
+			tradingLog.addSellRecord(new Date(), "aapl", Side.LONG, applSize);
+			tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, admSize);
 
 			statistics.processEod();
 

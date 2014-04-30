@@ -19,8 +19,12 @@ public class StatisticsSelector<T> {
 		final T compareValue = evaluationFunction.calculate(statistics);
 		select.put(compareValue, statistics);
 		if (select.size() > selectLastElements) {
-			select.remove(select.get(select.lastKey()));
+			select.remove(select.firstKey());
 		}
+	}
+
+	public SortedMap<T, Statistics> getSelect() {
+		return select;
 	}
 
 }
