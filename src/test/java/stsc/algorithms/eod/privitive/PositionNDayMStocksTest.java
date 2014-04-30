@@ -22,7 +22,7 @@ public class PositionNDayMStocksTest extends TestCase {
 	public void testPositionNDayMStocks() throws Exception {
 		Statistics s = Simulator.fromFile("./test_data/simulator_tests/ndays.ini").getStatistics();
 		assertNotNull(s);
-		assertEquals(550, s.getPeriod());
+		assertEquals(550.0, s.getPeriod());
 		assertEquals(69.255712, s.getAvGain(), 0.000001);
 	}
 }

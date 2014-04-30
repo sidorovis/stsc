@@ -56,7 +56,7 @@ public class StatisticsProcessorTest extends TestCase {
 
 		final Statistics statisticsData = statistics.calculate();
 
-		assertEquals(2, statisticsData.getPeriod());
+		assertEquals(2.0, statisticsData.getPeriod());
 		assertEquals(0.246987, statisticsData.getAvGain(), 0.000001);
 	}
 
@@ -88,7 +88,7 @@ public class StatisticsProcessorTest extends TestCase {
 
 		Statistics statisticsData = statistics.calculate();
 
-		assertEquals(2, statisticsData.getPeriod());
+		assertEquals(2.0, statisticsData.getPeriod());
 		assertEquals(0.246987, statisticsData.getAvGain(), 0.000001);
 	}
 
@@ -136,7 +136,7 @@ public class StatisticsProcessorTest extends TestCase {
 
 		final Statistics statisticsData = statistics.calculate();
 
-		assertEquals(4, statisticsData.getPeriod());
+		assertEquals(4.0, statisticsData.getPeriod());
 		assertEquals(-0.008919, statisticsData.getAvGain(), 0.000001);
 
 		assertEquals(0.75, statisticsData.getFreq());
@@ -264,7 +264,7 @@ public class StatisticsProcessorTest extends TestCase {
 		}
 
 		Statistics stats = statisticsProcessor.calculate();
-		assertEquals(daysCount, stats.getPeriod());
+		assertEquals(new Double(daysCount), stats.getPeriod());
 
 		return stats;
 	}
