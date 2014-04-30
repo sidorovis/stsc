@@ -44,30 +44,36 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		final FromToPeriod period = TestHelper.getPeriod();
 
 		final SimulatorSettingsGridIterator settings = new SimulatorSettingsGridIterator(stockStorage, period);
-		final AlgorithmSettingsGridIterator in = new AlgorithmSettingsGridIterator(period);
-		in.add(new MpString("e", Arrays.asList(new String[] { "open", "high", "low", "close", "value" })));
+
+		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
+		factoryIn.add(new MpString("e", Arrays.asList(new String[] { "open", "high", "low", "close", "value" })));
+		final AlgorithmSettingsGridIterator in = factoryIn.getGridIterator();
 		settings.addStock("in", algoStockName("In"), in);
 
-		final AlgorithmSettingsGridIterator ema = new AlgorithmSettingsGridIterator(period);
-		ema.add(new MpDouble("P", 0.1, 0.6, 0.1));
-		ema.add(new MpSubExecution("", Arrays.asList(new String[] { "e" })));
+		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(period);
+		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.1));
+		factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "e" })));
+		final AlgorithmSettingsGridIterator ema = factoryEma.getGridIterator();
 		settings.addStock("ema", algoStockName("Ema"), ema);
 
-		final AlgorithmSettingsGridIterator level = new AlgorithmSettingsGridIterator(period);
-		level.add(new MpDouble("f", 15.0, 20.0, 1.0));
-		level.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "ema" })));
+		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
+		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 1.0));
+		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "ema" })));
+		final AlgorithmSettingsGridIterator level = factoryLevel.getGridIterator();
 		settings.addStock("level", algoStockName("Level"), level);
 
-		final AlgorithmSettingsGridIterator oneSide = new AlgorithmSettingsGridIterator(period);
-		oneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
+		final AlgorithmSettingsIteratorFactory factoryOneSide = new AlgorithmSettingsIteratorFactory(period);
+		factoryOneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
+		final AlgorithmSettingsGridIterator oneSide = factoryOneSide.getGridIterator();
 		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), oneSide);
 
-		final AlgorithmSettingsGridIterator positionSide = new AlgorithmSettingsGridIterator(period);
-		positionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "level", "ema" })));
-		positionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
-		positionSide.add(new MpInteger("n", 1, 32, 10));
-		positionSide.add(new MpInteger("m", 1, 32, 10));
-		positionSide.add(new MpDouble("ps", 50000.0, 200001.0, 50000.0));
+		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
+		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "level", "ema" })));
+		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, 10));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, 10));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 50000.0));
+		final AlgorithmSettingsGridIterator positionSide = factoryPositionSide.getGridIterator();
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), positionSide);
 
 		int count = 0;

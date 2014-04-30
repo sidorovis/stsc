@@ -151,94 +151,117 @@ public class Statistics {
 		ddValueMax = init.ddValueMax;
 	}
 
+	@PublicMethod
 	public double getAvGain() {
 		return avGain;
 	}
 
-	public int getPeriod() {
+	@PublicMethod
+	public double getPeriod() {
 		return period;
 	}
 
+	@PublicMethod
 	public double getWinProb() {
 		return winProb;
 	}
 
+	@PublicMethod
 	public double getFreq() {
 		return freq;
 	}
 
+	@PublicMethod
 	public double getAvWin() {
 		return avWin;
 	}
 
+	@PublicMethod
 	public double getAvLoss() {
 		return avLoss;
 	}
 
+	@PublicMethod
 	public double getAvWinAvLoss() {
 		return avWinAvLoss;
 	}
 
+	@PublicMethod
 	public double getKelly() {
 		return kelly;
 	}
 
+	@PublicMethod
 	public double getSharpeRatio() {
 		return sharpeRatio;
 	}
 
+	@PublicMethod
 	public double getMaxWin() {
 		return maxWin;
 	}
 
+	@PublicMethod
 	public double getMaxLoss() {
 		return maxLoss;
 	}
 
+	@PublicMethod
 	public double getStartMonthAvGain() {
 		return startMonthAvGain;
 	}
 
+	@PublicMethod
 	public double getStartMonthStdDevGain() {
 		return startMonthStdDevGain;
 	}
 
+	@PublicMethod
 	public double getStartMonthMax() {
 		return startMonthMax;
 	}
 
+	@PublicMethod
 	public double getStartMonthMin() {
 		return startMonthMin;
 	}
 
+	@PublicMethod
 	public double getMonth12AvGain() {
 		return month12AvGain;
 	}
 
+	@PublicMethod
 	public double getMonth12StdDevGain() {
 		return month12StdDevGain;
 	}
 
+	@PublicMethod
 	public double getMonth12Min() {
 		return month12Min;
 	}
 
+	@PublicMethod
 	public double getMonth12Max() {
 		return month12Max;
 	}
 
+	@PublicMethod
 	public double getDdDurationAvGain() {
 		return ddDurationAvGain;
 	}
 
+	@PublicMethod
 	public double getDdDurationMax() {
 		return ddDurationMax;
 	}
 
+	@PublicMethod
 	public double getDdValueAvGain() {
 		return ddValueAvGain;
 	}
 
+	@PublicMethod
 	public double getDdValueMax() {
 		return ddValueMax;
 	}

@@ -98,37 +98,12 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 	private final FromToPeriod period;
 	private boolean finished;
 
-	private final ParameterList[] parameters = { new ParameterList(ParameterType.integerType),
-			new ParameterList(ParameterType.doubleType), new ParameterList(ParameterType.stringType),
-			new ParameterList(ParameterType.subExecutionType) };
+	private final ParameterList[] parameters;
 
-	public AlgorithmSettingsGridIterator(final FromToPeriod period) {
+	AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, ParameterList[] parameters) {
 		this.period = period;
-		this.finished = false;
-	}
-
-	public void add(final MpInteger parameter) {
-		if (parameter.hasNext())
-			this.finished = false;
-		parameters[ParameterType.integerType.getValue()].add(parameter);
-	}
-
-	public void add(final MpDouble parameter) {
-		if (parameter.hasNext())
-			this.finished = false;
-		parameters[ParameterType.doubleType.getValue()].add(parameter);
-	}
-
-	public void add(final MpString parameter) {
-		if (parameter.hasNext())
-			this.finished = false;
-		parameters[ParameterType.stringType.getValue()].add(parameter);
-	}
-
-	public void add(final MpSubExecution parameter) {
-		if (parameter.hasNext())
-			this.finished = false;
-		parameters[ParameterType.subExecutionType.getValue()].add(parameter);
+		this.finished = finished;
+		this.parameters = parameters.clone();
 	}
 
 	@Override
