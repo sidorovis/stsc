@@ -1,16 +1,33 @@
 package stsc.simulator.multistarter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-class ParameterList {
-	private final List<MpIterator<?>> params = new ArrayList<MpIterator<?>>();
-	private int index;
+class ParameterList implements Cloneable {
+
 	public final ParameterType type;
+	private final List<MpIterator<?>> params;
+	private int index;
 
 	public ParameterList(ParameterType type) {
 		this.type = type;
-		index = 0;
+		this.params = new ArrayList<MpIterator<?>>();
+		this.index = 0;
+	}
+
+	public ParameterList clone() {
+		return new ParameterList(this.type, this.params);
+	}
+
+	private ParameterList(final ParameterType type, final List<MpIterator<?>> params) {
+		this.type = type;
+		this.params = new ArrayList<MpIterator<?>>();
+		for (MpIterator<?> mpIterator : params) {
+			this.params.add(mpIterator.clone());
+		}
+		Collections.copy(this.params, params);
+		this.index = 0;
 	}
 
 	public void add(final MpIterator<?> mpi) {

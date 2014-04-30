@@ -20,6 +20,18 @@ public class MpInteger implements MpIterator<Integer> {
 	}
 
 	@Override
+	public MpIterator<Integer> clone() {
+		return new MpInteger(name, from, to, step, true);
+	}
+
+	private MpInteger(String name, Integer from, Integer to, Integer step, boolean privateBoolean) {
+		this.name = name;
+		this.from = from;
+		this.to = to;
+		this.step = step;
+	}
+
+	@Override
 	public long size() {
 		return Math.round((to - from) / step);
 	}

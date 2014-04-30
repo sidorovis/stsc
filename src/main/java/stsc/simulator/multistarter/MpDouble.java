@@ -26,6 +26,18 @@ public class MpDouble implements MpIterator<Double> {
 	}
 
 	@Override
+	public MpIterator<Double> clone() {
+		return new MpDouble(name, from, to, step, true);
+	}
+
+	private MpDouble(String name, Double from, Double to, Double step, boolean privateBoolean) {
+		this.name = name;
+		this.from = from;
+		this.to = to;
+		this.step = step;
+	}
+
+	@Override
 	public long size() {
 		return Math.round((to - from) / step);
 	}
@@ -77,4 +89,5 @@ public class MpDouble implements MpIterator<Double> {
 	public Double parameter(int index) {
 		return from + step * index;
 	}
+
 }

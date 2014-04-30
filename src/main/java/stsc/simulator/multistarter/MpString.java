@@ -23,6 +23,20 @@ public class MpString implements MpIterator<String> {
 	}
 
 	@Override
+	public MpIterator<String> clone() {
+		return new MpString(name, domen, true);
+	}
+
+	private MpString(String name, final List<String> domen, boolean privateBoolean) {
+		this.name = name;
+		this.domen = new ArrayList<String>();
+		for (String s : domen) {
+			this.domen.add(s);
+		}
+		this.index = 0;
+	}
+
+	@Override
 	public long size() {
 		return domen.size();
 	}
