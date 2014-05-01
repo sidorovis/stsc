@@ -1,4 +1,4 @@
-package stsc.simulator.multistarter;
+package stsc.simulator.multistarter.grid;
 
 import java.util.Arrays;
 
@@ -7,6 +7,12 @@ import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.FromToPeriod;
 import stsc.simulator.SimulatorSettings;
+import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
+import stsc.simulator.multistarter.BadParameterException;
+import stsc.simulator.multistarter.MpDouble;
+import stsc.simulator.multistarter.MpInteger;
+import stsc.simulator.multistarter.MpString;
+import stsc.simulator.multistarter.MpSubExecution;
 import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridIterator;
 import stsc.storage.AlgorithmsStorage;
