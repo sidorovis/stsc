@@ -3,9 +3,11 @@ package stsc.simulator.multistarter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
+import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 

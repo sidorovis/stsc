@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ParameterList implements Cloneable {
+public class ParameterList implements Cloneable {
 
 	public final ParameterType type;
 	private final List<MpIterator<?>> params;

@@ -1,6 +1,6 @@
 package stsc.simulator.multistarter;
 
-enum ParameterType {
+public enum ParameterType {
 	integerType(0), doubleType(1), stringType(2), subExecutionType(3), size(4);
 	public static int typesSize = 3;
 

@@ -1,6 +1,7 @@
 package stsc.simulator.multistarter;
 
 import stsc.common.FromToPeriod;
+import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 
 public class AlgorithmSettingsIteratorFactory {
 

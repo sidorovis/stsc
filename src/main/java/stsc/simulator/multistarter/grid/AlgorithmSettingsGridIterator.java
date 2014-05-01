@@ -1,7 +1,12 @@
-package stsc.simulator.multistarter;
+package stsc.simulator.multistarter.grid;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.common.FromToPeriod;
+import stsc.simulator.multistarter.MpIterator;
+import stsc.simulator.multistarter.ParameterList;
+import stsc.simulator.multistarter.ParameterType;
+import stsc.simulator.multistarter.ResetableIterable;
+import stsc.simulator.multistarter.ResetableIterator;
 
 public class AlgorithmSettingsGridIterator implements ResetableIterable<AlgorithmSettings> {
 
@@ -100,7 +105,7 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 
 	private final ParameterList[] parameters;
 
-	AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, ParameterList[] parameters) {
+	public AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, ParameterList[] parameters) {
 		this.period = period;
 		this.finished = finished;
 		this.parameters = parameters.clone();

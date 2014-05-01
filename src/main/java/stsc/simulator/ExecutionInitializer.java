@@ -1,11 +1,11 @@
 package stsc.simulator;
 
 import stsc.algorithms.AlgorithmSettings;
-import stsc.simulator.multistarter.AlgorithmSettingsGridIterator;
 import stsc.simulator.multistarter.ResetableIterable;
 import stsc.simulator.multistarter.ResetableIterator;
+import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 
-class ExecutionInitializer implements ResetableIterator<AlgorithmSettings>, ResetableIterable<AlgorithmSettings> {
+public class ExecutionInitializer implements ResetableIterator<AlgorithmSettings>, ResetableIterable<AlgorithmSettings> {
 	public String executionName;
 	public String algorithmName;
 	public AlgorithmSettingsGridIterator.Element iterator;

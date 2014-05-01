@@ -1,4 +1,4 @@
-package stsc.simulator;
+package stsc.simulator.multistarter.grid;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,8 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.common.FromToPeriod;
-import stsc.simulator.multistarter.AlgorithmSettingsGridIterator;
+import stsc.simulator.ExecutionInitializer;
+import stsc.simulator.SimulatorSettings;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;

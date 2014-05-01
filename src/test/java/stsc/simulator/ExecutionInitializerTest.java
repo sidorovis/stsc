@@ -9,7 +9,7 @@ import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
 import stsc.simulator.multistarter.MpString;
 import stsc.simulator.multistarter.MpSubExecution;
-import stsc.simulator.multistarter.AlgorithmSettingsGridIterator;
+import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
