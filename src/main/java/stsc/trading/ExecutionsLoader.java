@@ -60,21 +60,21 @@ public class ExecutionsLoader {
 
 	final private Set<String> eodExecutions = new HashSet<>();
 
-	public ExecutionsLoader(String configPath, FromToPeriod period) throws Exception {
+	public ExecutionsLoader(String configPath, FromToPeriod period) throws BadAlgorithmException {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance();
 		loadAlgorithms();
 	}
 
-	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws Exception {
+	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);
 		loadAlgorithms();
 	}
 
-	private void loadAlgorithms() throws FileNotFoundException, IOException, BadAlgorithmException {
+	private void loadAlgorithms() throws BadAlgorithmException {
 		logger.info("start executions loader");
 		final File configFile = new File(configFilePath);
 		configFileFolder = new File(configFile.getParent()).toString() + File.separatorChar;
@@ -85,6 +85,8 @@ public class ExecutionsLoader {
 			logger.debug("main properties file '{}' opened", configFileFolder);
 			p.load(in);
 			processProperties(p);
+		} catch (IOException e) {
+			throw new BadAlgorithmException(e.getMessage());
 		}
 		logger.info("stop executions loader");
 	}

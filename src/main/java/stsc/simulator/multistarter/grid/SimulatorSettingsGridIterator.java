@@ -29,12 +29,14 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		this.period = period;
 	}
 
-	public SimulatorSettingsGridIterator addStock(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
+	public SimulatorSettingsGridIterator addStock(String eName, String aName,
+			AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		addInitializer(stockInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}
 
-	public SimulatorSettingsGridIterator addEod(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
+	public SimulatorSettingsGridIterator addEod(String eName, String aName,
+			AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		addInitializer(eodInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		return this;
 	}

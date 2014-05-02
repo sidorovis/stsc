@@ -2,10 +2,12 @@ package stsc.trading;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
@@ -24,20 +26,25 @@ public class TradeProcessorInit {
 		this.executionsStorage = executionsStorage;
 	}
 
-	public TradeProcessorInit(final String configPath) throws Exception {
-		final Properties p = loadProperties(configPath);
-		final Set<String> stockNamesSet = getStockSet(p);
-		final String filterDataFolderPath = p.getProperty("Data.filter.folder");
-		final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet, filterDataFolderPath);
+	public TradeProcessorInit(final String configPath) throws BadAlgorithmException {
+		try {
+			Properties p = loadProperties(configPath);
+			final Set<String> stockNamesSet = getStockSet(p);
+			final String filterDataFolderPath = p.getProperty("Data.filter.folder");
+			final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet,
+					filterDataFolderPath);
 
-		final String algsConfig = p.getProperty("Executions.path", "./algs.ini");
-		final FromToPeriod period = new FromToPeriod(p);
-		final ExecutionsLoader executionsLoader = new ExecutionsLoader(algsConfig, period);
-		final ExecutionsStorage executionsStorage = executionsLoader.getExecutionsStorage();
+			final String algsConfig = p.getProperty("Executions.path", "./algs.ini");
+			final FromToPeriod period = new FromToPeriod(p);
+			final ExecutionsLoader executionsLoader = new ExecutionsLoader(algsConfig, period);
+			final ExecutionsStorage executionsStorage = executionsLoader.getExecutionsStorage();
 
-		this.broker = new Broker(stockStorage);
-		this.period = period;
-		this.executionsStorage = executionsStorage;
+			this.broker = new Broker(stockStorage);
+			this.period = period;
+			this.executionsStorage = executionsStorage;
+		} catch (ClassNotFoundException | IOException | InterruptedException | ParseException e) {
+			throw new BadAlgorithmException(e.getMessage());
+		}
 	}
 
 	private Set<String> getStockSet(final Properties p) {
