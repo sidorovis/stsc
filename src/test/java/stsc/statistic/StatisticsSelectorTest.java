@@ -2,8 +2,6 @@ package stsc.statistic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
@@ -21,9 +19,9 @@ public class StatisticsSelectorTest extends TestCase {
 		statisticsSelector.addStatistics(TestHelper.getStatistics(200, 250));
 		statisticsSelector.addStatistics(TestHelper.getStatistics(150, 210));
 
-		final SortedMap<Double, Statistics> select = statisticsSelector.getSelect();
+		final SortedStatistics<Double> select = statisticsSelector.getSelect();
 		assertEquals(2, select.size());
-		assertEquals(select.firstKey(), values.get(2));
-		assertEquals(select.lastKey(), values.get(0));
+		assertEquals(select.getValues().firstKey(), values.get(2));
+		assertEquals(select.getValues().lastKey(), values.get(0));
 	}
 }

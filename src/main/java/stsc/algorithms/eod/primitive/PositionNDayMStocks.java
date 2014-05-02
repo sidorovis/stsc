@@ -91,7 +91,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
 			Handler<? extends StockSignal> signal = getSignal(stockName, factorExecutionName, date);
-			if (signal != null)
+			if (signal != null && signal.getSignal(DoubleSignal.class) != null)
 				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).value, stockName));
 		}
 		Collections.sort(sortedStocks);

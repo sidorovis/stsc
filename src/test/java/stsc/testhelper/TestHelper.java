@@ -1,18 +1,32 @@
 package stsc.testhelper;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.AlgorithmSettings;
+import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.FromToPeriod;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
+import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
+import stsc.simulator.multistarter.BadParameterException;
+import stsc.simulator.multistarter.MpDouble;
+import stsc.simulator.multistarter.MpInteger;
+import stsc.simulator.multistarter.MpString;
+import stsc.simulator.multistarter.MpSubExecution;
+import stsc.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
+import stsc.simulator.multistarter.grid.SimulatorSettingsGridIterator;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
+import stsc.storage.AlgorithmsStorage;
 import stsc.storage.SignalsStorage;
+import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
 import stsc.trading.Side;
@@ -117,6 +131,67 @@ public class TestHelper {
 		} catch (Exception e) {
 		}
 		return statisticsData;
+	}
+
+	private static String algoStockName(String aname) throws BadAlgorithmException {
+		return AlgorithmsStorage.getInstance().getStock(aname).getName();
+	}
+
+	private static String algoEodName(String aname) throws BadAlgorithmException {
+		return AlgorithmsStorage.getInstance().getEod(aname).getName();
+	}
+
+	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator() {
+		final StockStorage stockStorage = new ThreadSafeStockStorage();
+		try {
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
+		} catch (IOException e) {
+		}
+		return getSimulatorSettingsGridIterator(stockStorage);
+	}
+
+	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(final StockStorage stockStorage) {
+		try {
+			final FromToPeriod period = new FromToPeriod("01-01-2000", "31-03-2000");
+
+			final SimulatorSettingsGridIterator settings = new SimulatorSettingsGridIterator(stockStorage, period);
+
+			final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
+			factoryIn.add(new MpString("e", Arrays.asList(new String[] { "open", "high", "low", "close", "value" })));
+			final AlgorithmSettingsGridIterator in = factoryIn.getGridIterator();
+			settings.addStock("in", algoStockName("In"), in);
+
+			final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(period);
+			factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.4));
+			factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
+			final AlgorithmSettingsGridIterator ema = factoryEma.getGridIterator();
+			settings.addStock("ema", algoStockName("Ema"), ema);
+
+			final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
+			factoryLevel.add(new MpDouble("f", 15.0, 20.0, 4.0));
+			factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" })));
+			final AlgorithmSettingsGridIterator level = factoryLevel.getGridIterator();
+			settings.addStock("level", algoStockName("Level"), level);
+
+			final AlgorithmSettingsIteratorFactory factoryOneSide = new AlgorithmSettingsIteratorFactory(period);
+			factoryOneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
+			final AlgorithmSettingsGridIterator oneSide = factoryOneSide.getGridIterator();
+			settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), oneSide);
+
+			final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
+			factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level", "in" })));
+			factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
+			factoryPositionSide.add(new MpInteger("n", 1, 32, 10));
+			factoryPositionSide.add(new MpInteger("m", 1, 32, 10));
+			factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 50000.0));
+			final AlgorithmSettingsGridIterator positionSide = factoryPositionSide.getGridIterator();
+			settings.addEod("pnm", algoEodName("PositionNDayMStocks"), positionSide);
+			return settings;
+		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
+		}
+		return null;
 	}
 
 }
