@@ -32,7 +32,7 @@ public class MtStrategyGridSearcher {
 
 	private final StatisticsSelector<Double> selector;
 
-	private class StatisticsCalculationThread implements Runnable {
+	private class StatisticsCalculationThread extends Thread {
 
 		final Iterator<SimulatorSettings> iterator;
 		final StatisticsSelector<Double> selector;
@@ -43,6 +43,7 @@ public class MtStrategyGridSearcher {
 			this.selector = selector;
 		}
 
+		@Override
 		public void run() {
 			SimulatorSettings settings = getNextSimulatorSettings();
 			while (settings != null) {
@@ -66,7 +67,7 @@ public class MtStrategyGridSearcher {
 		}
 	}
 
-	List<Thread> threads = new ArrayList<>();
+	final List<StatisticsCalculationThread> threads = new ArrayList<>();
 
 	public MtStrategyGridSearcher(final Iterable<SimulatorSettings> iterable,
 			final StatisticsSelector<Double> selector, int threadAmount) {
@@ -75,7 +76,10 @@ public class MtStrategyGridSearcher {
 		logger.debug("Starting MtStrategyGridSearcher");
 
 		for (int i = 0; i < threadAmount; ++i) {
-			threads.add(new Thread(new StatisticsCalculationThread(iterator, selector)));
+			threads.add(new StatisticsCalculationThread(iterator, selector));
+		}
+		for (Thread t : threads) {
+			t.start();
 		}
 		logger.debug("Finishing MtStrategyGridSearcher");
 	}
