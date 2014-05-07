@@ -14,12 +14,12 @@ import junit.framework.TestCase;
 
 public class StrategySearcherPerformanceTest extends TestCase {
 
-	private static int avSize = 10;
+	private static int avSize = 4;
 
 	private long timeForSearch(final SimulatorSettingsGridIterator iterator) throws BadAlgorithmException,
 			StatisticsCalculationException, BadSignalException {
 		final TimeSearcher timeSearcher = new TimeSearcher();
-		final StatisticsSelector<Double> selector = new StatisticsSelector<>(500000,
+		final StatisticsSelector<Double> selector = new StatisticsSelector<>(500,
 				new StatisticsInnerProductFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(iterator, selector);
 		searcher.getSelector().getSelect();
@@ -29,9 +29,9 @@ public class StrategySearcherPerformanceTest extends TestCase {
 	private long timeForMtSearch(final SimulatorSettingsGridIterator iterator) throws BadAlgorithmException,
 			StatisticsCalculationException, BadSignalException, InterruptedException {
 		final TimeSearcher timeSearcher = new TimeSearcher();
-		final StatisticsSelector<Double> selector = new StatisticsSelector<>(500000,
+		final StatisticsSelector<Double> selector = new StatisticsSelector<>(500,
 				new StatisticsInnerProductFunction());
-		final MtStrategyGridSearcher searcher = new MtStrategyGridSearcher(iterator, selector, 8);
+		final MtStrategyGridSearcher searcher = new MtStrategyGridSearcher(iterator, selector, 3);
 		searcher.getSelector().getSelect();
 		return timeSearcher.finish();
 	}
@@ -39,7 +39,7 @@ public class StrategySearcherPerformanceTest extends TestCase {
 	private long testTime(StockStorage stockStorage, String finishPeriod) throws BadAlgorithmException,
 			StatisticsCalculationException, BadSignalException, InterruptedException {
 		final SimulatorSettingsGridIterator iterator = TestHelper.getSimulatorSettingsGridIterator(stockStorage,
-				Arrays.asList(new String[] { "open" }), finishPeriod);
+				Arrays.asList(new String[] { "open", "close", "high", "low" }), finishPeriod);
 		final long result = timeForSearch(iterator);
 		return result;
 	}
@@ -47,7 +47,7 @@ public class StrategySearcherPerformanceTest extends TestCase {
 	private long testMtTime(StockStorage stockStorage, String finishPeriod) throws BadAlgorithmException,
 			StatisticsCalculationException, BadSignalException, InterruptedException {
 		final SimulatorSettingsGridIterator iterator = TestHelper.getSimulatorSettingsGridIterator(stockStorage,
-				Arrays.asList(new String[] { "open" }), finishPeriod);
+				Arrays.asList(new String[] { "open", "close", "high", "low" }), finishPeriod);
 		final long result = timeForMtSearch(iterator);
 		return result;
 	}
@@ -75,27 +75,33 @@ public class StrategySearcherPerformanceTest extends TestCase {
 	public void testStrategyGridSearcherOnPerformance() throws BadAlgorithmException, StatisticsCalculationException,
 			BadSignalException, InterruptedException {
 		final StockStorage stockStorage = TestHelper.getStockStorage();
-		testAvTime(stockStorage, "31-01-2000");
-//		long lastTime = testAvTime(stockStorage, "31-01-2000");
-//		long lastMtMonth = testAvMtTime(stockStorage, "31-01-2000");
-		for (int i = 3; i <= 12; i += 3) {
-			final long testAvTime = testAvTime(stockStorage, "31-" + String.format("%02d", i) + "-2000");
-			final long testAvMtTime = testAvMtTime(stockStorage, "31-" + String.format("%02d", i) + "-2000");
-			System.out.println(i + " : " + testAvTime + " " + testAvMtTime);
-
-			// assertTrue(testAvTime > testAvMtTime);
-			// assertTrue(testAvTime > lastTime);
-			// assertTrue(testAvMtTime > lastMtMonth);
-//			lastTime = testAvTime;
-//			lastMtMonth = testAvMtTime;
-		}
-		avSize = 10;
-		for (int i = 2001; i <= 2009; i += 2) {
-			final long testAvTime = testAvTime(stockStorage, "31-" + String.format("%02d", i) + "-2000");
-			final long testAvMtTime = testAvMtTime(stockStorage, "31-" + String.format("%02d", i) + "-2000");
-			System.out.println(i + " : " + testAvTime + " " + testAvMtTime);
-//			lastTime = testAvTime;
-//			lastMtMonth = testAvMtTime;
+		System.out.println(testAvTime(stockStorage, "31-01-2000"));
+		System.out.println(testAvMtTime(stockStorage, "31-01-2000"));
+		System.out.println(testAvTime(stockStorage, "31-01-2000"));
+		System.out.println(testAvMtTime(stockStorage, "31-01-2000"));
+		// long lastTime = testAvTime(stockStorage, "31-01-2000");
+		// long lastMtMonth = testAvMtTime(stockStorage, "31-01-2000");
+		// for (int i = 3; i <= 12; i += 3) {
+		// final long testAvTime = testAvTime(stockStorage, "31-" +
+		// String.format("%02d", i) + "-2000");
+		// final long testAvMtTime = testAvMtTime(stockStorage, "31-" +
+		// String.format("%02d", i) + "-2000");
+		// System.out.println(i + " : " + testAvTime + " " + testAvMtTime);
+		//
+		// // assertTrue(testAvTime > testAvMtTime);
+		// // assertTrue(testAvTime > lastTime);
+		// // assertTrue(testAvMtTime > lastMtMonth);
+		// // lastTime = testAvTime;
+		// // lastMtMonth = testAvMtTime;
+		// }
+//		avSize = 4;
+		for (int i = 2001; i <= 2001; i += 2) {
+			final long testAvTime = testAvTime(stockStorage, "31-01-" + String.format("%04d", i));
+			System.out.println(i + " 1t: " + testAvTime + " ");
+			final long testAvMtTime = testAvMtTime(stockStorage, "31-01-" + String.format("%04d", i));
+			System.out.println(i + " mt: " + testAvMtTime);
+			// lastTime = testAvTime;
+			// lastMtMonth = testAvMtTime;
 		}
 	}
 }
