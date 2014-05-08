@@ -28,7 +28,8 @@ public class MpInteger implements MpIterator<Integer> {
 		this.name = name;
 		this.from = from;
 		this.to = to;
-		this.step = step;
+		this.step = new Integer(step);
+		this.iterator = 0;
 	}
 
 	@Override

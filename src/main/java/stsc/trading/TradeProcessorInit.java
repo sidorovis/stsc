@@ -76,4 +76,9 @@ public class TradeProcessorInit {
 		return executionsStorage;
 	}
 
+	@Override
+	public int hashCode() {
+		return executionsStorage.hashCode();
+	}
+
 }

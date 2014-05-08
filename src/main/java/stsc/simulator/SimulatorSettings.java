@@ -14,4 +14,9 @@ public class SimulatorSettings {
 		return tradeProcessorInit;
 	}
 
+	@Override
+	public int hashCode() {
+		return tradeProcessorInit.hashCode();
+	}
+
 }

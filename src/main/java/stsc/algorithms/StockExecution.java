@@ -14,6 +14,9 @@ public class StockExecution {
 
 	private final AlgorithmSettings settings;
 
+	private static int staticHashCode = -1;
+	private int hashCodeValue = staticHashCode;
+
 	public static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName)
 			throws BadAlgorithmException {
 		try {
@@ -26,13 +29,7 @@ public class StockExecution {
 
 	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
 			throws BadAlgorithmException {
-		Validate.notNull(executionName);
-		Validate.notNull(algorithmName);
-		Validate.notNull(settings);
-		this.executionName = executionName;
-		this.algorithmName = algorithmName;
-		this.algorithmType = generateAlgorithm(algorithmName);
-		this.settings = settings;
+		this(executionName, generateAlgorithm(algorithmName), settings);
 	}
 
 	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
@@ -94,5 +91,12 @@ public class StockExecution {
 		} catch (IllegalArgumentException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', illegal arguments: " + e.toString());
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		if (hashCodeValue == staticHashCode)
+			hashCodeValue = executionName.hashCode() + algorithmType.hashCode() + settings.hashCode();
+		return hashCodeValue;
 	}
 }

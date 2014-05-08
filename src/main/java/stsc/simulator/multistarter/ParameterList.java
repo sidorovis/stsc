@@ -1,7 +1,6 @@
 package stsc.simulator.multistarter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ParameterList implements Cloneable {
@@ -26,7 +25,7 @@ public class ParameterList implements Cloneable {
 		for (MpIterator<?> mpIterator : params) {
 			this.params.add(mpIterator.clone());
 		}
-		Collections.copy(this.params, params);
+		// Collections.copy(this.params, params);
 		this.index = 0;
 	}
 

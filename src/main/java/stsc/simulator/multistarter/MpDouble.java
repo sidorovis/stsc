@@ -34,7 +34,8 @@ public class MpDouble implements MpIterator<Double> {
 		this.name = name;
 		this.from = from;
 		this.to = to;
-		this.step = step;
+		this.step = new Double(step);
+		this.iterator = 0;
 	}
 
 	@Override

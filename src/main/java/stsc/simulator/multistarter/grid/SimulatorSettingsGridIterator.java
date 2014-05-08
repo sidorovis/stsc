@@ -3,6 +3,10 @@ package stsc.simulator.multistarter.grid;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
@@ -14,6 +18,13 @@ import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
 public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
+
+	static {
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+				"./config/simulator_settings_iterator_log4j2.xml");
+	}
+
+	private static Logger logger = LogManager.getLogger("SimulatorSettingsGridIterator");
 
 	private final ArrayList<ExecutionInitializer> stockInitializers = new ArrayList<>();
 	private final ArrayList<ExecutionInitializer> eodInitializers = new ArrayList<>();
@@ -58,6 +69,7 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		try {
 			result = generateSimulatorSettings();
 		} catch (BadAlgorithmException e) {
+			logger.error("Problem with generating SimulatorSettings: " + e.getMessage());
 			result = new SimulatorSettings(new TradeProcessorInit(stockStorage, period, new ExecutionsStorage()));
 			finished = true;
 		}
@@ -125,5 +137,17 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, executionsStorage);
 		final SimulatorSettings ss = new SimulatorSettings(init);
 		return ss;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		for (ExecutionInitializer ei : stockInitializers) {
+			result *= ei.hashCode();
+		}
+		for (ExecutionInitializer ei : eodInitializers) {
+			result *= ei.hashCode();
+		}
+		return result;
 	}
 }

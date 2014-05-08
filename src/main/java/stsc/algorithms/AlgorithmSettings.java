@@ -119,4 +119,15 @@ public class AlgorithmSettings implements Cloneable {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		int result = 1;
+		for (Map.Entry<String, String> i : settings.entrySet()) {
+			result *= (i.getKey().hashCode() + i.getValue().hashCode());
+		}
+		for (int i = 0; i < subExecutions.size(); ++i) {
+			result *= (i + subExecutions.get(i).hashCode());
+		}
+		return result;
+	}
 }

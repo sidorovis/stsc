@@ -12,6 +12,8 @@ public abstract class StockAlgorithm {
 
 	static public class Init {
 
+		private static int stockHashCode = "stock".hashCode();
+
 		public String stockName;
 		public String executionName;
 		public SignalsStorage signalsStorage;
@@ -52,6 +54,11 @@ public abstract class StockAlgorithm {
 		@Override
 		public String toString() {
 			return stockName + ": " + executionName + "\n" + settings;
+		}
+
+		@Override
+		public int hashCode() {
+			return stockHashCode * executionName.hashCode() + settings.hashCode();
 		}
 	}
 
@@ -97,6 +104,11 @@ public abstract class StockAlgorithm {
 	@Override
 	public String toString() {
 		return init.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return init.hashCode();
 	}
 
 }

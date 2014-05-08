@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.storage.StockStorage;
@@ -152,5 +151,10 @@ public class Broker {
 		final ArrayList<Day> days = stock.getDays();
 		final int index = Collections.binarySearch(days, new Day(today));
 		return index >= 0 && index < days.size();
+	}
+
+	@Override
+	public int hashCode() {
+		return stockStorage.hashCode();
 	}
 }

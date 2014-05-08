@@ -14,6 +14,9 @@ import stsc.trading.Broker;
 public abstract class EodAlgorithm {
 
 	static public class Init {
+
+		private static int eodHashCode = "eod".hashCode();
+
 		public String executionName;
 		public SignalsStorage signalsStorage;
 		public Broker broker;
@@ -54,6 +57,11 @@ public abstract class EodAlgorithm {
 		protected final Handler<? extends StockSignal> getStockSignal(String stockName, String executionName, int index) {
 			return signalsStorage.getStockSignal(stockName, executionName, index);
 		}
+
+		@Override
+		public int hashCode() {
+			return eodHashCode * executionName.hashCode() + settings.hashCode();
+		}
 	}
 
 	private final Init init;
@@ -86,5 +94,10 @@ public abstract class EodAlgorithm {
 	public abstract Class<? extends EodSignal> registerSignalsClass();
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
+
+	@Override
+	public int hashCode() {
+		return init.hashCode();
+	}
 
 }

@@ -134,11 +134,11 @@ public class TestHelper {
 		return statisticsData;
 	}
 
-	private static String algoStockName(String aname) throws BadAlgorithmException {
+	public static String algoStockName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getStock(aname).getName();
 	}
 
-	private static String algoEodName(String aname) throws BadAlgorithmException {
+	public static String algoEodName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 

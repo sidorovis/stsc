@@ -108,7 +108,10 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 	public AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, ParameterList[] parameters) {
 		this.period = period;
 		this.finished = finished;
-		this.parameters = parameters.clone();
+		this.parameters = new ParameterList[parameters.length];
+		for (int i = 0; i < parameters.length; ++i) {
+			this.parameters[i] = parameters[i].clone();
+		}
 	}
 
 	@Override
