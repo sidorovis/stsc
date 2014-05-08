@@ -1,8 +1,11 @@
 package stsc.simulator.multistarter.grid;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +33,7 @@ public class MtStrategyGridSearcher {
 
 	private static Logger logger = LogManager.getLogger("MtStrategyGridSearcher");
 
+	private final Set<Integer> processedSettings = Collections.synchronizedSet(new HashSet<Integer>());
 	private final StatisticsSelector<Double> selector;
 
 	private class StatisticsCalculationThread extends Thread {
@@ -46,6 +50,7 @@ public class MtStrategyGridSearcher {
 		@Override
 		public void run() {
 			SimulatorSettings settings = getNextSimulatorSettings();
+
 			while (settings != null) {
 				Simulator simulator;
 				try {
@@ -60,8 +65,18 @@ public class MtStrategyGridSearcher {
 
 		private SimulatorSettings getNextSimulatorSettings() {
 			synchronized (iterator) {
-				if (iterator.hasNext())
-					return iterator.next();
+				while (iterator.hasNext()) {
+					final SimulatorSettings nextValue = iterator.next();
+					final int hashCode = nextValue.hashCode();
+
+					if (processedSettings.contains(hashCode)) {
+						continue;
+					} else {
+						processedSettings.add(hashCode);
+
+					}
+					return nextValue;
+				}
 			}
 			return null;
 		}
