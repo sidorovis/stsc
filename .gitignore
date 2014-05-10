@@ -12,5 +12,7 @@
 /logs
 /test/*.uf
 /.*
+.project
+.settings
 
 _*.log
