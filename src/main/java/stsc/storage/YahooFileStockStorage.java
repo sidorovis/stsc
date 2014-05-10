@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.MarketDataContext;
 import stsc.common.Stock;
+import stsc.common.StockLock;
 
 public class YahooFileStockStorage extends ThreadSafeStockStorage {
 

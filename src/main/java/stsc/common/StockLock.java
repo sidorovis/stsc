@@ -1,6 +1,5 @@
-package stsc.storage;
+package stsc.common;
 
-import stsc.common.Stock;
 
 public class StockLock {
 	Stock stock;

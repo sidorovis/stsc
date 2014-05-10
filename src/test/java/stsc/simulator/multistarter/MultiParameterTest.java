@@ -2,6 +2,7 @@ package stsc.simulator.multistarter;
 
 import java.util.Arrays;
 
+import stsc.common.Settings;
 import junit.framework.TestCase;
 
 public class MultiParameterTest extends TestCase {
@@ -14,7 +15,7 @@ public class MultiParameterTest extends TestCase {
 			count += 1;
 			mpDouble.increment();
 		}
-		assertEquals(4.5, sum, 0.000001);
+		assertEquals(4.5, sum, Settings.doubleEpsilon);
 		assertEquals(9, count);
 
 		assertEquals(0.4, mpDouble.parameter(3));

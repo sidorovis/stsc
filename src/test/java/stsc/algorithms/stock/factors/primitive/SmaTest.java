@@ -72,10 +72,10 @@ public class SmaTest extends TestCase {
 		final Day lastDay = days.get(days.size() - 1);
 		final double lastSma = init.signalsStorage.getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(
 				DoubleSignal.class).value;
-		assertEquals(lastSum / 5, lastSma, 0.000001);
+		assertEquals(lastSum / 5, lastSma, Settings.doubleEpsilon);
 
 		final double lastSmaClose = init.signalsStorage.getStockSignal("aapl", "testSmaClose", lastDay.getDate())
 				.getSignal(DoubleSignal.class).value;
-		assertEquals(lastSumClose / 5, lastSmaClose, 0.000001);
+		assertEquals(lastSumClose / 5, lastSmaClose, Settings.doubleEpsilon);
 	}
 }

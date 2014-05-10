@@ -3,6 +3,7 @@ package stsc.algorithms.eod.privitive;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
+import stsc.common.Settings;
 import stsc.simulator.Simulator;
 import stsc.statistic.Statistics;
 import stsc.testhelper.TestHelper;
@@ -23,6 +24,6 @@ public class PositionNDayMStocksTest extends TestCase {
 		Statistics s = Simulator.fromFile("./test_data/simulator_tests/ndays.ini").getStatistics();
 		assertNotNull(s);
 		assertEquals(550.0, s.getPeriod());
-		assertEquals(69.255712, s.getAvGain(), 0.000001);
+		assertEquals(69.255712, s.getAvGain(), Settings.doubleEpsilon);
 	}
 }

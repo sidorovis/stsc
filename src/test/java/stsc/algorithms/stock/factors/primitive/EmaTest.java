@@ -10,6 +10,7 @@ import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Ema;
 import stsc.common.Day;
+import stsc.common.Settings;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.BadSignalException;
@@ -52,6 +53,6 @@ public class EmaTest extends TestCase {
 		final int size = init.signalsStorage.getIndexSize("aapl", "testEma");
 		assertEquals(531.20111321,
 				init.signalsStorage.getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value,
-				0.000001);
+				Settings.doubleEpsilon);
 	}
 }

@@ -6,6 +6,7 @@ import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.common.FromToPeriod;
+import stsc.common.Settings;
 import stsc.statistic.Statistics;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
@@ -40,7 +41,7 @@ public class SimulatorTest extends TestCase {
 		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18.0, statistics.getPeriod());
-		assertEquals(4.209799, statistics.getAvGain(), 0.000001);
+		assertEquals(4.209799, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	public void testShortSideOnAppl() throws Exception {
@@ -55,7 +56,7 @@ public class SimulatorTest extends TestCase {
 		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18.0, statistics.getPeriod());
-		assertEquals(-4.209799, statistics.getAvGain(), 0.000001);
+		assertEquals(-4.209799, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	public void testSimpleSimulator() throws Exception {
