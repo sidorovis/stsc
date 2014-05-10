@@ -4,8 +4,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import stsc.statistic.EquityCurve.Element;
 
@@ -25,12 +29,6 @@ public class Statistics {
 
 		public double winSum = 0.0;
 		public double lossSum = 0.0;
-
-		public double getAvGain() throws StatisticsCalculationException {
-			if (equityCurve.size() == 0)
-				throw new StatisticsCalculationException("no elements at equity curve");
-			return equityCurve.getLastElement().value;
-		}
 
 		public double maxWin = 0.0;
 		public double maxLoss = 0.0;
@@ -52,6 +50,12 @@ public class Statistics {
 
 		public double ddValueAvGain = 0.0;
 		public double ddValueMax = 0.0;
+
+		public double getAvGain() throws StatisticsCalculationException {
+			if (equityCurve.size() == 0)
+				throw new StatisticsCalculationException("no elements at equity curve");
+			return equityCurve.getLastElement().value;
+		}
 
 		public String toString() {
 			return "curve(" + equityCurve.toString() + ")";
@@ -282,6 +286,9 @@ public class Statistics {
 			if (field.getAnnotation(NotPrint.class) != null)
 				continue;
 
+			if (Modifier.isStatic(field.getModifiers()))
+				continue;
+
 			outfile.append(field.getName()).append('\t');
 			if (field.getType() == double.class)
 				outfile.append(decimalFormat.format(field.get(this))).append('\n');
@@ -294,5 +301,21 @@ public class Statistics {
 			final Element e = equityCurveInMoney.get(i);
 			outfile.append(dateFormat.format(e.date)).append('\t').append(decimalFormat.format(e.value)).append('\n');
 		}
+	}
+
+	@NotPrint
+	private static Set<String> statisticsMethods = null;
+
+	public synchronized static Set<String> getStatisticsMethods() {
+		if (statisticsMethods == null) {
+			statisticsMethods = new HashSet<>();
+			final Method[] methods = Statistics.class.getMethods();
+			for (Method method : methods) {
+				if (method.isAnnotationPresent(PublicMethod.class)) {
+					statisticsMethods.add(method.getName());
+				}
+			}
+		}
+		return statisticsMethods;
 	}
 }
