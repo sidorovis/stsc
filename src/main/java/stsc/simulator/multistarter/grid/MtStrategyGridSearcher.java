@@ -70,6 +70,7 @@ public class MtStrategyGridSearcher implements StrategySearcher<Double> {
 					final SimulatorSettings nextValue = iterator.next();
 					final String hashCode = nextValue.stringHashCode();
 					if (processedSettings.contains(hashCode)) {
+						logger.debug("Already resolved: " + hashCode);
 						continue;
 					} else {
 						processedSettings.add(hashCode);

@@ -43,10 +43,14 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public String toString() {
-		if (index < domen.size())
-			return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
-		else
+		if (index < domen.size()) {
+			if (1 == domen.size())
+				return name + "(" + domen.toString() + ")";
+			else
+				return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
+		} else {
 			return name + "(" + domen.toString() + ")[ END ]";
+		}
 	}
 
 	@Override

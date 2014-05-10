@@ -44,6 +44,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 		for (SimulatorSettings settings : iterator) {
 			final String hashCode = settings.stringHashCode();
 			if (processedSettings.contains(hashCode)) {
+				logger.debug("Already resolved: " + hashCode);
 				continue;
 			} else {
 				processedSettings.add(hashCode);

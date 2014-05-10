@@ -63,8 +63,9 @@ public class PerformanceCalculator {
 	}
 
 	private long getTimeFor(int threads, String endOfPeriod) throws Exception {
+		List<String> element = Arrays.asList(new String[] { "open", "close", "high", "low" });
 		final SimulatorSettingsGridIterator iterator = TestHelper.getSimulatorSettingsGridIterator(stockStorage,
-				Arrays.asList(new String[] { "open", "close", "high", "low" }), endOfPeriod);
+				element, endOfPeriod);
 		final StatisticsSelector<Double> selector = new StatisticsSelector<Double>(storedStrategyAmount,
 				new StatisticsInnerProductFunction());
 		final MtStrategyGridSearcher searcher = new MtStrategyGridSearcher(iterator, selector, threads);
