@@ -14,6 +14,8 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.signals.BadSignalException;
 import stsc.simulator.Simulator;
 import stsc.simulator.SimulatorSettings;
+import stsc.simulator.multistarter.StrategySearcher;
+import stsc.simulator.multistarter.StrategySearcherException;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsSelector;
 
@@ -23,7 +25,7 @@ import stsc.statistic.StatisticsSelector;
  * @author rilley_elf
  * 
  */
-public class MtStrategyGridSearcher {
+public class MtStrategyGridSearcher implements StrategySearcher<Double> {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
@@ -96,9 +98,14 @@ public class MtStrategyGridSearcher {
 		logger.debug("Finishing MtStrategyGridSearcher");
 	}
 
-	public StatisticsSelector<Double> getSelector() throws InterruptedException {
-		for (Thread t : threads) {
-			t.join();
+	@Override
+	public StatisticsSelector<Double> getSelector() throws StrategySearcherException {
+		try {
+			for (Thread t : threads) {
+				t.join();
+			}
+		} catch (InterruptedException e) {
+			throw new StrategySearcherException(e.getMessage());
 		}
 		return selector;
 	}
