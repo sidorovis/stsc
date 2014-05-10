@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
+import stsc.common.Settings;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
 import stsc.trading.Side;

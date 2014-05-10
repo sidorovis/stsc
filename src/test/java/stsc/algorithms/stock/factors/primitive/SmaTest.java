@@ -10,6 +10,7 @@ import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.Day;
+import stsc.common.Settings;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.BadSignalException;
