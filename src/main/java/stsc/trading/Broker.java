@@ -153,8 +153,4 @@ public class Broker {
 		return index >= 0 && index < days.size();
 	}
 
-	@Override
-	public int hashCode() {
-		return stockStorage.hashCode();
-	}
 }

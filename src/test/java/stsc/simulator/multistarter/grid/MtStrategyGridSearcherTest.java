@@ -14,7 +14,7 @@ public class MtStrategyGridSearcherTest extends TestCase {
 				Arrays.asList(new String[] { "open", "close" }), "31-01-2000");
 		final StatisticsSelector<Double> selector = new StatisticsSelector<>(13000,
 				new StatisticsInnerProductFunction());
-		final MtStrategyGridSearcher searcher = new MtStrategyGridSearcher(iterator, selector, 2);
+		final MtStrategyGridSearcher searcher = new MtStrategyGridSearcher(iterator, selector, 20);
 		final SortedStatistics<Double> sortedStatistics = searcher.getSelector().getSelect();
 		assertEquals(12288, sortedStatistics.size());
 	}

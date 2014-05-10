@@ -74,11 +74,10 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		settings.addEod("a3", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 		settings.addEod("a4", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 
-		final Set<Integer> hashes = new HashSet<>();
+		final Set<String> hashes = new HashSet<>();
 		int allSize = 0;
 		for (SimulatorSettings simulatorSettings : settings) {
-			final int hashCode = simulatorSettings.hashCode();
-			hashes.add(hashCode);
+			hashes.add(simulatorSettings.stringHashCode());
 			allSize += 1;
 		}
 

@@ -12,9 +12,6 @@ public class EodExecution {
 	private final Class<? extends EodAlgorithm> algorithmType;
 	private AlgorithmSettings algorithmSettings;
 
-	private static int staticHashCode = -1;
-	private int hashCodeValue = staticHashCode;
-
 	public static Class<? extends EodAlgorithm> generateAlgorithm(final String algorithmName)
 			throws BadAlgorithmException {
 		try {
@@ -80,11 +77,8 @@ public class EodExecution {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		if (hashCodeValue == staticHashCode)
-			hashCodeValue = executionName.hashCode() + algorithmType.hashCode() + algorithmSettings.hashCode();
-		return hashCodeValue;
+	public void stringHashCode(StringBuilder sb) {
+		sb.append(executionName).append(algorithmName);
+		algorithmSettings.stringHashCode(sb);
 	}
-
 }

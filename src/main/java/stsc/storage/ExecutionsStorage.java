@@ -40,15 +40,6 @@ public class ExecutionsStorage {
 			return orderedAlgorithms.size();
 		}
 
-		@Override
-		public int hashCode() {
-			int result = 1;
-			for (StockAlgorithm sa : orderedAlgorithms) {
-				result *= sa.hashCode();
-			}
-			return result;
-		}
-
 	}
 
 	private class StockExecutions {
@@ -72,15 +63,6 @@ public class ExecutionsStorage {
 
 		int size() {
 			return stockToExecution.size();
-		}
-
-		@Override
-		public int hashCode() {
-			int result = 1;
-			for (Map.Entry<String, Executions> i : stockToExecution.entrySet()) {
-				result *= i.getKey().hashCode() * i.getValue().hashCode();
-			}
-			return result;
 		}
 
 	}
@@ -164,15 +146,14 @@ public class ExecutionsStorage {
 				+ Integer.toString(tradeAlgorithms.size()) + " StockAlgos:" + Integer.toString(stockAlgorithms.size());
 	}
 
-	@Override
-	public int hashCode() {
-		int result = 1;
-		for (int i = 0; i < stockExecutions.size(); ++i) {
-			result *= (i + stockExecutions.get(i).hashCode());
+	public String stringHashCode() {
+		final StringBuilder sb = new StringBuilder();
+		for (StockExecution se : stockExecutions) {
+			se.stringHashCode(sb);
 		}
-		for (int i = 0; i < eodExecutions.size(); ++i) {
-			result *= (i + eodExecutions.get(i).hashCode());
+		for (EodExecution ee : eodExecutions) {
+			ee.stringHashCode(sb);
 		}
-		return result;
+		return sb.toString();
 	}
 }

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import stsc.common.FromToPeriod;
 
 public class AlgorithmSettings implements Cloneable {
@@ -119,15 +118,13 @@ public class AlgorithmSettings implements Cloneable {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		int result = 1;
+	public void stringHashCode(StringBuilder sb) {
 		for (Map.Entry<String, String> i : settings.entrySet()) {
-			result *= (i.getKey().hashCode() + i.getValue().hashCode());
+			sb.append(i.getKey()).append(i.getValue());
 		}
-		for (int i = 0; i < subExecutions.size(); ++i) {
-			result *= (i + subExecutions.get(i).hashCode());
+		for (String string : subExecutions) {
+			sb.append(string);
 		}
-		return result;
 	}
+
 }

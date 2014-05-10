@@ -59,4 +59,5 @@ public class FromToPeriod implements Externalizable {
 		out.writeLong(from.getTime());
 		out.writeLong(to.getTime());
 	}
+
 }

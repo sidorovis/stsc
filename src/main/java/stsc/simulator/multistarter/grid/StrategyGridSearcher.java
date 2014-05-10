@@ -30,7 +30,7 @@ public class StrategyGridSearcher {
 
 	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
 
-	private final Set<Integer> processedSettings = new HashSet<>();
+	private final Set<String> processedSettings = new HashSet<>();
 	private final StatisticsSelector<Double> selector;
 
 	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterator, final StatisticsSelector<Double> selector)
@@ -40,11 +40,11 @@ public class StrategyGridSearcher {
 
 		int i = 1;
 		for (SimulatorSettings settings : iterator) {
-			final int currentHashCode = settings.hashCode();
-			if (processedSettings.contains(currentHashCode)) {
+			final String hashCode = settings.stringHashCode();
+			if (processedSettings.contains(hashCode)) {
 				continue;
 			} else {
-				processedSettings.add(currentHashCode);
+				processedSettings.add(hashCode);
 			}
 			final Simulator simulator = new Simulator(settings);
 			final Statistics s = simulator.getStatistics();

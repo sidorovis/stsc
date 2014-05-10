@@ -1,5 +1,7 @@
 package stsc.simulator;
 
+import org.apache.commons.lang3.Validate;
+
 import stsc.trading.TradeProcessorInit;
 
 public class SimulatorSettings {
@@ -7,6 +9,7 @@ public class SimulatorSettings {
 	private final TradeProcessorInit tradeProcessorInit;
 
 	public SimulatorSettings(TradeProcessorInit tradeProcessorInit) {
+		Validate.notNull(tradeProcessorInit);
 		this.tradeProcessorInit = tradeProcessorInit;
 	}
 
@@ -14,9 +17,8 @@ public class SimulatorSettings {
 		return tradeProcessorInit;
 	}
 
-	@Override
-	public int hashCode() {
-		return tradeProcessorInit.hashCode();
+	public String stringHashCode() {
+		return tradeProcessorInit.stringHashCode();
 	}
 
 }

@@ -139,15 +139,4 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		return ss;
 	}
 
-	@Override
-	public int hashCode() {
-		int result = 1;
-		for (ExecutionInitializer ei : stockInitializers) {
-			result *= ei.hashCode();
-		}
-		for (ExecutionInitializer ei : eodInitializers) {
-			result *= ei.hashCode();
-		}
-		return result;
-	}
 }

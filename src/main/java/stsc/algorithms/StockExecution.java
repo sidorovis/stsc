@@ -12,10 +12,7 @@ public class StockExecution {
 	private final String algorithmName;
 	private final Class<? extends StockAlgorithm> algorithmType;
 
-	private final AlgorithmSettings settings;
-
-	private static int staticHashCode = -1;
-	private int hashCodeValue = staticHashCode;
+	private final AlgorithmSettings algorithmSettings;
 
 	public static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName)
 			throws BadAlgorithmException {
@@ -40,7 +37,7 @@ public class StockExecution {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
-		this.settings = settings;
+		this.algorithmSettings = settings;
 	}
 
 	public String getName() {
@@ -52,7 +49,7 @@ public class StockExecution {
 	}
 
 	public AlgorithmSettings getSettings() {
-		return settings;
+		return algorithmSettings;
 	}
 
 	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage)
@@ -65,7 +62,7 @@ public class StockExecution {
 			init.stockName = stockName;
 			init.executionName = executionName;
 			init.signalsStorage = signalsStorage;
-			init.settings = settings;
+			init.settings = algorithmSettings;
 
 			final Object[] values = { init };
 
@@ -93,10 +90,8 @@ public class StockExecution {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		if (hashCodeValue == staticHashCode)
-			hashCodeValue = executionName.hashCode() + algorithmType.hashCode() + settings.hashCode();
-		return hashCodeValue;
+	public void stringHashCode(StringBuilder sb) {
+		sb.append(executionName).append(algorithmName);
+		algorithmSettings.stringHashCode(sb);
 	}
 }
