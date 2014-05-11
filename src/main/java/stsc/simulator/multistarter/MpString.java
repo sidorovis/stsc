@@ -1,6 +1,5 @@
 package stsc.simulator.multistarter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class MpString implements MpIterator<String> {
 		this.name = name;
 		if (domen.isEmpty())
 			throw new BadParameterException("String parameter should have at least one element: " + name);
-		this.domen = new ArrayList<String>(domen);
+		this.domen = domen;
 		this.index = 0;
 	}
 
@@ -29,10 +28,7 @@ public class MpString implements MpIterator<String> {
 
 	private MpString(String name, final List<String> domen, boolean privateBoolean) {
 		this.name = name;
-		this.domen = new ArrayList<String>();
-		for (String s : domen) {
-			this.domen.add(s);
-		}
+		this.domen = domen;
 		this.index = 0;
 	}
 

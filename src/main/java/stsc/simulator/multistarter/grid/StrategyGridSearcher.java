@@ -1,6 +1,9 @@
 package stsc.simulator.multistarter.grid;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,12 +16,11 @@ import stsc.simulator.Simulator;
 import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.StrategySearcher;
 import stsc.simulator.multistarter.StrategySearcherException;
-import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsSelector;
 
 /**
- * Single thread simulator settings grid searcher
+ * Multithread Strategy Grid Searcher
  * 
  * @author rilley_elf
  * 
@@ -27,41 +29,87 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-				"./config/strategy_grid_searcher_log4j2.xml");
+				"./config/mt_strategy_grid_searcher_log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
+	private static Logger logger = LogManager.getLogger("MtStrategyGridSearcher");
 
 	private final Set<String> processedSettings = new HashSet<>();
 	private final StatisticsSelector<Double> selector;
 
-	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterator, final StatisticsSelector<Double> selector)
-			throws BadAlgorithmException, StatisticsCalculationException, BadSignalException {
-		this.selector = selector;
-		logger.debug("StrategyGridSearcher starting");
+	private class StatisticsCalculationThread extends Thread {
 
-		int i = 1;
-		for (SimulatorSettings settings : iterator) {
-			final String hashCode = settings.stringHashCode();
-			if (processedSettings.contains(hashCode)) {
-				logger.debug("Already resolved: " + hashCode);
-				continue;
-			} else {
-				processedSettings.add(hashCode);
-			}
-			final Simulator simulator = new Simulator(settings);
-			final Statistics s = simulator.getStatistics();
-			selector.addStatistics(s);
-			if (i % 5000 == 0) {
-				logger.debug("Processed: " + String.valueOf(i));
-			}
-			++i;
+		final Iterator<SimulatorSettings> iterator;
+		final StatisticsSelector<Double> selector;
+
+		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator,
+				final StatisticsSelector<Double> selector) {
+			this.iterator = iterator;
+			this.selector = selector;
 		}
-		logger.debug("StrategyGridSearcher stopping");
+
+		@Override
+		public void run() {
+			SimulatorSettings settings = getNextSimulatorSettings();
+
+			while (settings != null) {
+				Simulator simulator;
+				try {
+					simulator = new Simulator(settings);
+					selector.addStatistics(simulator.getStatistics());
+					settings = getNextSimulatorSettings();
+				} catch (BadAlgorithmException | StatisticsCalculationException | BadSignalException e) {
+					logger.error("Error while calculating statistics: " + e.getMessage());
+				}
+			}
+		}
+
+		private SimulatorSettings getNextSimulatorSettings() {
+			synchronized (iterator) {
+				while (iterator.hasNext()) {
+					final SimulatorSettings nextValue = iterator.next();
+					if (nextValue == null)
+						return null;
+					final String hashCode = nextValue.stringHashCode();
+					if (processedSettings.contains(hashCode)) {
+						logger.debug("Already resolved: " + hashCode);
+						continue;
+					} else {
+						processedSettings.add(hashCode);
+					}
+					return nextValue;
+				}
+			}
+			return null;
+		}
+	}
+
+	final List<StatisticsCalculationThread> threads = new ArrayList<>();
+
+	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StatisticsSelector<Double> selector,
+			int threadAmount) {
+		this.selector = selector;
+		final Iterator<SimulatorSettings> iterator = iterable.iterator();
+		logger.debug("Starting MtStrategyGridSearcher");
+
+		for (int i = 0; i < threadAmount; ++i) {
+			threads.add(new StatisticsCalculationThread(iterator, selector));
+		}
+		for (Thread t : threads) {
+			t.start();
+		}
+		logger.debug("Finishing MtStrategyGridSearcher");
 	}
 
 	@Override
 	public StatisticsSelector<Double> getSelector() throws StrategySearcherException {
+		try {
+			for (Thread t : threads) {
+				t.join();
+			}
+		} catch (InterruptedException e) {
+			throw new StrategySearcherException(e.getMessage());
+		}
 		return selector;
 	}
 }

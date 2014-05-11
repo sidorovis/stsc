@@ -21,7 +21,8 @@ import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
 import stsc.simulator.multistarter.MpString;
 import stsc.simulator.multistarter.MpSubExecution;
-import stsc.simulator.multistarter.grid.SimulatorSettingsGridIterator;
+import stsc.simulator.multistarter.grid.SimulatorSettingsGridFactory;
+import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.storage.AlgorithmsStorage;
@@ -141,42 +142,46 @@ public class TestHelper {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
+	static StockStorage stockStorage = null;
+
 	public static StockStorage getStockStorage() {
-		final StockStorage stockStorage = new ThreadSafeStockStorage();
-		try {
-			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
-			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
-			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
-		} catch (IOException e) {
+		if (stockStorage == null) {
+			stockStorage = new ThreadSafeStockStorage();
+			try {
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
+			} catch (IOException e) {
+			}
 		}
 		return stockStorage;
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator() {
-		return getSimulatorSettingsGridIterator("31-03-2000");
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList() {
+		return getSimulatorSettingsGridList("31-03-2000");
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(final String periodTo) {
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final String periodTo) {
 		final StockStorage stockStorage = getStockStorage();
-		return getSimulatorSettingsGridIterator(stockStorage, "31-03-2000");
+		return getSimulatorSettingsGridList(stockStorage, "31-03-2000");
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(StockStorage stockStorage,
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(StockStorage stockStorage,
 			final String periodTo) {
-		return getSimulatorSettingsGridIterator(stockStorage,
+		return getSimulatorSettingsGridList(stockStorage,
 				Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), periodTo);
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(final List<String> openTypes) {
-		return getSimulatorSettingsGridIterator(openTypes, "31-03-2000");
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes) {
+		return getSimulatorSettingsGridList(openTypes, "31-03-2000");
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(final List<String> openTypes,
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes,
 			final String periodTo) {
-		return getSimulatorSettingsGridIterator(getStockStorage(), openTypes, periodTo);
+		return getSimulatorSettingsGridList(getStockStorage(), openTypes, periodTo);
 	}
 
-	public static void fillIterator(SimulatorSettingsGridIterator settings, FromToPeriod period,
+	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period,
 			final List<String> openTypes) throws BadParameterException, BadAlgorithmException {
 		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
 		factoryIn.add(new MpString("e", openTypes));
@@ -184,7 +189,7 @@ public class TestHelper {
 
 		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(period);
 		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.4));
-		factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
+		factoryEma.add(new MpSubExecution("", "in"));
 		settings.addStock("ema", algoStockName("Ema"), factoryEma.getGridIterator());
 
 		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
@@ -205,15 +210,15 @@ public class TestHelper {
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide.getGridIterator());
 	}
 
-	public static SimulatorSettingsGridIterator getSimulatorSettingsGridIterator(final StockStorage stockStorage,
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage,
 			final List<String> openTypes, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 
-			final SimulatorSettingsGridIterator settings = new SimulatorSettingsGridIterator(stockStorage, period);
-			fillIterator(settings, period, openTypes);
+			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
+			fillIterator(factory, period, openTypes);
 
-			return settings;
+			return factory.getList();
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
 		return null;

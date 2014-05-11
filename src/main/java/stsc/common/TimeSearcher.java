@@ -1,4 +1,4 @@
-package stsc.testhelper;
+package stsc.common;
 
 public class TimeSearcher {
 	private final long timeStart;

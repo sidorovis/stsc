@@ -20,7 +20,7 @@ public class StatisticsSelector<T> {
 		}
 	}
 
-	public synchronized SortedStatistics<T> getSelect() {
+	public synchronized SortedStatistics<T> getSortedStatistics() {
 		return select;
 	}
 

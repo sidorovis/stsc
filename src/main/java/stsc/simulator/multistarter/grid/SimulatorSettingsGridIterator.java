@@ -1,7 +1,7 @@
 package stsc.simulator.multistarter.grid;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +17,7 @@ import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
-public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings>, Iterator<SimulatorSettings> {
+public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings> {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
@@ -26,45 +26,29 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 
 	private static Logger logger = LogManager.getLogger("SimulatorSettingsGridIterator");
 
-	private final ArrayList<ExecutionInitializer> stockInitializers = new ArrayList<>();
-	private final ArrayList<ExecutionInitializer> eodInitializers = new ArrayList<>();
-
 	private boolean finished;
-
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
 
-	public SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period) {
-		this.finished = true;
+	private final List<ExecutionInitializer> stockInitializers;
+	private final List<ExecutionInitializer> eodInitializers;
+
+	SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period, List<ExecutionInitializer> stocks,
+			List<ExecutionInitializer> eods, boolean finished) {
+		this.finished = finished;
 		this.stockStorage = stockStorage;
 		this.period = period;
-	}
-
-	public SimulatorSettingsGridIterator addStock(String eName, String aName,
-			AlgorithmSettingsGridIterator multiAlgorithmSettings) {
-		addInitializer(stockInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
-		return this;
-	}
-
-	public SimulatorSettingsGridIterator addEod(String eName, String aName,
-			AlgorithmSettingsGridIterator multiAlgorithmSettings) {
-		addInitializer(eodInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
-		return this;
-	}
-
-	private void addInitializer(ArrayList<ExecutionInitializer> toList, ExecutionInitializer ei) {
-		if (ei.hasNext())
-			finished = false;
-		toList.add(ei);
+		this.stockInitializers = stocks;
+		this.eodInitializers = eods;
 	}
 
 	@Override
-	public boolean hasNext() {
+	public synchronized boolean hasNext() {
 		return !finished;
 	}
 
 	@Override
-	public SimulatorSettings next() {
+	public synchronized SimulatorSettings next() {
 		SimulatorSettings result = null;
 		try {
 			result = generateSimulatorSettings();
@@ -77,6 +61,19 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		return result;
 	}
 
+	public synchronized void reset() {
+		for (ExecutionInitializer i : stockInitializers) {
+			i.reset();
+		}
+		for (ExecutionInitializer i : eodInitializers) {
+			i.reset();
+		}
+	}
+
+	@Override
+	public synchronized void remove() {
+	}
+
 	private void generateNext() {
 		int index = generateNext(stockInitializers);
 		if (index == stockInitializers.size()) {
@@ -86,7 +83,7 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 		}
 	}
 
-	private int generateNext(final ArrayList<ExecutionInitializer> initializers) {
+	private int generateNext(final List<ExecutionInitializer> initializers) {
 		int index = 0;
 		while (index < initializers.size()) {
 			final ExecutionInitializer ei = initializers.get(index);
@@ -103,24 +100,6 @@ public class SimulatorSettingsGridIterator implements Iterable<SimulatorSettings
 			}
 		}
 		return index;
-	}
-
-	@Override
-	public void remove() {
-	}
-
-	@Override
-	public Iterator<SimulatorSettings> iterator() {
-		return this;
-	}
-
-	public void reset() {
-		for (ExecutionInitializer i : stockInitializers) {
-			i.reset();
-		}
-		for (ExecutionInitializer i : eodInitializers) {
-			i.reset();
-		}
 	}
 
 	private SimulatorSettings generateSimulatorSettings() throws BadAlgorithmException {

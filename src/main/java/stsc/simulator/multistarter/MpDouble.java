@@ -7,12 +7,12 @@ import com.google.common.math.DoubleMath;
 public class MpDouble implements MpIterator<Double> {
 
 	private final String name;
-	private final Double from;
-	private final Double to;
-	private final Double step;
-	private Integer iterator;
+	private final double from;
+	private final double to;
+	private final double step;
+	private int iterator;
 
-	public MpDouble(String name, Double from, Double to, Double step) throws BadParameterException {
+	public MpDouble(String name, double from, double to, double step) throws BadParameterException {
 		super();
 		this.name = name;
 		this.from = from;
@@ -30,7 +30,7 @@ public class MpDouble implements MpIterator<Double> {
 		return new MpDouble(name, from, to, step, true);
 	}
 
-	private MpDouble(String name, Double from, Double to, Double step, boolean privateBoolean) {
+	private MpDouble(String name, double from, double to, double step, boolean privateBoolean) {
 		this.name = name;
 		this.from = from;
 		this.to = to;
@@ -45,8 +45,8 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public String toString() {
-		return name + ":" + String.valueOf(current()) + " from (" + step.toString() + "|" + from.toString() + ":"
-				+ to.toString() + ")";
+		return name + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from)
+				+ ":" + String.valueOf(to) + ")";
 	}
 
 	@Override

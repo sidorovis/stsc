@@ -25,7 +25,6 @@ public class ParameterList implements Cloneable {
 		for (MpIterator<?> mpIterator : params) {
 			this.params.add(mpIterator.clone());
 		}
-		// Collections.copy(this.params, params);
 		this.index = 0;
 	}
 

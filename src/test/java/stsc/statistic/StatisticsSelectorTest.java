@@ -19,7 +19,7 @@ public class StatisticsSelectorTest extends TestCase {
 		statisticsSelector.addStatistics(TestHelper.getStatistics(200, 250));
 		statisticsSelector.addStatistics(TestHelper.getStatistics(150, 210));
 
-		final SortedStatistics<Double> select = statisticsSelector.getSelect();
+		final SortedStatistics<Double> select = statisticsSelector.getSortedStatistics();
 		assertEquals(2, select.size());
 		assertEquals(select.getValues().firstKey(), values.get(2));
 		assertEquals(select.getValues().lastKey(), values.get(0));

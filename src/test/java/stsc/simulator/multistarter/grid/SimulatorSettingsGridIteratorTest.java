@@ -14,7 +14,6 @@ import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
 import stsc.simulator.multistarter.MpString;
-import stsc.simulator.multistarter.grid.SimulatorSettingsGridIterator;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.testhelper.StockStorageHelper;
@@ -28,9 +27,10 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		final StockStorage stockStorage = new StockStorageHelper();
 		final FromToPeriod period = TestHelper.getPeriod();
 
-		final SimulatorSettingsGridIterator settings = new SimulatorSettingsGridIterator(stockStorage, period);
+		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, period);
+
 		int count = 0;
-		for (SimulatorSettings simulatorSettings : settings) {
+		for (SimulatorSettings simulatorSettings : ssFactory.getList()) {
 			count += 1;
 			assertNotNull(simulatorSettings);
 		}
@@ -40,7 +40,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 	public void testSimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageHelper();
 
-		final SimulatorSettingsGridIterator settings = TestHelper.getSimulatorSettingsGridIterator();
+		final SimulatorSettingsGridList settings = TestHelper.getSimulatorSettingsGridList();
 
 		int count = 0;
 		for (SimulatorSettings simulatorSettings : settings) {
@@ -61,7 +61,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 
 	public void testSimulatorSettingsGridIteratorHashCode() throws BadParameterException, BadAlgorithmException {
 		final StockStorage stockStorage = new StockStorageHelper();
-		final SimulatorSettingsGridIterator settings = new SimulatorSettingsGridIterator(stockStorage,
+		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage,
 				TestHelper.getPeriod());
 		AlgorithmSettingsIteratorFactory f1 = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
 		f1.add(new MpInteger("a", 1, 3, 1));
@@ -69,14 +69,14 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		f1.add(new MpDouble("c", 0.1, 0.2, 0.1));
 		f1.add(new MpString("side2", Arrays.asList(new String[] { "long", "long" })));
 
-		settings.addStock("a1", TestHelper.algoStockName("In"), f1.getGridIterator());
-		settings.addStock("a2", TestHelper.algoStockName("In"), f1.getGridIterator());
-		settings.addEod("a3", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
-		settings.addEod("a4", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
+		ssFactory.addStock("a1", TestHelper.algoStockName("In"), f1.getGridIterator());
+		ssFactory.addStock("a2", TestHelper.algoStockName("In"), f1.getGridIterator());
+		ssFactory.addEod("a3", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
+		ssFactory.addEod("a4", TestHelper.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 
 		final Set<String> hashes = new HashSet<>();
 		int allSize = 0;
-		for (SimulatorSettings simulatorSettings : settings) {
+		for (SimulatorSettings simulatorSettings : ssFactory.getList()) {
 			hashes.add(simulatorSettings.stringHashCode());
 			allSize += 1;
 		}

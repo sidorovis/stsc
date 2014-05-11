@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration
+     status="WARN"
+     strict="true"
+     monitorInterval="5"
+     name="TestingAttributes"
+     verbose="true"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="Log4j-config.xsd">
     <Appenders>
  		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout>
