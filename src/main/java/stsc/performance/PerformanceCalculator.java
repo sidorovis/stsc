@@ -21,19 +21,19 @@ public class PerformanceCalculator {
 	private static int storedStrategyAmount = 500;
 
 	private static int threadsFrom = 1;
-	private static int threadsTo = 6;
-	private static int threadsStep = 2;
+	private static int threadsTo = 4;
+	private static int threadsStep = 1;
 
 	final private StockStorage stockStorage;
 
-	// private List<String> periods = Arrays.asList(new String[] { "31-01-2000",
-	// "01-01-2001" });
+	// private List<String> periods = Arrays.asList(new String[] { "31-01-2000"
+	// });
 
 	private List<String> periods = Arrays.asList(new String[] { "31-01-2000", "31-02-2000", "31-03-2000", "31-04-2000",
 			"31-05-2000", "31-06-2000", "01-01-2001", "01-01-2002", "01-01-2003", "01-01-2004", "01-01-2005",
 			"01-01-2006", "01-01-2007", "01-01-2008", "01-01-2009" });
 
-	private static int calculationsForAverage = 4;
+	private static int calculationsForAverage = 5;
 
 	static private class PerformanceStatistic {
 		public PerformanceStatistic(int threads, String period, double avTime) {
@@ -91,7 +91,7 @@ public class PerformanceCalculator {
 
 	public void printStdOut() {
 		for (PerformanceStatistic ps : statistics) {
-			System.out.println(ps.threads + "\t" + ps.period + "\t" + ps.avTime);
+			System.out.println(ps.threads + "\t" + ps.period + "\t" + String.format("%02f", ps.avTime));
 		}
 	}
 }
