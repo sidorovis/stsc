@@ -17,6 +17,9 @@ import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
+/*
+ * This iterator could be created only one for each list, so all iterators will iterate like singleton will do
+ */
 public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings> {
 
 	static {
@@ -61,7 +64,7 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 		return result;
 	}
 
-	public synchronized void reset() {
+	synchronized void reset() {
 		for (ExecutionInitializer i : stockInitializers) {
 			i.reset();
 		}

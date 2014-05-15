@@ -79,5 +79,10 @@ public class TradeProcessorInit {
 	public String stringHashCode() {
 		return executionsStorage.stringHashCode();
 	}
+	
+	@Override
+	public String toString() {
+		return executionsStorage.toString();
+	}
 
 }

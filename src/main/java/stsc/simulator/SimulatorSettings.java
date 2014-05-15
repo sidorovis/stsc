@@ -20,5 +20,10 @@ public class SimulatorSettings {
 	public String stringHashCode() {
 		return tradeProcessorInit.stringHashCode();
 	}
+	
+	@Override
+	public String toString() {
+		return tradeProcessorInit.toString();
+	}
 
 }

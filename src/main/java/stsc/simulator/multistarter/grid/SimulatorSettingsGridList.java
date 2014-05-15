@@ -10,12 +10,12 @@ import stsc.storage.StockStorage;
 
 public class SimulatorSettingsGridList implements Iterable<SimulatorSettings> {
 
-	private final List<ExecutionInitializer> stockInitializers;
-	private final List<ExecutionInitializer> eodInitializers;
+	protected final List<ExecutionInitializer> stockInitializers;
+	protected final List<ExecutionInitializer> eodInitializers;
 
-	private final StockStorage stockStorage;
-	private final FromToPeriod period;
-	private final boolean finished;
+	protected final StockStorage stockStorage;
+	protected final FromToPeriod period;
+	protected final boolean finished;
 
 	SimulatorSettingsGridList(StockStorage stockStorage, FromToPeriod period, List<ExecutionInitializer> stocks,
 			List<ExecutionInitializer> eods, boolean finished) {

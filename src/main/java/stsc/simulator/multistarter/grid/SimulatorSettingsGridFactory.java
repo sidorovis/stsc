@@ -9,8 +9,8 @@ import stsc.storage.StockStorage;
 
 public class SimulatorSettingsGridFactory {
 
-	private final List<ExecutionInitializer> stockInitializers = new ArrayList<>();
-	private final List<ExecutionInitializer> eodInitializers = new ArrayList<>();
+	private List<ExecutionInitializer> stockInitializers = new ArrayList<>();
+	private List<ExecutionInitializer> eodInitializers = new ArrayList<>();
 
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
@@ -45,7 +45,17 @@ public class SimulatorSettingsGridFactory {
 	}
 
 	public SimulatorSettingsGridList getList() {
-		return new SimulatorSettingsGridList(stockStorage, period, stockInitializers, eodInitializers, finished);
+		final SimulatorSettingsGridList result = new SimulatorSettingsGridList(stockStorage, period, stockInitializers, eodInitializers, finished);
+		stockInitializers = new ArrayList<>();
+		eodInitializers = new ArrayList<>();
+		return result;
+	}
+	
+	public SimulatorSettingsGridCopyList getCopyList() {
+		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(stockStorage, period, stockInitializers, eodInitializers, finished);
+		stockInitializers = new ArrayList<>();
+		eodInitializers = new ArrayList<>();
+		return result;
 	}
 
 }

@@ -1,10 +1,12 @@
 package stsc.performance;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.common.MarketDataContext;
 import stsc.common.TimeSearcher;
 import stsc.signals.BadSignalException;
 import stsc.simulator.multistarter.StrategySearcher;
@@ -15,6 +17,7 @@ import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsInnerProductFunction;
 import stsc.statistic.StatisticsSelector;
 import stsc.storage.StockStorage;
+import stsc.storage.YahooFileStockStorage;
 
 public class PerformanceCalculator {
 
@@ -50,9 +53,17 @@ public class PerformanceCalculator {
 
 	private List<PerformanceStatistic> statistics = new ArrayList<>();
 
-	public PerformanceCalculator() throws Exception {
-		stockStorage = SimulatorSettingsGenerator.getStockStorage();
+	private StockStorage loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
+		MarketDataContext marketDataContext = new MarketDataContext();
+		marketDataContext.dataFolder = "D:/dev/java/StscData/data/";
+		marketDataContext.filteredDataFolder = "D:/dev/java/StscData/filtered_data/";
+		StockStorage ss = new YahooFileStockStorage(marketDataContext);
+		return ss;
+	}
 
+	public PerformanceCalculator() throws Exception {
+		stockStorage = loadStocks();
+		System.out.println("Size of threads: " + stockStorage.getStockNames().size());
 		getTimeFor(1, "31-01-2000");
 		for (int threads = threadsFrom; threads <= threadsTo; threads += threadsStep) {
 			for (String endOfPeriod : periods) {

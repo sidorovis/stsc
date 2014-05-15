@@ -14,8 +14,7 @@ public class StockExecution {
 
 	private final AlgorithmSettings algorithmSettings;
 
-	public static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName)
-			throws BadAlgorithmException {
+	static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName) throws BadAlgorithmException {
 		try {
 			Class<?> classType = Class.forName(algorithmName);
 			return classType.asSubclass(StockAlgorithm.class);
@@ -44,11 +43,11 @@ public class StockExecution {
 		return executionName;
 	}
 
-	public String getAlgorithmName() {
+	String getAlgorithmName() {
 		return algorithmName;
 	}
 
-	public AlgorithmSettings getSettings() {
+	AlgorithmSettings getSettings() {
 		return algorithmSettings;
 	}
 

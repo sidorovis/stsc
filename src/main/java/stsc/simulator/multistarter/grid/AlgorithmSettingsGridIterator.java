@@ -10,7 +10,7 @@ import stsc.simulator.multistarter.ResetableIterator;
 
 public class AlgorithmSettingsGridIterator implements ResetableIterable<AlgorithmSettings> {
 
-	public class Element implements ResetableIterator<AlgorithmSettings> {
+	public class Element implements ResetableIterator<AlgorithmSettings>, Cloneable {
 
 		private final ParameterList[] parameters;
 		private boolean finished;
@@ -18,6 +18,14 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		public Element(ParameterList parameterList[], boolean finished) {
 			this.parameters = parameterList;
 			this.finished = finished;
+		}
+
+		public Element clone() {
+			ParameterList[] pList = new ParameterList[this.parameters.length];
+			for (int i = 0; i < this.parameters.length; ++i) {
+				pList[i] = this.parameters[i].clone();
+			}
+			return new Element(pList, this.finished);
 		}
 
 		@Override

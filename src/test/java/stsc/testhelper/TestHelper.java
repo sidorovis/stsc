@@ -182,7 +182,8 @@ public class TestHelper {
 	}
 
 	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period,
-			final List<String> openTypes) throws BadParameterException, BadAlgorithmException {
+			final List<String> openTypes, double fStep, int nSide, int mSide, double psSide)
+			throws BadParameterException, BadAlgorithmException {
 		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
 		factoryIn.add(new MpString("e", openTypes));
 		settings.addStock("in", algoStockName("In"), factoryIn.getGridIterator());
@@ -193,7 +194,7 @@ public class TestHelper {
 		settings.addStock("ema", algoStockName("Ema"), factoryEma.getGridIterator());
 
 		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
-		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 4.0));
+		factoryLevel.add(new MpDouble("f", 15.0, 20.0, fStep));
 		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" })));
 		settings.addStock("level", algoStockName("Level"), factoryLevel.getGridIterator());
 
@@ -204,9 +205,9 @@ public class TestHelper {
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level", "in" })));
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
-		factoryPositionSide.add(new MpInteger("n", 1, 32, 10));
-		factoryPositionSide.add(new MpInteger("m", 1, 32, 10));
-		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 50000.0));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, nSide));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, mSide));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, psSide));
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide.getGridIterator());
 	}
 
@@ -216,11 +217,24 @@ public class TestHelper {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
-			fillIterator(factory, period, openTypes);
+			fillIterator(factory, period, openTypes, 4.0, 10, 10, 50000.0);
 
 			return factory.getList();
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
 		return null;
 	}
+
+	public static SimulatorSettingsGridFactory getSimulatorSettingsGridFactory(final StockStorage stockStorage,
+			final List<String> openTypes, final String periodTo) {
+		try {
+			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
+			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
+			fillIterator(factory, period, openTypes, 4.0, 10, 10, 50000.0);
+			return factory;
+		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
+		}
+		return null;
+	}
+
 }

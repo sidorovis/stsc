@@ -44,4 +44,5 @@ public class AlgorithmSettingsIteratorFactory {
 	public AlgorithmSettingsGridIterator getGridIterator() {
 		return new AlgorithmSettingsGridIterator(period, finished, parameters);
 	}
+
 }
