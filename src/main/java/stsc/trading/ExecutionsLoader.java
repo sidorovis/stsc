@@ -67,7 +67,8 @@ public class ExecutionsLoader {
 		loadAlgorithms();
 	}
 
-	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
+	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName)
+			throws BadAlgorithmException {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);
@@ -239,8 +240,8 @@ public class ExecutionsLoader {
 	}
 
 	private static String generateExecutionName(String algorithmName, AlgorithmSettings algorithmSettings) {
-		final String name = new Integer(algorithmName.toLowerCase().hashCode() * 31).toString()
-				+ new Integer(algorithmSettings.toString().hashCode()).toString();
+		final String name = Integer.valueOf(algorithmName.toLowerCase().hashCode() * 31).toString()
+				+ Integer.valueOf(algorithmSettings.toString().hashCode()).toString();
 		return name;
 	}
 

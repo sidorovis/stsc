@@ -13,7 +13,7 @@ public class AlgorithmSettingTest extends TestCase {
 	}
 
 	public void testAlgorithmSettingWithInteger() {
-		AlgorithmSetting<Integer> asi = new AlgorithmSetting<Integer>(new Integer(45));
+		AlgorithmSetting<Integer> asi = new AlgorithmSetting<Integer>(Integer.valueOf(45));
 		assertEquals(45, asi.getValue().intValue());
 		asi.setValue(67);
 		assertEquals(67, asi.getValue().intValue());

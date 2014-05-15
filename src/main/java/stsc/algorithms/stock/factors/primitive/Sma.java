@@ -14,10 +14,10 @@ import stsc.signals.StockSignal;
 public class Sma extends StockAlgorithm {
 
 	private final String subAlgoName;
-	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(new Integer(5));
+	private final AlgorithmSetting<Integer> n = new AlgorithmSetting<>(Integer.valueOf(5));
 
 	final LinkedList<Double> elements = new LinkedList<>();
-	Double sum = new Double(0.0);
+	Double sum = Double.valueOf(0.0);
 
 	public Sma(final StockAlgorithm.Init init) throws BadAlgorithmException {
 		super(init);

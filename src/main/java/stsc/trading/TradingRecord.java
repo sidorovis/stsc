@@ -58,7 +58,7 @@ public class TradingRecord {
 		else
 			w.append("SHORT");
 		w.append("\t");
-		w.write(new Integer(amount).toString());
+		w.write(Integer.valueOf(amount).toString());
 		w.append("\n");
 	}
 

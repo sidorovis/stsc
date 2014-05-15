@@ -34,7 +34,7 @@ public class MpDouble implements MpIterator<Double> {
 		this.name = name;
 		this.from = from;
 		this.to = to;
-		this.step = new Double(step);
+		this.step = Double.valueOf(step);
 		this.iterator = 0;
 	}
 
@@ -67,7 +67,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public Double current() {
-		return from + step * iterator;
+		return Double.valueOf(from + step * iterator);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public Double next() {
-		Double result = current();
+		final Double result = current();
 		increment();
 		return result;
 	}
@@ -88,7 +88,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public Double parameter(int index) {
-		return from + step * index;
+		return Double.valueOf(from + step * index);
 	}
 
 }

@@ -65,7 +65,7 @@ public class MpInteger implements MpIterator<Integer> {
 
 	@Override
 	public Integer current() {
-		return from + iterator * step;
+		return Integer.valueOf(from + iterator * step);
 	}
 
 	@Override
@@ -82,6 +82,6 @@ public class MpInteger implements MpIterator<Integer> {
 
 	@Override
 	public Integer parameter(int index) {
-		return from + step * index;
+		return Integer.valueOf(from + step * index);
 	}
 }

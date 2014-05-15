@@ -5,7 +5,7 @@ public class IntegerSignal extends StockSignal {
 	final public Integer value;
 
 	public IntegerSignal(final int value) {
-		this.value = new Integer(value);
+		this.value = Integer.valueOf(value);
 	}
 
 	@Override
