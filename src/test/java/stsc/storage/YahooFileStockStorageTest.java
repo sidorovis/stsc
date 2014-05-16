@@ -1,15 +1,12 @@
 package stsc.storage;
 
-import stsc.common.MarketDataContext;
+import stsc.yahoo.YahooFileStockStorage;
 import junit.framework.TestCase;
 
 public class YahooFileStockStorageTest extends TestCase {
 
 	public void testStockStorage() throws Exception {
-		MarketDataContext marketDataContext = new MarketDataContext();
-		marketDataContext.dataFolder = "./test_data/";
-		marketDataContext.filteredDataFolder = "./test_data/";
-		StockStorage stockStorage = new YahooFileStockStorage(marketDataContext);
+		StockStorage stockStorage = new YahooFileStockStorage("./test_data/", "./test_data/");
 		assertNotNull(stockStorage);
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
@@ -18,10 +15,7 @@ public class YahooFileStockStorageTest extends TestCase {
 	}
 
 	public void testLiqudityStorageReader() throws Exception {
-		MarketDataContext marketDataContext = new MarketDataContext();
-		marketDataContext.dataFolder = "./test_data/";
-		marketDataContext.filteredDataFolder = "./test_data/";
-		StockStorage stockStorage = new YahooFileStockStorage(marketDataContext);
+		StockStorage stockStorage = new YahooFileStockStorage("./test_data/", "./test_data/");
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
 		assertNull(stockStorage.getStock("noexistsstock"));

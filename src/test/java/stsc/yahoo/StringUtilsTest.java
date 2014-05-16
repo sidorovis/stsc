@@ -1,5 +1,6 @@
-package stsc.yahoofetcher;
+package stsc.yahoo;
 
+import stsc.yahoo.StringUtils;
 import junit.framework.TestCase;
 
 public class StringUtilsTest extends TestCase {

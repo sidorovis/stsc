@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
-import stsc.common.MarketDataContext;
 import stsc.common.TimeSearcher;
 import stsc.signals.BadSignalException;
 import stsc.simulator.multistarter.StrategySearcher;
@@ -17,7 +16,7 @@ import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsInnerProductFunction;
 import stsc.statistic.StatisticsSelector;
 import stsc.storage.StockStorage;
-import stsc.storage.YahooFileStockStorage;
+import stsc.yahoo.YahooFileStockStorage;
 
 public class PerformanceCalculator {
 
@@ -54,11 +53,7 @@ public class PerformanceCalculator {
 	private List<PerformanceStatistic> statistics = new ArrayList<>();
 
 	private StockStorage loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
-		MarketDataContext marketDataContext = new MarketDataContext();
-		marketDataContext.dataFolder = "D:/dev/java/StscData/data/";
-		marketDataContext.filteredDataFolder = "D:/dev/java/StscData/filtered_data/";
-		StockStorage ss = new YahooFileStockStorage(marketDataContext);
-		return ss;
+		return new YahooFileStockStorage("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data/");
 	}
 
 	public PerformanceCalculator() throws Exception {

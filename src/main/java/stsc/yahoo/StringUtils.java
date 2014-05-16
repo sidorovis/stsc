@@ -1,4 +1,4 @@
-package stsc.yahoofetcher;
+package stsc.yahoo;
 
 public class StringUtils {
 	public static int comparePatterns(String l, String r) {

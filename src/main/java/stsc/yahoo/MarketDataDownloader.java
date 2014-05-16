@@ -1,6 +1,5 @@
-package stsc.yahoofetcher;
+package stsc.yahoo;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.common.MarketDataContext;
+import stsc.common.UnitedFormatStock;
 
 /**
  * Download Market Data from Yahoo API.
@@ -25,7 +24,7 @@ public final class MarketDataDownloader {
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
 
-	MarketDataContext marketDataContext = new MarketDataContext();
+	final private DownloadThreadSettings settings = new DownloadThreadSettings();
 	static int downloadThreadSize = 8;
 	static int stockNameMinLength = 5;
 	static int stockNameMaxLength = 5;
@@ -39,7 +38,7 @@ public final class MarketDataDownloader {
 			generatedText[currentIndex] = c;
 			if (currentIndex == size - 1) {
 				String newTask = new String(generatedText);
-				marketDataContext.addTask(newTask);
+				settings.addTask(newTask);
 			} else {
 				generateNextElement(generatedText, currentIndex + 1, size);
 			}
@@ -76,24 +75,17 @@ public final class MarketDataDownloader {
 
 		readProperties();
 
-		DownloadThread downloadThread = new DownloadThread(marketDataContext);
+		DownloadThread downloadThread = new DownloadThread(settings);
 
 		logger.trace("starting");
 
 		if (downloadExisted) {
-			File folder = new File(marketDataContext.dataFolder);
-			File[] listOfFiles = folder.listFiles();
-			for (File file : listOfFiles) {
-				String filename = file.getName();
-				if (file.isFile() && filename.endsWith(".uf"))
-					marketDataContext.addTask(filename.substring(0, filename.length() - 3));
-			}
-
+			UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.getTaskQueue());
 		} else {
 			if (downloadByPattern) {
 				String pattern = startPattern;
 				while (StringUtils.comparePatterns(pattern, endPattern) <= 0) {
-					marketDataContext.addTask(pattern);
+					settings.addTask(pattern);
 					pattern = StringUtils.nextPermutation(pattern);
 				}
 			} else {
@@ -101,7 +93,7 @@ public final class MarketDataDownloader {
 					generateTasks(i);
 			}
 		}
-		logger.trace("tasks size: {}", marketDataContext.taskQueueSize());
+		logger.trace("tasks size: {}", settings.taskQueueSize());
 
 		List<Thread> threads = new ArrayList<Thread>();
 

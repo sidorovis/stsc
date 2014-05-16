@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>Stsc</artifactId>
-  <version>0.0.7-MULTI-GENERATOR</version>
+  <version>0.0.8-REFACTORING-MARKET-CONTEXT-DATA</version>
   <packaging>jar</packaging>
 
   <name>Stsc</name>

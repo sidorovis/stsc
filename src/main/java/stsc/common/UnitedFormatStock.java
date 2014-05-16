@@ -2,6 +2,7 @@ package stsc.common;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,8 +16,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Queue;
 
 public class UnitedFormatStock extends Stock {
+
+	private final static String extension = ".uf";
 
 	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	final String name;
@@ -150,6 +154,20 @@ public class UnitedFormatStock extends Stock {
 		int month = cal.get(Calendar.MONTH);
 		int year = cal.get(Calendar.YEAR);
 		return "http://ichart.yahoo.com/table.csv?s=" + name + "&a=" + month + "&b=" + day + "&c=" + year;
+	}
+
+	public static void loadStockList(String folderData, Queue<String> fileNames) {
+		File folder = new File(folderData);
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			String filename = file.getName();
+			if (file.isFile() && filename.endsWith(extension))
+				fileNames.add(filename.substring(0, filename.length() - extension.length()));
+		}
+	}
+
+	public static String generatePath(String dataFolder, String stockName) {
+		return dataFolder + stockName + extension;
 	}
 
 }

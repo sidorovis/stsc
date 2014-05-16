@@ -3,12 +3,12 @@ package stsc.common;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MarketDataContext {
+class MarketDataContextToDelete {
 	ConcurrentLinkedQueue<String> taskQueue = new ConcurrentLinkedQueue<String>();
 	public String dataFolder = "./data/";
 	public String filteredDataFolder = "./filtered_data/";
 
-	public MarketDataContext() {
+	public MarketDataContextToDelete() {
 	}
 
 	public int taskQueueSize() {
@@ -23,15 +23,7 @@ public class MarketDataContext {
 		return taskQueue.poll();
 	}
 
-	public String generateFilePath(String stockName) {
-		return dataFolder + stockName + ".csv";
-	}
-
-	public String generateFilteredUniteFormatPath(String stockName) {
-		return filteredDataFolder + stockName + ".uf";
-	}
-
-	public String generateUniteFormatPath(String stockName) {
+	private String generateUniteFormatPath(String stockName) {
 		return dataFolder + stockName + ".uf";
 	}
 

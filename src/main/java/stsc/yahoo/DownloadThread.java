@@ -1,46 +1,46 @@
-package stsc.yahoofetcher;
+package stsc.yahoo;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.common.MarketDataContext;
 import stsc.common.UnitedFormatStock;
-import stsc.liquiditator.FilterThread;
 import stsc.liquiditator.StockFilter;
 
 import com.google.common.io.CharStreams;
 
 public class DownloadThread implements Runnable {
 
-	private MarketDataContext marketDataContext;
-	private StockFilter stockFilter;
+	private static final int waitTimeBetweenTries = 300;
+	private static final int waitTriesAmount = 5;
+
+	private final DownloadThreadSettings settings;
+	private final StockFilter stockFilter;
 	private static int solvedAmount = 0;
 	private boolean deleteFilteredData = true;
 	private static Logger logger = LogManager.getLogger("DownloadThread");
 
-	public DownloadThread(MarketDataContext mdc) {
-		marketDataContext = mdc;
-		stockFilter = new StockFilter();
+	public DownloadThread(DownloadThreadSettings settings) {
+		this.settings = settings;
+		this.stockFilter = new StockFilter();
 	}
 
-	public DownloadThread(MarketDataContext mdc, boolean deleteFilteredData) {
-		marketDataContext = mdc;
-		stockFilter = new StockFilter();
+	public DownloadThread(DownloadThreadSettings settings, boolean deleteFilteredData) {
+		this.settings = settings;
+		this.stockFilter = new StockFilter();
 		this.deleteFilteredData = deleteFilteredData;
 	}
 
 	public void run() {
-		String task = marketDataContext.getTask();
+		String task = settings.getTask();
 		while (task != null) {
 			try {
-				UnitedFormatStock s = marketDataContext.getStockFromFileSystem(task);
+				UnitedFormatStock s = settings.getStockFromFileSystem(task);
 				if (s == null) {
 					s = download(task);
 					logger.trace("task {} fully downloaded", task);
@@ -49,29 +49,30 @@ public class DownloadThread implements Runnable {
 					logger.trace("task {} partially downloaded", task);
 				}
 				if (stockFilter.test(s)) {
-					FilterThread.copyFilteredStockFile(marketDataContext, task);
+					YahooFilterThread
+							.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.info("task {} is liquid and copied to filter stock directory", task);
 				} else {
 					deleteEmptyFilteredFile(task);
 				}
 			} catch (Exception e) {
 				logger.debug("task {} throwed an exception {}", task, e.toString());
-				File file = new File(marketDataContext.generateUniteFormatPath(task));
+				File file = new File(getPath(settings.getDataFolder(), task));
 				if (file.length() == 0)
 					file.delete();
 			}
-			synchronized (marketDataContext) {
+			synchronized (settings) {
 				solvedAmount += 1;
 				if (solvedAmount % 100 == 0)
 					logger.info("solved {} tasks last stock name {}", solvedAmount, task);
 			}
-			task = marketDataContext.getTask();
+			task = settings.getTask();
 		}
 	}
 
 	private void deleteEmptyFilteredFile(String stockName) {
 		if (deleteFilteredData) {
-			String filteredFilePath = marketDataContext.generateFilteredUniteFormatPath(stockName);
+			String filteredFilePath = getPath(settings.getFilteredDataFolder(), stockName);
 			File filteredFile = new File(filteredFilePath);
 			if (filteredFile.exists()) {
 				logger.debug("deleting filtered file with stock " + stockName
@@ -85,29 +86,24 @@ public class DownloadThread implements Runnable {
 		int tries = 0;
 		String error = "";
 		UnitedFormatStock newStock = null;
-		while (tries < 5) {
+		while (tries < waitTriesAmount) {
 			try {
 				URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
 				String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				newStock = UnitedFormatStock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
-				newStock.storeUniteFormat(marketDataContext.generateUniteFormatPath(newStock.getName()));
+				newStock.storeUniteFormat(getPath(settings.getDataFolder(), newStock.getName()));
 				return newStock;
-			} catch (MalformedURLException e) {
-				Thread.sleep(300);
-				error = e.toString();
-			} catch (ParseException e) {
-				Thread.sleep(300);
-				error = e.toString();
-			} catch (IOException e) {
-				Thread.sleep(300);
+			} catch (ParseException | IOException e) {
+				Thread.sleep(waitTimeBetweenTries);
 				error = e.toString();
 			}
 			tries += 1;
 		}
 		if (newStock == null)
-			throw new InterruptedException("5 tries not enought to download data on " + stockName + " stock. " + error);
+			throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName
+					+ " stock. " + error);
 		return newStock;
 	}
 
@@ -123,19 +119,21 @@ public class DownloadThread implements Runnable {
 				stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
-					stock.storeUniteFormat(marketDataContext.generateUniteFormatPath(stock.getName()));
+					stock.storeUniteFormat(getPath(settings.getDataFolder(), stock.getName()));
 				return;
 			} catch (ParseException e) {
 				error = "exception " + e.toString() + " with: '" + stockNewContent + "'";
 				break;
-			} catch (MalformedURLException e) {
-				Thread.sleep(300);
 			} catch (IOException e) {
-				Thread.sleep(300);
+				Thread.sleep(waitTimeBetweenTries);
 			}
 			tries += 1;
 		}
 		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock "
 				+ error);
+	}
+
+	private static String getPath(String folder, String taskName) {
+		return UnitedFormatStock.generatePath(folder, taskName);
 	}
 }
