@@ -27,7 +27,7 @@ import stsc.common.FromToPeriod;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
 
-public class ExecutionsLoader {
+final class ExecutionsLoader {
 
 	private static final class PropertyNames {
 		public static String INCLUDES_LINE = "Includes";
@@ -60,15 +60,14 @@ public class ExecutionsLoader {
 
 	final private Set<String> eodExecutions = new HashSet<>();
 
-	public ExecutionsLoader(String configPath, FromToPeriod period) throws BadAlgorithmException {
+	ExecutionsLoader(String configPath, FromToPeriod period) throws BadAlgorithmException {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance();
 		loadAlgorithms();
 	}
 
-	public ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName)
-			throws BadAlgorithmException {
+	ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
 		this.configFilePath = configPath;
 		this.settings = new AlgorithmSettings(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);

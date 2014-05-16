@@ -2,12 +2,11 @@ package stsc.yahoo;
 
 import java.io.IOException;
 
-import stsc.yahoo.YahooFilesystemDatafeedSettings;
 import junit.framework.TestCase;
 
 public class YahooFilesystemDatafeedSettingsTest extends TestCase {
 	public void testYahooFilesystemDatafeedSettings() throws IOException {
-		YahooFilesystemDatafeedSettings settings = new YahooFilesystemDatafeedSettings("./test/", "./test/");
+		YahooSettings settings = new YahooSettings("./test/", "./test/");
 		assertEquals(settings.getTask(), null);
 		settings.addTask("a");
 		assertEquals(1, settings.taskQueueSize());
@@ -19,7 +18,7 @@ public class YahooFilesystemDatafeedSettingsTest extends TestCase {
 	}
 
 	public void testGetStockFromFileSystem() {
-		YahooFilesystemDatafeedSettings settings = new YahooFilesystemDatafeedSettings("./test_data/", "./test/");
+		YahooSettings settings = new YahooSettings("./test_data/", "./test/");
 		assertNotNull(settings.getStockFromFileSystem("aapl"));
 		assertNull(settings.getStockFromFileSystem("a"));
 	}

@@ -1,20 +1,18 @@
 package stsc.yahoo;
 
 import java.io.IOException;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import stsc.common.UnitedFormatStock;
 
-public class YahooFilesystemDatafeedSettings {
+public class YahooSettings {
 
 	ConcurrentLinkedQueue<String> taskQueue = new ConcurrentLinkedQueue<String>();
 	private String dataFolder = "./data/";
 	private String filteredDataFolder = "./filtered_data/";
 
-	YahooFilesystemDatafeedSettings() {
-	}
-
-	YahooFilesystemDatafeedSettings(String dataFolder, String filteredDataFolder) {
+	YahooSettings(String dataFolder, String filteredDataFolder) {
 		this.dataFolder = dataFolder;
 		this.filteredDataFolder = filteredDataFolder;
 	}
@@ -23,7 +21,7 @@ public class YahooFilesystemDatafeedSettings {
 		return taskQueue.size();
 	}
 
-	public YahooFilesystemDatafeedSettings addTask(String s) {
+	public YahooSettings addTask(String s) {
 		taskQueue.add(s);
 		return this;
 	}
@@ -51,6 +49,10 @@ public class YahooFilesystemDatafeedSettings {
 
 	public String getFilteredDataFolder() {
 		return filteredDataFolder;
+	}
+
+	public Queue<String> getTaskQueue() {
+		return taskQueue;
 	}
 
 }

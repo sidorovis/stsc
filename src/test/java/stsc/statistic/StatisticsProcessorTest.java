@@ -9,6 +9,8 @@ import org.joda.time.LocalDate;
 import stsc.common.Settings;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
+import stsc.testhelper.TestHelper;
+import stsc.trading.Broker;
 import stsc.trading.Side;
 import stsc.trading.TradingLog;
 import junit.framework.TestCase;
@@ -35,7 +37,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new TradingLog();
+		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -67,7 +69,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new TradingLog();
+		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -100,7 +102,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new TradingLog();
+		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -228,7 +230,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int admIndex = adm.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 
-		TradingLog tradingLog = new TradingLog();
+		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
 
 		StatisticsProcessor statisticsProcessor = new StatisticsProcessor(tradingLog);
 

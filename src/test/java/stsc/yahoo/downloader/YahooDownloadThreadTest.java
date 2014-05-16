@@ -1,19 +1,19 @@
-package stsc.yahoo;
+package stsc.yahoo.downloader;
 
 import java.io.File;
 import java.io.IOException;
 
 import stsc.common.Stock;
-import stsc.yahoo.DownloadThread;
-import stsc.yahoo.DownloadThreadSettings;
-
+import stsc.yahoo.YahooSettings;
+import stsc.yahoo.YahooUtils;
+import stsc.yahoo.downloader.DownloadThread;
 import com.google.common.io.Files;
 
 import junit.framework.TestCase;
 
 public class YahooDownloadThreadTest extends TestCase {
 	public void testDownloadThread() throws InterruptedException, IOException, ClassNotFoundException {
-		DownloadThreadSettings settings = new DownloadThreadSettings("./test/", "./test/");
+		final YahooSettings settings = YahooUtils.createSettings("./test/", "./test/");
 		Files.copy(new File("./test_data/aaoi.uf"), new File("./test/aaoi.uf"));
 		settings.addTask("a");
 		DownloadThread downloadThread = new DownloadThread(settings, false);

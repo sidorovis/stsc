@@ -1,4 +1,4 @@
-package stsc.yahoo;
+package stsc.yahoo.downloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,26 +11,28 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.common.UnitedFormatStock;
 import stsc.liquiditator.StockFilter;
+import stsc.yahoo.YahooSettings;
+import stsc.yahoo.YahooUtils;
 
 import com.google.common.io.CharStreams;
 
-public class DownloadThread implements Runnable {
+class DownloadThread implements Runnable {
 
 	private static final int waitTimeBetweenTries = 300;
 	private static final int waitTriesAmount = 5;
 
-	private final DownloadThreadSettings settings;
+	private final YahooSettings settings;
 	private final StockFilter stockFilter;
 	private static int solvedAmount = 0;
 	private boolean deleteFilteredData = true;
 	private static Logger logger = LogManager.getLogger("DownloadThread");
 
-	public DownloadThread(DownloadThreadSettings settings) {
+	DownloadThread(YahooSettings settings) {
 		this.settings = settings;
 		this.stockFilter = new StockFilter();
 	}
 
-	public DownloadThread(DownloadThreadSettings settings, boolean deleteFilteredData) {
+	DownloadThread(YahooSettings settings, boolean deleteFilteredData) {
 		this.settings = settings;
 		this.stockFilter = new StockFilter();
 		this.deleteFilteredData = deleteFilteredData;
@@ -49,8 +51,7 @@ public class DownloadThread implements Runnable {
 					logger.trace("task {} partially downloaded", task);
 				}
 				if (stockFilter.test(s)) {
-					YahooFilterThread
-							.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
+					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.info("task {} is liquid and copied to filter stock directory", task);
 				} else {
 					deleteEmptyFilteredFile(task);

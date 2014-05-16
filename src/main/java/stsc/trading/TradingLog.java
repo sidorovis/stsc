@@ -8,6 +8,10 @@ import java.util.Date;
 public class TradingLog {
 	private ArrayList<TradingRecord> records = new ArrayList<TradingRecord>();
 
+	TradingLog() {
+
+	}
+
 	public void addBuyRecord(Date when, String stockName, Side side, int sharesAmount) {
 		records.add(TradingRecord.buy(when, stockName, side, sharesAmount));
 	}

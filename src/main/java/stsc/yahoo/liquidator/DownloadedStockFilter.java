@@ -1,4 +1,4 @@
-package stsc.yahoo;
+package stsc.yahoo.liquidator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,8 +11,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.UnitedFormatStock;
+import stsc.yahoo.YahooSettings;
+import stsc.yahoo.YahooUtils;
 
-public class YahooDownloadedStockFilter {
+final class DownloadedStockFilter {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -21,7 +23,7 @@ public class YahooDownloadedStockFilter {
 	static int processThreadSize = 8;
 	private static Logger logger = LogManager.getLogger("DownloadedStockFilter");
 
-	static YahooFilesystemDatafeedSettings settings;
+	static YahooSettings settings;
 
 	private void readProperties() throws IOException {
 		FileInputStream in = new FileInputStream("./config/liquiditator.ini");
@@ -33,17 +35,17 @@ public class YahooDownloadedStockFilter {
 		processThreadSize = Integer.parseInt(p.getProperty("thread.amount"));
 	}
 
-	public YahooDownloadedStockFilter() throws IOException, InterruptedException {
+	DownloadedStockFilter() throws IOException, InterruptedException {
 		readProperties();
 
 		logger.trace("downloaded stock filter started");
-		settings = new YahooFilesystemDatafeedSettings();
-		UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.taskQueue);
+		settings = YahooUtils.createSettings();
+		UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.getTaskQueue());
 		logger.trace("collected stock names to start filter process: {}", settings.taskQueueSize());
 
 		List<Thread> threads = new ArrayList<Thread>();
 
-		YahooFilterThread filterThread = new YahooFilterThread(settings);
+		FilterThread filterThread = new FilterThread(settings);
 
 		for (int i = 0; i < processThreadSize; ++i) {
 			Thread newThread = new Thread(filterThread);
@@ -62,7 +64,7 @@ public class YahooDownloadedStockFilter {
 
 	public static void main(String[] args) {
 		try {
-			new YahooDownloadedStockFilter();
+			new DownloadedStockFilter();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

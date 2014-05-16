@@ -1,21 +1,21 @@
-package stsc.yahoo;
+package stsc.yahoo.liquidator;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.joda.time.LocalDate;
 
-import stsc.yahoo.YahooFilesystemDatafeedSettings;
-import stsc.yahoo.YahooFilterThread;
+import stsc.yahoo.YahooSettings;
+import stsc.yahoo.YahooUtils;
+import stsc.yahoo.liquidator.FilterThread;
 import junit.framework.TestCase;
 
-public class YahooFilterThreadTest extends TestCase {
+public class FilterThreadTest extends TestCase {
 	public void testFilterThread() throws IOException, InterruptedException {
-		YahooFilesystemDatafeedSettings settings = new YahooFilesystemDatafeedSettings("./test_data/", "./test/");
-
+		YahooSettings settings = YahooUtils.createSettings("./test_data/", "./test/");
 		settings.addTask("aaoi").addTask("aapl").addTask("ibm").addTask("spy");
 
-		YahooFilterThread filterThread = new YahooFilterThread(settings, new LocalDate(2014, 1, 14).toDate());
+		FilterThread filterThread = new FilterThread(settings, new LocalDate(2014, 1, 14).toDate());
 		{
 			Thread th = new Thread(filterThread);
 			th.start();

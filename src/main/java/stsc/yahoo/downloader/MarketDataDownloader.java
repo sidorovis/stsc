@@ -1,4 +1,4 @@
-package stsc.yahoo;
+package stsc.yahoo.downloader;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,12 +11,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.UnitedFormatStock;
+import stsc.yahoo.StringUtils;
+import stsc.yahoo.YahooSettings;
+import stsc.yahoo.YahooUtils;
 
 /**
  * Download Market Data from Yahoo API.
  * 
  */
-public final class MarketDataDownloader {
+final class MarketDataDownloader {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -24,7 +27,7 @@ public final class MarketDataDownloader {
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
 
-	final private DownloadThreadSettings settings = new DownloadThreadSettings();
+	final private YahooSettings settings = YahooUtils.createSettings();
 	static int downloadThreadSize = 8;
 	static int stockNameMinLength = 5;
 	static int stockNameMaxLength = 5;

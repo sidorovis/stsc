@@ -107,7 +107,7 @@ public class TestHelper {
 			int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 			int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-			TradingLog tradingLog = new TradingLog();
+			TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
 
 			StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
