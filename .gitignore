@@ -9,10 +9,10 @@
 /target
 /data/*.uf
 /filtered_data/*.uf
-/logs
+/*/logs
 /test/*.uf
 /.*
 .project
 .settings
-
+.classpath
 _*.log
