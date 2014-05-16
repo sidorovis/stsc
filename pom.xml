@@ -1,22 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>stsc</groupId>
-  <artifactId>Stsc</artifactId>
-  <version>0.0.8-REFACTORING-MARKET-CONTEXT-DATA</version>
-  <packaging>jar</packaging>
-
-  <name>Stsc</name>
-  <url>https://github.com/sidorovis/MarketDataDownloader</url>
-
+  <artifactId>stsc</artifactId>
+  <version>0.0.8-REFACTORING-TO-SEVERAL-PROJECT</version>
+  <packaging>pom</packaging>
+  <name>stsc</name>
+  <url>https://github.com/sidorovis/stsc</url>
   <properties>
     <project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
   </properties>
-
   <build>
-	<defaultGoal>install</defaultGoal>
-
+	<defaultGoal>compile</defaultGoal>
 	<plugins>
 	<plugin>
  		<groupId>org.apache.maven.plugins</groupId>
@@ -31,73 +26,10 @@
        		<target>1.7</target>
    		</configuration>
 	</plugin>
-	<plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-        	<descriptorRefs>
-        		<descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-     		<archive>
-        		<manifest>
-          			<mainClass>stsc.yahoofetcher.MarketDataDownloader</mainClass>
-        		</manifest>
-      		</archive>
-        </configuration>
-    	<executions>
-      		<execution>
-        		<id>make-yahoofetcher-jar-with-dependencies</id>
-        		<phase>package</phase>
-        		<goals>
-          			<goal>single</goal>
-        		</goals>
-      		</execution>
-    	</executions>
-    </plugin>
 	</plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-	<dependency>
-    	<groupId>com.google.guava</groupId>
-    	<artifactId>guava</artifactId>
-    	<version>16.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-api</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-	<dependency>
-		<groupId>joda-time</groupId>
-		<artifactId>joda-time</artifactId>
-		<version>2.3</version>
-	</dependency>            
-	<dependency>
-		<groupId>org.antlr</groupId>
-		<artifactId>antlr4-runtime</artifactId>
-		<version>4.2</version>
-	</dependency>
-	<dependency>
-		<groupId>commons-validator</groupId>
-		<artifactId>commons-validator</artifactId>
-		<version>1.4.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-		<version>3.3.1</version>
-	</dependency>        
-  </dependencies>
+  <modules>
+	<module>stsc.general</module>
+  </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>
