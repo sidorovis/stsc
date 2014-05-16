@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
-import stsc.common.TimeSearcher;
+import stsc.common.TimeTracker;
 import stsc.signals.BadSignalException;
 import stsc.simulator.multistarter.StrategySearcher;
 import stsc.simulator.multistarter.StrategySearcherException;
@@ -18,7 +18,7 @@ import stsc.statistic.StatisticsSelector;
 import stsc.storage.StockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 
-public class PerformanceCalculator {
+class PerformanceCalculator {
 
 	private static int storedStrategyAmount = 500;
 
@@ -56,7 +56,7 @@ public class PerformanceCalculator {
 		return new YahooFileStockStorage("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data/");
 	}
 
-	public PerformanceCalculator() throws Exception {
+	PerformanceCalculator() throws Exception {
 		stockStorage = loadStocks();
 		System.out.println("Size of threads: " + stockStorage.getStockNames().size());
 		getTimeFor(1, "31-01-2000");
@@ -80,7 +80,7 @@ public class PerformanceCalculator {
 
 	private long timeForSearch(final StrategySearcher<Double> searcher) throws StrategySearcherException,
 			BadAlgorithmException, StatisticsCalculationException, BadSignalException {
-		final TimeSearcher timeSearcher = new TimeSearcher();
+		final TimeTracker timeSearcher = new TimeTracker();
 		searcher.getSelector().getSortedStatistics();
 		return timeSearcher.finish();
 	}
@@ -95,7 +95,7 @@ public class PerformanceCalculator {
 		return Math.round(av / calculationsForAverage);
 	}
 
-	public void printStdOut() {
+	void printStdOut() {
 		for (PerformanceStatistic ps : statistics) {
 			System.out.println(ps.threads + "\t" + ps.period + "\t" + String.format("%02f", ps.avTime));
 		}

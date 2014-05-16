@@ -15,7 +15,7 @@ import stsc.statistic.EquityCurve.Element;
 
 public class Statistics {
 
-	static public class StatisticsInit {
+	static class StatisticsInit {
 
 		public EquityCurve equityCurve = new EquityCurve();
 		public EquityCurve equityCurveInMoney;
@@ -51,7 +51,7 @@ public class Statistics {
 		public double ddValueAvGain = 0.0;
 		public double ddValueMax = 0.0;
 
-		public double getAvGain() throws StatisticsCalculationException {
+		double getAvGain() throws StatisticsCalculationException {
 			if (equityCurve.size() == 0)
 				throw new StatisticsCalculationException("no elements at equity curve");
 			return equityCurve.getLastElement().value;
@@ -61,7 +61,7 @@ public class Statistics {
 			return "curve(" + equityCurve.toString() + ")";
 		}
 
-		public void copyMoneyEquityCurve() {
+		void copyMoneyEquityCurve() {
 			equityCurveInMoney = equityCurve.clone();
 		}
 	};
@@ -107,11 +107,11 @@ public class Statistics {
 	@NotPrint
 	private EquityCurve equityCurveInMoney;
 
-	static public StatisticsInit getInit() {
+	static public StatisticsInit createInit() {
 		return new StatisticsInit();
 	}
 
-	public Statistics(StatisticsInit init) throws StatisticsCalculationException {
+	Statistics(StatisticsInit init) throws StatisticsCalculationException {
 		calculateProbabilityStatistics(init);
 		calculateEquityStatistics(init);
 		equityCurveInMoney = init.equityCurveInMoney;

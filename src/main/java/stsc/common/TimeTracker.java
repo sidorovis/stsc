@@ -1,10 +1,10 @@
 package stsc.common;
 
-public class TimeSearcher {
+public class TimeTracker {
 	private final long timeStart;
 	private long timeEnd;
 
-	public TimeSearcher() {
+	public TimeTracker() {
 		timeStart = System.nanoTime();
 	}
 

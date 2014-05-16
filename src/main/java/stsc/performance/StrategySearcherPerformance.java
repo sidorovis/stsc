@@ -3,7 +3,7 @@ package stsc.performance;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.storage.AlgorithmsStorage;
 
-public class StrategySearcherPerformance {
+class StrategySearcherPerformance {
 
 	private static void initialize() {
 		try {

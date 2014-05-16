@@ -20,11 +20,11 @@ import stsc.storage.AlgorithmsStorage;
 import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
 
-public class SimulatorSettingsGenerator {
+class SimulatorSettingsGenerator {
 
 	static StockStorage stockStorage = null;
 
-	public static StockStorage getStockStorage() {
+	static StockStorage getStockStorage() {
 		if (stockStorage == null) {
 			stockStorage = new ThreadSafeStockStorage();
 			try {
@@ -37,15 +37,15 @@ public class SimulatorSettingsGenerator {
 		return stockStorage;
 	}
 
-	public static String algoStockName(String aname) throws BadAlgorithmException {
+	static String algoStockName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getStock(aname).getName();
 	}
 
-	public static String algoEodName(String aname) throws BadAlgorithmException {
+	static String algoEodName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage,
+	static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage,
 			final List<String> openTypes, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
@@ -59,8 +59,8 @@ public class SimulatorSettingsGenerator {
 		return null;
 	}
 
-	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period,
-			final List<String> openTypes) throws BadParameterException, BadAlgorithmException {
+	static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes)
+			throws BadParameterException, BadAlgorithmException {
 		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
 		factoryIn.add(new MpString("e", openTypes));
 		settings.addStock("in", algoStockName("In"), factoryIn.getGridIterator());

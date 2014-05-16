@@ -114,7 +114,7 @@ public class StatisticsProcessor {
 		private ArrayList<Double> elementsInStartMonths = new ArrayList<>();
 		private ArrayList<Integer> startMonthsIndexes = new ArrayList<>();
 
-		StatisticsInit statisticsInit = Statistics.getInit();
+		StatisticsInit statisticsInit = Statistics.createInit();
 
 		public EquityProcessor(TradingLog tradingLog) {
 			this.tradingRecords = tradingLog.getRecords();
