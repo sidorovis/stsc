@@ -6,7 +6,7 @@
 *.war
 *.ear
 
-/target
+target
 /data/*.uf
 /filtered_data/*.uf
 /*/logs
