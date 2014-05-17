@@ -31,6 +31,7 @@
   <modules>
 	<module>stsc.general</module>
 	<module>stsc.yahoo</module>
+	<module>stsc.yahoo.downloader</module>
 	<module>stsc.performance</module>
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>

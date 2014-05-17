@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.performance</artifactId>
+  <artifactId>stsc.yahoo.downloader</artifactId>
   <version>0.0.8-REFACTORING-TO-SEVERAL-PROJECT</version>
   <packaging>jar</packaging>
 
-  <name>stsc.performance</name>
+  <name>stsc.yahoo.downloader</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -40,13 +40,13 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.performance.StrategySearcherPerformance</mainClass>
+          			<mainClass>stsc.yahoo.downloader.MarketDataDownloader</mainClass>
         		</manifest>
       		</archive>
         </configuration>
     	<executions>
       		<execution>
-        		<id>stsc-performace</id>
+        		<id>stsc-yahoo-downloader</id>
         		<phase>package</phase>
         		<goals>
           			<goal>single</goal>
@@ -64,12 +64,12 @@
       <artifactId>stsc.general</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.yahoo</artifactId>
       <version>${project.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>junit</groupId>
