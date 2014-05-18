@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class SimulatorSettingsGridCopyListTest extends TestCase {
 
-	public void testSimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
+	public void testSimulatorSettingsGridCopyList() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageHelper();
 
 		final SimulatorSettingsGridFactory factory = TestHelper.getSimulatorSettingsGridFactory(stockStorage,

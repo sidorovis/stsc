@@ -19,7 +19,6 @@ import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
-import stsc.simulator.multistarter.MpString;
 import stsc.simulator.multistarter.MpSubExecution;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
@@ -50,8 +49,7 @@ public class TestHelper {
 		return getEodAlgorithmInit(broker, executionName, getAlgorithmSettings(), new SignalsStorage());
 	}
 
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName,
-			AlgorithmSettings settings, SignalsStorage signalsStorage) {
+	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings, SignalsStorage signalsStorage) {
 		EodAlgorithm.Init init = new EodAlgorithm.Init();
 		init.broker = broker;
 		init.executionName = executionName;
@@ -60,8 +58,7 @@ public class TestHelper {
 		return init;
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName,
-			SignalsStorage storage) {
+	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage) {
 		StockAlgorithm.Init init = new StockAlgorithm.Init();
 		init.executionName = executionName;
 		init.settings = getAlgorithmSettings();
@@ -166,41 +163,29 @@ public class TestHelper {
 		return getSimulatorSettingsGridList(stockStorage, "31-03-2000");
 	}
 
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(StockStorage stockStorage,
-			final String periodTo) {
-		return getSimulatorSettingsGridList(stockStorage,
-				Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), periodTo);
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(StockStorage stockStorage, final String periodTo) {
+		return getSimulatorSettingsGridList(stockStorage, Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), periodTo);
 	}
 
 	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes) {
 		return getSimulatorSettingsGridList(openTypes, "31-03-2000");
 	}
 
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes,
-			final String periodTo) {
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes, final String periodTo) {
 		return getSimulatorSettingsGridList(getStockStorage(), openTypes, periodTo);
 	}
 
-	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period,
-			final List<String> openTypes, double fStep, int nSide, int mSide, double psSide)
-			throws BadParameterException, BadAlgorithmException {
-		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
-		factoryIn.add(new MpString("e", openTypes));
-		settings.addStock("in", algoStockName("In"), factoryIn.getGridIterator());
-
-		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(period);
-		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.4));
-		factoryEma.add(new MpSubExecution("", "in"));
-		settings.addStock("ema", algoStockName("Ema"), factoryEma.getGridIterator());
-
-		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
-		factoryLevel.add(new MpDouble("f", 15.0, 20.0, fStep));
-		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" })));
-		settings.addStock("level", algoStockName("Level"), factoryLevel.getGridIterator());
-
-		final AlgorithmSettingsIteratorFactory factoryOneSide = new AlgorithmSettingsIteratorFactory(period);
-		factoryOneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
-		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), factoryOneSide.getGridIterator());
+	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep, int nSide,
+			int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
+		settings.addStock("in", algoStockName("In"), "e", openTypes);
+		settings.addStock("ema", algoStockName("Ema"),
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.4)).add(new MpSubExecution("", "in")));
+		settings.addStock(
+				"level",
+				algoStockName("Level"),
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, fStep)).add(
+						new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" }))));
+		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side", Arrays.asList(new String[] { "long", "short" }));
 
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level", "in" })));
@@ -208,11 +193,10 @@ public class TestHelper {
 		factoryPositionSide.add(new MpInteger("n", 1, 32, nSide));
 		factoryPositionSide.add(new MpInteger("m", 1, 32, mSide));
 		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, psSide));
-		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide.getGridIterator());
+		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage,
-			final List<String> openTypes, final String periodTo) {
+	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 
@@ -225,8 +209,8 @@ public class TestHelper {
 		return null;
 	}
 
-	public static SimulatorSettingsGridFactory getSimulatorSettingsGridFactory(final StockStorage stockStorage,
-			final List<String> openTypes, final String periodTo) {
+	public static SimulatorSettingsGridFactory getSimulatorSettingsGridFactory(final StockStorage stockStorage, final List<String> openTypes,
+			final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
