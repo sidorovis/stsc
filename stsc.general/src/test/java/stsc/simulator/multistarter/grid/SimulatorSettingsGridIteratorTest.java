@@ -14,6 +14,7 @@ import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;
 import stsc.simulator.multistarter.MpInteger;
 import stsc.simulator.multistarter.MpString;
+import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.testhelper.TestSimulatorSettings;
@@ -47,11 +48,11 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		for (SimulatorSettings simulatorSettings : settings) {
 			count += 1;
 			final ExecutionsStorage executionsStorage = simulatorSettings.getInit().getExecutionsStorage();
-			executionsStorage.initialize(new Broker(stockStorage));
-			final StockAlgorithm sain = executionsStorage.getStockAlgorithm("in", "aapl");
-			final StockAlgorithm saema = executionsStorage.getStockAlgorithm("ema", "aapl");
-			final StockAlgorithm salevel = executionsStorage.getStockAlgorithm("level", "aapl");
-			final EodAlgorithm saone = executionsStorage.getEodAlgorithm("os");
+			final ExecutionStarter executionStarter = executionsStorage.initialize(new Broker(stockStorage));
+			final StockAlgorithm sain = executionStarter.getStockAlgorithm("in", "aapl");
+			final StockAlgorithm saema = executionStarter.getStockAlgorithm("ema", "aapl");
+			final StockAlgorithm salevel = executionStarter.getStockAlgorithm("level", "aapl");
+			final EodAlgorithm saone = executionStarter.getEodAlgorithm("os");
 			assertNotNull(sain);
 			assertNotNull(saema);
 			assertNotNull(salevel);

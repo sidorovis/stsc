@@ -14,22 +14,21 @@ import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.DayIteratorStorage;
-import stsc.storage.ExecutionsStorage;
+import stsc.storage.ExecutionStarter;
 import stsc.storage.DayIterator;
 import stsc.storage.StockStorage;
 
 public class TradeProcessor {
 
 	private final Broker broker;
-	private final ExecutionsStorage executionsStorage;
+	private final ExecutionStarter executionsStarter;
 
 	private DayIteratorStorage stocks;
 
 	public TradeProcessor(final TradeProcessorInit settings) throws BadAlgorithmException {
 		this.broker = settings.getBroker();
 		this.stocks = new DayIteratorStorage(settings.getPeriod().getFrom());
-		this.executionsStorage = settings.getExecutionsStorage();
-		executionsStorage.initialize(broker);
+		this.executionsStarter = settings.getExecutionsStorage().initialize(broker);
 	}
 
 	public Statistics simulate(final FromToPeriod period) throws StatisticsCalculationException, BadSignalException {
@@ -57,18 +56,17 @@ public class TradeProcessor {
 					if (stockDay.compareTo(currentDay) == 0) {
 						statisticsProcessor.setStockDay(stockName, stockDay);
 
-						executionsStorage.runStockAlgorithms(stockName, stockDay);
+						executionsStarter.runStockAlgorithms(stockName, stockDay);
 
 						datafeed.put(stockName, stockDay);
 					} else {
-						throw new StatisticsCalculationException("Bad day returned for stock " + stockName
-								+ " for day " + today);
+						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);
 						// TODO only for debugging, delete it later
 					}
 				}
 			}
 			if (!datafeed.isEmpty()) {
-				executionsStorage.runEodAlgorithms(today, datafeed);
+				executionsStarter.runEodAlgorithms(today, datafeed);
 				statisticsProcessor.processEod();
 			}
 			dayIterator = dayIterator.plusDays(1);
@@ -83,7 +81,7 @@ public class TradeProcessor {
 		}
 	}
 
-	public ExecutionsStorage getExecutionStorage() {
-		return executionsStorage;
+	public ExecutionStarter getExecutionStorage() {
+		return executionsStarter;
 	}
 }

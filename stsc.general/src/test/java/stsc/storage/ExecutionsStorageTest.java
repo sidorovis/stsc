@@ -18,10 +18,11 @@ public class ExecutionsStorageTest extends TestCase {
 	public void testExecutionsStorage() throws BadAlgorithmException {
 		final AlgorithmSettings smaSettings = TestAlgorithmsHelper.getSettings().addSubExecutionName("asd");
 
-		final ExecutionsStorage es = new ExecutionsStorage();
-		es.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
-		es.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, TestAlgorithmsHelper.getSettings()));
-		es.initialize(new Broker(new TestStockStorageHelper()));
+		final ExecutionsStorage eStorage = new ExecutionsStorage();
+
+		eStorage.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
+		eStorage.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, TestAlgorithmsHelper.getSettings()));
+		ExecutionStarter es = eStorage.initialize(new Broker(new TestStockStorageHelper()));
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 
