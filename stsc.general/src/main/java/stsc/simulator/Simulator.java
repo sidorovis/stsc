@@ -29,7 +29,7 @@ public class Simulator {
 	}
 
 	public static Simulator fromFile(final String filePath) throws BadAlgorithmException, StatisticsCalculationException, BadSignalException, Exception {
-		return new Simulator(new SimulatorSettings(new TradeProcessorInit(filePath)));
+		return new Simulator(new SimulatorSettings(0, new TradeProcessorInit(filePath)));
 	}
 
 	public Statistics getStatistics() {

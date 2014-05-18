@@ -70,6 +70,11 @@
       <artifactId>stsc.yahoo</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.yahoo.liquidator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

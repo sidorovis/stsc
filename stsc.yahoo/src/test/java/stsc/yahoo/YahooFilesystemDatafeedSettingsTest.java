@@ -13,11 +13,11 @@ public class YahooFilesystemDatafeedSettingsTest extends TestCase {
 		assertEquals(settings.getTask(), "a");
 		assertEquals(settings.getTask(), null);
 
-		assertEquals("./test/asd.uf", settings.generateUniteFormatPath("asd"));
+		assertEquals(".\\test\\asd.uf", settings.generateUniteFormatPath("asd"));
 
 	}
 
-	public void testGetStockFromFileSystem() {
+	public void testGetStockFromFileSystem() throws IOException {
 		YahooSettings settings = new YahooSettings("./test_data/", "./test/");
 		assertNotNull(settings.getStockFromFileSystem("aapl"));
 		assertNull(settings.getStockFromFileSystem("a"));

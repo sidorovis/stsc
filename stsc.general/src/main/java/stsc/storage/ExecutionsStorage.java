@@ -18,7 +18,7 @@ import stsc.trading.Broker;
 
 public class ExecutionsStorage {
 
-	private static class Executions {
+	private static class StockAlgorithms {
 		// execution name to stock algorithms
 		private final HashMap<String, StockAlgorithm> map = new HashMap<>();
 		private final ArrayList<StockAlgorithm> orderedAlgorithms = new ArrayList<>();
@@ -42,27 +42,27 @@ public class ExecutionsStorage {
 
 	}
 
-	private class StockExecutions {
+	private class StockNameToAlgorithms {
 		// stock name to execution map
-		private HashMap<String, Executions> stockToExecution = new HashMap<>();
+		private HashMap<String, StockAlgorithms> stockToAlgorithm = new HashMap<>();
 
 		void addExecutionOnStock(String stockName, String executionName, StockAlgorithm algo) {
-			Executions se = stockToExecution.get(stockName);
+			StockAlgorithms se = stockToAlgorithm.get(stockName);
 			if (se == null) {
-				se = new Executions();
-				stockToExecution.put(stockName, se);
+				se = new StockAlgorithms();
+				stockToAlgorithm.put(stockName, se);
 			}
 			se.add(executionName, algo);
 		}
 
 		void simulate(String stockName, final Day newDay) throws BadSignalException {
-			Executions e = stockToExecution.get(stockName);
+			StockAlgorithms e = stockToAlgorithm.get(stockName);
 			if (e != null)
 				e.simulate(newDay);
 		}
 
 		int size() {
-			return stockToExecution.size();
+			return stockToAlgorithm.size();
 		}
 
 	}
@@ -72,7 +72,7 @@ public class ExecutionsStorage {
 	private List<StockExecution> stockExecutions = new ArrayList<>();
 	private List<EodExecution> eodExecutions = new ArrayList<>();
 
-	private StockExecutions stockAlgorithms = new StockExecutions();
+	private StockNameToAlgorithms stockAlgorithms = new StockNameToAlgorithms();
 	private Map<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();
 
 	public ExecutionsStorage() {
@@ -123,14 +123,14 @@ public class ExecutionsStorage {
 	}
 
 	public int getStockAlgorithmsSize() {
-		if (stockAlgorithms.stockToExecution.isEmpty())
+		if (stockAlgorithms.stockToAlgorithm.isEmpty())
 			return 0;
 		else
-			return stockAlgorithms.stockToExecution.entrySet().iterator().next().getValue().size();
+			return stockAlgorithms.stockToAlgorithm.entrySet().iterator().next().getValue().size();
 	}
 
 	public StockAlgorithm getStockAlgorithm(final String executionName, final String stockName) {
-		Executions e = stockAlgorithms.stockToExecution.get(stockName);
+		StockAlgorithms e = stockAlgorithms.stockToAlgorithm.get(stockName);
 		if (e != null)
 			return e.map.get(executionName);
 		return null;

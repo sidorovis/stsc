@@ -1,14 +1,16 @@
-package stsc.liquiditator;
+package stsc.yahoo.liquiditator;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
 import stsc.common.MemoryStock;
 import stsc.common.UnitedFormatStock;
 import stsc.common.Stock;
+import stsc.yahoo.liquiditator.StockFilter;
 import junit.framework.TestCase;
 
 public class StockFilterTest extends TestCase {

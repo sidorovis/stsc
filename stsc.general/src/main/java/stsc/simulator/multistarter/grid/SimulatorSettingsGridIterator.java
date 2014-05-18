@@ -2,6 +2,7 @@ package stsc.simulator.multistarter.grid;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +24,7 @@ import stsc.trading.TradeProcessorInit;
 public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings> {
 
 	static {
-		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-				"./config/simulator_settings_iterator_log4j2.xml");
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/simulator_settings_iterator_log4j2.xml");
 	}
 
 	private static Logger logger = LogManager.getLogger("SimulatorSettingsGridIterator");
@@ -36,13 +36,16 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 	private final List<ExecutionInitializer> stockInitializers;
 	private final List<ExecutionInitializer> eodInitializers;
 
-	SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period, List<ExecutionInitializer> stocks,
-			List<ExecutionInitializer> eods, boolean finished) {
+	private AtomicLong ssId;
+
+	SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period, List<ExecutionInitializer> stocks, List<ExecutionInitializer> eods,
+			boolean finished) {
 		this.finished = finished;
 		this.stockStorage = stockStorage;
 		this.period = period;
 		this.stockInitializers = stocks;
 		this.eodInitializers = eods;
+		this.ssId = new AtomicLong();
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 			result = generateSimulatorSettings();
 		} catch (BadAlgorithmException e) {
 			logger.error("Problem with generating SimulatorSettings: " + e.getMessage());
-			result = new SimulatorSettings(new TradeProcessorInit(stockStorage, period, new ExecutionsStorage()));
+			result = new SimulatorSettings(-1, new TradeProcessorInit(stockStorage, period, new ExecutionsStorage()));
 			finished = true;
 		}
 		generateNext();
@@ -117,7 +120,7 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 		}
 
 		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		final SimulatorSettings ss = new SimulatorSettings(init);
+		final SimulatorSettings ss = new SimulatorSettings(ssId.getAndIncrement(), init);
 		return ss;
 	}
 

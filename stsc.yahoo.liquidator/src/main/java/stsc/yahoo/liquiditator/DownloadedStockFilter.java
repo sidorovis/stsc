@@ -1,4 +1,4 @@
-package stsc.yahoo.liquidator;
+package stsc.yahoo.liquiditator;
 
 import java.io.FileInputStream;
 import java.io.IOException;

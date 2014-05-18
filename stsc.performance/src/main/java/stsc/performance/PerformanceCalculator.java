@@ -1,14 +1,17 @@
 package stsc.performance;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.TimeTracker;
 import stsc.signals.BadSignalException;
-import stsc.simulator.multistarter.StrategySearcher;
+import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.StrategySearcherException;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.simulator.multistarter.grid.StrategyGridSearcher;
@@ -16,88 +19,121 @@ import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsInnerProductFunction;
 import stsc.statistic.StatisticsSelector;
 import stsc.storage.StockStorage;
-import stsc.yahoo.YahooFileStockStorage;
 
 class PerformanceCalculator {
 
-	private static int storedStrategyAmount = 500;
+	private final static int storedStrategyAmount = 100;
 
-	private static int threadsFrom = 1;
-	private static int threadsTo = 4;
-	private static int threadsStep = 1;
+	private int checkOneThreadAmountOfThreads = 1;
 
 	final private StockStorage stockStorage;
 
-	// private List<String> periods = Arrays.asList(new String[] { "31-01-2000"
-	// });
+	private final static int calculationsForAverage = 4;
+	private final static int threadsTo = 6;
 
-	private List<String> periods = Arrays.asList(new String[] { "31-01-2000", "31-02-2000", "31-03-2000", "31-04-2000",
-			"31-05-2000", "31-06-2000", "01-01-2001", "01-01-2002", "01-01-2003", "01-01-2004", "01-01-2005",
-			"01-01-2006", "01-01-2007", "01-01-2008", "01-01-2009" });
+	private static LocalDate startOfPeriod = new LocalDate(1970, 1, 1);
 
-	private static int calculationsForAverage = 5;
-
-	static private class PerformanceStatistic {
-		public PerformanceStatistic(int threads, String period, double avTime) {
-			super();
-			this.threads = threads;
-			this.period = period;
-			this.avTime = avTime;
-		}
-
-		final public int threads;
-		final public String period;
-		final public double avTime;
-	}
-
-	private List<PerformanceStatistic> statistics = new ArrayList<>();
+	final List<String> elements = Arrays.asList(new String[] { "open", "high", "low", "close", "value", "open", "high", "low", "close" });
 
 	private StockStorage loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
-		return new YahooFileStockStorage("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data/");
+		return SimulatorSettingsGenerator.StockStorageSingleton.getInstance();
 	}
 
 	PerformanceCalculator() throws Exception {
 		stockStorage = loadStocks();
-		System.out.println("Size of threads: " + stockStorage.getStockNames().size());
-		getTimeFor(1, "31-01-2000");
-		for (int threads = threadsFrom; threads <= threadsTo; threads += threadsStep) {
-			for (String endOfPeriod : periods) {
-				final double avTime = getTimeFor(threads, endOfPeriod);
-				statistics.add(new PerformanceStatistic(threads, endOfPeriod, avTime));
-			}
+		System.out.println("Size of stocks: " + stockStorage.getStockNames().size());
+		warmUp();
+		calculateAmountOfSimulations();
+		calculateStatistics();
+	}
+
+	private void calculateStatistics() throws Exception {
+		for (int i = 10; i <= 31; ++i) {
+			calculateForThreads(startOfPeriod.plusDays(i));
+		}
+
+		for (int i = 1; i <= 12; ++i) {
+			calculateForThreads(startOfPeriod.plusMonths(i));
+		}
+
+		for (int i = 1; i <= 12; i += 1) {
+			calculateForThreads(startOfPeriod.plusYears(i));
+		}
+
+	}
+
+	private void calculateForThreads(LocalDate endDate) throws Exception {
+		System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
+		for (int thread = 1; thread <= threadsTo; ++thread) {
+			checkOneThreadAmountOfThreads = thread;
+			checkOneThread(endDate);
+		}
+		System.out.println();
+	}
+
+	private void calculateAmountOfSimulations() throws StrategySearcherException {
+		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage, elements,
+				getDateRepresentation(startOfPeriod), getDateRepresentation(startOfPeriod.plusMonths(1)));
+		int i = 0;
+		final Iterator<SimulatorSettings> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			iterator.next();
+			++i;
+		}
+		System.out.println("Simulation amount: " + i);
+	}
+
+	private void warmUp() throws Exception {
+		final LocalDate newDate = startOfPeriod.plusDays(31);
+		calculateTime(newDate, false);
+	}
+
+	private void checkOneThread(LocalDate endDate) throws Exception {
+		calculateTime(endDate, true);
+	}
+
+	private void calculateTime(LocalDate endDate, boolean printData) throws Exception {
+		calculateTime(getDateRepresentation(endDate), printData);
+	}
+
+	private String getDateRepresentation(LocalDate date) {
+		int day = date.getDayOfMonth();
+		int month = date.getMonthOfYear();
+		int year = date.getYear();
+		return String.format("%02d-%02d-%04d", day, month, year);
+	}
+
+	private void calculateTime(String end, boolean printData) throws Exception {
+		final double timeInSeconds = TimeTracker.lengthInSeconds(getTimeFor(checkOneThreadAmountOfThreads, end));
+		if (printData) {
+			System.out.print(" " + String.valueOf(timeInSeconds));
 		}
 	}
 
 	private long getTimeFor(int threads, String endOfPeriod) throws Exception {
-		final List<String> elements = Arrays.asList(new String[] { "open", "close", "high", "low" });
-		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage,
-				elements, endOfPeriod);
-		final StatisticsSelector<Double> selector = new StatisticsSelector<Double>(storedStrategyAmount,
-				new StatisticsInnerProductFunction());
-		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threads);
-		return calculateAverageTime(searcher);
+		return calculateAverageTime(threads, endOfPeriod);
 	}
 
-	private long timeForSearch(final StrategySearcher<Double> searcher) throws StrategySearcherException,
-			BadAlgorithmException, StatisticsCalculationException, BadSignalException {
-		final TimeTracker timeSearcher = new TimeTracker();
-		searcher.getSelector().getSortedStatistics();
-		return timeSearcher.finish();
-	}
-
-	private long calculateAverageTime(StrategySearcher<Double> searcher) throws Exception {
+	private long calculateAverageTime(int threads, String endOfPeriod) throws Exception {
 		final int n = calculationsForAverage;
 		double av = 0.0;
 
 		for (int i = 0; i < n; ++i) {
-			av += timeForSearch(searcher);
+			av += timeForSearch(threads, endOfPeriod).length();
 		}
 		return Math.round(av / calculationsForAverage);
 	}
 
-	void printStdOut() {
-		for (PerformanceStatistic ps : statistics) {
-			System.out.println(ps.threads + "\t" + ps.period + "\t" + String.format("%02f", ps.avTime));
-		}
+	private TimeTracker timeForSearch(int threadSize, String endOfPeriod) throws StrategySearcherException, BadAlgorithmException,
+			StatisticsCalculationException, BadSignalException {
+		final TimeTracker timeTracker = new TimeTracker();
+		final String startDate = getDateRepresentation(startOfPeriod);
+		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage, elements, startDate, endOfPeriod);
+		final StatisticsSelector<Double> selector = new StatisticsSelector<Double>(storedStrategyAmount, new StatisticsInnerProductFunction());
+		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
+		searcher.getSelector().getSortedStatistics();
+		timeTracker.finish();
+		return timeTracker;
 	}
+
 }

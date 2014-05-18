@@ -12,8 +12,7 @@ public class YahooUtils {
 	private YahooUtils() {
 	}
 
-	public static void copyFilteredStockFile(String dataFolder, String filteredDataFolder, String stockName)
-			throws IOException {
+	public static void copyFilteredStockFile(String dataFolder, String filteredDataFolder, String stockName) throws IOException {
 		final File originalFile = new File(UnitedFormatStock.generatePath(dataFolder, stockName));
 		final File filteredFile = new File(UnitedFormatStock.generatePath(filteredDataFolder, stockName));
 		if (filteredFile.exists() && originalFile.exists() && filteredFile.length() == originalFile.length()) {
@@ -22,11 +21,11 @@ public class YahooUtils {
 			Files.copy(originalFile.toPath(), filteredFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	public static YahooSettings createSettings() {
+	public static YahooSettings createSettings() throws IOException {
 		return new YahooSettings("./data/", "./filtered_data/");
 	}
 
-	public static YahooSettings createSettings(String dataFolder, String filteredDataFolder) {
+	public static YahooSettings createSettings(String dataFolder, String filteredDataFolder) throws IOException {
 		return new YahooSettings(dataFolder, filteredDataFolder);
 	}
 }

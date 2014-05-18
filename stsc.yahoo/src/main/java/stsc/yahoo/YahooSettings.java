@@ -1,5 +1,6 @@
 package stsc.yahoo;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,9 +13,18 @@ public class YahooSettings {
 	private String dataFolder = "./data/";
 	private String filteredDataFolder = "./filtered_data/";
 
-	YahooSettings(String dataFolder, String filteredDataFolder) {
-		this.dataFolder = dataFolder;
-		this.filteredDataFolder = filteredDataFolder;
+	YahooSettings(String dataFolder, String filteredDataFolder) throws IOException {
+		this.dataFolder = checkFolder(dataFolder, "Bad data folder");
+		this.filteredDataFolder = checkFolder(filteredDataFolder, "Bad filtered data folder");
+	}
+
+	private String checkFolder(final String dataFolder, final String message) throws IOException {
+		final File dataFolderFile = new File(dataFolder);
+		if (dataFolderFile.exists() && dataFolderFile.isDirectory()) {
+			return dataFolderFile.getPath() + File.separatorChar;
+		} else {
+			throw new IOException(message + ": " + this.dataFolder);
+		}
 	}
 
 	public int taskQueueSize() {

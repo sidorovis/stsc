@@ -33,12 +33,11 @@ public class SimulatorTest extends TestCase {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		final FromToPeriod period = new FromToPeriod("01-09-2002", "27-09-2002");
-		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(
-				period));
+		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(period));
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
+		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18.0, statistics.getPeriod());
 		assertEquals(4.209799, statistics.getAvGain(), Settings.doubleEpsilon);
@@ -48,12 +47,11 @@ public class SimulatorTest extends TestCase {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		final FromToPeriod period = new FromToPeriod("01-09-2002", "27-09-2002");
-		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(
-				period).set("side", "short"));
+		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(period).set("side", "short"));
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		Simulator simulator = new Simulator(new SimulatorSettings(tpi));
+		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		assertEquals(18.0, statistics.getPeriod());
 		assertEquals(-4.209799, statistics.getAvGain(), Settings.doubleEpsilon);
@@ -75,8 +73,7 @@ public class SimulatorTest extends TestCase {
 
 	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
-		Simulator.fromFile("./test_data/simulator_tests/open_while_signal.ini").getStatistics()
-				.print("./test/statistics.csv");
+		Simulator.fromFile("./test_data/simulator_tests/open_while_signal.ini").getStatistics().print("./test/statistics.csv");
 		assertEquals(513, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}

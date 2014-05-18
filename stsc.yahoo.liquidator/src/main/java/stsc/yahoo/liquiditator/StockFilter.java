@@ -1,4 +1,4 @@
-package stsc.liquiditator;
+package stsc.yahoo.liquiditator;
 
 import java.util.ArrayList;
 import java.util.Date;

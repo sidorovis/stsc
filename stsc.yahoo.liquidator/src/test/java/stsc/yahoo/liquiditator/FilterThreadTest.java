@@ -1,4 +1,4 @@
-package stsc.yahoo.liquidator;
+package stsc.yahoo.liquiditator;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import org.joda.time.LocalDate;
 
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
-import stsc.yahoo.liquidator.FilterThread;
 import junit.framework.TestCase;
 
 public class FilterThreadTest extends TestCase {

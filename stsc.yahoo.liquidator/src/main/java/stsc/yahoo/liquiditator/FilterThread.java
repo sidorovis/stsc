@@ -1,4 +1,4 @@
-package stsc.yahoo.liquidator;
+package stsc.yahoo.liquiditator;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
-import stsc.liquiditator.StockFilter;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
+import stsc.yahoo.liquiditator.StockFilter;
 
 class FilterThread implements Runnable {
 

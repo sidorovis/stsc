@@ -53,7 +53,7 @@ public class Statistics {
 
 		double getAvGain() throws StatisticsCalculationException {
 			if (equityCurve.size() == 0)
-				throw new StatisticsCalculationException("no elements at equity curve");
+				throw new StatisticsCalculationException("no elements at equity curve: ");
 			return equityCurve.getLastElement().value;
 		}
 

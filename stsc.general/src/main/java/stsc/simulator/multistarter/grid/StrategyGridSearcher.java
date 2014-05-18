@@ -32,7 +32,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 				"./config/mt_strategy_grid_searcher_log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger("MtStrategyGridSearcher");
+	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
 
 	private final Set<String> processedSettings = new HashSet<>();
 	private final StatisticsSelector<Double> selector;
@@ -90,7 +90,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 			int threadAmount) {
 		this.selector = selector;
 		final Iterator<SimulatorSettings> iterator = iterable.iterator();
-		logger.debug("Starting MtStrategyGridSearcher");
+		logger.debug("Starting");
 
 		for (int i = 0; i < threadAmount; ++i) {
 			threads.add(new StatisticsCalculationThread(iterator, selector));
@@ -98,7 +98,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 		for (Thread t : threads) {
 			t.start();
 		}
-		logger.debug("Finishing MtStrategyGridSearcher");
+		logger.debug("Finishing");
 	}
 
 	@Override

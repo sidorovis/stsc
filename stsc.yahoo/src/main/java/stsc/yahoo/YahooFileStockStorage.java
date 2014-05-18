@@ -24,8 +24,7 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 	private YahooSettings settings;
 	private int readStockThreadSize = 4;
 
-	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException,
-			InterruptedException {
+	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException, InterruptedException {
 		super();
 		this.settings = settings;
 		loadStocksFromFileSystem();
@@ -35,18 +34,15 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 		this("./data/", "./filtered_data/");
 	}
 
-	public static YahooFileStockStorage forData(String dataFolder) throws ClassNotFoundException, IOException,
-			InterruptedException {
+	public static YahooFileStockStorage forData(String dataFolder) throws ClassNotFoundException, IOException, InterruptedException {
 		return new YahooFileStockStorage(dataFolder, "./filtered_data/");
 	}
 
-	public static YahooFileStockStorage forFilteredData(String dataFilterFolder) throws ClassNotFoundException,
-			IOException, InterruptedException {
+	public static YahooFileStockStorage forFilteredData(String dataFilterFolder) throws ClassNotFoundException, IOException, InterruptedException {
 		return new YahooFileStockStorage("./data/", dataFilterFolder);
 	}
 
-	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException,
-			IOException, InterruptedException {
+	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException, IOException, InterruptedException {
 		super();
 		this.settings = new YahooSettings(dataFolder, filteredDataFolder);
 		loadStocksFromFileSystem();
@@ -69,7 +65,8 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 		List<Thread> threads = new ArrayList<Thread>();
 
 		for (int i = 0; i < readStockThreadSize; ++i) {
-			Thread newThread = new Thread(stockReadThread);
+			final Thread newThread = new Thread(stockReadThread);
+			newThread.setName("YahooFileStockStorage Reading Thread - " + String.valueOf(i));
 			threads.add(newThread);
 			newThread.start();
 		}

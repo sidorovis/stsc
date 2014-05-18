@@ -10,9 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import stsc.common.UnitedFormatStock;
-import stsc.liquiditator.StockFilter;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
+import stsc.yahoo.liquiditator.StockFilter;
 
 import com.google.common.io.CharStreams;
 
@@ -76,8 +76,7 @@ class DownloadThread implements Runnable {
 			String filteredFilePath = getPath(settings.getFilteredDataFolder(), stockName);
 			File filteredFile = new File(filteredFilePath);
 			if (filteredFile.exists()) {
-				logger.debug("deleting filtered file with stock " + stockName
-						+ " it doesn't pass new liquidity filter tests");
+				logger.debug("deleting filtered file with stock " + stockName + " it doesn't pass new liquidity filter tests");
 				filteredFile.delete();
 			}
 		}
@@ -103,8 +102,7 @@ class DownloadThread implements Runnable {
 			tries += 1;
 		}
 		if (newStock == null)
-			throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName
-					+ " stock. " + error);
+			throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName + " stock. " + error);
 		return newStock;
 	}
 
@@ -130,8 +128,7 @@ class DownloadThread implements Runnable {
 			}
 			tries += 1;
 		}
-		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock "
-				+ error);
+		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock " + error);
 	}
 
 	private static String getPath(String folder, String taskName) {

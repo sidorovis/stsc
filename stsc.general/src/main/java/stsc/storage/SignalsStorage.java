@@ -54,39 +54,31 @@ public class SignalsStorage {
 			this.signalClass = signalClass;
 		}
 
-		public Handler<? extends SignalType> getSignal(final Date date) {
-			synchronized (this) {
-				return signalMap.get(date);
-			}
+		public synchronized Handler<? extends SignalType> getSignal(final Date date) {
+			return signalMap.get(date);
 		}
 
-		public Handler<? extends SignalType> getSignal(final int index) {
-			synchronized (this) {
-				return signalList.get(index);
-			}
+		public synchronized Handler<? extends SignalType> getSignal(final int index) {
+			return signalList.get(index);
 		}
 
 		public void addSignal(Date date, SignalType signal) throws BadSignalException {
 			if (signal.getClass() == signalClass)
 				checkedAddSignal(date, signal);
 			else
-				throw new BadSignalException("bad signal type, expected(" + signalClass.getCanonicalName()
-						+ "), received(" + signal.getClass().getCanonicalName() + ")");
+				throw new BadSignalException("bad signal type, expected(" + signalClass.getCanonicalName() + "), received("
+						+ signal.getClass().getCanonicalName() + ")");
 		}
 
-		private void checkedAddSignal(Date date, SignalType signal) {
-			synchronized (this) {
-				final int newIndex = signalList.size();
-				Handler<SignalType> newHandler = new Handler<SignalType>(newIndex, date, signal);
-				signalList.add(newHandler);
-				signalMap.put(date, newHandler);
-			}
+		private synchronized void checkedAddSignal(Date date, SignalType signal) {
+			final int newIndex = signalList.size();
+			Handler<SignalType> newHandler = new Handler<SignalType>(newIndex, date, signal);
+			signalList.add(newHandler);
+			signalMap.put(date, newHandler);
 		}
 
-		public int size() {
-			synchronized (this) {
-				return signalList.size();
-			}
+		public synchronized int size() {
+			return signalList.size();
 		}
 
 		@Override
@@ -101,8 +93,7 @@ public class SignalsStorage {
 	public SignalsStorage() {
 	}
 
-	public void registerStockSignalsType(String stockName, String executionName,
-			Class<? extends StockSignal> signalsClass) {
+	public void registerStockSignalsType(String stockName, String executionName, Class<? extends StockSignal> signalsClass) {
 		if (signalsClass != null) {
 			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
@@ -111,16 +102,14 @@ public class SignalsStorage {
 		}
 	}
 
-	public void addStockSignal(final String stockName, final String executionName, final Date date,
-			final StockSignal signal) throws BadSignalException {
+	public void addStockSignal(final String stockName, final String executionName, final Date date, final StockSignal signal) throws BadSignalException {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		synchronized (stockSignals) {
 			stockSignals.get(key).addSignal(date, signal);
 		}
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName,
-			final Date date) {
+	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
@@ -131,8 +120,7 @@ public class SignalsStorage {
 		return null;
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName,
-			final int index) {
+	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final int index) {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		ExecutionSignalsStorage<StockSignal> ess;
 		synchronized (stockSignals) {
