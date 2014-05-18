@@ -9,17 +9,17 @@ import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
-import stsc.testhelper.StockStorageHelper;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestSimulatorSettings;
+import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.Broker;
 import junit.framework.TestCase;
 
 public class SimulatorSettingsGridCopyListTest extends TestCase {
 
 	public void testSimulatorSettingsGridCopyList() throws BadAlgorithmException, BadParameterException {
-		final StockStorage stockStorage = new StockStorageHelper();
+		final StockStorage stockStorage = new TestStockStorageHelper();
 
-		final SimulatorSettingsGridFactory factory = TestHelper.getSimulatorSettingsGridFactory(stockStorage,
+		final SimulatorSettingsGridFactory factory = TestSimulatorSettings.getGridFactory(stockStorage,
 				Arrays.asList(new String[] { "open" }), "31-01-2000");
 		final SimulatorSettingsGridCopyList list = factory.getCopyList();
 		int count = 0;

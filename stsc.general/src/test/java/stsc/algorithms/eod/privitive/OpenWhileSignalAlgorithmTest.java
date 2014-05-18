@@ -19,7 +19,7 @@ import stsc.common.UnitedFormatStock;
 import stsc.signals.BadSignalException;
 import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import stsc.trading.Broker;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord.TradingType;
@@ -28,11 +28,11 @@ import junit.framework.TestCase;
 public class OpenWhileSignalAlgorithmTest extends TestCase {
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException {
 
-		final StockAlgorithm.Init stockInit = TestHelper.getStockAlgorithmInit("in", "aapl");
+		final StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
 		stockInit.settings.set("e", "open");
 		final In in = new In(stockInit);
 
-		StockAlgorithm.Init levelInit = TestHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
+		StockAlgorithm.Init levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
 		levelInit.settings.addSubExecutionName("in");
 		levelInit.settings.set("f", "699.0");
 		final Level level = new Level(levelInit);
@@ -42,11 +42,10 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 		stockStorage.updateStock(aapl);
 		final Broker broker = new Broker(stockStorage);
 
-		final AlgorithmSettings algoSettings = TestHelper.getAlgorithmSettings();
+		final AlgorithmSettings algoSettings = TestAlgorithmsHelper.getSettings();
 		algoSettings.set("P", "10000.0");
 		algoSettings.addSubExecutionName("level");
-		final EodAlgorithm.Init initOwsa = TestHelper.getEodAlgorithmInit(broker, "eodOwsa", algoSettings,
-				stockInit.signalsStorage);
+		final EodAlgorithm.Init initOwsa = TestAlgorithmsHelper.getEodAlgorithmInit(broker, "eodOwsa", algoSettings, stockInit.signalsStorage);
 		final OpenWhileSignalAlgorithm eodOwsa = new OpenWhileSignalAlgorithm(initOwsa);
 
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());

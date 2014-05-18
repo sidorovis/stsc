@@ -15,27 +15,27 @@ import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class SmaTest extends TestCase {
 	public void testSma() throws IOException, BadSignalException, BadAlgorithmException {
 
-		StockAlgorithm.Init stockInit = TestHelper.getStockAlgorithmInit("testIn", "aapl");
+		StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("testIn", "aapl");
 		stockInit.settings.set("e", "open");
 		final In inAlgo = new In(stockInit);
 
-		StockAlgorithm.Init stockInitClose = TestHelper.getStockAlgorithmInit("testInClose", "aapl",
+		StockAlgorithm.Init stockInitClose = TestAlgorithmsHelper.getStockAlgorithmInit("testInClose", "aapl",
 				stockInit.signalsStorage);
 		stockInitClose.settings.set("e", "close");
 		final In inAlgoClose = new In(stockInitClose);
 
-		final StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit("testSma", "aapl", stockInit.signalsStorage);
+		final StockAlgorithm.Init init = TestAlgorithmsHelper.getStockAlgorithmInit("testSma", "aapl", stockInit.signalsStorage);
 		init.settings.set("n", 5);
 		init.settings.addSubExecutionName("testIn");
 		final Sma sma = new Sma(init);
 
-		final StockAlgorithm.Init initClose = TestHelper.getStockAlgorithmInit("testSmaClose", "aapl",
+		final StockAlgorithm.Init initClose = TestAlgorithmsHelper.getStockAlgorithmInit("testSmaClose", "aapl",
 				stockInit.signalsStorage);
 		initClose.settings.set("n", 5);
 		initClose.settings.addSubExecutionName("testInClose");

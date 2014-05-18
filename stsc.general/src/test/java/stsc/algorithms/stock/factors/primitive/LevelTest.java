@@ -10,17 +10,17 @@ import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class LevelTest extends TestCase {
 	public void testLevel() throws Exception {
 
-		final StockAlgorithm.Init stockInit = TestHelper.getStockAlgorithmInit("in", "aapl");
+		final StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
 		stockInit.settings.set("e", "open");
 		final In in = new In(stockInit);
 
-		StockAlgorithm.Init levelInit = TestHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
+		StockAlgorithm.Init levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
 		levelInit.settings.addSubExecutionName("in");
 		levelInit.settings.set("f", "699.0");
 		final Level level = new Level(levelInit);

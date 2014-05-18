@@ -6,7 +6,7 @@ import java.util.HashMap;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class EodAlgorithmTest extends TestCase {
@@ -30,7 +30,7 @@ public class EodAlgorithmTest extends TestCase {
 	}
 
 	public void testEodAlgorithm() throws BadSignalException, BadAlgorithmException {
-		EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();
+		EodAlgorithm.Init init = TestAlgorithmsHelper.getEodAlgorithmInit();
 		init.executionName = "a";
 		EodAlgorithmHelper eah = new EodAlgorithmHelper(init);
 		final Date theDate = new Date();

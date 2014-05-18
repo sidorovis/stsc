@@ -5,7 +5,7 @@ import java.util.Date;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.StockSignal;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class StockAlgorithmTest extends TestCase {
@@ -27,7 +27,7 @@ public class StockAlgorithmTest extends TestCase {
 	}
 
 	public void testStockAlgorithm() throws BadSignalException, BadAlgorithmException {
-		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit();
+		StockAlgorithm.Init init = TestAlgorithmsHelper.getStockAlgorithmInit();
 		init.executionName = "s";
 		init.stockName = "a";
 		StockAlgorithmHelper sah = new StockAlgorithmHelper(init);

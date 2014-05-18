@@ -8,8 +8,8 @@ import org.joda.time.LocalDate;
 
 import stsc.common.Settings;
 import stsc.common.Stock;
-import stsc.common.UnitedFormatStock;
-import stsc.testhelper.TestHelper;
+import stsc.storage.StockStorage;
+import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.Broker;
 import stsc.trading.Side;
 import stsc.trading.TradingLog;
@@ -17,29 +17,17 @@ import junit.framework.TestCase;
 
 public class StatisticsProcessorTest extends TestCase {
 
-	private static boolean stocksLoaded = false;
-	private static Stock aapl;
-	private static Stock adm;
-	private static Stock spy;
-
-	private void loadStocksForTest() throws IOException {
-		if (stocksLoaded)
-			return;
-		aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
-		spy = UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf");
-		stocksLoaded = true;
-	}
-
 	public void testStatistics() throws Exception {
-		loadStocksForTest();
+		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final Stock aapl = stockStorage.getStock("aapl");
+		final Stock adm = stockStorage.getStock("adm");
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
+		final TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
 
-		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
+		final StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
@@ -64,12 +52,14 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	public void testReverseStatistics() throws Exception {
-		loadStocksForTest();
+		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final Stock aapl = stockStorage.getStock("aapl");
+		final Stock adm = stockStorage.getStock("adm");
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
+		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -96,13 +86,16 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
-		loadStocksForTest();
+		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final Stock aapl = stockStorage.getStock("aapl");
+		final Stock adm = stockStorage.getStock("adm");
+		final Stock spy = stockStorage.getStock("spy");
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
+		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -209,8 +202,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(40.984757, stats.getDdValueMax(), Settings.doubleEpsilon);
 	}
 
-	public void testStatisticsOnLastClose() throws IOException, StatisticsCalculationException,
-			IllegalArgumentException, IllegalAccessException {
+	public void testStatisticsOnLastClose() throws IOException, StatisticsCalculationException, IllegalArgumentException, IllegalAccessException {
 		final Statistics stats = testTradingHelper(3, false);
 		stats.print("./test/out.csv");
 
@@ -221,16 +213,17 @@ public class StatisticsProcessorTest extends TestCase {
 		file.delete();
 	}
 
-	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException,
-			StatisticsCalculationException {
-
-		loadStocksForTest();
+	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException, StatisticsCalculationException {
+		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final Stock aapl = stockStorage.getStock("aapl");
+		final Stock adm = stockStorage.getStock("adm");
+		final Stock spy = stockStorage.getStock("spy");
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
+		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
 
 		StatisticsProcessor statisticsProcessor = new StatisticsProcessor(tradingLog);
 

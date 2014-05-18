@@ -1,87 +1,18 @@
 package stsc.testhelper;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.StockAlgorithm;
 import stsc.common.FromToPeriod;
 import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
-import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
-import stsc.simulator.multistarter.BadParameterException;
-import stsc.simulator.multistarter.MpDouble;
-import stsc.simulator.multistarter.MpInteger;
-import stsc.simulator.multistarter.MpSubExecution;
-import stsc.simulator.multistarter.grid.SimulatorSettingsGridFactory;
-import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
-import stsc.storage.AlgorithmsStorage;
-import stsc.storage.SignalsStorage;
-import stsc.storage.StockStorage;
-import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
 import stsc.trading.Side;
 import stsc.trading.TradingLog;
 
 public class TestHelper {
-	public static EodAlgorithm.Init getEodAlgorithmInit() {
-		return getEodAlgorithmInit(new Broker(new ThreadSafeStockStorage()));
-	}
-
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker) {
-		return getEodAlgorithmInit(broker, "eName");
-	}
-
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName) {
-		return getEodAlgorithmInit(broker, executionName, getAlgorithmSettings());
-	}
-
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings) {
-		return getEodAlgorithmInit(broker, executionName, getAlgorithmSettings(), new SignalsStorage());
-	}
-
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings, SignalsStorage signalsStorage) {
-		EodAlgorithm.Init init = new EodAlgorithm.Init();
-		init.broker = broker;
-		init.executionName = executionName;
-		init.settings = settings;
-		init.signalsStorage = signalsStorage;
-		return init;
-	}
-
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage) {
-		StockAlgorithm.Init init = new StockAlgorithm.Init();
-		init.executionName = executionName;
-		init.settings = getAlgorithmSettings();
-		init.signalsStorage = storage;
-		init.stockName = stockName;
-		return init;
-	}
-
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName) {
-		return getStockAlgorithmInit(executionName, stockName, new SignalsStorage());
-	}
-
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName) {
-		return getStockAlgorithmInit(executionName, "sName");
-	}
-
-	public static StockAlgorithm.Init getStockAlgorithmInit() {
-		return getStockAlgorithmInit("eName");
-	}
-
-	public static AlgorithmSettings getAlgorithmSettings() {
-		return new AlgorithmSettings(getPeriod());
-	}
 
 	public static FromToPeriod getPeriod() {
 		try {
@@ -104,7 +35,7 @@ public class TestHelper {
 			int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 			int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-			TradingLog tradingLog = new Broker(TestHelper.getStockStorage()).getTradingLog();
+			TradingLog tradingLog = new Broker(TestStockStorageHelper.getStockStorage()).getTradingLog();
 
 			StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -129,96 +60,6 @@ public class TestHelper {
 		} catch (Exception e) {
 		}
 		return statisticsData;
-	}
-
-	public static String algoStockName(String aname) throws BadAlgorithmException {
-		return AlgorithmsStorage.getInstance().getStock(aname).getName();
-	}
-
-	public static String algoEodName(String aname) throws BadAlgorithmException {
-		return AlgorithmsStorage.getInstance().getEod(aname).getName();
-	}
-
-	static StockStorage stockStorage = null;
-
-	public static StockStorage getStockStorage() {
-		if (stockStorage == null) {
-			stockStorage = new ThreadSafeStockStorage();
-			try {
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
-			} catch (IOException e) {
-			}
-		}
-		return stockStorage;
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList() {
-		return getSimulatorSettingsGridList("31-03-2000");
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final String periodTo) {
-		final StockStorage stockStorage = getStockStorage();
-		return getSimulatorSettingsGridList(stockStorage, "31-03-2000");
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(StockStorage stockStorage, final String periodTo) {
-		return getSimulatorSettingsGridList(stockStorage, Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), periodTo);
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes) {
-		return getSimulatorSettingsGridList(openTypes, "31-03-2000");
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final List<String> openTypes, final String periodTo) {
-		return getSimulatorSettingsGridList(getStockStorage(), openTypes, periodTo);
-	}
-
-	public static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep, int nSide,
-			int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
-		settings.addStock("in", algoStockName("In"), "e", openTypes);
-		settings.addStock("ema", algoStockName("Ema"),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.4)).add(new MpSubExecution("", "in")));
-		settings.addStock(
-				"level",
-				algoStockName("Level"),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, fStep)).add(
-						new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" }))));
-		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side", Arrays.asList(new String[] { "long", "short" }));
-
-		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
-		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level", "in" })));
-		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
-		factoryPositionSide.add(new MpInteger("n", 1, 32, nSide));
-		factoryPositionSide.add(new MpInteger("m", 1, 32, mSide));
-		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, psSide));
-		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
-	}
-
-	public static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
-		try {
-			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
-
-			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
-			fillIterator(factory, period, openTypes, 4.0, 10, 10, 50000.0);
-
-			return factory.getList();
-		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
-		}
-		return null;
-	}
-
-	public static SimulatorSettingsGridFactory getSimulatorSettingsGridFactory(final StockStorage stockStorage, final List<String> openTypes,
-			final String periodTo) {
-		try {
-			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
-			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
-			fillIterator(factory, period, openTypes, 4.0, 10, 10, 50000.0);
-			return factory;
-		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
-		}
-		return null;
 	}
 
 }

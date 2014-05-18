@@ -8,13 +8,13 @@ import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class SimpleTradingAlgorithmTest extends TestCase {
 	public void testTestingEodAlgorithm() throws BadSignalException, BadAlgorithmException {
 
-		final EodAlgorithm.Init init = TestHelper.getEodAlgorithmInit();
+		final EodAlgorithm.Init init = TestAlgorithmsHelper.getEodAlgorithmInit();
 
 		TestingEodAlgorithm tea = new TestingEodAlgorithm(init);
 		tea.process(new Date(), new HashMap<String, Day>());

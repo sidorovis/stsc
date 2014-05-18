@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import stsc.testhelper.TestHelper;
+
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class AlgorithmSettingsTest extends TestCase {
 
 	public void testAlgorithmsSettings() {
-		final AlgorithmSettings as = TestHelper.getAlgorithmSettings();
+		final AlgorithmSettings as = TestAlgorithmsHelper.getSettings();
 		assertNull(as.get("a"));
 		assertNotNull(as.set("a", new Double(14.05)));
 		assertNotNull(as.set("b", 14.05));
@@ -25,7 +26,7 @@ public class AlgorithmSettingsTest extends TestCase {
 	}
 
 	public void testReadWriteAlgorithmsSettings() throws IOException {
-		final AlgorithmSettings as = TestHelper.getAlgorithmSettings();
+		final AlgorithmSettings as = TestAlgorithmsHelper.getSettings();
 		as.addSubExecutionName("first_name").addSubExecutionName("add second Named&9h4t9\n fjiaby \0 world");
 		as.set("key", 10.0000);
 		as.set("e98h 3h aweiouhj w", "wthrth e hw ");

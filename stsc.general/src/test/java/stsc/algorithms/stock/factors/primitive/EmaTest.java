@@ -15,17 +15,17 @@ import stsc.common.Stock;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
-import stsc.testhelper.TestHelper;
+import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class EmaTest extends TestCase {
 	public void testEma() throws IOException, BadSignalException, BadAlgorithmException {
 
-		StockAlgorithm.Init stockInit = TestHelper.getStockAlgorithmInit("testIn", "aapl");
+		StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("testIn", "aapl");
 		stockInit.settings.set("e", "open");
 		final In inAlgo = new In(stockInit);
 
-		StockAlgorithm.Init init = TestHelper.getStockAlgorithmInit("testEma", "aapl", stockInit.signalsStorage);
+		StockAlgorithm.Init init = TestAlgorithmsHelper.getStockAlgorithmInit("testEma", "aapl", stockInit.signalsStorage);
 		init.settings.set("P", 0.3);
 		init.settings.addSubExecutionName("testIn");
 

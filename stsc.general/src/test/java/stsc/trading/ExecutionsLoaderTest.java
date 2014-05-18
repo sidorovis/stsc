@@ -3,14 +3,14 @@ package stsc.trading;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
-import stsc.testhelper.StockStorageHelper;
+import stsc.testhelper.TestStockStorageHelper;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class ExecutionsLoaderTest extends TestCase {
 
 	private ExecutionsStorage helperForSuccessLoadTests(String filename) throws Exception {
-		final StockStorage ss = new StockStorageHelper();
+		final StockStorage ss = new TestStockStorageHelper();
 		final ExecutionsLoader el = new ExecutionsLoader(filename, TestHelper.getPeriod());
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
@@ -34,7 +34,7 @@ public class ExecutionsLoaderTest extends TestCase {
 		boolean throwed = false;
 		try {
 			ExecutionsLoader loader = new ExecutionsLoader(file, TestHelper.getPeriod());
-			loader.getExecutionsStorage().initialize(new Broker(new StockStorageHelper()));
+			loader.getExecutionsStorage().initialize(new Broker(new TestStockStorageHelper()));
 		} catch (BadAlgorithmException e) {
 			assertEquals(message, e.getMessage());
 			throwed = true;
