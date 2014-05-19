@@ -12,6 +12,9 @@ class StockAlgorithms {
 	private final HashMap<String, StockAlgorithm> map = new HashMap<>();
 	private final ArrayList<StockAlgorithm> orderedAlgorithms = new ArrayList<>();
 
+	StockAlgorithms() {
+	}
+
 	public HashMap<String, StockAlgorithm> getMap() {
 		return map;
 	}
