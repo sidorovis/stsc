@@ -10,6 +10,9 @@ class StockNameToAlgorithms {
 	// stock name to execution map
 	private HashMap<String, StockAlgorithms> stockToAlgorithm = new HashMap<>();
 
+	StockNameToAlgorithms() {
+	}
+
 	public HashMap<String, StockAlgorithms> getStockToAlgorithm() {
 		return stockToAlgorithm;
 	}
