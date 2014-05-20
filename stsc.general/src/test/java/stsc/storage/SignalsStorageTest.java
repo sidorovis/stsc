@@ -4,14 +4,15 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
+import stsc.algorithms.SignalsSerie;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.storage.SignalsStorage.Handler;
+import stsc.signals.Signal;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {
 
-	class TestSignal extends EodSignal {
+	static public class TestSignal extends EodSignal {
 		public final int id;
 
 		public TestSignal(int id) {
@@ -21,18 +22,18 @@ public class SignalsStorageTest extends TestCase {
 
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
-		signalsStorage.registerEodSignalsType("e1", TestSignal.class);
+		signalsStorage.registerEodSignalsType("e1", new SignalsSerie<EodSignal>(TestSignal.class));
 		final Date d = new LocalDate(2010, 10, 20).toDate();
 		signalsStorage.addEodSignal("e1", d, new TestSignal(12));
-		final Handler<? extends EodSignal> ts = signalsStorage.getEodSignal("e1", d);
+		final Signal<? extends EodSignal> ts = signalsStorage.getEodSignal("e1", d);
 		assertEquals(12, ts.getSignal(TestSignal.class).id);
-		assertEquals(0, ts.index);
-		assertEquals(d, ts.date);
+		assertEquals(0, ts.getIndex());
+		assertEquals(d, ts.getDate());
 	}
 
 	public void testSignalsStorageGetByIndex() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
-		signalsStorage.registerEodSignalsType("e1", TestSignal.class);
+		signalsStorage.registerEodSignalsType("e1", new SignalsSerie<EodSignal>(TestSignal.class));
 
 		final LocalDate d = new LocalDate(2010, 10, 20);
 		signalsStorage.addEodSignal("e1", d.toDate(), new TestSignal(12));
@@ -47,10 +48,10 @@ public class SignalsStorageTest extends TestCase {
 			exception = true;
 		}
 		assertTrue(exception);
-		
-		assertEquals(12, signalsStorage.getEodSignal("e1", 0).getSignal(TestSignal.class).id );
-		assertEquals(13, signalsStorage.getEodSignal("e1", 2).getSignal(TestSignal.class).id );
-		assertEquals(15, signalsStorage.getEodSignal("e1", 1).getSignal(TestSignal.class).id );
-		assertEquals(14, signalsStorage.getEodSignal("e1", 3).getSignal(TestSignal.class).id );
+
+		assertEquals(12, signalsStorage.getEodSignal("e1", 0).getSignal(TestSignal.class).id);
+		assertEquals(13, signalsStorage.getEodSignal("e1", 2).getSignal(TestSignal.class).id);
+		assertEquals(15, signalsStorage.getEodSignal("e1", 1).getSignal(TestSignal.class).id);
+		assertEquals(14, signalsStorage.getEodSignal("e1", 3).getSignal(TestSignal.class).id);
 	}
 }

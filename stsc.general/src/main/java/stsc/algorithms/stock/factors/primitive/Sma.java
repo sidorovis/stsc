@@ -5,6 +5,8 @@ import java.util.List;
 
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.LimitSignalsSerie;
+import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -29,8 +31,8 @@ public class Sma extends StockAlgorithm {
 	}
 
 	@Override
-	public Class<? extends StockSignal> registerSignalsClass() {
-		return DoubleSignal.class;
+	public SignalsSerie<StockSignal> registerSignalsClass() {
+		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
 	}
 
 	@Override

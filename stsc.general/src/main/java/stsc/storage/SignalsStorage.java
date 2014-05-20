@@ -1,11 +1,12 @@
 package stsc.storage;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.algorithms.SignalsSerie;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
+import stsc.signals.Signal;
 import stsc.signals.StockSignal;
 
 /**
@@ -14,90 +15,18 @@ import stsc.signals.StockSignal;
  */
 
 public class SignalsStorage {
-	static public class Handler<SignalType> {
-		final int index;
-		final Date date;
-		final SignalType signal;
 
-		public Handler(final int index, final Date date, final SignalType signal) {
-			this.index = index;
-			this.date = date;
-			this.signal = signal;
-		}
-
-		@SuppressWarnings("unchecked")
-		public <T> T getSignal(Class<T> expectedClass) {
-			if (expectedClass.isInstance(signal)) {
-				return (T) signal;
-			} else
-				return null;
-		}
-
-		public SignalType getValue() {
-			return signal;
-		}
-
-		@Override
-		public String toString() {
-			return signal.toString();
-		}
-	}
-
-	private class ExecutionSignalsStorage<SignalType> {
-
-		private final Class<? extends SignalType> signalClass;
-
-		private final ArrayList<Handler<? extends SignalType>> signalList = new ArrayList<>();
-		private final HashMap<Date, Handler<? extends SignalType>> signalMap = new HashMap<>();
-
-		public ExecutionSignalsStorage(Class<? extends SignalType> signalClass) {
-			this.signalClass = signalClass;
-		}
-
-		public synchronized Handler<? extends SignalType> getSignal(final Date date) {
-			return signalMap.get(date);
-		}
-
-		public synchronized Handler<? extends SignalType> getSignal(final int index) {
-			return signalList.get(index);
-		}
-
-		public void addSignal(Date date, SignalType signal) throws BadSignalException {
-			if (signal.getClass() == signalClass)
-				checkedAddSignal(date, signal);
-			else
-				throw new BadSignalException("bad signal type, expected(" + signalClass.getCanonicalName() + "), received("
-						+ signal.getClass().getCanonicalName() + ")");
-		}
-
-		private synchronized void checkedAddSignal(Date date, SignalType signal) {
-			final int newIndex = signalList.size();
-			Handler<SignalType> newHandler = new Handler<SignalType>(newIndex, date, signal);
-			signalList.add(newHandler);
-			signalMap.put(date, newHandler);
-		}
-
-		public synchronized int size() {
-			return signalList.size();
-		}
-
-		@Override
-		public String toString() {
-			return signalMap.toString();
-		}
-	}
-
-	private HashMap<String, ExecutionSignalsStorage<StockSignal>> stockSignals = new HashMap<>();
-	private HashMap<String, ExecutionSignalsStorage<EodSignal>> eodSignals = new HashMap<>();
+	private HashMap<String, SignalsSerie<StockSignal>> stockSignals = new HashMap<>();
+	private HashMap<String, SignalsSerie<EodSignal>> eodSignals = new HashMap<>();
 
 	public SignalsStorage() {
 	}
 
-	public void registerStockSignalsType(String stockName, String executionName, Class<? extends StockSignal> signalsClass) {
-		if (signalsClass != null) {
+	public void registerStockSignalsType(String stockName, String executionName, SignalsSerie<StockSignal> serie) {
+		if (serie != null) {
 			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
-				stockSignals.put(key, new ExecutionSignalsStorage<StockSignal>(signalsClass));
+				stockSignals.put(key, serie);
 			}
 		}
 	}
@@ -109,9 +38,9 @@ public class SignalsStorage {
 		}
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
+	public Signal<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
 		final String key = stockAlgorithmKey(stockName, executionName);
-		ExecutionSignalsStorage<StockSignal> ess;
+		SignalsSerie<StockSignal> ess;
 		synchronized (stockSignals) {
 			ess = stockSignals.get(key);
 		}
@@ -120,9 +49,9 @@ public class SignalsStorage {
 		return null;
 	}
 
-	public Handler<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final int index) {
+	public Signal<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final int index) {
 		final String key = stockAlgorithmKey(stockName, executionName);
-		ExecutionSignalsStorage<StockSignal> ess;
+		SignalsSerie<StockSignal> ess;
 		synchronized (stockSignals) {
 			ess = stockSignals.get(key);
 		}
@@ -133,7 +62,7 @@ public class SignalsStorage {
 
 	public int getIndexSize(String stockName, String executionName) {
 		final String key = stockAlgorithmKey(stockName, executionName);
-		ExecutionSignalsStorage<StockSignal> ess;
+		SignalsSerie<StockSignal> ess;
 		synchronized (stockSignals) {
 			ess = stockSignals.get(key);
 		}
@@ -148,16 +77,16 @@ public class SignalsStorage {
 
 	// EOD
 
-	public void registerEodSignalsType(String executionName, Class<? extends EodSignal> signalsClass) {
-		if (signalsClass != null)
+	public void registerEodSignalsType(String executionName, SignalsSerie<EodSignal> serie) {
+		if (serie != null)
 			synchronized (eodSignals) {
-				eodSignals.put(executionName, new ExecutionSignalsStorage<EodSignal>(signalsClass));
+				eodSignals.put(executionName, serie);
 			}
 	}
 
 	public void addEodSignal(final String executionName, final Date date, EodSignal signal) throws BadSignalException {
 		synchronized (eodSignals) {
-			ExecutionSignalsStorage<EodSignal> s = eodSignals.get(executionName);
+			final SignalsSerie<EodSignal> s = eodSignals.get(executionName);
 			if (s != null)
 				eodSignals.get(executionName).addSignal(date, signal);
 			else
@@ -165,8 +94,8 @@ public class SignalsStorage {
 		}
 	}
 
-	public Handler<? extends EodSignal> getEodSignal(final String executionName, final Date date) {
-		ExecutionSignalsStorage<EodSignal> ess = null;
+	public Signal<? extends EodSignal> getEodSignal(final String executionName, final Date date) {
+		SignalsSerie<EodSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
@@ -175,8 +104,8 @@ public class SignalsStorage {
 		return null;
 	}
 
-	public Handler<? extends EodSignal> getEodSignal(final String executionName, final int index) {
-		ExecutionSignalsStorage<EodSignal> ess = null;
+	public Signal<? extends EodSignal> getEodSignal(final String executionName, final int index) {
+		SignalsSerie<EodSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
@@ -186,7 +115,7 @@ public class SignalsStorage {
 	}
 
 	public int getSignalsSize(final String executionName) {
-		ExecutionSignalsStorage<EodSignal> ess = null;
+		SignalsSerie<EodSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
@@ -194,4 +123,5 @@ public class SignalsStorage {
 			return ess.size();
 		return 0;
 	}
+
 }

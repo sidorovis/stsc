@@ -12,7 +12,7 @@ public class In extends StockAlgorithm {
 	};
 
 	private static DayField fromString(String dayField) {
-		if ( dayField == null )
+		if (dayField == null)
 			return DayField.OPEN;
 		switch (dayField) {
 		case "open":
@@ -55,8 +55,8 @@ public class In extends StockAlgorithm {
 	}
 
 	@Override
-	public Class<? extends StockSignal> registerSignalsClass() {
-		return DoubleSignal.class;
+	public SignalsSerie<StockSignal> registerSignalsClass() {
+		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
 	}
 
 	@Override

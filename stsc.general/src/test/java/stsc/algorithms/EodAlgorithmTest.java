@@ -18,8 +18,8 @@ public class EodAlgorithmTest extends TestCase {
 		}
 
 		@Override
-		public Class<? extends EodSignal> registerSignalsClass() {
-			return EodSignal.class;
+		public SignalsSerie<EodSignal> registerSignalsClass() {
+			return new LimitSignalsSerie<>(EodSignal.class);
 		}
 
 		@Override
@@ -35,7 +35,6 @@ public class EodAlgorithmTest extends TestCase {
 		EodAlgorithmHelper eah = new EodAlgorithmHelper(init);
 		final Date theDate = new Date();
 		eah.process(new Date(), new HashMap<String, Day>());
-		assertEquals(EodSignal.class, init.signalsStorage.getEodSignal("a", theDate).getSignal(EodSignal.class)
-				.getClass());
+		assertEquals(EodSignal.class, init.signalsStorage.getEodSignal("a", theDate).getSignal(EodSignal.class).getClass());
 	}
 }

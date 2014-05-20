@@ -3,16 +3,18 @@ package stsc.algorithms.eod.primitive;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
+import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
 import stsc.signals.SideSignal;
+import stsc.signals.Signal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage.Handler;
 import stsc.trading.Side;
 
 public class OpenWhileSignalAlgorithm extends EodAlgorithm {
@@ -34,7 +36,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public Class<? extends EodSignal> registerSignalsClass() {
+	public SignalsSerie<EodSignal> registerSignalsClass() {
 		return null;
 	}
 
@@ -43,7 +45,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			final String stockName = i.getKey();
-			final Handler<? extends StockSignal> isSignal = getSignal(stockName, sideSignalAlgoName, date);
+			final Signal<? extends StockSignal> isSignal = getSignal(stockName, sideSignalAlgoName, date);
 			if (isSignal == null) {
 				if (shortPositions.containsKey(stockName)) {
 					broker().sell(stockName, Side.SHORT, shortPositions.get(stockName).getSharedAmount());
