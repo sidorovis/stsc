@@ -13,7 +13,7 @@ public class TestingStockAlgorithm extends StockAlgorithm {
 	}
 
 	@Override
-	public Class<? extends StockSignal> registerSignalsClass() {
+	public SignalsSerie<StockSignal> registerSignalsClass() {
 		return null;
 	}
 

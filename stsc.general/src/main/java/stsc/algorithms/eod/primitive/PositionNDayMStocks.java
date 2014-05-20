@@ -14,12 +14,13 @@ import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
+import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.EodSignal;
+import stsc.signals.Signal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage.Handler;
 import stsc.trading.Side;
 
 /*
@@ -67,14 +68,13 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		lastDate = init.settings.getPeriod().getTo();
 		final List<String> subExecutions = init.settings.getSubExecutions();
 		if (subExecutions.size() < 1)
-			throw new BadAlgorithmException(
-					"CrossSignal algorithm should receive one stock based execution with Double");
+			throw new BadAlgorithmException("CrossSignal algorithm should receive one stock based execution with Double");
 		factorExecutionName = subExecutions.get(0);
 	}
 
 	@Override
 	public void process(final Date date, final HashMap<String, Day> datafeed) throws BadSignalException {
-		if (new LocalDate(date).plusDays( 10 ).isAfter(new LocalDate(lastDate))) {
+		if (new LocalDate(date).plusDays(10).isAfter(new LocalDate(lastDate))) {
 			close();
 			openDate = null;
 		} else if (longPositions.isEmpty()) {
@@ -90,7 +90,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		final ArrayList<Factor> sortedStocks = new ArrayList<>();
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
-			Handler<? extends StockSignal> signal = getSignal(stockName, factorExecutionName, date);
+			Signal<? extends StockSignal> signal = getSignal(stockName, factorExecutionName, date);
 			if (signal != null && signal.getSignal(DoubleSignal.class) != null)
 				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).value, stockName));
 		}
@@ -141,7 +141,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	}
 
 	@Override
-	public Class<? extends EodSignal> registerSignalsClass() {
+	public SignalsSerie<EodSignal> registerSignalsClass() {
 		return null;
 	}
 }

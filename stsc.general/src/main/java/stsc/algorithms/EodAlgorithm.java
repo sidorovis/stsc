@@ -6,9 +6,9 @@ import java.util.HashMap;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
+import stsc.signals.Signal;
 import stsc.signals.StockSignal;
 import stsc.storage.SignalsStorage;
-import stsc.storage.SignalsStorage.Handler;
 import stsc.trading.Broker;
 
 public abstract class EodAlgorithm {
@@ -20,27 +20,27 @@ public abstract class EodAlgorithm {
 		public Broker broker;
 		public AlgorithmSettings settings;
 
-		protected final void registerEodSignalsType(final Class<? extends EodSignal> signalsClass) {
-			signalsStorage.registerEodSignalsType(executionName, signalsClass);
+		protected final void registerEodSignalsType(SignalsSerie<EodSignal> serie) {
+			signalsStorage.registerEodSignalsType(executionName, serie);
 		}
 
 		protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {
 			signalsStorage.addEodSignal(executionName, date, signal);
 		}
 
-		protected final Handler<? extends EodSignal> getSignal(final Date date) {
+		protected final Signal<? extends EodSignal> getSignal(final Date date) {
 			return signalsStorage.getEodSignal(executionName, date);
 		}
 
-		protected final Handler<? extends EodSignal> getSignal(final String executionName, final Date date) {
+		protected final Signal<? extends EodSignal> getSignal(final String executionName, final Date date) {
 			return signalsStorage.getEodSignal(executionName, date);
 		}
 
-		protected final Handler<? extends EodSignal> getSignal(final int index) {
+		protected final Signal<? extends EodSignal> getSignal(final int index) {
 			return signalsStorage.getEodSignal(executionName, index);
 		}
 
-		protected final Handler<? extends EodSignal> getSignal(final String executionName, final int index) {
+		protected final Signal<? extends EodSignal> getSignal(final String executionName, final int index) {
 			return signalsStorage.getEodSignal(executionName, index);
 		}
 
@@ -48,11 +48,11 @@ public abstract class EodAlgorithm {
 			return signalsStorage.getSignalsSize(executionName);
 		}
 
-		protected final Handler<? extends StockSignal> getStockSignal(String stockName, String executionName, Date date) {
+		protected final Signal<? extends StockSignal> getStockSignal(String stockName, String executionName, Date date) {
 			return signalsStorage.getStockSignal(stockName, executionName, date);
 		}
 
-		protected final Handler<? extends StockSignal> getStockSignal(String stockName, String executionName, int index) {
+		protected final Signal<? extends StockSignal> getStockSignal(String stockName, String executionName, int index) {
 			return signalsStorage.getStockSignal(stockName, executionName, index);
 		}
 
@@ -73,11 +73,11 @@ public abstract class EodAlgorithm {
 		return init.getSignal(date).getValue();
 	}
 
-	protected final Handler<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
+	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
 		return init.getStockSignal(stockName, executionName, date);
 	}
 
-	protected final Handler<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
+	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
 		return init.getStockSignal(stockName, executionName, index);
 	}
 
@@ -85,7 +85,7 @@ public abstract class EodAlgorithm {
 		return init.broker;
 	}
 
-	public abstract Class<? extends EodSignal> registerSignalsClass();
+	public abstract SignalsSerie<EodSignal> registerSignalsClass();
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 

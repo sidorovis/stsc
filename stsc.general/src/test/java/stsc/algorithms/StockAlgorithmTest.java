@@ -16,8 +16,8 @@ public class StockAlgorithmTest extends TestCase {
 		}
 
 		@Override
-		public Class<? extends StockSignal> registerSignalsClass() {
-			return StockSignal.class;
+		public SignalsSerie<StockSignal> registerSignalsClass() {
+			return new LimitSignalsSerie<>(StockSignal.class);
 		}
 
 		@Override

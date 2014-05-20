@@ -1,14 +1,16 @@
-package stsc.algorithms.stock.factors.primitive;
+ package stsc.algorithms.stock.factors.primitive;
 
 import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.LimitSignalsSerie;
+import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
+import stsc.signals.Signal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage.Handler;
 
 public class Diff extends StockAlgorithm {
 
@@ -25,14 +27,14 @@ public class Diff extends StockAlgorithm {
 	}
 
 	@Override
-	public Class<? extends StockSignal> registerSignalsClass() {
-		return DoubleSignal.class;
+	public SignalsSerie<StockSignal> registerSignalsClass() {
+		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
 	}
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		Handler<? extends StockSignal> from = getSignal(fromExecution, day.getDate());
-		Handler<? extends StockSignal> to = getSignal(toExecution, day.getDate());
+		Signal<? extends StockSignal> from = getSignal(fromExecution, day.getDate());
+		Signal<? extends StockSignal> to = getSignal(toExecution, day.getDate());
 		if (from != null && to != null) {
 			final double fromValue = from.getSignal(DoubleSignal.class).value;
 			final double toValue = to.getSignal(DoubleSignal.class).value;

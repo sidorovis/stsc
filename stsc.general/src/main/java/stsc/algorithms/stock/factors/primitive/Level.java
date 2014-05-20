@@ -2,6 +2,8 @@ package stsc.algorithms.stock.factors.primitive;
 
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.LimitSignalsSerie;
+import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -24,8 +26,8 @@ public class Level extends StockAlgorithm {
 	}
 
 	@Override
-	public Class<? extends StockSignal> registerSignalsClass() {
-		return SideSignal.class;
+	public SignalsSerie<StockSignal> registerSignalsClass() {
+		return new LimitSignalsSerie<StockSignal>(SideSignal.class);
 	}
 
 	@Override
