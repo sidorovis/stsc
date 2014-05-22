@@ -32,7 +32,7 @@ public class In extends StockAlgorithm {
 
 	DayField dayField;
 
-	public In(Init initialize) throws BadAlgorithmException {
+	public In(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
 		dayField = fromString(initialize.settings.get("e"));
 	}
@@ -55,7 +55,7 @@ public class In extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass() {
+	public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
 		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
 	}
 
@@ -63,4 +63,5 @@ public class In extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		addSignal(day.getDate(), getData(day));
 	}
+
 }

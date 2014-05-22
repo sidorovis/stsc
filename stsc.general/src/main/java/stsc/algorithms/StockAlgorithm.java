@@ -6,61 +6,18 @@ import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage;
 
 public abstract class StockAlgorithm {
 
-	static public class Init {
+	private final StockAlgorithmInit init;
 
-		public String stockName;
-		public String executionName;
-		public SignalsStorage signalsStorage;
-		public AlgorithmSettings settings;
-
-		private final void registerStockSignalsType(SignalsSerie<StockSignal> serie) {
-			signalsStorage.registerStockSignalsType(stockName, executionName, serie);
-		}
-
-		private final void addSignal(Date date, StockSignal signal) throws BadSignalException {
-			signalsStorage.addStockSignal(stockName, executionName, date, signal);
-		}
-
-		private final Signal<? extends StockSignal> getSignal(final Date date) {
-			return signalsStorage.getStockSignal(stockName, executionName, date);
-		}
-
-		private final Signal<? extends StockSignal> getSignal(final String executionName, final Date date) {
-			return signalsStorage.getStockSignal(stockName, executionName, date);
-		}
-
-		private final Signal<? extends StockSignal> getSignal(final int index) {
-			return signalsStorage.getStockSignal(stockName, executionName, index);
-		}
-
-		private final Signal<? extends StockSignal> getSignal(final String executionName, final int index) {
-			return signalsStorage.getStockSignal(stockName, executionName, index);
-		}
-
-		private final int getIndexSize() {
-			return signalsStorage.getIndexSize(stockName, executionName);
-		}
-
-		private final int getIndexSize(String stockName) {
-			return signalsStorage.getIndexSize(stockName, executionName);
-		}
-
-		@Override
-		public String toString() {
-			return stockName + ": " + executionName + "\n" + settings;
-		}
-
+	public StockAlgorithm(final StockAlgorithmInit initialize) throws BadAlgorithmException {
+		this.init = initialize;
+		signalSerieRegistration(initialize);
 	}
 
-	private final Init init;
-
-	public StockAlgorithm(final Init initialize) throws BadAlgorithmException {
-		init = initialize;
-		init.registerStockSignalsType(registerSignalsClass());
+	private void signalSerieRegistration(final StockAlgorithmInit initialize) throws BadAlgorithmException {
+		init.signalsStorage.registerStockAlgorithmSerie(init.stockName, init.executionName, registerSignalsClass(initialize));
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
@@ -91,7 +48,7 @@ public abstract class StockAlgorithm {
 		return init.getIndexSize(stockName);
 	}
 
-	public abstract SignalsSerie<StockSignal> registerSignalsClass();
+	public abstract SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException;
 
 	public abstract void process(Day day) throws BadSignalException;
 

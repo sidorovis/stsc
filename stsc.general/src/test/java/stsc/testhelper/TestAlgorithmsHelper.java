@@ -2,7 +2,7 @@ package stsc.testhelper;
 
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.storage.SignalsStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
@@ -33,8 +33,8 @@ public class TestAlgorithmsHelper {
 		return init;
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage) {
-		StockAlgorithm.Init init = new StockAlgorithm.Init();
+	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage) {
+		StockAlgorithmInit init = new StockAlgorithmInit();
 		init.executionName = executionName;
 		init.settings = getSettings();
 		init.signalsStorage = storage;
@@ -42,15 +42,15 @@ public class TestAlgorithmsHelper {
 		return init;
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName, String stockName) {
+	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName) {
 		return getStockAlgorithmInit(executionName, stockName, new SignalsStorage());
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit(String executionName) {
+	public static StockAlgorithmInit getStockAlgorithmInit(String executionName) {
 		return getStockAlgorithmInit(executionName, "sName");
 	}
 
-	public static StockAlgorithm.Init getStockAlgorithmInit() {
+	public static StockAlgorithmInit getStockAlgorithmInit() {
 		return getStockAlgorithmInit("eName");
 	}
 

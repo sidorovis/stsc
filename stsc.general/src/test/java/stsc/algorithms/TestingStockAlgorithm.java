@@ -8,12 +8,12 @@ import stsc.signals.StockSignal;
 
 public class TestingStockAlgorithm extends StockAlgorithm {
 
-	public TestingStockAlgorithm(StockAlgorithm.Init init) throws BadAlgorithmException {
+	public TestingStockAlgorithm(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass() {
+	public CommonSignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit init) {
 		return null;
 	}
 

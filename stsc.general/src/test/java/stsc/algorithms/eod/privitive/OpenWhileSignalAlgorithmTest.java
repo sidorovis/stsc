@@ -10,7 +10,7 @@ import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.In;
-import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.algorithms.eod.primitive.OpenWhileSignalAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
@@ -28,11 +28,11 @@ import junit.framework.TestCase;
 public class OpenWhileSignalAlgorithmTest extends TestCase {
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException {
 
-		final StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
+		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
 		stockInit.settings.set("e", "open");
 		final In in = new In(stockInit);
 
-		StockAlgorithm.Init levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
+		StockAlgorithmInit levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
 		levelInit.settings.addSubExecutionName("in");
 		levelInit.settings.set("f", "699.0");
 		final Level level = new Level(levelInit);

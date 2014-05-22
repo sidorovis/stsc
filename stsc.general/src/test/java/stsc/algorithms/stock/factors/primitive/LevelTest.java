@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.In;
-import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
 import stsc.common.Stock;
@@ -16,11 +16,11 @@ import junit.framework.TestCase;
 public class LevelTest extends TestCase {
 	public void testLevel() throws Exception {
 
-		final StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
+		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
 		stockInit.settings.set("e", "open");
 		final In in = new In(stockInit);
 
-		StockAlgorithm.Init levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
+		StockAlgorithmInit levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
 		levelInit.settings.addSubExecutionName("in");
 		levelInit.settings.set("f", "699.0");
 		final Level level = new Level(levelInit);

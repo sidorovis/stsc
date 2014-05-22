@@ -11,12 +11,12 @@ import junit.framework.TestCase;
 public class StockAlgorithmTest extends TestCase {
 	private static class StockAlgorithmHelper extends StockAlgorithm {
 
-		public StockAlgorithmHelper(final StockAlgorithm.Init init) throws BadAlgorithmException {
+		public StockAlgorithmHelper(final StockAlgorithmInit init) throws BadAlgorithmException {
 			super(init);
 		}
 
 		@Override
-		public SignalsSerie<StockSignal> registerSignalsClass() {
+		public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
 			return new LimitSignalsSerie<>(StockSignal.class);
 		}
 
@@ -27,7 +27,7 @@ public class StockAlgorithmTest extends TestCase {
 	}
 
 	public void testStockAlgorithm() throws BadSignalException, BadAlgorithmException {
-		StockAlgorithm.Init init = TestAlgorithmsHelper.getStockAlgorithmInit();
+		StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit();
 		init.executionName = "s";
 		init.stockName = "a";
 		StockAlgorithmHelper sah = new StockAlgorithmHelper(init);

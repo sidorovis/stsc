@@ -14,7 +14,7 @@ import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
-import stsc.algorithms.SignalsSerie;
+import stsc.algorithms.CommonSignalsSerie;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
@@ -141,7 +141,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass() {
+	public CommonSignalsSerie<EodSignal> registerSignalsClass() {
 		return null;
 	}
 }

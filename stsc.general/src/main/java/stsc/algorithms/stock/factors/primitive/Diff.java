@@ -1,11 +1,13 @@
- package stsc.algorithms.stock.factors.primitive;
+package stsc.algorithms.stock.factors.primitive;
 
 import java.util.List;
 
+import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.LimitSignalsSerie;
 import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
@@ -17,7 +19,7 @@ public class Diff extends StockAlgorithm {
 	final String fromExecution;
 	final String toExecution;
 
-	public Diff(Init init) throws BadAlgorithmException {
+	public Diff(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		List<String> subExecutions = init.settings.getSubExecutions();
 		if (subExecutions.size() < 2)
@@ -27,8 +29,10 @@ public class Diff extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass() {
-		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
+	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+		AlgorithmSetting<Integer> size = new AlgorithmSetting<Integer>(2);
+		initialize.settings.get("size", size);
+		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size.getValue());
 	}
 
 	@Override

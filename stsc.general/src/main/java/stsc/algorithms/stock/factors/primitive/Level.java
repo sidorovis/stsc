@@ -5,6 +5,7 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.LimitSignalsSerie;
 import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
@@ -17,7 +18,7 @@ public class Level extends StockAlgorithm {
 	final double level;
 	final String factorName;
 
-	public Level(Init initialize) throws BadAlgorithmException {
+	public Level(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
 		AlgorithmSetting<Double> factorLevel = new AlgorithmSetting<Double>(0.0);
 		initialize.settings.get("f", factorLevel);
@@ -26,7 +27,7 @@ public class Level extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass() {
+	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		return new LimitSignalsSerie<StockSignal>(SideSignal.class);
 	}
 

@@ -7,7 +7,7 @@ import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.In;
-import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.algorithms.stock.factors.primitive.Diff;
 import stsc.algorithms.stock.factors.primitive.Ema;
 import stsc.algorithms.stock.factors.primitive.Sma;
@@ -22,20 +22,21 @@ import junit.framework.TestCase;
 public class DiffTest extends TestCase {
 	public void testDiff() throws BadAlgorithmException, IOException, BadSignalException {
 
-		final StockAlgorithm.Init stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
+		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
 		stockInit.settings.set("e", "open");
 		final In in = new In(stockInit);
 
-		StockAlgorithm.Init emaInit = TestAlgorithmsHelper.getStockAlgorithmInit("ema", "aapl", stockInit.signalsStorage);
+		StockAlgorithmInit emaInit = TestAlgorithmsHelper.getStockAlgorithmInit("ema", "aapl", stockInit.signalsStorage);
 		emaInit.settings.addSubExecutionName("in");
 		Ema ema = new Ema(emaInit);
 
-		StockAlgorithm.Init smaInit = TestAlgorithmsHelper.getStockAlgorithmInit("sma", "aapl", stockInit.signalsStorage);
+		StockAlgorithmInit smaInit = TestAlgorithmsHelper.getStockAlgorithmInit("sma", "aapl", stockInit.signalsStorage);
 		smaInit.settings.addSubExecutionName("in");
 		Sma sma = new Sma(smaInit);
 
-		StockAlgorithm.Init diffInit = TestAlgorithmsHelper.getStockAlgorithmInit("diff", "aapl", stockInit.signalsStorage);
+		StockAlgorithmInit diffInit = TestAlgorithmsHelper.getStockAlgorithmInit("diff", "aapl", stockInit.signalsStorage);
 		diffInit.settings.addSubExecutionName("ema").addSubExecutionName("sma");
+		diffInit.settings.set("size", 10000);
 		Diff diff = new Diff(diffInit);
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");

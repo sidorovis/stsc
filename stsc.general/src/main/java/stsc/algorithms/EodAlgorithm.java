@@ -21,7 +21,7 @@ public abstract class EodAlgorithm {
 		public AlgorithmSettings settings;
 
 		protected final void registerEodSignalsType(SignalsSerie<EodSignal> serie) {
-			signalsStorage.registerEodSignalsType(executionName, serie);
+			signalsStorage.registerEodAlgorithmSerie(executionName, serie);
 		}
 
 		protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {

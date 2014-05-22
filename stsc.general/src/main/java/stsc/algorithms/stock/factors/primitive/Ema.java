@@ -7,6 +7,7 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.LimitSignalsSerie;
 import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
+import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
@@ -18,7 +19,7 @@ public class Ema extends StockAlgorithm {
 	private final String subAlgoName;
 	private final AlgorithmSetting<Double> P = new AlgorithmSetting<Double>(0.2);
 
-	public Ema(final StockAlgorithm.Init init) throws BadAlgorithmException {
+	public Ema(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		init.settings.get("P", P);
 		List<String> subExecutionNames = init.settings.getSubExecutions();
@@ -28,8 +29,10 @@ public class Ema extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass() {
-		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class);
+	public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException {
+		final AlgorithmSetting<Integer> size = new AlgorithmSetting<Integer>(2);
+		initialize.settings.get("size", size);
+		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size.getValue());
 	}
 
 	@Override

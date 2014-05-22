@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.algorithms.CommonSignalsSerie;
 import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.LimitSignalsSerie;
 import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
@@ -24,7 +24,7 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 
 	@Override
 	public SignalsSerie<EodSignal> registerSignalsClass() {
-		return new LimitSignalsSerie<EodSignal>(TestingEodAlgorithmSignal.class);
+		return new CommonSignalsSerie<EodSignal>(TestingEodAlgorithmSignal.class);
 	}
 
 	@Override

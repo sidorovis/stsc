@@ -25,7 +25,7 @@ public class StockExecutionTest extends TestCase {
 		assertEquals("e1", e3.getName());
 
 		try {
-			final StockAlgorithm.Init init = TestAlgorithmsHelper.getStockAlgorithmInit();
+			final StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit();
 			final StockAlgorithm sai = e3.getInstance(init.stockName, init.signalsStorage);
 			assertTrue(sai instanceof TestingStockAlgorithm);
 		} catch (BadAlgorithmException e) {

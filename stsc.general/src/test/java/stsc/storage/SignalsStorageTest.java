@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.SignalsSerie;
+import stsc.algorithms.CommonSignalsSerie;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
 import stsc.signals.Signal;
@@ -22,7 +22,7 @@ public class SignalsStorageTest extends TestCase {
 
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
-		signalsStorage.registerEodSignalsType("e1", new SignalsSerie<EodSignal>(TestSignal.class));
+		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<EodSignal>(TestSignal.class));
 		final Date d = new LocalDate(2010, 10, 20).toDate();
 		signalsStorage.addEodSignal("e1", d, new TestSignal(12));
 		final Signal<? extends EodSignal> ts = signalsStorage.getEodSignal("e1", d);
@@ -33,7 +33,7 @@ public class SignalsStorageTest extends TestCase {
 
 	public void testSignalsStorageGetByIndex() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorage();
-		signalsStorage.registerEodSignalsType("e1", new SignalsSerie<EodSignal>(TestSignal.class));
+		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<EodSignal>(TestSignal.class));
 
 		final LocalDate d = new LocalDate(2010, 10, 20);
 		signalsStorage.addEodSignal("e1", d.toDate(), new TestSignal(12));

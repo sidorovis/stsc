@@ -22,7 +22,7 @@ public class SignalsStorage {
 	public SignalsStorage() {
 	}
 
-	public void registerStockSignalsType(String stockName, String executionName, SignalsSerie<StockSignal> serie) {
+	public void registerStockAlgorithmSerie(String stockName, String executionName, SignalsSerie<StockSignal> serie) {
 		if (serie != null) {
 			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
@@ -77,11 +77,12 @@ public class SignalsStorage {
 
 	// EOD
 
-	public void registerEodSignalsType(String executionName, SignalsSerie<EodSignal> serie) {
-		if (serie != null)
+	public void registerEodAlgorithmSerie(String executionName, SignalsSerie<EodSignal> serie) {
+		if (serie != null) {
 			synchronized (eodSignals) {
 				eodSignals.put(executionName, serie);
 			}
+		}
 	}
 
 	public void addEodSignal(final String executionName, final Date date, EodSignal signal) throws BadSignalException {

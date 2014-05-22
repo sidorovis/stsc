@@ -50,11 +50,9 @@ public final class AlgorithmsStorage {
 				else if (eName.startsWith(containerPackageName)) {
 					final Class<?> classType = Class.forName(e.getName());
 					if (classType.getSuperclass() == StockAlgorithm.class) {
-						final Class<? extends StockAlgorithm> stockAlgorithm = classType
-								.asSubclass(StockAlgorithm.class);
+						final Class<? extends StockAlgorithm> stockAlgorithm = classType.asSubclass(StockAlgorithm.class);
 						addStockAlgorithm(stockAlgorithm);
-					}
-					if (classType.getSuperclass() == EodAlgorithm.class) {
+					} else if (classType.getSuperclass() == EodAlgorithm.class) {
 						final Class<? extends EodAlgorithm> eodAlgorithm = classType.asSubclass(EodAlgorithm.class);
 						addEodAlgorithm(eodAlgorithm);
 					}
@@ -89,8 +87,7 @@ public final class AlgorithmsStorage {
 		return getAlgorithmClass(algorithmName, stockNames);
 	}
 
-	private final <T> Class<? extends T> getAlgorithmClass(final String algorithmName,
-			HashMap<String, Class<? extends T>> algorithmsMap) {
+	private final <T> Class<? extends T> getAlgorithmClass(final String algorithmName, HashMap<String, Class<? extends T>> algorithmsMap) {
 		final String lowCase = algorithmName.toLowerCase();
 		for (Map.Entry<String, Class<? extends T>> i : algorithmsMap.entrySet()) {
 			if (i.getKey().contains(lowCase))

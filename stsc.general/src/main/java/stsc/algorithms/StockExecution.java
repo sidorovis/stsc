@@ -23,13 +23,11 @@ public class StockExecution {
 		}
 	}
 
-	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings)
-			throws BadAlgorithmException {
+	public StockExecution(final String executionName, final String algorithmName, AlgorithmSettings settings) throws BadAlgorithmException {
 		this(executionName, generateAlgorithm(algorithmName), settings);
 	}
 
-	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType,
-			AlgorithmSettings settings) {
+	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType, AlgorithmSettings settings) {
 		Validate.notNull(executionName);
 		Validate.notNull(algorithmType);
 		Validate.notNull(settings);
@@ -51,13 +49,12 @@ public class StockExecution {
 		return algorithmSettings;
 	}
 
-	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage)
-			throws BadAlgorithmException {
+	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage) throws BadAlgorithmException {
 		try {
-			final Class<?>[] params = { StockAlgorithm.Init.class };
+			final Class<?>[] params = { StockAlgorithmInit.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
 
-			final StockAlgorithm.Init init = new StockAlgorithm.Init();
+			final StockAlgorithmInit init = new StockAlgorithmInit();
 			init.stockName = stockName;
 			init.executionName = executionName;
 			init.signalsStorage = signalsStorage;
@@ -69,21 +66,17 @@ public class StockExecution {
 				final StockAlgorithm algo = constructor.newInstance(values);
 				return algo;
 			} catch (InvocationTargetException e) {
-				throw new BadAlgorithmException("Exception while loading algo: " + algorithmName + "( " + executionName
-						+ " ) , exception: " + e.getTargetException().toString());
+				throw new BadAlgorithmException("Exception while loading algo: " + algorithmName + "( " + executionName + " ) , exception: "
+						+ e.getTargetException().toString());
 			}
 		} catch (NoSuchMethodException e) {
-			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: "
-					+ e.toString());
+			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor was not found: " + e.toString());
 		} catch (SecurityException e) {
-			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor could not be called: "
-					+ e.toString());
+			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', constructor could not be called: " + e.toString());
 		} catch (InstantiationException e) {
-			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', instantiation exception: "
-					+ e.toString());
+			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', instantiation exception: " + e.toString());
 		} catch (IllegalAccessException e) {
-			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName
-					+ "', instantiation impossible due to illegal access: " + e.toString());
+			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', instantiation impossible due to illegal access: " + e.toString());
 		} catch (IllegalArgumentException e) {
 			throw new BadAlgorithmException("Bad Algorithm '" + algorithmName + "', illegal arguments: " + e.toString());
 		}
