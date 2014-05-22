@@ -23,7 +23,7 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass() {
+	public SignalsSerie<EodSignal> registerSignalsClass(Init init) throws BadAlgorithmException {
 		return new CommonSignalsSerie<EodSignal>(TestingEodAlgorithmSignal.class);
 	}
 

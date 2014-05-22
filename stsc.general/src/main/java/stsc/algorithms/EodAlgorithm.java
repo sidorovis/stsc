@@ -62,7 +62,7 @@ public abstract class EodAlgorithm {
 
 	public EodAlgorithm(final Init init) throws BadAlgorithmException {
 		this.init = init;
-		init.registerEodSignalsType(registerSignalsClass());
+		init.registerEodSignalsType(registerSignalsClass(init));
 	}
 
 	protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {
@@ -85,7 +85,7 @@ public abstract class EodAlgorithm {
 		return init.broker;
 	}
 
-	public abstract SignalsSerie<EodSignal> registerSignalsClass();
+	public abstract SignalsSerie<EodSignal> registerSignalsClass(final Init init) throws BadAlgorithmException;
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 

@@ -18,7 +18,7 @@ public class EodAlgorithmTest extends TestCase {
 		}
 
 		@Override
-		public SignalsSerie<EodSignal> registerSignalsClass() {
+		public SignalsSerie<EodSignal> registerSignalsClass(Init init) throws BadAlgorithmException {
 			return new LimitSignalsSerie<>(EodSignal.class);
 		}
 
