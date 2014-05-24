@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class AlgorithmSettingsTest extends TestCase {
@@ -50,5 +51,22 @@ public class AlgorithmSettingsTest extends TestCase {
 
 		assertEquals("first_name", asCopy.getSubExecutions().get(0));
 		assertEquals("add second Named&9h4t9\n fjiaby \0 world", asCopy.getSubExecutions().get(1));
+	}
+
+	public void testGetIntegerDoubleTypes() throws BadAlgorithmException {
+		final AlgorithmSettings as = new AlgorithmSettings(TestHelper.getPeriod());
+		as.setInteger("asd", Integer.valueOf(15));
+		as.setInteger("4asd", Integer.valueOf(1231));
+		as.setDouble("param", Double.valueOf(1231.0));
+		as.setDouble("para3m", Double.valueOf(125.454));
+		assertEquals(Integer.valueOf(15), as.getInteger("asd"));
+		assertEquals(Integer.valueOf(1231), as.getInteger("4asd"));
+		assertEquals(Double.valueOf(1231.0), as.getDouble("param"));
+		assertEquals(Double.valueOf(125.454), as.getDouble("para3m"));
+
+		as.set("kill", "15.343");
+		final AlgorithmSetting<Double> d = new AlgorithmSetting<Double>(0.0);
+		as.get("kill", d);
+		assertEquals(Double.valueOf(15.343), d.getValue());
 	}
 }

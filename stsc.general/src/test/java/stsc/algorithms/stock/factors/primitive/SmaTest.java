@@ -30,14 +30,14 @@ public class SmaTest extends TestCase {
 		final In inAlgoClose = new In(stockInitClose);
 
 		final StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit("testSma", "aapl", stockInit.signalsStorage);
-		init.settings.set("n", 5);
-		init.settings.set("size", 10000);
+		init.settings.setInteger("n", 5);
+		init.settings.setInteger("size", 10000);
 		init.settings.addSubExecutionName("testIn");
 		final Sma sma = new Sma(init);
 
 		final StockAlgorithmInit initClose = TestAlgorithmsHelper.getStockAlgorithmInit("testSmaClose", "aapl", stockInit.signalsStorage);
-		initClose.settings.set("n", 5);
-		initClose.settings.set("size", 10000);
+		initClose.settings.setInteger("n", 5);
+		initClose.settings.setInteger("size", 10000);
 		initClose.settings.addSubExecutionName("testInClose");
 		final Sma smaClose = new Sma(initClose);
 

@@ -14,9 +14,23 @@ public class AlgorithmSetting<T extends Object> {
 		return value;
 	}
 
-	public AlgorithmSetting<T> setValue(final T newValue) {
+	@SuppressWarnings("unchecked")
+	public void setInteger(final Integer newValue) {
+		value = (T) newValue;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setDouble(final Double newValue) {
+		value = (T) newValue;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setString(final String newValue) {
+		value = (T) newValue;
+	}
+
+	public void setValue(final T newValue) {
 		value = newValue;
-		return this;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class DiffTest extends TestCase {
 
 		StockAlgorithmInit diffInit = TestAlgorithmsHelper.getStockAlgorithmInit("diff", "aapl", stockInit.signalsStorage);
 		diffInit.settings.addSubExecutionName("ema").addSubExecutionName("sma");
-		diffInit.settings.set("size", 10000);
+		diffInit.settings.setInteger("size", 10000);
 		Diff diff = new Diff(diffInit);
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
