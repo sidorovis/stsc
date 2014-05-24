@@ -24,12 +24,13 @@ class PerformanceCalculator {
 
 	private final static int storedStrategyAmount = 100;
 
-	private int checkOneThreadAmountOfThreads = 1;
+	private int currentTestThreadAmount = 1;
 
 	final private StockStorage stockStorage;
 
 	private final static int calculationsForAverage = 4;
-	private final static int threadsTo = 6;
+	private final static int threadsFrom = 1;
+	private final static int threadsTo = 8;
 
 	private static LocalDate startOfPeriod = new LocalDate(1970, 1, 1);
 
@@ -64,8 +65,8 @@ class PerformanceCalculator {
 
 	private void calculateForThreads(LocalDate endDate) throws Exception {
 		System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
-		for (int thread = 1; thread <= threadsTo; ++thread) {
-			checkOneThreadAmountOfThreads = thread;
+		for (int thread = threadsFrom; thread <= threadsTo; ++thread) {
+			currentTestThreadAmount = thread;
 			checkOneThread(endDate);
 		}
 		System.out.println();
@@ -86,6 +87,17 @@ class PerformanceCalculator {
 	private void warmUp() throws Exception {
 		final LocalDate newDate = startOfPeriod.plusDays(31);
 		calculateTime(newDate, false);
+		currentTestThreadAmount = 2;
+		calculateTime(newDate, false);
+		currentTestThreadAmount = 8;
+		calculateTime(newDate, false);
+		final LocalDate tenDate = startOfPeriod.plusDays(31);
+		currentTestThreadAmount = 1;
+		calculateTime(tenDate, false);
+		currentTestThreadAmount = 2;
+		calculateTime(tenDate, false);
+		currentTestThreadAmount = 8;
+		calculateTime(tenDate, false);
 	}
 
 	private void checkOneThread(LocalDate endDate) throws Exception {
@@ -104,7 +116,7 @@ class PerformanceCalculator {
 	}
 
 	private void calculateTime(String end, boolean printData) throws Exception {
-		final double timeInSeconds = TimeTracker.lengthInSeconds(getTimeFor(checkOneThreadAmountOfThreads, end));
+		final double timeInSeconds = TimeTracker.lengthInSeconds(getTimeFor(currentTestThreadAmount, end));
 		if (printData) {
 			System.out.print(" " + String.valueOf(timeInSeconds));
 		}
