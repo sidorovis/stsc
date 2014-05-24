@@ -13,16 +13,20 @@ import stsc.common.FromToPeriod;
 public class AlgorithmSettings implements Cloneable {
 
 	private final FromToPeriod period;
+	private final HashMap<String, Integer> integers;
+	private final HashMap<String, Double> doubles;
 	private final HashMap<String, String> settings;
 	private final ArrayList<String> subExecutions;
 
 	public AlgorithmSettings(final FromToPeriod period) {
 		this.period = period;
+		this.integers = new HashMap<>();
+		this.doubles = new HashMap<>();
 		this.settings = new HashMap<>();
 		this.subExecutions = new ArrayList<>();
 	}
 
-	public static AlgorithmSettings read(ObjectInput in) throws IOException {
+	public static AlgorithmSettings read(final ObjectInput in) throws IOException {
 		final FromToPeriod period = FromToPeriod.read(in);
 		final int settingsSize = in.readInt();
 		final HashMap<String, String> settings = new HashMap<>();
@@ -40,11 +44,20 @@ public class AlgorithmSettings implements Cloneable {
 		return new AlgorithmSettings(period, settings, subExecutions);
 	}
 
-	private AlgorithmSettings(final FromToPeriod period, HashMap<String, String> settings,
-			ArrayList<String> subExecutions) {
-		this.period = period;
+	private AlgorithmSettings(FromToPeriod p, HashMap<String, String> settings, ArrayList<String> executions) {
+		this.period = p;
+		this.integers = new HashMap<String, Integer>();
+		this.doubles = new HashMap<String, Double>();
 		this.settings = new HashMap<String, String>(settings);
-		this.subExecutions = new ArrayList<String>(subExecutions);
+		this.subExecutions = new ArrayList<String>(executions);
+	}
+
+	private AlgorithmSettings(final AlgorithmSettings cloneFrom) {
+		this.period = cloneFrom.period;
+		this.integers = new HashMap<String, Integer>(cloneFrom.integers);
+		this.doubles = new HashMap<String, Double>(cloneFrom.doubles);
+		this.settings = new HashMap<String, String>(cloneFrom.settings);
+		this.subExecutions = new ArrayList<String>(cloneFrom.subExecutions);
 	}
 
 	public AlgorithmSettings addSubExecutionName(final String subExecutionName) {
@@ -58,6 +71,16 @@ public class AlgorithmSettings implements Cloneable {
 
 	public AlgorithmSettings set(final String key, final String value) {
 		settings.put(key, value);
+		return this;
+	}
+
+	public AlgorithmSettings setInteger(final String key, final Integer value) {
+		integers.put(key, value);
+		return this;
+	}
+
+	public AlgorithmSettings setDouble(final String key, final Double value) {
+		doubles.put(key, value);
 		return this;
 	}
 
@@ -79,10 +102,30 @@ public class AlgorithmSettings implements Cloneable {
 		return settings.get(key);
 	}
 
+	public Integer getInteger(final String key) throws BadAlgorithmException {
+		return integers.get(key);
+	}
+
+	public Double getDouble(final String key) throws BadAlgorithmException {
+		return doubles.get(key);
+	}
+
 	public <T> void get(final String key, final AlgorithmSetting<T> setting) throws BadAlgorithmException {
 		final String value = settings.get(key);
 		if (value != null) {
 			final Class<T> clazz = setting.getClassType();
+			if (clazz.equals(Integer.class)) {
+				setting.setInteger(Integer.valueOf(value));
+				return;
+			}
+			if (clazz.equals(Double.class)) {
+				setting.setDouble(Double.valueOf(value));
+				return;
+			}
+			if (clazz.equals(String.class)) {
+				setting.setString(String.valueOf(value));
+				return;
+			}
 			try {
 				final Class<?>[] params = { String.class };
 				final Constructor<T> constructor = clazz.getConstructor(params);
@@ -90,15 +133,15 @@ public class AlgorithmSettings implements Cloneable {
 				final T v = constructor.newInstance(args);
 				setting.setValue(v);
 			} catch (Exception e) {
-				throw new BadAlgorithmException("Problem with parsing parameter " + key + " " + value
-						+ " can't be parsed to " + clazz.getName() + ". Due error: " + e.getMessage());
+				throw new BadAlgorithmException("Problem with parsing parameter " + key + " " + value + " can't be parsed to " + clazz.getName()
+						+ ". Due error: " + e.getMessage());
 			}
 		}
 	}
 
 	@Override
 	public AlgorithmSettings clone() {
-		return new AlgorithmSettings(period, settings, subExecutions);
+		return new AlgorithmSettings(this);
 	}
 
 	public FromToPeriod getPeriod() {

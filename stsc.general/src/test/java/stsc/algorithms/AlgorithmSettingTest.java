@@ -18,8 +18,12 @@ public class AlgorithmSettingTest extends TestCase {
 		asi.setValue(67);
 		assertEquals(67, asi.getValue().intValue());
 	}
+
 	public void testAlgorithmSettingWithString() {
 		AlgorithmSetting<String> ass = new AlgorithmSetting<String>("str");
 		assertEquals("str", ass.getValue());
+		AlgorithmSetting<String> setable = new AlgorithmSetting<String>("");
+		setable.setValue("strvalue");
+		assertEquals("strvalue", setable.getValue());
 	}
 }

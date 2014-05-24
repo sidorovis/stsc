@@ -27,7 +27,7 @@ public class EmaTest extends TestCase {
 
 		StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit("testEma", "aapl", stockInit.signalsStorage);
 		init.settings.set("P", 0.3);
-		init.settings.set("size", 100000);
+		init.settings.setInteger("size", 100000);
 		init.settings.addSubExecutionName("testIn");
 
 		final Ema ema = new Ema(init);
