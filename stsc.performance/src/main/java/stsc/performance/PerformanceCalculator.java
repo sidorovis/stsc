@@ -28,7 +28,7 @@ class PerformanceCalculator {
 
 	final private StockStorage stockStorage;
 
-	private final static int calculationsForAverage = 4;
+	private final static int calculationsForAverage = 10;
 	private final static int threadsFrom = 1;
 	private final static int threadsTo = 8;
 
@@ -61,13 +61,17 @@ class PerformanceCalculator {
 			calculateForThreads(startOfPeriod.plusYears(i));
 		}
 
+		for (int i = 42; i <= 42; i += 1) {
+			calculateForThreads(startOfPeriod.plusYears(i));
+		}
+
 	}
 
 	private void calculateForThreads(LocalDate endDate) throws Exception {
 		System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
 		for (int thread = threadsFrom; thread <= threadsTo; ++thread) {
 			currentTestThreadAmount = thread;
-			checkOneThread(endDate);
+			getStatistics(endDate);
 		}
 		System.out.println();
 	}
@@ -100,7 +104,7 @@ class PerformanceCalculator {
 		calculateTime(tenDate, false);
 	}
 
-	private void checkOneThread(LocalDate endDate) throws Exception {
+	private void getStatistics(LocalDate endDate) throws Exception {
 		calculateTime(endDate, true);
 	}
 
