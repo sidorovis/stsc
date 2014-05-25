@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>stsc.yahoo</artifactId>
-  <version>0.0.8-REFACTORING-TO-SEVERAL-PROJECT</version>
+  <version>${global.version}</version>
   <packaging>jar</packaging>
 
   <name>stsc.yahoo</name>

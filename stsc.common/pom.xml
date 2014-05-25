@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.yahoo.downloader</artifactId>
-  <version>${global.version}</version>
+  <artifactId>stsc.common</artifactId>
+  <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>jar</packaging>
 
-  <name>stsc.yahoo.downloader</name>
+  <name>stsc.common</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -31,59 +31,17 @@
        		<target>1.7</target>
    		</configuration>
 	</plugin>
-
-	<plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-        	<descriptorRefs>
-        		<descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-     		<archive>
-        		<manifest>
-          			<mainClass>stsc.yahoo.downloader.MarketDataDownloader</mainClass>
-        		</manifest>
-      		</archive>
-        </configuration>
-    	<executions>
-      		<execution>
-        		<id>stsc-yahoo-downloader</id>
-        		<phase>package</phase>
-        		<goals>
-          			<goal>single</goal>
-        		</goals>
-      		</execution>
-    	</executions>
-    </plugin>
-
 	</plugins>
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.general</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo.liquidator</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-
-<!--	<dependency>
+	<dependency>
 		<groupId>joda-time</groupId>
 		<artifactId>joda-time</artifactId>
 		<version>2.3</version>
@@ -93,7 +51,7 @@
     	<artifactId>guava</artifactId>
     	<version>16.0</version>
 	</dependency>
-	<dependency>
+<!--	<dependency>
 		<groupId>org.apache.commons</groupId>
 		<artifactId>commons-lang3</artifactId>
 		<version>3.3.1</version>

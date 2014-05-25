@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>stsc</groupId>
   <artifactId>stsc</artifactId>
-  <version>0.0.8-REFACTORING-TO-SEVERAL-PROJECT</version>
+  <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>pom</packaging>
   <name>stsc</name>
   <url>https://github.com/sidorovis/stsc</url>
@@ -29,11 +29,12 @@
 	</plugins>
   </build>
   <modules>
+	<module>stsc.common</module>
 	<module>stsc.general</module>
-	<module>stsc.yahoo</module>
+<!--	<module>stsc.yahoo</module>
 	<module>stsc.yahoo.downloader</module>
 	<module>stsc.yahoo.liquidator</module>
-	<module>stsc.performance</module>
+	<module>stsc.performance</module> -->
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>

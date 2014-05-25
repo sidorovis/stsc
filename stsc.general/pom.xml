@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>stsc.general</artifactId>
-  <version>0.0.8-REFACTORING-TO-SEVERAL-PROJECT</version>
+  <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>jar</packaging>
 
   <name>stsc.general</name>
@@ -35,6 +35,12 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.common</artifactId>
+      <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
+    </dependency>
+  
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

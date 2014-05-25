@@ -31,7 +31,7 @@ public class Diff extends StockAlgorithm {
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		AlgorithmSetting<Integer> size = new AlgorithmSetting<Integer>(2);
-		initialize.settings.get("size", size);
+		initialize.settings.getInteger("size", size);
 		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size.getValue());
 	}
 

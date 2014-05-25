@@ -106,8 +106,22 @@ public class AlgorithmSettings implements Cloneable {
 		return integers.get(key);
 	}
 
+	public void getInteger(final String key, final AlgorithmSetting<Integer> setting) {
+		final Integer value = integers.get(key);
+		if (value != null) {
+			setting.setInteger(integers.get(key));
+		}
+	}
+
 	public Double getDouble(final String key) throws BadAlgorithmException {
 		return doubles.get(key);
+	}
+
+	public void getDouble(final String key, final AlgorithmSetting<Double> setting) {
+		final Double value = doubles.get(key);
+		if (value != null) {
+			setting.setDouble(doubles.get(key));
+		}
 	}
 
 	public <T> void get(final String key, final AlgorithmSetting<T> setting) throws BadAlgorithmException {

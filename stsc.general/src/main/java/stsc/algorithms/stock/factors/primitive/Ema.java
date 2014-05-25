@@ -31,7 +31,7 @@ public class Ema extends StockAlgorithm {
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final AlgorithmSetting<Integer> size = new AlgorithmSetting<Integer>(2);
-		initialize.settings.get("size", size);
+		initialize.settings.getInteger("size", size);
 		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size.getValue());
 	}
 
