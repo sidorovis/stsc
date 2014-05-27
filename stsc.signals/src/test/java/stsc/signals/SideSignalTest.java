@@ -1,6 +1,6 @@
 package stsc.signals;
 
-import stsc.trading.Side;
+import stsc.common.Side;
 import junit.framework.TestCase;
 
 public class SideSignalTest extends TestCase {

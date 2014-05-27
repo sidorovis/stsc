@@ -5,6 +5,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 
+import stsc.common.Side;
+
 public class TradingLog {
 	private ArrayList<TradingRecord> records = new ArrayList<TradingRecord>();
 

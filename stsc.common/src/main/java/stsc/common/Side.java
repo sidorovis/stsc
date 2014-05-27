@@ -1,4 +1,4 @@
-package stsc.trading;
+package stsc.common;
 
 public enum Side {
 	LONG, 

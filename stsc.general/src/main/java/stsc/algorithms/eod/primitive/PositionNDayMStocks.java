@@ -16,12 +16,12 @@ import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
 import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
+import stsc.common.Side;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.EodSignal;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
-import stsc.trading.Side;
 
 /*
  * PositionNDayMStocks open position for n days on m stocks in long and short sides

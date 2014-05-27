@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.general</artifactId>
+  <artifactId>stsc.signals</artifactId>
   <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>jar</packaging>
 
-  <name>stsc.general</name>
+  <name>stsc.signals</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -41,12 +41,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.signals</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
@@ -62,33 +56,6 @@
     	<artifactId>guava</artifactId>
     	<version>16.0</version>
 	</dependency>
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-		<version>3.3.1</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-api</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-<!--
-	<dependency>
-		<groupId>org.antlr</groupId>
-		<artifactId>antlr4-runtime</artifactId>
-		<version>4.2</version>
-	</dependency>
-	<dependency>
-		<groupId>commons-validator</groupId>
-		<artifactId>commons-validator</artifactId>
-		<version>1.4.0</version>
-	</dependency>
- -->
   </dependencies>
   <description>Stsc common is a common classes for stsc project.</description>
 </project>

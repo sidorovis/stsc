@@ -1,6 +1,6 @@
 package stsc.algorithms;
 
-import stsc.trading.Side;
+import stsc.common.Side;
 
 public class EodPosition {
 	final String stockName;

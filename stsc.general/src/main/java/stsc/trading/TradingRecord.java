@@ -8,6 +8,8 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
+import stsc.common.Side;
+
 public final class TradingRecord {
 	public enum TradingType {
 		BUY, SELL;

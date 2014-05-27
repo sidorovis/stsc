@@ -9,9 +9,9 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
+import stsc.common.Side;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
-import stsc.trading.Side;
 
 public class OneSideOpenAlgorithm extends EodAlgorithm {
 

@@ -7,11 +7,11 @@ import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.Day;
+import stsc.common.Side;
 import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.SideSignal;
 import stsc.signals.StockSignal;
-import stsc.trading.Side;
 
 public class Level extends StockAlgorithm {
 

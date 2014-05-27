@@ -30,6 +30,7 @@
   </build>
   <modules>
 	<module>stsc.common</module>
+	<module>stsc.signals</module>
 	<module>stsc.general</module>
 	<module>stsc.yahoo</module>
 	<module>stsc.yahoo.downloader</module>

@@ -7,11 +7,11 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 
 import stsc.common.Settings;
+import stsc.common.Side;
 import stsc.common.Stock;
 import stsc.storage.StockStorage;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.Broker;
-import stsc.trading.Side;
 import stsc.trading.TradingLog;
 import junit.framework.TestCase;
 
