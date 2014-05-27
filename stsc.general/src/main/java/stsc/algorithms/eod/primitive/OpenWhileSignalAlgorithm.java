@@ -8,7 +8,6 @@ import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
-import stsc.algorithms.SignalsSerie;
 import stsc.common.Day;
 import stsc.common.Side;
 import stsc.signals.BadSignalException;
@@ -16,6 +15,7 @@ import stsc.signals.EodSignal;
 import stsc.signals.SideSignal;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
+import stsc.storage.SignalsSerie;
 
 public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 

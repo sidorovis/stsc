@@ -6,6 +6,7 @@ import java.util.HashMap;
 import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
+import stsc.storage.SignalsSerie;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

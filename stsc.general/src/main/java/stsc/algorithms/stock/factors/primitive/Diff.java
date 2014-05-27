@@ -4,7 +4,6 @@ import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.LimitSignalsSerie;
-import stsc.algorithms.SignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.Day;
@@ -12,6 +11,7 @@ import stsc.signals.BadSignalException;
 import stsc.signals.DoubleSignal;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
+import stsc.storage.SignalsSerie;
 
 public class Diff extends StockAlgorithm {
 

@@ -8,6 +8,7 @@ import stsc.signals.BadSignalException;
 import stsc.signals.EodSignal;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
+import stsc.storage.SignalsSerie;
 import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 

@@ -7,6 +7,7 @@ import java.util.Queue;
 
 import stsc.signals.BadSignalException;
 import stsc.signals.Signal;
+import stsc.storage.SignalsSerie;
 
 public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
 

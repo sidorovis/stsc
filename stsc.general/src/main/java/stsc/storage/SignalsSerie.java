@@ -1,4 +1,4 @@
-package stsc.algorithms;
+package stsc.storage;
 
 import java.util.Date;
 

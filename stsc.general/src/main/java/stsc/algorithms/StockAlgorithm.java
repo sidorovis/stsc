@@ -6,6 +6,7 @@ import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.signals.Signal;
 import stsc.signals.StockSignal;
+import stsc.storage.SignalsSerie;
 
 public abstract class StockAlgorithm {
 
