@@ -3,7 +3,8 @@ package stsc.testhelper;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithmInit;
-import stsc.storage.SignalsStorage;
+import stsc.common.SignalsStorage;
+import stsc.storage.SignalsStorageImpl;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
 
@@ -21,7 +22,7 @@ public class TestAlgorithmsHelper {
 	}
 
 	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings) {
-		return getEodAlgorithmInit(broker, executionName, getSettings(), new SignalsStorage());
+		return getEodAlgorithmInit(broker, executionName, getSettings(), new SignalsStorageImpl());
 	}
 
 	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings, SignalsStorage signalsStorage) {
@@ -43,7 +44,7 @@ public class TestAlgorithmsHelper {
 	}
 
 	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName) {
-		return getStockAlgorithmInit(executionName, stockName, new SignalsStorage());
+		return getStockAlgorithmInit(executionName, stockName, new SignalsStorageImpl());
 	}
 
 	public static StockAlgorithmInit getStockAlgorithmInit(String executionName) {

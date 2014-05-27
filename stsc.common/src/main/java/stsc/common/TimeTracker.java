@@ -1,6 +1,6 @@
 package stsc.common;
 
-public class TimeTracker {
+public final class TimeTracker {
 	private final long timeStart;
 	private long timeEnd;
 

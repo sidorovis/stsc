@@ -2,7 +2,7 @@ package stsc.common;
 
 import java.util.ArrayList;
 
-public class MemoryStock extends Stock {
+public final class MemoryStock extends Stock {
 
 	private final String name;
 	private ArrayList<Day> days = new ArrayList<Day>();

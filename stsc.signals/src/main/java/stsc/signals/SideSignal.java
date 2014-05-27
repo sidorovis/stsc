@@ -1,6 +1,7 @@
 package stsc.signals;
 
 import stsc.common.Side;
+import stsc.common.StockSignal;
 
 public class SideSignal extends StockSignal {
 

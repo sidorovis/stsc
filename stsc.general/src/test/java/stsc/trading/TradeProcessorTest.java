@@ -11,15 +11,15 @@ import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
+import stsc.common.EodSignal;
 import stsc.common.FromToPeriod;
+import stsc.common.SignalsStorage;
 import stsc.common.StockStorage;
 import stsc.common.UnitedFormatStock;
-import stsc.signals.EodSignal;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorageFactory;
 import stsc.storage.ThreadSafeStockStorage;
-import stsc.storage.SignalsStorage;
 import junit.framework.TestCase;
 
 public final class TradeProcessorTest extends TestCase {

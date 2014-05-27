@@ -9,9 +9,9 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.common.BadSignalException;
 import stsc.common.StockStorage;
 import stsc.common.TimeTracker;
-import stsc.signals.BadSignalException;
 import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.StrategySearcherException;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;

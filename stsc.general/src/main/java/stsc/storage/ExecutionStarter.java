@@ -11,13 +11,14 @@ import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockExecution;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
+import stsc.common.SignalsStorage;
 import stsc.trading.Broker;
 
 public final class ExecutionStarter {
 
-	private final SignalsStorage signalsStorage = new SignalsStorage();
+	private final SignalsStorage signalsStorage = new SignalsStorageImpl();
 
 	private final StockNameToAlgorithms stockAlgorithms = new StockNameToAlgorithms();
 	private final Map<String, EodAlgorithm> tradeAlgorithms = new HashMap<>();

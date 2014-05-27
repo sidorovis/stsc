@@ -1,9 +1,6 @@
-package stsc.storage;
+package stsc.common;
 
 import java.util.Date;
-
-import stsc.signals.BadSignalException;
-import stsc.signals.Signal;
 
 public abstract class SignalsSerie<SignalType> {
 

@@ -7,11 +7,11 @@ import java.util.Map;
 import stsc.algorithms.AlgorithmSetting;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
+import stsc.common.EodSignal;
 import stsc.common.Side;
-import stsc.signals.BadSignalException;
-import stsc.signals.EodSignal;
-import stsc.storage.SignalsSerie;
+import stsc.common.SignalsSerie;
 
 public class OneSideOpenAlgorithm extends EodAlgorithm {
 

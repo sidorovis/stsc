@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Queue;
 
-public class UnitedFormatStock extends Stock {
+public final class UnitedFormatStock extends Stock {
 
 	private final static String extension = ".uf";
 

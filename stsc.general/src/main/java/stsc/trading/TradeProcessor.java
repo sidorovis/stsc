@@ -7,10 +7,10 @@ import java.util.Map.Entry;
 import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.FromToPeriod;
 import stsc.common.StockStorage;
-import stsc.signals.BadSignalException;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;

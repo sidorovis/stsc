@@ -3,10 +3,10 @@ package stsc.algorithms;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
-import stsc.signals.EodSignal;
-import stsc.storage.SignalsSerie;
+import stsc.common.EodSignal;
+import stsc.common.SignalsSerie;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import stsc.algorithms.StockAlgorithm;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
 
 class StockAlgorithms {
 	// execution name to stock algorithms

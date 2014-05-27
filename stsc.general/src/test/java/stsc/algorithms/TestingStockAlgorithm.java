@@ -2,9 +2,9 @@ package stsc.algorithms;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
-import stsc.signals.StockSignal;
+import stsc.common.StockSignal;
 
 public final class TestingStockAlgorithm extends StockAlgorithm {
 

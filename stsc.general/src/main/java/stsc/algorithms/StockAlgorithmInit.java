@@ -2,10 +2,10 @@ package stsc.algorithms;
 
 import java.util.Date;
 
-import stsc.signals.BadSignalException;
-import stsc.signals.Signal;
-import stsc.signals.StockSignal;
-import stsc.storage.SignalsStorage;
+import stsc.common.BadSignalException;
+import stsc.common.Signal;
+import stsc.common.SignalsStorage;
+import stsc.common.StockSignal;
 
 public class StockAlgorithmInit {
 

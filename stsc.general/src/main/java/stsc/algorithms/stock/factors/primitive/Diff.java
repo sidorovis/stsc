@@ -6,12 +6,12 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.LimitSignalsSerie;
 import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockAlgorithmInit;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
+import stsc.common.Signal;
+import stsc.common.SignalsSerie;
+import stsc.common.StockSignal;
 import stsc.signals.DoubleSignal;
-import stsc.signals.Signal;
-import stsc.signals.StockSignal;
-import stsc.storage.SignalsSerie;
 
 public class Diff extends StockAlgorithm {
 

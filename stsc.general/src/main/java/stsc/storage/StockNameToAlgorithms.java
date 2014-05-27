@@ -3,8 +3,8 @@ package stsc.storage;
 import java.util.HashMap;
 
 import stsc.algorithms.StockAlgorithm;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
 
 class StockNameToAlgorithms {
 	// stock name to execution map

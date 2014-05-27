@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Day implements Comparable<Day> {
+public final class Day implements Comparable<Day> {
 
 	static private DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");
 

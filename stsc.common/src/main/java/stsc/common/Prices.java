@@ -1,6 +1,6 @@
 package stsc.common;
 
-public class Prices {
+public final class Prices {
 
 	final double open;
 	final double high;

@@ -1,6 +1,6 @@
 package stsc.algorithms.eod.primitive;
 
-import stsc.signals.EodSignal;
+import stsc.common.EodSignal;
 
 
 public class TestingEodAlgorithmSignal extends EodSignal {

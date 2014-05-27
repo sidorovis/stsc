@@ -2,7 +2,7 @@ package stsc.common;
 
 import java.util.Comparator;
 
-public class DayComparator implements Comparator<Day> {
+public final class DayComparator implements Comparator<Day> {
 
 	private static DayComparator instance = new DayComparator();
 

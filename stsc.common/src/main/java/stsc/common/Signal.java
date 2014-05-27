@@ -1,8 +1,8 @@
-package stsc.signals;
+package stsc.common;
 
 import java.util.Date;
 
-public class Signal<SignalType> {
+public final class Signal<SignalType> {
 	final int index;
 	final Date date;
 	final SignalType signal;

@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class FromToPeriod implements Externalizable {
+public final class FromToPeriod implements Externalizable {
 
 	private final DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 

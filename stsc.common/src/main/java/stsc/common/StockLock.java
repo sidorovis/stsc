@@ -1,6 +1,6 @@
 package stsc.common;
 
-public class StockLock {
+public final class StockLock {
 	Stock stock;
 
 	public StockLock(Stock stock) {

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import stsc.signals.BadSignalException;
-import stsc.signals.Signal;
-import stsc.storage.SignalsSerie;
+import stsc.common.BadSignalException;
+import stsc.common.Signal;
+import stsc.common.SignalsSerie;
 
 public final class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
 

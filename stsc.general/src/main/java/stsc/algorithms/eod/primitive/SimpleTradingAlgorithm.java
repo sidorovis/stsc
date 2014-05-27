@@ -11,11 +11,11 @@ import org.joda.time.Days;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.EodPosition;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
+import stsc.common.EodSignal;
 import stsc.common.Side;
-import stsc.signals.BadSignalException;
-import stsc.signals.EodSignal;
-import stsc.storage.SignalsSerie;
+import stsc.common.SignalsSerie;
 
 public class SimpleTradingAlgorithm extends EodAlgorithm {
 

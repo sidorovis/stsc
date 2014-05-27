@@ -1,5 +1,7 @@
 package stsc.signals;
 
+import stsc.common.StockSignal;
+
 public class DoubleSignal extends StockSignal {
 
 	final public Double value;

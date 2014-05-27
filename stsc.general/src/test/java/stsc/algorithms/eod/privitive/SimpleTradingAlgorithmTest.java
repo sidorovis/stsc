@@ -6,8 +6,8 @@ import java.util.Date;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

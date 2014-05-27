@@ -1,6 +1,6 @@
-package stsc.signals;
+package stsc.common;
 
-public class BadSignalException extends Exception {
+public final class BadSignalException extends Exception {
 	/**
 	 * serial version UID for BiadSignalException
 	 */

@@ -2,10 +2,10 @@ package stsc.algorithms;
 
 import java.util.Date;
 
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
-import stsc.signals.StockSignal;
-import stsc.storage.SignalsSerie;
+import stsc.common.SignalsSerie;
+import stsc.common.StockSignal;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

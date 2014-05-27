@@ -1,4 +1,4 @@
-package stsc.signals;
+package stsc.common;
 
 public class EodSignal {
 

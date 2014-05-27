@@ -3,13 +3,13 @@ package stsc.algorithms;
 import java.util.Date;
 import java.util.HashMap;
 
+import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.signals.BadSignalException;
-import stsc.signals.EodSignal;
-import stsc.signals.Signal;
-import stsc.signals.StockSignal;
-import stsc.storage.SignalsSerie;
-import stsc.storage.SignalsStorage;
+import stsc.common.EodSignal;
+import stsc.common.Signal;
+import stsc.common.SignalsSerie;
+import stsc.common.SignalsStorage;
+import stsc.common.StockSignal;
 import stsc.trading.Broker;
 
 public abstract class EodAlgorithm {
