@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import stsc.common.BadSignalException;
-import stsc.common.Signal;
-import stsc.common.SignalsSerie;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
 
 public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
 

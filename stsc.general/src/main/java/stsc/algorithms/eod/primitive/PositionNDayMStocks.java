@@ -18,10 +18,10 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.EodSignal;
 import stsc.common.Side;
-import stsc.common.Signal;
-import stsc.common.SignalsSerie;
-import stsc.common.StockSignal;
 import stsc.signals.DoubleSignal;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 
 /*
  * PositionNDayMStocks open position for n days on m stocks in long and short sides

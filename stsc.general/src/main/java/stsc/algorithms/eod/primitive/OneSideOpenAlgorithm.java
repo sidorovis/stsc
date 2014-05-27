@@ -11,7 +11,7 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.EodSignal;
 import stsc.common.Side;
-import stsc.common.SignalsSerie;
+import stsc.signals.SignalsSerie;
 
 public class OneSideOpenAlgorithm extends EodAlgorithm {
 

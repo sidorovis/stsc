@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import stsc.stocks.Prices;
+
 public final class Day implements Comparable<Day> {
 
 	static private DateFormat fd = new SimpleDateFormat("yyyy-MM-dd");

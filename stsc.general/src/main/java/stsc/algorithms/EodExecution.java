@@ -3,7 +3,7 @@ package stsc.algorithms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import stsc.common.SignalsStorage;
+import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
 public class EodExecution {

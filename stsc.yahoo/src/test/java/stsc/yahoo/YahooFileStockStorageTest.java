@@ -1,6 +1,6 @@
 package stsc.yahoo;
 
-import stsc.common.StockStorage;
+import stsc.storage.StockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 import junit.framework.TestCase;
 

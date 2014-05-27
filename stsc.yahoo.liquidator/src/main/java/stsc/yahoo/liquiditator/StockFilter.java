@@ -9,7 +9,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
-import stsc.common.Stock;
+import stsc.stocks.Stock;
 
 public class StockFilter {
 

@@ -7,8 +7,6 @@ import java.util.List;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
-import stsc.common.StockStorage;
-import stsc.common.UnitedFormatStock;
 import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;
@@ -17,7 +15,9 @@ import stsc.simulator.multistarter.MpString;
 import stsc.simulator.multistarter.MpSubExecution;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
+import stsc.stocks.UnitedFormatStock;
 import stsc.storage.AlgorithmsStorage;
+import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 

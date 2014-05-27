@@ -4,9 +4,9 @@ import java.util.Date;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.Signal;
-import stsc.common.SignalsSerie;
-import stsc.common.StockSignal;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 
 public abstract class StockAlgorithm {
 

@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.lang3.Validate;
 
-import stsc.common.SignalsStorage;
+import stsc.storage.SignalsStorage;
 
 public class StockExecution {
 	private final String executionName;

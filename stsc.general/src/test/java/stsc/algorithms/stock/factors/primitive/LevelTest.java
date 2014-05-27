@@ -8,8 +8,8 @@ import stsc.algorithms.In;
 import stsc.algorithms.StockAlgorithmInit;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
-import stsc.common.Stock;
-import stsc.common.UnitedFormatStock;
+import stsc.stocks.Stock;
+import stsc.stocks.UnitedFormatStock;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

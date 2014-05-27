@@ -1,6 +1,8 @@
-package stsc.common;
+package stsc.stocks;
 
 import java.util.ArrayList;
+
+import stsc.common.Day;
 
 public final class MemoryStock extends Stock {
 

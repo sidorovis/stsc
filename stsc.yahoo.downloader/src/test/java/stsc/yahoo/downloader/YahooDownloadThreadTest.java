@@ -3,10 +3,11 @@ package stsc.yahoo.downloader;
 import java.io.File;
 import java.io.IOException;
 
-import stsc.common.Stock;
+import stsc.stocks.Stock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.downloader.DownloadThread;
+
 import com.google.common.io.Files;
 
 import junit.framework.TestCase;

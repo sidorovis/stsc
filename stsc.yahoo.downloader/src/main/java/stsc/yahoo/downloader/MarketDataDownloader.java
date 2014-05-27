@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.common.UnitedFormatStock;
+import stsc.stocks.UnitedFormatStock;
 import stsc.yahoo.StringUtils;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;

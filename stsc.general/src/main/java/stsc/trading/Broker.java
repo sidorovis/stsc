@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.common.Stock;
-import stsc.common.StockStorage;
+import stsc.stocks.Stock;
+import stsc.storage.StockStorage;
 
 public class Broker {
 

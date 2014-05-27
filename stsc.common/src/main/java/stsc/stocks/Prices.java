@@ -1,4 +1,4 @@
-package stsc.common;
+package stsc.stocks;
 
 public final class Prices {
 

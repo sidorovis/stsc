@@ -13,9 +13,9 @@ import stsc.algorithms.stock.factors.primitive.Ema;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.Stock;
-import stsc.common.UnitedFormatStock;
 import stsc.signals.DoubleSignal;
+import stsc.stocks.Stock;
+import stsc.stocks.UnitedFormatStock;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

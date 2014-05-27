@@ -12,7 +12,7 @@ import stsc.algorithms.LimitSignalsSerie;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.EodSignal;
-import stsc.common.SignalsSerie;
+import stsc.signals.SignalsSerie;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
 

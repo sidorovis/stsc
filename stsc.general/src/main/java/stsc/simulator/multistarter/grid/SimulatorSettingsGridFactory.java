@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
-import stsc.common.StockStorage;
 import stsc.simulator.ExecutionInitializer;
 import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpString;
+import stsc.storage.StockStorage;
 
 public class SimulatorSettingsGridFactory {
 

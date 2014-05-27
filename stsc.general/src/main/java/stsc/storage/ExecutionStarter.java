@@ -13,7 +13,6 @@ import stsc.algorithms.StockAlgorithm;
 import stsc.algorithms.StockExecution;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.SignalsStorage;
 import stsc.trading.Broker;
 
 public final class ExecutionStarter {

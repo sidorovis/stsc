@@ -6,10 +6,10 @@ import org.joda.time.LocalDate;
 
 import stsc.common.FromToPeriod;
 import stsc.common.Side;
-import stsc.common.Stock;
-import stsc.common.UnitedFormatStock;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
+import stsc.stocks.Stock;
+import stsc.stocks.UnitedFormatStock;
 import stsc.trading.Broker;
 import stsc.trading.TradingLog;
 

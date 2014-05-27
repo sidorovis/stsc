@@ -8,10 +8,10 @@ import stsc.algorithms.StockAlgorithmInit;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.common.SignalsSerie;
-import stsc.common.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.SideSignal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 
 public class Level extends StockAlgorithm {
 

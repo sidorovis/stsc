@@ -9,7 +9,7 @@ import java.text.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.common.UnitedFormatStock;
+import stsc.stocks.UnitedFormatStock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.liquiditator.StockFilter;

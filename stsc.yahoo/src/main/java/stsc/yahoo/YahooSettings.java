@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import stsc.common.UnitedFormatStock;
+import stsc.stocks.UnitedFormatStock;
 
 public class YahooSettings {
 

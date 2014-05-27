@@ -4,8 +4,8 @@ import java.util.Date;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.SignalsSerie;
-import stsc.common.StockSignal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 

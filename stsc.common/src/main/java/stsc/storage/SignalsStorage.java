@@ -1,6 +1,12 @@
-package stsc.common;
+package stsc.storage;
 
 import java.util.Date;
+
+import stsc.common.BadSignalException;
+import stsc.common.EodSignal;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 
 public interface SignalsStorage {
 

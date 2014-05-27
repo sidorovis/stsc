@@ -12,10 +12,10 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.EodExecution;
 import stsc.algorithms.StockExecution;
 import stsc.common.FromToPeriod;
-import stsc.common.StockStorage;
 import stsc.simulator.ExecutionInitializer;
 import stsc.simulator.SimulatorSettings;
 import stsc.storage.ExecutionsStorage;
+import stsc.storage.StockStorage;
 import stsc.trading.TradeProcessorInit;
 
 /*

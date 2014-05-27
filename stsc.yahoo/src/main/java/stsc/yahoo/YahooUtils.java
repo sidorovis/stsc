@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import stsc.common.UnitedFormatStock;
+import stsc.stocks.UnitedFormatStock;
 
 public class YahooUtils {
 

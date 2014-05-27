@@ -5,10 +5,9 @@ import java.util.HashMap;
 
 import stsc.common.BadSignalException;
 import stsc.common.EodSignal;
-import stsc.common.Signal;
-import stsc.common.SignalsSerie;
-import stsc.common.SignalsStorage;
-import stsc.common.StockSignal;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
 
 /**
  * @mark Thread Safe

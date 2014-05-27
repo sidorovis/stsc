@@ -4,7 +4,7 @@ import stsc.algorithms.BadAlgorithmException;
 import stsc.algorithms.StockAlgorithm;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.StockSignal;
+import stsc.signals.StockSignal;
 
 public final class TestingStockAlgorithm extends StockAlgorithm {
 

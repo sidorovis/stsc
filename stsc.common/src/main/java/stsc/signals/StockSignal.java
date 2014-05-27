@@ -1,4 +1,4 @@
-package stsc.common;
+package stsc.signals;
 
 public class StockSignal {
 

@@ -10,7 +10,6 @@ import org.joda.time.LocalDate;
 
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.BadSignalException;
-import stsc.common.StockStorage;
 import stsc.common.TimeTracker;
 import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.StrategySearcherException;
@@ -19,6 +18,7 @@ import stsc.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.statistic.StatisticsInnerProductFunction;
 import stsc.statistic.StatisticsSelector;
+import stsc.storage.StockStorage;
 
 class PerformanceCalculator {
 

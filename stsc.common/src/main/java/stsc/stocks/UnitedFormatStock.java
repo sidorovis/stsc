@@ -1,4 +1,4 @@
-package stsc.common;
+package stsc.stocks;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Queue;
+
+import stsc.common.Day;
 
 public final class UnitedFormatStock extends Stock {
 

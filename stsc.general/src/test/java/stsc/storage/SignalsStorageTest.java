@@ -7,8 +7,7 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.CommonSignalsSerie;
 import stsc.common.BadSignalException;
 import stsc.common.EodSignal;
-import stsc.common.Signal;
-import stsc.common.SignalsStorage;
+import stsc.signals.Signal;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {

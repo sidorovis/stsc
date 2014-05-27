@@ -1,8 +1,11 @@
-package stsc.common;
+package stsc.stocks;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+
+import stsc.common.Day;
+import stsc.common.DayComparator;
 
 public abstract class Stock {
 

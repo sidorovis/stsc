@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import stsc.common.Day;
-import stsc.common.Stock;
+import stsc.stocks.Stock;
 
 final class DayIterator {
 	private final Date from;

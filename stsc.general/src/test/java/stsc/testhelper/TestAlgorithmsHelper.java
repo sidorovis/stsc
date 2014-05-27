@@ -3,7 +3,7 @@ package stsc.testhelper;
 import stsc.algorithms.AlgorithmSettings;
 import stsc.algorithms.EodAlgorithm;
 import stsc.algorithms.StockAlgorithmInit;
-import stsc.common.SignalsStorage;
+import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;

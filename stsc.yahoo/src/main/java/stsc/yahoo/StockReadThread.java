@@ -1,6 +1,6 @@
 package stsc.yahoo;
 
-import stsc.common.Stock;
+import stsc.stocks.Stock;
 
 class StockReadThread implements Runnable {
 

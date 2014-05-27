@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
-import stsc.common.StockStorage;
 import stsc.simulator.ExecutionInitializer;
 import stsc.simulator.SimulatorSettings;
+import stsc.storage.StockStorage;
 
 public class SimulatorSettingsGridCopyList extends SimulatorSettingsGridList {
 

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.EodSignal;
-import stsc.common.Signal;
-import stsc.common.SignalsSerie;
-import stsc.common.SignalsStorage;
-import stsc.common.StockSignal;
+import stsc.signals.Signal;
+import stsc.signals.SignalsSerie;
+import stsc.signals.StockSignal;
+import stsc.storage.SignalsStorage;
 import stsc.trading.Broker;
 
 public abstract class EodAlgorithm {
