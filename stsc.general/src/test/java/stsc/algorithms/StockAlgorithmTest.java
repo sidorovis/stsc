@@ -8,7 +8,7 @@ import stsc.signals.StockSignal;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
-public class StockAlgorithmTest extends TestCase {
+public final class StockAlgorithmTest extends TestCase {
 	private static class StockAlgorithmHelper extends StockAlgorithm {
 
 		public StockAlgorithmHelper(final StockAlgorithmInit init) throws BadAlgorithmException {

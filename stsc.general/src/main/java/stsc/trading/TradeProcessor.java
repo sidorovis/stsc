@@ -13,9 +13,7 @@ import stsc.signals.BadSignalException;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
-import stsc.storage.DayIteratorStorage;
 import stsc.storage.ExecutionStarter;
-import stsc.storage.DayIterator;
 import stsc.storage.StockStorage;
 
 public class TradeProcessor {

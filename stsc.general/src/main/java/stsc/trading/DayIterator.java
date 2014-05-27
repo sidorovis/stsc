@@ -1,4 +1,4 @@
-package stsc.storage;
+package stsc.trading;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,19 +7,19 @@ import java.util.Date;
 import stsc.common.Day;
 import stsc.common.Stock;
 
-public class DayIterator {
+final class DayIterator {
 	private final Date from;
 
 	private ArrayList<Day> days;
 	private int currentIterator;
 
-	public DayIterator(Stock stock, Date from) {
+	DayIterator(Stock stock, Date from) {
 		this.from = from;
 		this.days = stock.getDays();
 		reset();
 	}
 
-	public void reset() {
+	void reset() {
 		if (days.size() > 0 && days.get(0).date.compareTo(from) >= 0)
 			currentIterator = 0;
 		else {
@@ -33,11 +33,11 @@ public class DayIterator {
 		}
 	}
 
-	public boolean dataFound() {
+	boolean dataFound() {
 		return currentIterator < days.size();
 	}
 
-	public Day getCurrentDayAndNext(Day currentDay) {
+	Day getCurrentDayAndNext(Day currentDay) {
 		if (currentIterator < days.size()) {
 			Day day = days.get(currentIterator);
 			int dayCompare = day.compareTo(currentDay);
@@ -64,6 +64,7 @@ public class DayIterator {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		return Integer.toString(currentIterator) + "/" + Integer.toString(days.size());
 	}

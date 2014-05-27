@@ -2,7 +2,7 @@ package stsc.algorithms;
 
 import junit.framework.TestCase;
 
-public class AlgorithmSettingTest extends TestCase {
+public final class AlgorithmSettingTest extends TestCase {
 	public void testAlgorithmSettingWithDouble() {
 		AlgorithmSetting<Double> asd = new AlgorithmSetting<Double>(new Double(0.0));
 		assertEquals(0.0, asd.getValue());

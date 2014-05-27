@@ -9,7 +9,7 @@ import stsc.signals.EodSignal;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
-public class EodAlgorithmTest extends TestCase {
+public final class EodAlgorithmTest extends TestCase {
 
 	private static class EodAlgorithmHelper extends EodAlgorithm {
 

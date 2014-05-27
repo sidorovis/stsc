@@ -18,7 +18,7 @@ import stsc.statistic.Statistics.StatisticsInit;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord;
 
-public class StatisticsProcessor {
+public final class StatisticsProcessor {
 
 	private final static double PERCENTS = 100.0;
 
@@ -95,7 +95,7 @@ public class StatisticsProcessor {
 
 	}
 
-	private class EquityProcessor {
+	private final class EquityProcessor {
 
 		private Date lastDate;
 		private HashMap<String, Double> lastPrice = new HashMap<>();
@@ -225,8 +225,7 @@ public class StatisticsProcessor {
 
 		private void closeAllPositions() {
 			final int MINIMAL_DAY_IN_PERIOD = 2;
-			if (statisticsInit.period > MINIMAL_DAY_IN_PERIOD
-					&& (longPositions.size() > 0 || shortPositions.size() > 0)) {
+			if (statisticsInit.period > MINIMAL_DAY_IN_PERIOD && (longPositions.size() > 0 || shortPositions.size() > 0)) {
 				while (longPositions.size() > 0) {
 					final String stockName = longPositions.positions.keySet().iterator().next();
 					final Positions.Position p = longPositions.positions.get(stockName);
@@ -292,8 +291,7 @@ public class StatisticsProcessor {
 				} else {
 					if (currentElement.value > lastValue) {
 						if (currentElement.value >= ddStart.value) {
-							final int ddLength = Days.daysBetween(new LocalDate(ddStart.date),
-									new LocalDate(currentElement.date)).getDays();
+							final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(currentElement.date)).getDays();
 
 							ddCount += 1;
 							ddDurationSum += ddLength;
@@ -314,8 +312,7 @@ public class StatisticsProcessor {
 				lastValue = currentElement.value;
 			}
 			if (inDrawdown) {
-				final int ddLength = Days.daysBetween(new LocalDate(ddStart.date),
-						new LocalDate(init.equityCurve.getLastElement().date)).getDays();
+				final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(init.equityCurve.getLastElement().date)).getDays();
 				ddCount += 1;
 				ddValueSum += ddSize;
 				ddDurationSum += ddLength;
@@ -447,8 +444,7 @@ public class StatisticsProcessor {
 			final double RISK_PERCENTS = 5.0;
 			final double MONTHS_PER_YEAR = 12.0;
 			final double sharpeAnnualReturn = (MONTHS_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
-			final double sharpeStdDev = Math.sqrt(MONTHS_PER_YEAR)
-					* calculateStdDev(monthsCapitalsSum, monthsDifferents);
+			final double sharpeStdDev = Math.sqrt(MONTHS_PER_YEAR) * calculateStdDev(monthsCapitalsSum, monthsDifferents);
 
 			init.sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStdDev;
 		}

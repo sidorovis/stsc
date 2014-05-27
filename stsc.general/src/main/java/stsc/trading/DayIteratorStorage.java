@@ -1,4 +1,4 @@
-package stsc.storage;
+package stsc.trading;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import stsc.common.Stock;
 
-public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> {
+final class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> {
 
 	private HashMap<String, DayIterator> stocks = new HashMap<String, DayIterator>();
 	private Date from;
@@ -41,11 +41,11 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 		return new IteratorOnStocks(stocks);
 	}
 
-	public DayIteratorStorage(Date from) {
+	DayIteratorStorage(Date from) {
 		this.from = from;
 	}
 
-	public void add(Stock stock) {
+	void add(Stock stock) {
 		if (stock != null) {
 			DayIterator stockIterator = new DayIterator(stock, from);
 			if (stockIterator.dataFound()) {
@@ -54,7 +54,7 @@ public class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> 
 		}
 	}
 
-	public void reset() {
+	void reset() {
 		for (Entry<String, DayIterator> i : this) {
 			i.getValue().reset();
 		}

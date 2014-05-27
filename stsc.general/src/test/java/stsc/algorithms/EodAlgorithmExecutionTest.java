@@ -6,7 +6,7 @@ import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
-public class EodAlgorithmExecutionTest extends TestCase {
+public final class EodAlgorithmExecutionTest extends TestCase {
 	public void testEodAlgorithmExecutionConstructor() {
 		boolean exception = false;
 		try {

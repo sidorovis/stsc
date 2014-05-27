@@ -6,7 +6,7 @@ import stsc.algorithms.StockExecution;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
-public class StockExecutionTest extends TestCase {
+public final class StockExecutionTest extends TestCase {
 
 	public void testStockAlgorithmExecutionConstructor() {
 		boolean exception = false;

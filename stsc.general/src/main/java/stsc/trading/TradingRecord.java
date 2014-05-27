@@ -8,7 +8,7 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
-public class TradingRecord {
+public final class TradingRecord {
 	public enum TradingType {
 		BUY, SELL;
 
@@ -29,11 +29,11 @@ public class TradingRecord {
 	Side side;
 	int amount;
 
-	public static TradingRecord buy(Date when, String stockName, Side side, int amount) {
+	static TradingRecord buy(Date when, String stockName, Side side, int amount) {
 		return new TradingRecord(TradingType.BUY, when, stockName, side, amount);
 	}
 
-	public static TradingRecord sell(Date when, String stockName, Side side, int amount) {
+	static TradingRecord sell(Date when, String stockName, Side side, int amount) {
 		return new TradingRecord(TradingType.SELL, when, stockName, side, amount);
 	}
 
@@ -45,7 +45,7 @@ public class TradingRecord {
 		this.amount = amount;
 	}
 
-	public void printOut(Writer w) throws IOException {
+	void printOut(Writer w) throws IOException {
 		w.append(dateFormat.format(date));
 		w.append("\t");
 		if (type == TradingType.BUY)
@@ -92,7 +92,6 @@ public class TradingRecord {
 
 	@Override
 	public String toString() {
-		return new LocalDate(date).toString() + ": (" + type.toString() + ") " + stockName + " | " + side.toString()
-				+ " " + String.valueOf(amount);
+		return new LocalDate(date).toString() + ": (" + type.toString() + ") " + stockName + " | " + side.toString() + " " + String.valueOf(amount);
 	}
 }

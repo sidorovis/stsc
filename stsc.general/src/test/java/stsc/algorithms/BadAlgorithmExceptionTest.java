@@ -2,7 +2,7 @@ package stsc.algorithms;
 
 import junit.framework.TestCase;
 
-public class BadAlgorithmExceptionTest extends TestCase {
+public final class BadAlgorithmExceptionTest extends TestCase {
 	public void testBadAlgorithmException() {
 		final BadAlgorithmException exception = new BadAlgorithmException("my exception message");
 		assertEquals("my exception message", exception.getMessage());

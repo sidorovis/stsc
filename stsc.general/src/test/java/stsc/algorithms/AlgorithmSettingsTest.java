@@ -11,7 +11,7 @@ import stsc.testhelper.TestAlgorithmsHelper;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class AlgorithmSettingsTest extends TestCase {
+public final class AlgorithmSettingsTest extends TestCase {
 
 	public void testAlgorithmsSettings() {
 		final AlgorithmSettings as = TestAlgorithmsHelper.getSettings();
