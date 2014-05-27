@@ -38,7 +38,7 @@
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.common</artifactId>
-      <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
+      <version>${project.version}</version>
     </dependency>
   
     <dependency>

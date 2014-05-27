@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>stsc.yahoo.liquidator</artifactId>
-  <version>${global.version}</version>
+  <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>jar</packaging>
 
   <name>stsc.yahoo.liquidator</name>
@@ -59,6 +59,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.general</artifactId>

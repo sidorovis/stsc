@@ -16,3 +16,4 @@ target
 .settings
 .classpath
 _*.log
+*.versionsBackup
