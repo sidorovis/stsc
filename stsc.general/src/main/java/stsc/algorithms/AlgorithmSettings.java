@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import stsc.common.FromToPeriod;
 
-public class AlgorithmSettings implements Cloneable {
+public final class AlgorithmSettings implements Cloneable {
 
 	private final FromToPeriod period;
 	private final HashMap<String, Integer> integers;
@@ -111,6 +111,30 @@ public class AlgorithmSettings implements Cloneable {
 		if (value != null) {
 			setting.setInteger(integers.get(key));
 		}
+	}
+
+	public AlgorithmSetting<Integer> getIntegerSetting(final String key, final Integer defaultValue) {
+		final Integer value = integers.get(key);
+		if (value == null) {
+			return new AlgorithmSetting<Integer>(defaultValue);
+		}
+		return new AlgorithmSetting<Integer>(value);
+	}
+
+	public AlgorithmSetting<Double> getDoubleSetting(final String key, final Double defaultValue) {
+		final Double value = doubles.get(key);
+		if (value == null) {
+			return new AlgorithmSetting<Double>(defaultValue);
+		}
+		return new AlgorithmSetting<Double>(value);
+	}
+
+	public AlgorithmSetting<String> getStringSetting(final String key, final String defaultValue) {
+		final String value = settings.get(key);
+		if (value == null) {
+			return new AlgorithmSetting<String>(defaultValue);
+		}
+		return new AlgorithmSetting<String>(value);
 	}
 
 	public Double getDouble(final String key) throws BadAlgorithmException {

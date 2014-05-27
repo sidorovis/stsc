@@ -1,6 +1,6 @@
 package stsc.algorithms;
 
-public class AlgorithmSetting<T extends Object> {
+public final class AlgorithmSetting<T extends Object> {
 	private T value;
 	final private Class<T> clazz;
 
@@ -15,21 +15,21 @@ public class AlgorithmSetting<T extends Object> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setInteger(final Integer newValue) {
+	void setInteger(final Integer newValue) {
 		value = (T) newValue;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setDouble(final Double newValue) {
+	void setDouble(final Double newValue) {
 		value = (T) newValue;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setString(final String newValue) {
+	void setString(final String newValue) {
 		value = (T) newValue;
 	}
 
-	public void setValue(final T newValue) {
+	void setValue(final T newValue) {
 		value = newValue;
 	}
 

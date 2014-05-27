@@ -7,7 +7,7 @@ import java.util.HashMap;
 import stsc.signals.BadSignalException;
 import stsc.signals.Signal;
 
-public class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
+public final class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
 
 	private final ArrayList<Signal<? extends SignalType>> signalList = new ArrayList<>();
 	private final HashMap<Date, Signal<? extends SignalType>> signalMap = new HashMap<>();

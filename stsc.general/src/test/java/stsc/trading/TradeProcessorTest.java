@@ -12,6 +12,7 @@ import stsc.algorithms.EodExecution;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
 import stsc.common.FromToPeriod;
+import stsc.common.StockStorage;
 import stsc.common.UnitedFormatStock;
 import stsc.signals.EodSignal;
 import stsc.storage.ExecutionStarter;
@@ -19,10 +20,9 @@ import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorageFactory;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.storage.SignalsStorage;
-import stsc.storage.StockStorage;
 import junit.framework.TestCase;
 
-public class TradeProcessorTest extends TestCase {
+public final class TradeProcessorTest extends TestCase {
 	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException {
 		final String stocksFilePath = "./test_data/trade_processor_tests/";
 		ss.updateStock(UnitedFormatStock.readFromCsvFile(stockName, stocksFilePath + stockName + ".csv"));
@@ -38,6 +38,7 @@ public class TradeProcessorTest extends TestCase {
 
 		final FromToPeriod period = new FromToPeriod("30-10-2013", "06-11-2013");
 		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+		algoSettings.setInteger("size", 10000);
 
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		executionsStorage.addEodExecution(new EodExecution("e1", TestingEodAlgorithm.class.getName(), algoSettings));

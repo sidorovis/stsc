@@ -7,9 +7,9 @@ import java.sql.Date;
 import java.text.ParseException;
 
 import stsc.common.Side;
+import stsc.common.StockStorage;
 import stsc.common.UnitedFormatStock;
 import stsc.storage.ThreadSafeStockStorage;
-import stsc.storage.StockStorage;
 import junit.framework.TestCase;
 
 public class BrokerTest extends TestCase {

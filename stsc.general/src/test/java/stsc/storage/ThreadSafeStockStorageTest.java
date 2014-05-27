@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import stsc.common.MemoryStock;
 import stsc.common.Stock;
+import stsc.common.StockStorage;
 import junit.framework.TestCase;
 
 public class ThreadSafeStockStorageTest extends TestCase {

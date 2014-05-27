@@ -15,7 +15,7 @@ import stsc.common.Day;
 import stsc.signals.BadSignalException;
 import stsc.trading.Broker;
 
-public class ExecutionStarter {
+public final class ExecutionStarter {
 
 	private final SignalsStorage signalsStorage = new SignalsStorage();
 

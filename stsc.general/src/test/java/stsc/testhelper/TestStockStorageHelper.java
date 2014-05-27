@@ -6,8 +6,8 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import stsc.common.Stock;
+import stsc.common.StockStorage;
 import stsc.common.UnitedFormatStock;
-import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
 
 public class TestStockStorageHelper implements StockStorage {

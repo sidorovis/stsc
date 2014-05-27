@@ -1,8 +1,6 @@
-package stsc.storage;
+package stsc.common;
 
 import java.util.Set;
-
-import stsc.common.Stock;
 
 public interface StockStorage {
 

@@ -1,9 +1,9 @@
 package stsc.trading;
 
 import stsc.algorithms.BadAlgorithmException;
+import stsc.common.StockStorage;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.StockStorage;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;

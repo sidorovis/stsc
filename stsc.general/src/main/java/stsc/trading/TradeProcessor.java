@@ -9,12 +9,12 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.BadAlgorithmException;
 import stsc.common.Day;
 import stsc.common.FromToPeriod;
+import stsc.common.StockStorage;
 import stsc.signals.BadSignalException;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.ExecutionStarter;
-import stsc.storage.StockStorage;
 
 public class TradeProcessor {
 
