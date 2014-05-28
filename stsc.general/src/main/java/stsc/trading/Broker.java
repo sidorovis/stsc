@@ -15,22 +15,22 @@ public class Broker {
 	private final TradingLog tradingLog = new TradingLog();
 	private final StockStorage stockStorage;
 
-	class Shares {
+	private class Shares {
 		private int amount = 0;
 
-		public Shares(int amount) {
+		Shares(int amount) {
 			this.amount = amount;
 		}
 
-		public void inc(int amount) {
+		void inc(int amount) {
 			this.amount += amount;
 		}
 
-		public void dec(int amount) {
+		void dec(int amount) {
 			this.amount -= amount;
 		}
 
-		public int getAmount() {
+		int getAmount() {
 			return amount;
 		}
 	}
