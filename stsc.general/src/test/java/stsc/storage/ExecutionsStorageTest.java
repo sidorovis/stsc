@@ -10,7 +10,7 @@ import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.testhelper.TestAlgorithmsHelper;
 import stsc.testhelper.TestStockStorageHelper;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import junit.framework.TestCase;
 
 public class ExecutionsStorageTest extends TestCase {
@@ -22,7 +22,7 @@ public class ExecutionsStorageTest extends TestCase {
 
 		eStorage.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
 		eStorage.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, TestAlgorithmsHelper.getSettings()));
-		ExecutionStarter es = eStorage.initialize(new Broker(new TestStockStorageHelper()));
+		ExecutionStarter es = eStorage.initialize(new BrokerImpl(new TestStockStorageHelper()));
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 
@@ -46,7 +46,7 @@ public class ExecutionsStorageTest extends TestCase {
 
 		boolean throwed = false;
 		try {
-			es.initialize(new Broker(new TestStockStorageHelper()));
+			es.initialize(new BrokerImpl(new TestStockStorageHelper()));
 		} catch (BadAlgorithmException e) {
 			throwed = true;
 		}

@@ -15,20 +15,20 @@ public class ExecutionsLoaderTest extends TestCase {
 		final ExecutionsLoader el = new ExecutionsLoader(filename, TestHelper.getPeriod());
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
-		executions.initialize(new Broker(ss));
+		executions.initialize(new BrokerImpl(ss));
 		return executions;
 	}
 
 	public void testAlgorithmLoader() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/algs_t1.ini");
-		final ExecutionStarter starter = executions.initialize(new Broker(TestStockStorageHelper.getStockStorage()));
+		final ExecutionStarter starter = executions.initialize(new BrokerImpl(TestStockStorageHelper.getStockStorage()));
 		assertEquals(3, starter.getStockAlgorithmsSize());
 		assertEquals(0, starter.getEodAlgorithmsSize());
 	}
 
 	public void testSeveralAlgorithmLoader() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/algs_t2.ini");
-		final ExecutionStarter starter = executions.initialize(new Broker(TestStockStorageHelper.getStockStorage()));
+		final ExecutionStarter starter = executions.initialize(new BrokerImpl(TestStockStorageHelper.getStockStorage()));
 		assertEquals(5, starter.getStockAlgorithmsSize());
 		assertEquals(0, starter.getEodAlgorithmsSize());
 	}
@@ -37,7 +37,7 @@ public class ExecutionsLoaderTest extends TestCase {
 		boolean throwed = false;
 		try {
 			ExecutionsLoader loader = new ExecutionsLoader(file, TestHelper.getPeriod());
-			loader.getExecutionsStorage().initialize(new Broker(new TestStockStorageHelper()));
+			loader.getExecutionsStorage().initialize(new BrokerImpl(new TestStockStorageHelper()));
 		} catch (BadAlgorithmException e) {
 			assertEquals(message, e.getMessage());
 			throwed = true;
@@ -57,7 +57,7 @@ public class ExecutionsLoaderTest extends TestCase {
 
 	public void testAlgorithmLoaderWithEod() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests("./test_data/executions_loader_tests/trade_algs.ini");
-		final ExecutionStarter starter = executions.initialize(new Broker(TestStockStorageHelper.getStockStorage()));
+		final ExecutionStarter starter = executions.initialize(new BrokerImpl(TestStockStorageHelper.getStockStorage()));
 		assertEquals(2, starter.getStockAlgorithmsSize());
 		assertNotNull(starter.getEodAlgorithm("a1"));
 	}

@@ -10,7 +10,7 @@ import stsc.common.Side;
 import stsc.stocks.Stock;
 import stsc.storage.StockStorage;
 
-public class Broker {
+public class BrokerImpl implements Broker {
 
 	private final TradingLog tradingLog = new TradingLog();
 	private final StockStorage stockStorage;
@@ -40,14 +40,19 @@ public class Broker {
 
 	private Date today;
 
-	public Broker(StockStorage stockStorage) {
+	public BrokerImpl(StockStorage stockStorage) {
 		this.stockStorage = stockStorage;
 	}
 
+	/* (non-Javadoc)
+	 * @see stsc.trading.Broker#setToday(java.util.Date)
+	 */
+	@Override
 	public void setToday(Date today) {
 		this.today = today;
 	}
 
+	@Override
 	public StockStorage getStockStorage() {
 		return stockStorage;
 	}
@@ -56,10 +61,7 @@ public class Broker {
 		return tradingLog;
 	}
 
-	// algorithms interface
-	/**
-	 * @return bought amount of actions
-	 */
+	@Override
 	public int buy(String stockName, Side side, int sharesAmount) {
 		if (dataExist(stockName)) {
 			if (side == Side.LONG)
@@ -89,9 +91,7 @@ public class Broker {
 		tradingLog.addBuyRecord(today, stockName, Side.SHORT, sharesAmount);
 	}
 
-	/**
-	 * @return sold amount of actions
-	 */
+	@Override
 	public int sell(String stockName, Side side, int sharesAmount) {
 		if (dataExist(stockName)) {
 			int selledAmount = 0;

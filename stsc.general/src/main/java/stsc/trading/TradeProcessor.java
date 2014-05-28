@@ -18,13 +18,13 @@ import stsc.storage.StockStorage;
 
 public class TradeProcessor {
 
-	private final Broker broker;
+	private final BrokerImpl broker;
 	private final ExecutionStarter executionsStarter;
 
 	private DayIteratorStorage stocks;
 
 	public TradeProcessor(final TradeProcessorInit settings) throws BadAlgorithmException {
-		this.broker = settings.getBroker();
+		this.broker = settings.getBrokerImpl();
 		this.stocks = new DayIteratorStorage(settings.getPeriod().getFrom());
 		this.executionsStarter = settings.getExecutionsStorage().initialize(broker);
 	}

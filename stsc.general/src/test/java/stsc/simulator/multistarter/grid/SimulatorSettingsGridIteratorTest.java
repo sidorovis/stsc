@@ -20,7 +20,7 @@ import stsc.storage.StockStorage;
 import stsc.testhelper.TestSimulatorSettings;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.testhelper.TestHelper;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import junit.framework.TestCase;
 
 public class SimulatorSettingsGridIteratorTest extends TestCase {
@@ -48,7 +48,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		for (SimulatorSettings simulatorSettings : settings) {
 			count += 1;
 			final ExecutionsStorage executionsStorage = simulatorSettings.getInit().getExecutionsStorage();
-			final ExecutionStarter executionStarter = executionsStorage.initialize(new Broker(stockStorage));
+			final ExecutionStarter executionStarter = executionsStorage.initialize(new BrokerImpl(stockStorage));
 			final StockAlgorithm sain = executionStarter.getStockAlgorithm("in", "aapl");
 			final StockAlgorithm saema = executionStarter.getStockAlgorithm("ema", "aapl");
 			final StockAlgorithm salevel = executionStarter.getStockAlgorithm("level", "aapl");

@@ -7,10 +7,11 @@ import stsc.storage.SignalsStorage;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 
 public class TestAlgorithmsHelper {
 	public static EodAlgorithm.Init getEodAlgorithmInit() {
-		return getEodAlgorithmInit(new Broker(new ThreadSafeStockStorage()));
+		return getEodAlgorithmInit(new BrokerImpl(new ThreadSafeStockStorage()));
 	}
 
 	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker) {

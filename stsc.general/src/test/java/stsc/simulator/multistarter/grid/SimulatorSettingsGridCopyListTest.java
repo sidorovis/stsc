@@ -12,7 +12,7 @@ import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorage;
 import stsc.testhelper.TestSimulatorSettings;
 import stsc.testhelper.TestStockStorageHelper;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import junit.framework.TestCase;
 
 public class SimulatorSettingsGridCopyListTest extends TestCase {
@@ -25,7 +25,7 @@ public class SimulatorSettingsGridCopyListTest extends TestCase {
 		int count = 0;
 		for (SimulatorSettings simulatorSettings : list) {
 			final ExecutionsStorage executionsStorage = simulatorSettings.getInit().getExecutionsStorage();
-			final ExecutionStarter executionStarter = executionsStorage.initialize(new Broker(stockStorage));
+			final ExecutionStarter executionStarter = executionsStorage.initialize(new BrokerImpl(stockStorage));
 			final StockAlgorithm sain = executionStarter.getStockAlgorithm("in", "aapl");
 			final EodAlgorithm saone = executionStarter.getEodAlgorithm("os");
 			assertNotNull(sain);

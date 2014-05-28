@@ -26,7 +26,7 @@ public class BrokerTest extends TestCase {
 		csvReaderHelper(stockStorage, "oldstock");
 		csvReaderHelper(stockStorage, "no30");
 
-		Broker broker = new Broker(stockStorage);
+		final BrokerImpl broker = new BrokerImpl(stockStorage);
 		broker.setToday(Date.valueOf("2013-10-30"));
 		assertEquals(1000, broker.buy("aapl", Side.LONG, 1000));
 		assertEquals(0, broker.sell("aapl", Side.SHORT, 2000));
@@ -58,7 +58,7 @@ public class BrokerTest extends TestCase {
 		csvReaderHelper(stockStorage, "oldstock");
 		csvReaderHelper(stockStorage, "no30");
 
-		Broker broker = new Broker(stockStorage);
+		Broker broker = new BrokerImpl(stockStorage);
 		broker.setToday(Date.valueOf("2013-10-30"));
 		assertEquals(200, broker.buy("aapl", Side.LONG, 200));
 		assertEquals(0, broker.buy("no30", Side.LONG, 200));

@@ -10,7 +10,7 @@ import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.stocks.Stock;
 import stsc.stocks.UnitedFormatStock;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import stsc.trading.TradingLog;
 
 public class TestHelper {
@@ -36,7 +36,7 @@ public class TestHelper {
 			int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 			int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-			TradingLog tradingLog = new Broker(TestStockStorageHelper.getStockStorage()).getTradingLog();
+			TradingLog tradingLog = new BrokerImpl(TestStockStorageHelper.getStockStorage()).getTradingLog();
 
 			StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 

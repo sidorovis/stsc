@@ -11,7 +11,7 @@ import stsc.common.Side;
 import stsc.stocks.Stock;
 import stsc.storage.StockStorage;
 import stsc.testhelper.TestStockStorageHelper;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import stsc.trading.TradingLog;
 import junit.framework.TestCase;
 
@@ -25,7 +25,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		final TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
+		final TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
 
 		final StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -59,7 +59,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
+		TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -95,7 +95,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
+		TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
 
 		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
@@ -223,7 +223,7 @@ public class StatisticsProcessorTest extends TestCase {
 		int admIndex = adm.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 
-		TradingLog tradingLog = new Broker(stockStorage).getTradingLog();
+		TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
 
 		StatisticsProcessor statisticsProcessor = new StatisticsProcessor(tradingLog);
 

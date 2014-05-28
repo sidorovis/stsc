@@ -20,7 +20,7 @@ import stsc.stocks.UnitedFormatStock;
 import stsc.storage.StockStorage;
 import stsc.storage.ThreadSafeStockStorage;
 import stsc.testhelper.TestAlgorithmsHelper;
-import stsc.trading.Broker;
+import stsc.trading.BrokerImpl;
 import stsc.trading.TradingLog;
 import stsc.trading.TradingRecord.TradingType;
 import junit.framework.TestCase;
@@ -40,7 +40,7 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final StockStorage stockStorage = new ThreadSafeStockStorage();
 		stockStorage.updateStock(aapl);
-		final Broker broker = new Broker(stockStorage);
+		final BrokerImpl broker = new BrokerImpl(stockStorage);
 
 		final AlgorithmSettings algoSettings = TestAlgorithmsHelper.getSettings();
 		algoSettings.set("P", "10000.0");

@@ -15,13 +15,13 @@ import stsc.storage.StockStorageFactory;
 
 public class TradeProcessorInit {
 
-	private final Broker broker;
+	private final BrokerImpl broker;
 	private final FromToPeriod period;
 	private final ExecutionsStorage executionsStorage;
 
 	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period,
 			final ExecutionsStorage executionsStorage) {
-		this.broker = new Broker(stockStorage);
+		this.broker = new BrokerImpl(stockStorage);
 		this.period = period;
 		this.executionsStorage = executionsStorage;
 	}
@@ -39,7 +39,7 @@ public class TradeProcessorInit {
 			final ExecutionsLoader executionsLoader = new ExecutionsLoader(algsConfig, period);
 			final ExecutionsStorage executionsStorage = executionsLoader.getExecutionsStorage();
 
-			this.broker = new Broker(stockStorage);
+			this.broker = new BrokerImpl(stockStorage);
 			this.period = period;
 			this.executionsStorage = executionsStorage;
 		} catch (ClassNotFoundException | IOException | InterruptedException | ParseException e) {
@@ -64,7 +64,7 @@ public class TradeProcessorInit {
 		return properties;
 	}
 
-	public Broker getBroker() {
+	public BrokerImpl getBrokerImpl() {
 		return broker;
 	}
 
