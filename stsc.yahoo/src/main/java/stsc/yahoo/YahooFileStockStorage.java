@@ -8,9 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.stocks.Stock;
-import stsc.stocks.StockLock;
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.stocks.Stock;
+import stsc.common.stocks.StockLock;
+import stsc.common.stocks.UnitedFormatStock;
 import stsc.storage.ThreadSafeStockStorage;
 
 public class YahooFileStockStorage extends ThreadSafeStockStorage implements StockReadThread.StockReceiver {

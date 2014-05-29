@@ -45,6 +45,11 @@
       <artifactId>stsc.signals</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.algorithms</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   
     <dependency>
       <groupId>junit</groupId>

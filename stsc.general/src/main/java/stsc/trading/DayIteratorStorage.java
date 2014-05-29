@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import stsc.stocks.Stock;
+import stsc.common.stocks.Stock;
 
 final class DayIteratorStorage implements Iterable<Entry<String, DayIterator>> {
 

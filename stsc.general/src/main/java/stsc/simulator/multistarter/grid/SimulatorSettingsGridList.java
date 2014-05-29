@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
+import stsc.common.storage.StockStorage;
 import stsc.simulator.ExecutionInitializer;
 import stsc.simulator.SimulatorSettings;
-import stsc.storage.StockStorage;
 
 public class SimulatorSettingsGridList implements Iterable<SimulatorSettings> {
 

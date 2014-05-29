@@ -7,8 +7,8 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.stocks.Stock;
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.stocks.Stock;
+import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.liquiditator.StockFilter;

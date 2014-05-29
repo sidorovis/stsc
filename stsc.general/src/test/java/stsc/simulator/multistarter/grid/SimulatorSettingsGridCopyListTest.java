@@ -2,14 +2,14 @@ package stsc.simulator.multistarter.grid;
 
 import java.util.Arrays;
 
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.StockAlgorithm;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodAlgorithm;
+import stsc.common.algorithms.StockAlgorithm;
+import stsc.common.storage.StockStorage;
 import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.StockStorage;
 import stsc.testhelper.TestSimulatorSettings;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.BrokerImpl;

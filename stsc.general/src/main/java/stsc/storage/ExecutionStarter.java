@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.EodExecution;
-import stsc.algorithms.StockAlgorithm;
-import stsc.algorithms.StockExecution;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.trading.Broker;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodAlgorithm;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.algorithms.StockAlgorithm;
+import stsc.common.algorithms.StockExecution;
+import stsc.common.storage.SignalsStorage;
+import stsc.common.trading.Broker;
 
 public final class ExecutionStarter {
 

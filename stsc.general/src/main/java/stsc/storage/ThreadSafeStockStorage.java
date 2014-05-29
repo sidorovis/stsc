@@ -3,8 +3,9 @@ package stsc.storage;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import stsc.stocks.Stock;
-import stsc.stocks.StockLock;
+import stsc.common.stocks.Stock;
+import stsc.common.stocks.StockLock;
+import stsc.common.storage.StockStorage;
 
 public class ThreadSafeStockStorage implements StockStorage {
 	protected ConcurrentHashMap<String, StockLock> datafeed = new ConcurrentHashMap<String, StockLock>();

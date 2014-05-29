@@ -2,12 +2,12 @@ package stsc.storage;
 
 import java.text.ParseException;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodExecution;
-import stsc.algorithms.StockExecution;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Sma;
+import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.algorithms.StockExecution;
 import stsc.testhelper.TestAlgorithmsHelper;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.BrokerImpl;

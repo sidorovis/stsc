@@ -7,9 +7,9 @@ import java.util.Map;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.StockAlgorithm;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodAlgorithm;
+import stsc.common.algorithms.StockAlgorithm;
 
 public final class AlgorithmsStorage {
 

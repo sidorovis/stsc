@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.BadSignalException;
-import stsc.common.EodSignal;
-import stsc.signals.Signal;
-import stsc.signals.SignalsSerie;
-import stsc.signals.StockSignal;
+import stsc.common.signals.EodSignal;
+import stsc.common.signals.Signal;
+import stsc.common.signals.SignalsSerie;
+import stsc.common.signals.StockSignal;
+import stsc.common.storage.SignalsStorage;
 
 /**
  * @mark Thread Safe
@@ -22,9 +23,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 	public SignalsStorageImpl() {
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#registerStockAlgorithmSerie(java.lang.String, java.lang.String, stsc.storage.SignalsSerie)
-	 */
 	@Override
 	public void registerStockAlgorithmSerie(String stockName, String executionName, SignalsSerie<StockSignal> serie) {
 		if (serie != null) {
@@ -35,9 +33,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#addStockSignal(java.lang.String, java.lang.String, java.util.Date, stsc.signals.StockSignal)
-	 */
 	@Override
 	public void addStockSignal(final String stockName, final String executionName, final Date date, final StockSignal signal) throws BadSignalException {
 		final String key = stockAlgorithmKey(stockName, executionName);
@@ -46,9 +41,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getStockSignal(java.lang.String, java.lang.String, java.util.Date)
-	 */
 	@Override
 	public Signal<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
 		final String key = stockAlgorithmKey(stockName, executionName);
@@ -61,9 +53,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getStockSignal(java.lang.String, java.lang.String, int)
-	 */
 	@Override
 	public Signal<? extends StockSignal> getStockSignal(final String stockName, final String executionName, final int index) {
 		final String key = stockAlgorithmKey(stockName, executionName);
@@ -76,9 +65,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getIndexSize(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public int getIndexSize(String stockName, String executionName) {
 		final String key = stockAlgorithmKey(stockName, executionName);
@@ -97,9 +83,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 
 	// EOD
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#registerEodAlgorithmSerie(java.lang.String, stsc.storage.SignalsSerie)
-	 */
 	@Override
 	public void registerEodAlgorithmSerie(String executionName, SignalsSerie<EodSignal> serie) {
 		if (serie != null) {
@@ -109,9 +92,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#addEodSignal(java.lang.String, java.util.Date, stsc.signals.EodSignal)
-	 */
 	@Override
 	public void addEodSignal(final String executionName, final Date date, EodSignal signal) throws BadSignalException {
 		synchronized (eodSignals) {
@@ -123,9 +103,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getEodSignal(java.lang.String, java.util.Date)
-	 */
 	@Override
 	public Signal<? extends EodSignal> getEodSignal(final String executionName, final Date date) {
 		SignalsSerie<EodSignal> ess = null;
@@ -137,9 +114,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getEodSignal(java.lang.String, int)
-	 */
 	@Override
 	public Signal<? extends EodSignal> getEodSignal(final String executionName, final int index) {
 		SignalsSerie<EodSignal> ess = null;
@@ -151,9 +125,6 @@ public class SignalsStorageImpl implements SignalsStorage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.storage.SignalsStorage#getSignalsSize(java.lang.String)
-	 */
 	@Override
 	public int getSignalsSize(final String executionName) {
 		SignalsSerie<EodSignal> ess = null;

@@ -3,9 +3,9 @@ package stsc.storage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import stsc.algorithms.StockAlgorithm;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
+import stsc.common.algorithms.StockAlgorithm;
 
 class StockAlgorithms {
 	// execution name to stock algorithms

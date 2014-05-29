@@ -3,7 +3,7 @@ package stsc.simulator;
 import java.util.HashSet;
 import java.util.Set;
 
-import stsc.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.trading.TradeProcessorInit;
 import junit.framework.TestCase;
 

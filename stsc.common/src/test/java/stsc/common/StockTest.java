@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 
-import stsc.stocks.Stock;
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.stocks.Stock;
+import stsc.common.stocks.UnitedFormatStock;
 import junit.framework.TestCase;
 
 public class StockTest extends TestCase {

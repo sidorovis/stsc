@@ -1,7 +1,8 @@
 package stsc.simulator.multistarter.grid;
 
-import stsc.algorithms.AlgorithmSettings;
+import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.AlgorithmSettings;
 import stsc.simulator.multistarter.MpIterator;
 import stsc.simulator.multistarter.ParameterList;
 import stsc.simulator.multistarter.ParameterType;
@@ -41,8 +42,8 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		}
 
 		@Override
-		public AlgorithmSettings next() {
-			final AlgorithmSettings result = generateSettings();
+		public AlgorithmSettingsImpl next() {
+			final AlgorithmSettingsImpl result = generateSettings();
 			generateNext();
 			return result;
 		}
@@ -81,8 +82,8 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 			return;
 		}
 
-		protected AlgorithmSettings generateSettings() {
-			final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+		protected AlgorithmSettingsImpl generateSettings() {
+			final AlgorithmSettingsImpl algoSettings = new AlgorithmSettingsImpl(period);
 
 			for (int i = 0; i < ParameterType.typesSize; ++i) {
 				final ParameterList list = parameters[i];

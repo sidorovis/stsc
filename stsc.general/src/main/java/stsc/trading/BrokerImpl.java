@@ -7,8 +7,9 @@ import java.util.HashMap;
 
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.stocks.Stock;
-import stsc.storage.StockStorage;
+import stsc.common.stocks.Stock;
+import stsc.common.storage.StockStorage;
+import stsc.common.trading.Broker;
 
 public class BrokerImpl implements Broker {
 
@@ -44,9 +45,6 @@ public class BrokerImpl implements Broker {
 		this.stockStorage = stockStorage;
 	}
 
-	/* (non-Javadoc)
-	 * @see stsc.trading.Broker#setToday(java.util.Date)
-	 */
 	@Override
 	public void setToday(Date today) {
 		this.today = today;

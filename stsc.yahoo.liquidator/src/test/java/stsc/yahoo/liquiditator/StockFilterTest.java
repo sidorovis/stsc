@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import org.joda.time.LocalDate;
 
 import stsc.common.Day;
-import stsc.stocks.MemoryStock;
-import stsc.stocks.Stock;
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.stocks.MemoryStock;
+import stsc.common.stocks.Stock;
+import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.liquiditator.StockFilter;
 import junit.framework.TestCase;
 

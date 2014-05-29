@@ -3,7 +3,7 @@ package stsc.yahoo.downloader;
 import java.io.File;
 import java.io.IOException;
 
-import stsc.stocks.Stock;
+import stsc.common.stocks.Stock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.downloader.DownloadThread;

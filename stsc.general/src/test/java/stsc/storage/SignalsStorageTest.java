@@ -4,10 +4,11 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.CommonSignalsSerie;
 import stsc.common.BadSignalException;
-import stsc.common.EodSignal;
-import stsc.signals.Signal;
+import stsc.common.signals.EodSignal;
+import stsc.common.signals.Signal;
+import stsc.common.storage.SignalsStorage;
+import stsc.signals.series.CommonSignalsSerie;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {

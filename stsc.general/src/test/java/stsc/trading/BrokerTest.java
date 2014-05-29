@@ -7,8 +7,9 @@ import java.sql.Date;
 import java.text.ParseException;
 
 import stsc.common.Side;
-import stsc.stocks.UnitedFormatStock;
-import stsc.storage.StockStorage;
+import stsc.common.stocks.UnitedFormatStock;
+import stsc.common.storage.StockStorage;
+import stsc.common.trading.Broker;
 import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
 

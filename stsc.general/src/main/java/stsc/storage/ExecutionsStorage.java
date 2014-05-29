@@ -3,10 +3,10 @@ package stsc.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodExecution;
-import stsc.algorithms.StockExecution;
-import stsc.trading.Broker;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.algorithms.StockExecution;
+import stsc.common.trading.Broker;
 
 public class ExecutionsStorage {
 

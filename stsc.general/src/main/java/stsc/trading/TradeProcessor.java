@@ -6,15 +6,15 @@ import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.BadAlgorithmException;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.storage.StockStorage;
 import stsc.statistic.Statistics;
 import stsc.statistic.StatisticsProcessor;
 import stsc.statistic.StatisticsCalculationException;
 import stsc.storage.ExecutionStarter;
-import stsc.storage.StockStorage;
 
 public class TradeProcessor {
 

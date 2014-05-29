@@ -1,62 +1,53 @@
 package stsc.testhelper;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.StockAlgorithmInit;
-import stsc.storage.SignalsStorage;
+import stsc.algorithms.AlgorithmSettingsImpl;
+import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.EodAlgorithmInit;
+import stsc.common.algorithms.StockAlgorithmInit;
+import stsc.common.storage.SignalsStorage;
+import stsc.common.trading.Broker;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.ThreadSafeStockStorage;
-import stsc.trading.Broker;
 import stsc.trading.BrokerImpl;
 
 public class TestAlgorithmsHelper {
-	public static EodAlgorithm.Init getEodAlgorithmInit() {
+	public static EodAlgorithmInit getEodAlgorithmInit() {
 		return getEodAlgorithmInit(new BrokerImpl(new ThreadSafeStockStorage()));
 	}
 
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker) {
+	public static EodAlgorithmInit getEodAlgorithmInit(Broker broker) {
 		return getEodAlgorithmInit(broker, "eName");
 	}
 
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName) {
+	public static EodAlgorithmInit getEodAlgorithmInit(Broker broker, String executionName) {
 		return getEodAlgorithmInit(broker, executionName, getSettings());
 	}
 
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings) {
+	public static EodAlgorithmInit getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings) {
 		return getEodAlgorithmInit(broker, executionName, getSettings(), new SignalsStorageImpl());
 	}
 
-	public static EodAlgorithm.Init getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings, SignalsStorage signalsStorage) {
-		EodAlgorithm.Init init = new EodAlgorithm.Init();
-		init.broker = broker;
-		init.executionName = executionName;
-		init.settings = settings;
-		init.signalsStorage = signalsStorage;
-		return init;
+	public static EodAlgorithmInit getEodAlgorithmInit(Broker broker, String executionName, AlgorithmSettings settings, SignalsStorage signalsStorage) {
+		return new EodAlgorithmInit(executionName, signalsStorage, settings, broker);
 	}
 
-	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage) {
-		StockAlgorithmInit init = new StockAlgorithmInit();
-		init.executionName = executionName;
-		init.settings = getSettings();
-		init.signalsStorage = storage;
-		init.stockName = stockName;
-		return init;
+	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName, SignalsStorage storage, AlgorithmSettings settings) {
+		return new StockAlgorithmInit(executionName, storage, stockName, settings);
 	}
 
-	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName) {
-		return getStockAlgorithmInit(executionName, stockName, new SignalsStorageImpl());
+	public static StockAlgorithmInit getStockAlgorithmInit(String executionName, String stockName, AlgorithmSettings settings) {
+		return getStockAlgorithmInit(executionName, stockName, new SignalsStorageImpl(), settings);
 	}
 
 	public static StockAlgorithmInit getStockAlgorithmInit(String executionName) {
-		return getStockAlgorithmInit(executionName, "sName");
+		return getStockAlgorithmInit(executionName, "sName", getSettings());
 	}
 
 	public static StockAlgorithmInit getStockAlgorithmInit() {
 		return getStockAlgorithmInit("eName");
 	}
 
-	public static AlgorithmSettings getSettings() {
-		return new AlgorithmSettings(TestHelper.getPeriod());
+	public static AlgorithmSettingsImpl getSettings() {
+		return new AlgorithmSettingsImpl(TestHelper.getPeriod());
 	}
 }

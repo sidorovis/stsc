@@ -10,8 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.algorithms.BadAlgorithmException;
 import stsc.common.BadSignalException;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.simulator.Simulator;
 import stsc.simulator.SimulatorSettings;
 import stsc.simulator.multistarter.StrategySearcher;

@@ -2,7 +2,7 @@ package stsc.simulator;
 
 import java.util.Arrays;
 
-import stsc.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.AlgorithmSettings;
 import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;

@@ -17,13 +17,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.Logger;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.BadAlgorithmException;
-import stsc.algorithms.EodAlgorithm;
-import stsc.algorithms.EodExecution;
-import stsc.algorithms.StockAlgorithm;
-import stsc.algorithms.StockExecution;
+import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodAlgorithm;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.algorithms.StockAlgorithm;
+import stsc.common.algorithms.StockExecution;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
 
@@ -49,7 +50,7 @@ final class ExecutionsLoader {
 
 	public String configFilePath = "./config/algs.ini";
 	private String configFileFolder;
-	final private AlgorithmSettings settings;
+	final private AlgorithmSettingsImpl settings;
 	private AlgorithmsStorage algorithmsStorage;
 	final private ExecutionsStorage executionsStorage = new ExecutionsStorage();
 
@@ -62,14 +63,14 @@ final class ExecutionsLoader {
 
 	ExecutionsLoader(String configPath, FromToPeriod period) throws BadAlgorithmException {
 		this.configFilePath = configPath;
-		this.settings = new AlgorithmSettings(period);
+		this.settings = new AlgorithmSettingsImpl(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance();
 		loadAlgorithms();
 	}
 
 	ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
 		this.configFilePath = configPath;
-		this.settings = new AlgorithmSettings(period);
+		this.settings = new AlgorithmSettingsImpl(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);
 		loadAlgorithms();
 	}
@@ -124,8 +125,7 @@ final class ExecutionsLoader {
 			final String executionName = rawExecutionName.trim();
 			final String loadLine = p.getProperty(executionName + ".loadLine");
 			if (loadLine == null)
-				throw new BadAlgorithmException("bad stock execution registration, no " + executionName
-						+ ".loadLine property");
+				throw new BadAlgorithmException("bad stock execution registration, no " + executionName + ".loadLine property");
 			checkNewStockExecution(executionName);
 			final String generatedName = processStockExecution(loadLine);
 			namedStockExecutions.put(executionName, generatedName);
@@ -174,8 +174,7 @@ final class ExecutionsLoader {
 			final String executionName = rawExecutionName.trim();
 			final String loadLine = p.getProperty(executionName + ".loadLine");
 			if (loadLine == null)
-				throw new BadAlgorithmException("bad eod algorithm execution registration, no " + executionName
-						+ ".loadLine property");
+				throw new BadAlgorithmException("bad eod algorithm execution registration, no " + executionName + ".loadLine property");
 			checkNewEodExecution(executionName);
 			processEodExecution(executionName, loadLine);
 			eodExecutions.add(executionName);
@@ -200,8 +199,7 @@ final class ExecutionsLoader {
 		processEodExecution(executionName, match.group(1).trim(), params);
 	}
 
-	private void processEodExecution(String executionName, String algorithmName, final List<String> params)
-			throws BadAlgorithmException {
+	private void processEodExecution(String executionName, String algorithmName, final List<String> params) throws BadAlgorithmException {
 		final Class<? extends EodAlgorithm> eodAlgorithm = algorithmsStorage.getEod(algorithmName);
 		if (eodAlgorithm == null)
 			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
@@ -213,7 +211,7 @@ final class ExecutionsLoader {
 	}
 
 	private AlgorithmSettings generateStockAlgorithmSettings(final List<String> params) throws BadAlgorithmException {
-		final AlgorithmSettings algorithmSettings = settings.clone();
+		final AlgorithmSettingsImpl algorithmSettings = settings.clone();
 
 		for (final String parameter : params) {
 			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);

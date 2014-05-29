@@ -8,8 +8,8 @@ import org.joda.time.LocalDate;
 
 import stsc.common.Settings;
 import stsc.common.Side;
-import stsc.stocks.Stock;
-import stsc.storage.StockStorage;
+import stsc.common.stocks.Stock;
+import stsc.common.storage.StockStorage;
 import stsc.testhelper.TestStockStorageHelper;
 import stsc.trading.BrokerImpl;
 import stsc.trading.TradingLog;

@@ -4,9 +4,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.BadAlgorithmException;
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.simulator.multistarter.BadParameterException;
 import stsc.simulator.multistarter.MpDouble;
@@ -49,8 +49,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		testHelperNlmParameters("2", "ibm", "-2", settings.get(7));
 	}
 
-	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException,
-			BadAlgorithmException {
+	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpInteger("q", 0, 5, 1));
@@ -59,8 +58,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		factory.add(new MpDouble("s", -100.0, 101.0, 25.0));
 		factory.add(new MpString("z", Arrays.asList(new String[] { "asd", "ibm", "yhoo" })));
 		factory.add(new MpString("z", Arrays.asList(new String[] { "vokrug", "fileName" })));
-		factory.add(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423", "234535-23424",
-				"35345-234234135", "24454-65462245" })));
+		factory.add(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423", "234535-23424", "35345-234234135", "24454-65462245" })));
 		final AlgorithmSettingsGridIterator mas = factory.getGridIterator();
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();

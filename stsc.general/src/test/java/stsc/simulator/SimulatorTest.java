@@ -2,14 +2,14 @@ package stsc.simulator;
 
 import java.io.File;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.EodExecution;
+import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.common.FromToPeriod;
 import stsc.common.Settings;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.storage.StockStorage;
 import stsc.statistic.Statistics;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.StockStorage;
 import stsc.storage.StockStorageFactory;
 import stsc.trading.TradeProcessorInit;
 import junit.framework.TestCase;
@@ -33,7 +33,7 @@ public class SimulatorTest extends TestCase {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		final FromToPeriod period = new FromToPeriod("01-09-2002", "27-09-2002");
-		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(period));
+		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettingsImpl(period));
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
@@ -47,7 +47,7 @@ public class SimulatorTest extends TestCase {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		final FromToPeriod period = new FromToPeriod("01-09-2002", "27-09-2002");
-		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettings(period).set("side", "short"));
+		final EodExecution execution = new EodExecution("eName", OneSideOpenAlgorithm.class, new AlgorithmSettingsImpl(period).set("side", "short"));
 		executionsStorage.addEodExecution(execution);
 
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);

@@ -5,7 +5,8 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.stocks.UnitedFormatStock;
+import stsc.common.storage.StockStorage;
 
 public class StockStorageFactory {
 

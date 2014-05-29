@@ -7,17 +7,18 @@ import org.joda.time.LocalDate;
 
 import com.google.common.collect.Sets;
 
-import stsc.algorithms.AlgorithmSettings;
-import stsc.algorithms.EodExecution;
+import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
-import stsc.common.EodSignal;
 import stsc.common.FromToPeriod;
-import stsc.stocks.UnitedFormatStock;
+import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.signals.EodSignal;
+import stsc.common.stocks.UnitedFormatStock;
+import stsc.common.storage.SignalsStorage;
+import stsc.common.storage.StockStorage;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
-import stsc.storage.SignalsStorage;
-import stsc.storage.StockStorage;
 import stsc.storage.StockStorageFactory;
 import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
@@ -37,7 +38,7 @@ public final class TradeProcessorTest extends TestCase {
 		csvReaderHelper(ss, "no30");
 
 		final FromToPeriod period = new FromToPeriod("30-10-2013", "06-11-2013");
-		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+		final AlgorithmSettingsImpl algoSettings = new AlgorithmSettingsImpl(period);
 		algoSettings.setInteger("size", 10000);
 
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
@@ -85,7 +86,7 @@ public final class TradeProcessorTest extends TestCase {
 		final StockStorage ss = StockStorageFactory.createStockStorage(Sets.newHashSet(new String[] { "aapl", "adm", "spy" }), "./test_data/");
 		final FromToPeriod period = new FromToPeriod("02-09-2013", "06-11-2013");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
-		final AlgorithmSettings algoSettings = new AlgorithmSettings(period);
+		final AlgorithmSettings algoSettings = new AlgorithmSettingsImpl(period);
 
 		executionsStorage.addEodExecution(new EodExecution("e1", TestingEodAlgorithm.class.getName(), algoSettings));
 		final TradeProcessorInit init = new TradeProcessorInit(ss, period, executionsStorage);
