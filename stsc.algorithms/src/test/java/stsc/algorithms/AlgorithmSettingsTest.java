@@ -7,10 +7,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import stsc.algorithms.testhelper.TestAlgorithmsHelper;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.testhelper.TestAlgorithmsHelper;
-import stsc.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public final class AlgorithmSettingsTest extends TestCase {
@@ -56,7 +55,7 @@ public final class AlgorithmSettingsTest extends TestCase {
 	}
 
 	public void testGetIntegerDoubleTypes() throws BadAlgorithmException {
-		final AlgorithmSettingsImpl as = new AlgorithmSettingsImpl(TestHelper.getPeriod());
+		final AlgorithmSettingsImpl as = new AlgorithmSettingsImpl(TestAlgorithmsHelper.getPeriod());
 		as.setInteger("asd", Integer.valueOf(15));
 		as.setInteger("4asd", Integer.valueOf(1231));
 		as.setDouble("param", Double.valueOf(1231.0));

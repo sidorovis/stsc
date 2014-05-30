@@ -12,13 +12,13 @@ import stsc.common.BadSignalException;
 import stsc.common.TimeTracker;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
-import stsc.simulator.SimulatorSettings;
-import stsc.simulator.multistarter.StrategySearcherException;
-import stsc.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.simulator.multistarter.grid.StrategyGridSearcher;
-import stsc.statistic.StatisticsCalculationException;
-import stsc.statistic.StatisticsInnerProductFunction;
-import stsc.statistic.StatisticsSelector;
+import stsc.general.simulator.SimulatorSettings;
+import stsc.general.simulator.multistarter.StrategySearcherException;
+import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
+import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
+import stsc.general.statistic.StatisticsCalculationException;
+import stsc.general.statistic.StatisticsInnerProductFunction;
+import stsc.general.statistic.StatisticsSelector;
 
 class PerformanceCalculator {
 

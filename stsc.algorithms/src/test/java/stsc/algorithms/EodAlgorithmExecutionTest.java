@@ -1,9 +1,9 @@
 package stsc.algorithms;
 
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
+import stsc.algorithms.testhelper.TestAlgorithmsHelper;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
-import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public final class EodAlgorithmExecutionTest extends TestCase {

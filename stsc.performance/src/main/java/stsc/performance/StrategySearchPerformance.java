@@ -3,7 +3,7 @@ package stsc.performance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stsc.storage.AlgorithmsStorage;
+import stsc.general.storage.AlgorithmsStorage;
 
 public class StrategySearchPerformance {
 
