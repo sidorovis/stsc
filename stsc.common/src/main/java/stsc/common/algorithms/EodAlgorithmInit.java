@@ -25,6 +25,14 @@ public class EodAlgorithmInit {
 		this.broker = broker;
 	}
 
+	protected final Signal<? extends EodSignal> getSignal(String executionName, Date date) {
+		return signalsStorage.getEodSignal(executionName, date);
+	}
+
+	protected final Signal<? extends EodSignal> getSignal(String executionName, int index) {
+		return signalsStorage.getEodSignal(executionName, index);
+	}
+
 	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
 		return signalsStorage.getStockSignal(stockName, executionName, date);
 	}

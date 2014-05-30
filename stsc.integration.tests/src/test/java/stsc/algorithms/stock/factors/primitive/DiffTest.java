@@ -16,28 +16,29 @@ import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.signals.DoubleSignal;
+import stsc.testhelper.StockAlgoInitHelper;
 import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class DiffTest extends TestCase {
 	public void testDiff() throws BadAlgorithmException, IOException, BadSignalException {
 
-		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
-		stockInit.settings.set("e", "open");
-		final In in = new In(stockInit);
+		StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
+		stockInit.getSettings().set("e", "open");
+		final In in = new In(stockInit.getInit());
 
-		StockAlgorithmInit emaInit = TestAlgorithmsHelper.getStockAlgorithmInit("ema", "aapl", stockInit.signalsStorage);
-		emaInit.settings.addSubExecutionName("in");
-		Ema ema = new Ema(emaInit);
+		StockAlgoInitHelper emaInit = new StockAlgoInitHelper("in", "aapl", stockInit.getStorage());
+		emaInit.getSettings().addSubExecutionName("in");
+		Ema ema = new Ema(emaInit.getInit());
 
-		StockAlgorithmInit smaInit = TestAlgorithmsHelper.getStockAlgorithmInit("sma", "aapl", stockInit.signalsStorage);
-		smaInit.settings.addSubExecutionName("in");
-		Sma sma = new Sma(smaInit);
+		StockAlgoInitHelper smaInit = new StockAlgoInitHelper("sma", "aapl", stockInit.getStorage());
+		smaInit.getSettings().addSubExecutionName("in");
+		Sma sma = new Sma(smaInit.getInit());
 
-		StockAlgorithmInit diffInit = TestAlgorithmsHelper.getStockAlgorithmInit("diff", "aapl", stockInit.signalsStorage);
-		diffInit.settings.addSubExecutionName("ema").addSubExecutionName("sma");
-		diffInit.settings.setInteger("size", 10000);
-		Diff diff = new Diff(diffInit);
+		StockAlgoInitHelper diffInit = new StockAlgoInitHelper("diff", "aapl", stockInit.getStorage());
+		diffInit.getSettings().addSubExecutionName("ema").addSubExecutionName("sma");
+		diffInit.getSettings().setInteger("size", 10000);
+		Diff diff = new Diff(diffInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -51,8 +52,8 @@ public class DiffTest extends TestCase {
 			diff.process(day);
 		}
 
-		assertNotNull(stockInit.signalsStorage.getStockSignal("aapl", "diff", 0));
-		assertEquals(0.0, stockInit.signalsStorage.getStockSignal("aapl", "diff", 0).getSignal(DoubleSignal.class).value, 0.001);
-		assertEquals(0.928176, stockInit.signalsStorage.getStockSignal("aapl", "diff", 4).getSignal(DoubleSignal.class).value, 0.001);
+		assertNotNull(stockInit.getStorage().getStockSignal("aapl", "diff", 0));
+		assertEquals(0.0, stockInit.getStorage().getStockSignal("aapl", "diff", 0).getSignal(DoubleSignal.class).value, 0.001);
+		assertEquals(0.928176, stockInit.getStorage().getStockSignal("aapl", "diff", 4).getSignal(DoubleSignal.class).value, 0.001);
 	}
 }

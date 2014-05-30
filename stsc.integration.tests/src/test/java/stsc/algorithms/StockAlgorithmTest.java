@@ -10,7 +10,7 @@ import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.StockSignal;
 import stsc.signals.series.LimitSignalsSerie;
-import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.testhelper.StockAlgoInitHelper;
 import junit.framework.TestCase;
 
 public final class StockAlgorithmTest extends TestCase {
@@ -32,12 +32,10 @@ public final class StockAlgorithmTest extends TestCase {
 	}
 
 	public void testStockAlgorithm() throws BadSignalException, BadAlgorithmException {
-		StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit();
-		init.executionName = "s";
-		init.stockName = "a";
-		StockAlgorithmHelper sah = new StockAlgorithmHelper(init);
+		StockAlgoInitHelper init = new StockAlgoInitHelper("s", "a");
+		StockAlgorithmHelper sah = new StockAlgorithmHelper(init.getInit());
 		final Date d = new Date();
 		sah.process(new Day(d));
-		assertEquals(StockSignal.class, init.signalsStorage.getStockSignal("a", "s", 0).getValue().getClass());
+		assertEquals(StockSignal.class, init.getStorage().getStockSignal("a", "s", 0).getValue().getClass());
 	}
 }

@@ -22,8 +22,8 @@ public class Ema extends StockAlgorithm {
 
 	public Ema(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		init.settings.get("P", P);
-		List<String> subExecutionNames = init.settings.getSubExecutions();
+		init.getSettings().get("P", P);
+		List<String> subExecutionNames = init.getSettings().getSubExecutions();
 		if (subExecutionNames.size() < 1)
 			throw new BadAlgorithmException("sub executions parameters not enought");
 		subAlgoName = subExecutionNames.get(0);
@@ -31,7 +31,7 @@ public class Ema extends StockAlgorithm {
 
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException {
-		final int size = initialize.settings.getIntegerSetting("size", 2).getValue().intValue();
+		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
 		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size);
 	}
 

@@ -20,7 +20,7 @@ public class Diff extends StockAlgorithm {
 
 	public Diff(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		List<String> subExecutions = init.settings.getSubExecutions();
+		List<String> subExecutions = init.getSettings().getSubExecutions();
 		if (subExecutions.size() < 2)
 			throw new BadAlgorithmException("diff algorithm should have at least two subalgorithms");
 		fromExecution = subExecutions.get(0);
@@ -29,7 +29,7 @@ public class Diff extends StockAlgorithm {
 
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
-		final int size = initialize.settings.getIntegerSetting("size", 2).getValue().intValue();
+		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
 		return new LimitSignalsSerie<StockSignal>(DoubleSignal.class, size);
 	}
 

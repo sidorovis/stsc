@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.algorithms.AlgorithmInit;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
@@ -25,8 +24,8 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(AlgorithmInit init) throws BadAlgorithmException {
-		final int size = init.settings.getIntegerSetting("size", 2).getValue().intValue();
+	public SignalsSerie<EodSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
 		return new LimitSignalsSerie<EodSignal>(TestingEodAlgorithmSignal.class, size);
 	}
 

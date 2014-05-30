@@ -12,7 +12,6 @@ import stsc.algorithms.EodPosition;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.common.algorithms.AlgorithmInit;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
@@ -77,7 +76,7 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(AlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<EodSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		return null;
 	}
 

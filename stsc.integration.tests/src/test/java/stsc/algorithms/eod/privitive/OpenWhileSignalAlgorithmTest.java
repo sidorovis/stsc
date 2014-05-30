@@ -6,43 +6,44 @@ import java.util.HashMap;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.In;
 import stsc.algorithms.eod.primitive.OpenWhileSignalAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
-import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.storage.ThreadSafeStockStorage;
+import stsc.testhelper.EodAlgoInitHelper;
+import stsc.testhelper.StockAlgoInitHelper;
+import stsc.trading.BrokerImpl;
+import stsc.trading.TradingLog;
+import stsc.trading.TradingRecord.TradingType;
 import junit.framework.TestCase;
 
 public class OpenWhileSignalAlgorithmTest extends TestCase {
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException {
 
-		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
-		stockInit.settings.set("e", "open");
-		final In in = new In(stockInit);
+		final StockAlgoInitHelper inInit = new StockAlgoInitHelper("in", "aapl");
+		inInit.getSettings().set("e", "open");
+		final In in = new In(inInit.getInit());
 
-		StockAlgorithmInit levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
-		levelInit.settings.addSubExecutionName("in");
-		levelInit.settings.set("f", "699.0");
-		final Level level = new Level(levelInit);
+		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("in", "aapl", inInit.getStorage());
+		levelInit.getSettings().addSubExecutionName("in");
+		levelInit.getSettings().set("f", "699.0");
+		final Level level = new Level(levelInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final StockStorage stockStorage = new ThreadSafeStockStorage();
 		stockStorage.updateStock(aapl);
 		final BrokerImpl broker = new BrokerImpl(stockStorage);
 
-		final AlgorithmSettingsImpl algoSettings = TestAlgorithmsHelper.getSettings();
-		algoSettings.set("P", "10000.0");
-		algoSettings.addSubExecutionName("level");
-		final EodAlgorithmInit initOwsa = TestAlgorithmsHelper.getEodAlgorithmInit(broker, "eodOwsa", algoSettings, stockInit.signalsStorage);
-		final OpenWhileSignalAlgorithm eodOwsa = new OpenWhileSignalAlgorithm(initOwsa);
+		final EodAlgoInitHelper initOwsa = new EodAlgoInitHelper("eodOwsa", inInit.getStorage(), broker);
+		initOwsa.getSettings().set("P", "10000.0");
+		initOwsa.getSettings().addSubExecutionName("level");
+		final OpenWhileSignalAlgorithm eodOwsa = new OpenWhileSignalAlgorithm(initOwsa.getInit());
 
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
 		final ArrayList<Day> days = aapl.getDays();
