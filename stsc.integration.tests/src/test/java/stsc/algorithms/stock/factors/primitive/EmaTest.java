@@ -11,26 +11,25 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.signals.DoubleSignal;
-import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.testhelper.StockAlgoInitHelper;
 import junit.framework.TestCase;
 
 public class EmaTest extends TestCase {
 	public void testEma() throws IOException, BadSignalException, BadAlgorithmException {
 
-		StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("testIn", "aapl");
-		stockInit.settings.set("e", "open");
-		final In inAlgo = new In(stockInit);
+		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
+		stockInit.getSettings().set("e", "open");
+		final In inAlgo = new In(stockInit.getInit());
 
-		StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit("testEma", "aapl", stockInit.signalsStorage);
-		init.settings.set("P", 0.3);
-		init.settings.setInteger("size", 100000);
-		init.settings.addSubExecutionName("testIn");
+		final StockAlgoInitHelper init = new StockAlgoInitHelper("testEma", "aapl", stockInit.getStorage());
+		init.getSettings().set("P", 0.3);
+		init.getSettings().setInteger("size", 100000);
+		init.getSettings().addSubExecutionName("testIn");
 
-		final Ema ema = new Ema(init);
+		final Ema ema = new Ema(init.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -42,13 +41,13 @@ public class EmaTest extends TestCase {
 			ema.process(day);
 		}
 
-		assertEquals(days.get(aaplIndex).getPrices().getOpen(), init.signalsStorage.getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).value);
+		assertEquals(days.get(aaplIndex).getPrices().getOpen(), init.getStorage().getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).value);
 
 		final double secondValue = days.get(aaplIndex).getPrices().getOpen() * 0.7 + 0.3 * days.get(aaplIndex + 1).getPrices().getOpen();
 
-		assertEquals(secondValue, init.signalsStorage.getStockSignal("aapl", "testEma", 1).getSignal(DoubleSignal.class).value);
+		assertEquals(secondValue, init.getStorage().getStockSignal("aapl", "testEma", 1).getSignal(DoubleSignal.class).value);
 
-		final int size = init.signalsStorage.getIndexSize("aapl", "testEma");
-		assertEquals(531.20111321, init.signalsStorage.getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value, Settings.doubleEpsilon);
+		final int size = init.getStorage().getIndexSize("aapl", "testEma");
+		assertEquals(531.20111321, init.getStorage().getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class).value, Settings.doubleEpsilon);
 	}
 }

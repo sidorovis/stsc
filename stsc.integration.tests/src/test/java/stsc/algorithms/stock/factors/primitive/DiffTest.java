@@ -12,12 +12,10 @@ import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.signals.DoubleSignal;
 import stsc.testhelper.StockAlgoInitHelper;
-import stsc.testhelper.TestAlgorithmsHelper;
 import junit.framework.TestCase;
 
 public class DiffTest extends TestCase {
@@ -27,7 +25,7 @@ public class DiffTest extends TestCase {
 		stockInit.getSettings().set("e", "open");
 		final In in = new In(stockInit.getInit());
 
-		StockAlgoInitHelper emaInit = new StockAlgoInitHelper("in", "aapl", stockInit.getStorage());
+		StockAlgoInitHelper emaInit = new StockAlgoInitHelper("ema", "aapl", stockInit.getStorage());
 		emaInit.getSettings().addSubExecutionName("in");
 		Ema ema = new Ema(emaInit.getInit());
 

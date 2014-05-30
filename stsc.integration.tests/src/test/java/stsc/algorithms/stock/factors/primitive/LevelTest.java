@@ -7,23 +7,22 @@ import org.joda.time.LocalDate;
 import stsc.algorithms.In;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
-import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
-import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.testhelper.StockAlgoInitHelper;
 import junit.framework.TestCase;
 
 public class LevelTest extends TestCase {
 	public void testLevel() throws Exception {
 
-		final StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("in", "aapl");
-		stockInit.settings.set("e", "open");
-		final In in = new In(stockInit);
+		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
+		stockInit.getSettings().set("e", "open");
+		final In in = new In(stockInit.getInit());
 
-		StockAlgorithmInit levelInit = TestAlgorithmsHelper.getStockAlgorithmInit("level", "aapl", stockInit.signalsStorage);
-		levelInit.settings.addSubExecutionName("in");
-		levelInit.settings.set("f", "699.0");
-		final Level level = new Level(levelInit);
+		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", stockInit.getStorage());
+		levelInit.getSettings().addSubExecutionName("in");
+		levelInit.getSettings().set("f", "699.0");
+		final Level level = new Level(levelInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -34,6 +33,6 @@ public class LevelTest extends TestCase {
 			in.process(day);
 			level.process(day);
 		}
-		assertEquals(5, stockInit.signalsStorage.getIndexSize("aapl", "level"));
+		assertEquals(5, stockInit.getStorage().getIndexSize("aapl", "level"));
 	}
 }

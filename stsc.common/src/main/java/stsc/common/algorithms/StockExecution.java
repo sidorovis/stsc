@@ -54,7 +54,7 @@ public class StockExecution {
 			final Class<?>[] params = { StockAlgorithmInit.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
 
-			final StockAlgorithmInit init = new StockAlgorithmInit(stockName, signalsStorage, stockName, settings);
+			final StockAlgorithmInit init = new StockAlgorithmInit(executionName, signalsStorage, stockName, settings);
 			final Object[] values = { init };
 
 			try {

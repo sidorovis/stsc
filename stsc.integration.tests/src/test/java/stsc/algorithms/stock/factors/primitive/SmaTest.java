@@ -11,35 +11,34 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.signals.DoubleSignal;
-import stsc.testhelper.TestAlgorithmsHelper;
+import stsc.testhelper.StockAlgoInitHelper;
 import junit.framework.TestCase;
 
 public class SmaTest extends TestCase {
 	public void testSma() throws IOException, BadSignalException, BadAlgorithmException {
 
-		StockAlgorithmInit stockInit = TestAlgorithmsHelper.getStockAlgorithmInit("testIn", "aapl");
-		stockInit.settings.set("e", "open");
-		final In inAlgo = new In(stockInit);
+		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
+		stockInit.getSettings().set("e", "open");
+		final In inAlgo = new In(stockInit.getInit());
 
-		StockAlgorithmInit stockInitClose = TestAlgorithmsHelper.getStockAlgorithmInit("testInClose", "aapl", stockInit.signalsStorage);
-		stockInitClose.settings.set("e", "close");
-		final In inAlgoClose = new In(stockInitClose);
+		final StockAlgoInitHelper stockInitClose = new StockAlgoInitHelper("testInClose", "aapl", stockInit.getStorage());
+		stockInitClose.getSettings().set("e", "close");
+		final In inAlgoClose = new In(stockInitClose.getInit());
 
-		final StockAlgorithmInit init = TestAlgorithmsHelper.getStockAlgorithmInit("testSma", "aapl", stockInit.signalsStorage);
-		init.settings.setInteger("n", 5);
-		init.settings.setInteger("size", 10000);
-		init.settings.addSubExecutionName("testIn");
-		final Sma sma = new Sma(init);
+		final StockAlgoInitHelper init = new StockAlgoInitHelper("testSma", "aapl", stockInit.getStorage());
+		init.getSettings().setInteger("n", 5);
+		init.getSettings().setInteger("size", 10000);
+		init.getSettings().addSubExecutionName("testIn");
+		final Sma sma = new Sma(init.getInit());
 
-		final StockAlgorithmInit initClose = TestAlgorithmsHelper.getStockAlgorithmInit("testSmaClose", "aapl", stockInit.signalsStorage);
-		initClose.settings.setInteger("n", 5);
-		initClose.settings.setInteger("size", 10000);
-		initClose.settings.addSubExecutionName("testInClose");
-		final Sma smaClose = new Sma(initClose);
+		final StockAlgoInitHelper initClose = new StockAlgoInitHelper("testSmaClose", "aapl", stockInit.getStorage());
+		initClose.getSettings().setInteger("n", 5);
+		initClose.getSettings().setInteger("size", 10000);
+		initClose.getSettings().addSubExecutionName("testInClose");
+		final Sma smaClose = new Sma(initClose.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -53,16 +52,15 @@ public class SmaTest extends TestCase {
 			smaClose.process(day);
 		}
 
-		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
-		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
-		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()));
-		assertNotNull(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(days.size() - 1).getDate()));
+		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
+		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
+		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()));
+		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(days.size() - 1).getDate()));
 
-		assertEquals(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()),
-				init.signalsStorage.getStockSignal("aapl", "testSma", 4));
+		assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()),
+				init.getStorage().getStockSignal("aapl", "testSma", 4));
 
-		assertEquals(init.signalsStorage.getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()),
-				init.signalsStorage.getStockSignal("aapl", "testSma", 0));
+		assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()), init.getStorage().getStockSignal("aapl", "testSma", 0));
 
 		Double lastSum = 0.0;
 		Double lastSumClose = 0.0;
@@ -71,10 +69,10 @@ public class SmaTest extends TestCase {
 			lastSumClose += days.get(i).getPrices().getClose();
 		}
 		final Day lastDay = days.get(days.size() - 1);
-		final double lastSma = init.signalsStorage.getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(DoubleSignal.class).value;
+		final double lastSma = init.getStorage().getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(DoubleSignal.class).value;
 		assertEquals(lastSum / 5, lastSma, Settings.doubleEpsilon);
 
-		final double lastSmaClose = init.signalsStorage.getStockSignal("aapl", "testSmaClose", lastDay.getDate()).getSignal(DoubleSignal.class).value;
+		final double lastSmaClose = init.getStorage().getStockSignal("aapl", "testSmaClose", lastDay.getDate()).getSignal(DoubleSignal.class).value;
 		assertEquals(lastSumClose / 5, lastSmaClose, Settings.doubleEpsilon);
 	}
 }

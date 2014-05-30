@@ -30,7 +30,7 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 		inInit.getSettings().set("e", "open");
 		final In in = new In(inInit.getInit());
 
-		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("in", "aapl", inInit.getStorage());
+		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", inInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");
 		levelInit.getSettings().set("f", "699.0");
 		final Level level = new Level(levelInit.getInit());
