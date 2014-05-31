@@ -28,7 +28,7 @@ class PerformanceCalculator {
 
 	final private StockStorage stockStorage;
 
-	private final static int calculationsForAverage = 10;
+	private final static int calculationsForAverage = 20;
 	private final static int threadsFrom = 1;
 	private final static int threadsTo = 8;
 
