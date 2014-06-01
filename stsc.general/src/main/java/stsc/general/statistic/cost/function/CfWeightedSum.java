@@ -10,7 +10,8 @@ import stsc.general.statistic.Statistics;
 
 public class CfWeightedSum implements CostFunction<Double> {
 
-	final Map<String, Double> parameters = new HashMap<>();
+	private final Map<String, Double> parameters = new HashMap<>();
+	private final Object[] emptyValues = {};
 
 	public CfWeightedSum() {
 		parameters.put("getAvGain", 1.0);
@@ -29,7 +30,7 @@ public class CfWeightedSum implements CostFunction<Double> {
 				if (parameters.containsKey(method.getName())) {
 					final Double value = parameters.get(method.getName());
 					try {
-						result += value * (Double) method.invoke(statistics, new Object[] {});
+						result += value * (Double) method.invoke(statistics, emptyValues);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					}
 				}
