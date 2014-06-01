@@ -1,15 +1,18 @@
-package stsc.general.statistic;
+package stsc.general.statistic.cost.function;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StatisticsInnerProductFunction implements StatisticsEvaluationFunction<Double> {
+import stsc.general.statistic.PublicMethod;
+import stsc.general.statistic.Statistics;
+
+public class CfWeightedSum implements CostFunction<Double> {
 
 	final Map<String, Double> parameters = new HashMap<>();
 
-	public StatisticsInnerProductFunction() {
+	public CfWeightedSum() {
 		parameters.put("getAvGain", 1.0);
 	}
 

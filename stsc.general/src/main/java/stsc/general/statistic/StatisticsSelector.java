@@ -1,12 +1,14 @@
 package stsc.general.statistic;
 
+import stsc.general.statistic.cost.function.CostFunction;
+
 public class StatisticsSelector<T> {
 
 	private int selectLastElements;
-	private final StatisticsEvaluationFunction<T> evaluationFunction;
+	private final CostFunction<T> evaluationFunction;
 	private final SortedStatistics<T> select;
 
-	public StatisticsSelector(int selectLastElements, StatisticsEvaluationFunction<T> evaluationFunction) {
+	public StatisticsSelector(int selectLastElements, CostFunction<T> evaluationFunction) {
 		this.selectLastElements = selectLastElements;
 		this.evaluationFunction = evaluationFunction;
 		this.select = new SortedStatistics<T>();

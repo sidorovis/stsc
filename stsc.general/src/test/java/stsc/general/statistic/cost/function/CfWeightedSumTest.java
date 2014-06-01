@@ -1,16 +1,15 @@
-package stsc.general.statistic;
+package stsc.general.statistic.cost.function;
 
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsInnerProductFunction;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class StatisticsInnerProductFunctionTest extends TestCase {
-	public void testStatisticsInnerProductFunction() {
+public class CfWeightedSumTest extends TestCase {
+	public void testCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final StatisticsInnerProductFunction function = new StatisticsInnerProductFunction();
+		final CfWeightedSum function = new CfWeightedSum();
 		final Double result = function.calculate(statistics);
 		assertEquals(0.246987, result, Settings.doubleEpsilon);
 
