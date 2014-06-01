@@ -15,8 +15,8 @@ import stsc.common.algorithms.StockExecution;
 import stsc.common.storage.StockStorage;
 import stsc.general.simulator.ExecutionInitializer;
 import stsc.general.simulator.SimulatorSettings;
-import stsc.general.storage.ExecutionsStorage;
 import stsc.general.trading.TradeProcessorInit;
+import stsc.storage.ExecutionsStorage;
 
 /*
  * This iterator could be created only one for each list, so all iterators will iterate like singleton will do

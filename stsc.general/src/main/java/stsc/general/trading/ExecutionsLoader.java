@@ -25,8 +25,8 @@ import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockExecution;
-import stsc.general.storage.AlgorithmsStorage;
-import stsc.general.storage.ExecutionsStorage;
+import stsc.storage.AlgorithmsStorage;
+import stsc.storage.ExecutionsStorage;
 
 final class ExecutionsLoader {
 

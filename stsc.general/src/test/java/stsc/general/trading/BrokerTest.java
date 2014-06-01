@@ -10,8 +10,8 @@ import stsc.common.Side;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
 import stsc.common.trading.Broker;
-import stsc.general.storage.ThreadSafeStockStorage;
 import stsc.general.trading.BrokerImpl;
+import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
 
 public class BrokerTest extends TestCase {

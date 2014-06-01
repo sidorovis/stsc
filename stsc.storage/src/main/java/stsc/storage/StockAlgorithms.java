@@ -1,4 +1,4 @@
-package stsc.general.storage;
+package stsc.storage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

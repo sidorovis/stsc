@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.general</artifactId>
+  <artifactId>stsc.storage</artifactId>
   <version>0.0.9-ADDING-GENETIC-STRATEGY-GENERATOR</version>
   <packaging>jar</packaging>
 
-  <name>stsc.general</name>
+  <name>stsc.storage</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -48,11 +48,6 @@
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.algorithms</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.storage</artifactId>
       <version>${project.version}</version>
     </dependency>
   

@@ -10,8 +10,8 @@ import java.util.Set;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
-import stsc.general.storage.ExecutionsStorage;
-import stsc.general.storage.StockStorageFactory;
+import stsc.storage.ExecutionsStorage;
+import stsc.storage.StockStorageFactory;
 
 public class TradeProcessorInit {
 

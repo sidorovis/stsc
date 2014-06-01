@@ -13,15 +13,15 @@ import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsProcessor;
-import stsc.general.testhelper.TestStockStorageHelper;
 import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.TradingLog;
+import stsc.storage.mocks.StockStorageMock;
 import junit.framework.TestCase;
 
 public class StatisticsProcessorTest extends TestCase {
 
 	public void testStatistics() throws Exception {
-		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");
 
@@ -55,7 +55,7 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	public void testReverseStatistics() throws Exception {
-		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");
 
@@ -89,7 +89,7 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
-		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");
 		final Stock spy = stockStorage.getStock("spy");
@@ -217,7 +217,7 @@ public class StatisticsProcessorTest extends TestCase {
 	}
 
 	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException, StatisticsCalculationException {
-		final StockStorage stockStorage = TestStockStorageHelper.getStockStorage();
+		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");
 		final Stock spy = stockStorage.getStock("spy");

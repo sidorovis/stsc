@@ -17,12 +17,12 @@ import stsc.common.signals.EodSignal;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
-import stsc.general.storage.ExecutionStarter;
-import stsc.general.storage.ExecutionsStorage;
-import stsc.general.storage.StockStorageFactory;
-import stsc.general.storage.ThreadSafeStockStorage;
 import stsc.general.trading.TradeProcessor;
 import stsc.general.trading.TradeProcessorInit;
+import stsc.storage.ExecutionStarter;
+import stsc.storage.ExecutionsStorage;
+import stsc.storage.StockStorageFactory;
+import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
 
 public final class TradeProcessorTest extends TestCase {

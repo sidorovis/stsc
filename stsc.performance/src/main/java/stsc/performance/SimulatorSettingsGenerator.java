@@ -17,8 +17,8 @@ import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.storage.AlgorithmsStorage;
-import stsc.general.storage.ThreadSafeStockStorage;
+import stsc.storage.AlgorithmsStorage;
+import stsc.storage.ThreadSafeStockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 
 class SimulatorSettingsGenerator {

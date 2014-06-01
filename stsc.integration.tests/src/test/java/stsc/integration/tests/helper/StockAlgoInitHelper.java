@@ -5,7 +5,7 @@ import java.text.ParseException;
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.storage.SignalsStorage;
-import stsc.general.storage.SignalsStorageImpl;
+import stsc.storage.SignalsStorageImpl;
 
 public class StockAlgoInitHelper {
 

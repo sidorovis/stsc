@@ -1,4 +1,4 @@
-package stsc.general.storage;
+package stsc.integration.tests.storage;
 
 import java.text.ParseException;
 
@@ -8,11 +8,11 @@ import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
-import stsc.general.storage.ExecutionStarter;
-import stsc.general.storage.ExecutionsStorage;
-import stsc.general.testhelper.TestAlgorithmsHelper;
-import stsc.general.testhelper.TestStockStorageHelper;
 import stsc.general.trading.BrokerImpl;
+import stsc.integration.tests.helper.TestAlgorithmsHelper;
+import stsc.storage.ExecutionStarter;
+import stsc.storage.ExecutionsStorage;
+import stsc.storage.mocks.StockStorageMock;
 import junit.framework.TestCase;
 
 public class ExecutionsStorageTest extends TestCase {
@@ -24,7 +24,7 @@ public class ExecutionsStorageTest extends TestCase {
 
 		eStorage.addStockExecution(new StockExecution("t2", Sma.class, smaSettings));
 		eStorage.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, TestAlgorithmsHelper.getSettings()));
-		ExecutionStarter es = eStorage.initialize(new BrokerImpl(new TestStockStorageHelper()));
+		ExecutionStarter es = eStorage.initialize(new BrokerImpl(new StockStorageMock()));
 
 		assertEquals(1, es.getEodAlgorithmsSize());
 
@@ -48,7 +48,7 @@ public class ExecutionsStorageTest extends TestCase {
 
 		boolean throwed = false;
 		try {
-			es.initialize(new BrokerImpl(new TestStockStorageHelper()));
+			es.initialize(new BrokerImpl(new StockStorageMock()));
 		} catch (BadAlgorithmException e) {
 			throwed = true;
 		}

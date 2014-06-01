@@ -1,4 +1,4 @@
-package stsc.general.storage;
+package stsc.storage;
 
 import java.io.IOException;
 import java.util.HashMap;

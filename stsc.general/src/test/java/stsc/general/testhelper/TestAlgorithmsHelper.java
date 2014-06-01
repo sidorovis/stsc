@@ -6,9 +6,9 @@ import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.trading.Broker;
-import stsc.general.storage.SignalsStorageImpl;
-import stsc.general.storage.ThreadSafeStockStorage;
 import stsc.general.trading.BrokerImpl;
+import stsc.storage.SignalsStorageImpl;
+import stsc.storage.ThreadSafeStockStorage;
 
 public class TestAlgorithmsHelper {
 	public static EodAlgorithmInit getEodAlgorithmInit() {

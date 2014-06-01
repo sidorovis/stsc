@@ -32,6 +32,7 @@
 	<module>stsc.common</module>
 	<module>stsc.signals</module>
 	<module>stsc.algorithms</module>
+	<module>stsc.storage</module>
 	<module>stsc.general</module>
 	<module>stsc.integration.tests</module>
 	<module>stsc.yahoo</module>

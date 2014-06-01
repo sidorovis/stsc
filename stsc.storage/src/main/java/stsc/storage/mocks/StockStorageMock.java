@@ -1,4 +1,4 @@
-package stsc.general.testhelper;
+package stsc.storage.mocks;
 
 import java.io.IOException;
 import java.util.Set;
@@ -8,9 +8,9 @@ import com.google.common.collect.Sets;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
-import stsc.general.storage.ThreadSafeStockStorage;
+import stsc.storage.ThreadSafeStockStorage;
 
-public class TestStockStorageHelper implements StockStorage {
+public class StockStorageMock implements StockStorage {
 
 	@Override
 	public Stock getStock(String name) {

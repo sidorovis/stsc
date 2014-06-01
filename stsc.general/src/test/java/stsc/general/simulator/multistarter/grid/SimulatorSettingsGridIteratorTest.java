@@ -17,18 +17,18 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.storage.ExecutionStarter;
-import stsc.general.storage.ExecutionsStorage;
 import stsc.general.testhelper.TestHelper;
 import stsc.general.testhelper.TestSimulatorSettings;
-import stsc.general.testhelper.TestStockStorageHelper;
 import stsc.general.trading.BrokerImpl;
+import stsc.storage.ExecutionStarter;
+import stsc.storage.ExecutionsStorage;
+import stsc.storage.mocks.StockStorageMock;
 import junit.framework.TestCase;
 
 public class SimulatorSettingsGridIteratorTest extends TestCase {
 
 	public void testEmptySimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
-		final StockStorage stockStorage = new TestStockStorageHelper();
+		final StockStorage stockStorage = new StockStorageMock();
 		final FromToPeriod period = TestHelper.getPeriod();
 
 		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, period);
@@ -42,7 +42,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 	}
 
 	public void testSimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
-		final StockStorage stockStorage = new TestStockStorageHelper();
+		final StockStorage stockStorage = new StockStorageMock();
 
 		final SimulatorSettingsGridList settings = TestSimulatorSettings.getGridList();
 
@@ -64,7 +64,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 	}
 
 	public void testSimulatorSettingsGridIteratorHashCode() throws BadParameterException, BadAlgorithmException {
-		final StockStorage stockStorage = new TestStockStorageHelper();
+		final StockStorage stockStorage = new StockStorageMock();
 		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, TestHelper.getPeriod());
 		AlgorithmSettingsIteratorFactory f1 = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
 		f1.add(new MpInteger("a", 1, 3, 1));

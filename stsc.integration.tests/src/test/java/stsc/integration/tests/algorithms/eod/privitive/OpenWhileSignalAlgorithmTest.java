@@ -16,12 +16,12 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
-import stsc.general.storage.ThreadSafeStockStorage;
 import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.TradingLog;
 import stsc.general.trading.TradingRecord.TradingType;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
+import stsc.storage.ThreadSafeStockStorage;
 import junit.framework.TestCase;
 
 public class OpenWhileSignalAlgorithmTest extends TestCase {

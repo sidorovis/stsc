@@ -14,7 +14,8 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.storage.AlgorithmsStorage;
+import stsc.storage.AlgorithmsStorage;
+import stsc.storage.mocks.StockStorageMock;
 
 public class TestSimulatorSettings {
 
@@ -48,7 +49,7 @@ public class TestSimulatorSettings {
 	}
 
 	public static SimulatorSettingsGridList getGridList() {
-		return getGridList(TestStockStorageHelper.getStockStorage(), Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), "31-12-2009");
+		return getGridList(StockStorageMock.getStockStorage(), Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), "31-12-2009");
 	}
 
 	public static SimulatorSettingsGridList getGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {

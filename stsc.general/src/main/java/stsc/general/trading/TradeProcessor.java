@@ -14,7 +14,7 @@ import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsProcessor;
-import stsc.general.storage.ExecutionStarter;
+import stsc.storage.ExecutionStarter;
 
 public class TradeProcessor {
 

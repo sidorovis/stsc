@@ -8,12 +8,12 @@ import stsc.general.statistic.SortedStatistics;
 import stsc.general.statistic.StatisticsInnerProductFunction;
 import stsc.general.statistic.StatisticsSelector;
 import stsc.general.testhelper.TestSimulatorSettings;
-import stsc.general.testhelper.TestStockStorageHelper;
+import stsc.storage.mocks.StockStorageMock;
 import junit.framework.TestCase;
 
 public class StrategyGridSearcherTest extends TestCase {
 	public void testStrategyGridSearcher() throws Exception {
-		final SimulatorSettingsGridList list = TestSimulatorSettings.getGridList(TestStockStorageHelper.getStockStorage(),
+		final SimulatorSettingsGridList list = TestSimulatorSettings.getGridList(StockStorageMock.getStockStorage(),
 				Arrays.asList(new String[] { "open" }), "31-01-2000");
 		final StatisticsSelector<Double> selector = new StatisticsSelector<>(6500, new StatisticsInnerProductFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, 20);

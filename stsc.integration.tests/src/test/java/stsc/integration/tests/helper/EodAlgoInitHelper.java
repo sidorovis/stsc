@@ -6,9 +6,9 @@ import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.storage.SignalsStorage;
-import stsc.general.storage.SignalsStorageImpl;
-import stsc.general.storage.ThreadSafeStockStorage;
 import stsc.general.trading.BrokerImpl;
+import stsc.storage.SignalsStorageImpl;
+import stsc.storage.ThreadSafeStockStorage;
 
 public class EodAlgoInitHelper {
 

@@ -1,7 +1,7 @@
-package stsc.general.storage;
+package stsc.storage;
 
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.general.storage.AlgorithmsStorage;
+import stsc.storage.AlgorithmsStorage;
 import junit.framework.TestCase;
 
 public class AlgorithmsStorageTest extends TestCase {

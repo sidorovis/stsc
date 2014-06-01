@@ -1,4 +1,4 @@
-package stsc.general.storage;
+package stsc.storage;
 
 import java.util.Date;
 
@@ -8,8 +8,8 @@ import stsc.common.BadSignalException;
 import stsc.common.signals.EodSignal;
 import stsc.common.signals.Signal;
 import stsc.common.storage.SignalsStorage;
-import stsc.general.storage.SignalsStorageImpl;
 import stsc.signals.series.CommonSignalsSerie;
+import stsc.storage.SignalsStorageImpl;
 import junit.framework.TestCase;
 
 public class SignalsStorageTest extends TestCase {

@@ -11,9 +11,9 @@ import stsc.common.storage.StockStorage;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
-import stsc.general.storage.ExecutionsStorage;
-import stsc.general.storage.StockStorageFactory;
 import stsc.general.trading.TradeProcessorInit;
+import stsc.storage.ExecutionsStorage;
+import stsc.storage.StockStorageFactory;
 import junit.framework.TestCase;
 
 public class SimulatorTest extends TestCase {
