@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
@@ -14,6 +15,9 @@ import java.util.Set;
 import stsc.general.statistic.EquityCurve.Element;
 
 public class Statistics {
+
+	private static final Class<?>[] emptyInvoker = {};
+	private static final Object[] emptyValues = {};
 
 	static class StatisticsInit {
 
@@ -317,5 +321,25 @@ public class Statistics {
 			}
 		}
 		return statisticsMethods;
+	}
+
+	public static Double invokeMethod(Statistics s, Method method) {
+		if (method.isAnnotationPresent(PublicMethod.class)) {
+			try {
+				return (Double) method.invoke(s, emptyValues);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			}
+		}
+		return 0.0;
+	}
+
+	public static Double invokeMethod(Statistics s, String methodName) {
+		try {
+			final Method method = Statistics.class.getMethod(methodName, emptyInvoker);
+			return invokeMethod(s, method);
+		} catch (NoSuchMethodException | IllegalArgumentException e) {
+
+		}
+		return 0.0;
 	}
 }

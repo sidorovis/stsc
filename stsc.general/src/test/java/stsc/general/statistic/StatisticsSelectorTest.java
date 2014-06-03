@@ -5,13 +5,13 @@ import java.util.List;
 
 import stsc.general.statistic.SortedStatistics;
 import stsc.general.statistic.StatisticsSelector;
-import stsc.general.statistic.cost.function.CfWeightedSum;
+import stsc.general.statistic.cost.function.WeightedSumCostFunction;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class StatisticsSelectorTest extends TestCase {
 	public void testStatisticsSelector() {
-		final CfWeightedSum compareMethod = new CfWeightedSum();
+		final WeightedSumCostFunction compareMethod = new WeightedSumCostFunction();
 		final StatisticsSelector<Double> statisticsSelector = new StatisticsSelector<>(2, compareMethod);
 
 		final List<Double> values = new ArrayList<>();

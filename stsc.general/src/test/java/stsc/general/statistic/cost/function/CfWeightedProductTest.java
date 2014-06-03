@@ -9,7 +9,7 @@ public class CfWeightedProductTest extends TestCase {
 	public void testCfWeightedProduct() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		CfWeightedProduct function = new CfWeightedProduct();
+		WeightedProductCostFunction function = new WeightedProductCostFunction();
 		function.addParameter("getKelly", 0.8);
 		final Double result = function.calculate(statistics);
 		assertEquals(0.277441, result, Settings.doubleEpsilon);

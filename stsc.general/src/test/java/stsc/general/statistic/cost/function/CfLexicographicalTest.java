@@ -9,7 +9,7 @@ public class CfLexicographicalTest extends TestCase {
 	public void testCfLexicographical() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final CfLexicographical c10 = new CfLexicographical();
+		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();
 		c10.addNextValue("getPeriod");
 		c10.addNextValue("getAvGain");
 		final Double c10result = c10.calculate(statistics);
@@ -18,7 +18,7 @@ public class CfLexicographicalTest extends TestCase {
 	public void testCfLexicographical100() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final CfLexicographical c100 = new CfLexicographical(100);
+		final LexicographicalCostFunction c100 = new LexicographicalCostFunction(100);
 		c100.addNextValue("getPeriod");
 		c100.addNextValue("getAvGain");
 		c100.addNextValue("getAvGain");
@@ -29,7 +29,7 @@ public class CfLexicographicalTest extends TestCase {
 	public void testCfLexicographicalAnotherOrder() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final CfLexicographical c10 = new CfLexicographical();
+		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();
 		c10.addNextValue("getAvGain");
 		c10.addNextValue("getPeriod");
 		final Double c10result = c10.calculate(statistics);

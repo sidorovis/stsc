@@ -9,7 +9,7 @@ public class CfWeightedSumTest extends TestCase {
 	public void testCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final CfWeightedSum function = new CfWeightedSum();
+		final WeightedSumCostFunction function = new WeightedSumCostFunction();
 		final Double result = function.calculate(statistics);
 		assertEquals(0.246987, result, Settings.doubleEpsilon);
 

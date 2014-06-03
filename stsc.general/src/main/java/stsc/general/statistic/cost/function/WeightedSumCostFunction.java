@@ -4,14 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
-public class CfWeightedProduct implements CostFunction<Double> {
+public class WeightedSumCostFunction implements CostFunction<Double> {
 
-	final Map<String, Double> parameters = new HashMap<>();
+	private final Map<String, Double> parameters = new HashMap<>();
+	private final Object[] emptyValues = {};
 
-	public CfWeightedProduct() {
+	public WeightedSumCostFunction() {
 		parameters.put("getAvGain", 1.0);
 	}
 
@@ -20,23 +22,15 @@ public class CfWeightedProduct implements CostFunction<Double> {
 	}
 
 	@Override
-	public Double calculate(Statistics statistics) {
-		Double sum = 0.0;
-		for(Double d : parameters.values()) {
-			sum += d;
-		}
+	public Double calculate(final Statistics statistics) {
 		Double result = 0.0;
 		final Method[] methods = statistics.getClass().getMethods();
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(PublicMethod.class)) {
-				final String methodName = method.getName();
-				if (parameters.containsKey(methodName)) {
-					final Double power = parameters.get(methodName) / sum;
+				if (parameters.containsKey(method.getName())) {
+					final Double value = parameters.get(method.getName());
 					try {
-						final Double statisticValue = (Double) method.invoke(statistics, new Object[] {});
-						final Double signum = Math.signum(statisticValue);
-						final Double pow = Math.pow(Math.abs(statisticValue), power);
-						result += signum * pow;
+						result += value * (Double) method.invoke(statistics, emptyValues);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					}
 				}
@@ -44,5 +38,4 @@ public class CfWeightedProduct implements CostFunction<Double> {
 		}
 		return result;
 	}
-
 }
