@@ -6,8 +6,8 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class WeightedProductComparatorTest extends TestCase {
-	public void testWeightedProductComparator() {
+public class WeightedSumComparatorTest extends TestCase {
+	public void testWeightedSumComparator() {
 		final Statistics stat = TestHelper.getStatistics();
 
 		final WeightedSumComparator comparator = new WeightedSumComparator();
@@ -22,7 +22,7 @@ public class WeightedProductComparatorTest extends TestCase {
 		assertEquals(1, comparator.compare(newStat, stat));
 	}
 
-	public void testWeightedProductComparatorOnSeveralStatistics() {
+	public void testWeightedSumComparatorOnSeveralStatistics() {
 		final WeightedSumComparator comparator = new WeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 		comparator.addParameter("getWinProb", 0.4);
