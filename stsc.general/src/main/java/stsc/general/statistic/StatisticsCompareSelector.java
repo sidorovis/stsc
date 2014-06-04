@@ -5,7 +5,7 @@ import java.util.TreeSet;
 
 import stsc.general.statistic.cost.comparator.StatisticsComparator;
 
-public class StatisticsCompareSelector<T> {
+public class StatisticsCompareSelector {
 
 	private int selectLastElements;
 	private final TreeSet<Statistics> select;

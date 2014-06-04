@@ -10,7 +10,7 @@ public class WeightedProductComparatorTest extends TestCase {
 	public void testWeightedProductComparator() {
 		final Statistics stat = TestHelper.getStatistics();
 
-		final WeightedProductComparator comparator = new WeightedProductComparator();
+		final WeightedSumComparator comparator = new WeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 
 		assertEquals(0, comparator.compare(stat, stat));
@@ -23,7 +23,7 @@ public class WeightedProductComparatorTest extends TestCase {
 	}
 
 	public void testWeightedProductComparatorOnSeveralStatistics() {
-		final WeightedProductComparator comparator = new WeightedProductComparator();
+		final WeightedSumComparator comparator = new WeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 		comparator.addParameter("getWinProb", 0.4);
 		comparator.addParameter("getMaxWin", 0.9);
