@@ -40,6 +40,6 @@ public final class Prices {
 
 	@Override
 	public String toString() {
-		return String.format("%3f", open + close);
+		return String.format("%3f", (open + close) / 2.0);
 	}
 }

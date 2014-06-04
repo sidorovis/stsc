@@ -18,7 +18,7 @@ import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsSelector;
-import stsc.general.statistic.cost.function.CfWeightedSum;
+import stsc.general.statistic.cost.function.WeightedSumCostFunction;
 
 class PerformanceCalculator {
 
@@ -145,7 +145,7 @@ class PerformanceCalculator {
 		final TimeTracker timeTracker = new TimeTracker();
 		final String startDate = getDateRepresentation(startOfPeriod);
 		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage, elements, startDate, endOfPeriod);
-		final StatisticsSelector<Double> selector = new StatisticsSelector<Double>(storedStrategyAmount, new CfWeightedSum());
+		final StatisticsSelector<Double> selector = new StatisticsSelector<Double>(storedStrategyAmount, new WeightedSumCostFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
 		searcher.getSelector().getSortedStatistics();
 		timeTracker.finish();

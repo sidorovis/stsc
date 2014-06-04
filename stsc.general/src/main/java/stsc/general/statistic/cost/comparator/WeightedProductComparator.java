@@ -19,21 +19,26 @@ public class WeightedProductComparator implements StatisticsComparator {
 	}
 
 	@Override
-	public int compare(Statistics o1, Statistics o2) {
+	public int compare(Statistics s1, Statistics s2) {
 		Double sum = 0.0;
 		for (Double d : parameters.values()) {
 			sum += d;
 		}
 		Double result = 1.0;
 		for (Entry<String, Double> i : parameters.entrySet()) {
-			final Double v1 = Statistics.invokeMethod(o1, i.getKey());
-			final Double v2 = Statistics.invokeMethod(o2, i.getKey());
+			final Double v1 = Statistics.invokeMethod(s1, i.getKey());
+			final Double v2 = Statistics.invokeMethod(s2, i.getKey());
 			if (Double.compare(0.0, v2) == 0 || Double.compare(0.0, v1) == 0) {
 				continue;
 			}
 			final Double w = i.getValue() / sum;
-			result *= Math.pow((v1 / v2), w);
+			result *= Math.pow(Math.abs(v1 / v2), w);
 		}
-		return (int) (result - 1.0);
+		if (result < 1.0)
+			return -1;
+		else if (result > 1.0)
+			return 1;
+		else
+			return 0;
 	}
 }

@@ -29,13 +29,17 @@ public class TestHelper {
 	}
 
 	public static Statistics getStatistics(int applSize, int admSize) {
+		return getStatistics(applSize, admSize, new LocalDate(2013, 9, 4));
+	}
+
+	public static Statistics getStatistics(int applSize, int admSize, LocalDate from) {
 		Statistics statisticsData = null;
 		try {
 			Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 			Stock adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
 
-			int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
-			int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
+			int aaplIndex = aapl.findDayIndex(from.toDate());
+			int admIndex = adm.findDayIndex(from.toDate());
 
 			TradingLog tradingLog = new BrokerImpl(StockStorageMock.getStockStorage()).getTradingLog();
 
