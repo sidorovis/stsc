@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.joda.time.LocalDate;
 
+import stsc.general.statistic.cost.comparator.MaximumLikelihoodComparator;
 import stsc.general.statistic.cost.comparator.StatisticsComparator;
 import stsc.general.statistic.cost.comparator.WeightedSumComparator;
 import stsc.general.testhelper.TestHelper;
@@ -24,5 +25,38 @@ public class StatisticsCompareSelectorTest extends TestCase {
 		assertEquals(2.900946, si.next().getAvGain(), 0.000001);
 		assertEquals(0.195823, si.next().getAvGain(), 0.000001);
 		assertEquals(-0.929453, si.next().getAvGain(), 0.000001);
+	}
+
+	public void testStatisticsCompareSelectorWithLikelihood() {
+		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
+		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
+
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12)));
+
+		assertEquals(3, sel.getSortedStatistics().size());
+		final Iterator<Statistics> si = sel.getSortedStatistics().iterator();
+		assertEquals(2.900946, si.next().getAvGain(), 0.000001);
+		assertEquals(0.195823, si.next().getAvGain(), 0.000001);
+		assertEquals(-0.929453, si.next().getAvGain(), 0.000001);
+	}
+
+	public void testStatisticsCompareSelectorWithLikelihoodWithKelly() {
+		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
+		c.addParameter("getKelly", -10.0);
+		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16)));
+		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12)));
+
+		assertEquals(3, sel.getSortedStatistics().size());
+		final Iterator<Statistics> si = sel.getSortedStatistics().iterator();
+		assertEquals(2.900946, si.next().getAvGain(), 0.000001);
+		assertEquals(-0.929453, si.next().getAvGain(), 0.000001);
+		assertEquals(-2.522204, si.next().getAvGain(), 0.000001);
+
 	}
 }
