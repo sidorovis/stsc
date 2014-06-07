@@ -5,8 +5,8 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class CfLexicographicalTest extends TestCase {
-	public void testCfLexicographical() {
+public class LexicographicalCostFunctionTest extends TestCase {
+	public void testLexicographicalCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
 		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();
@@ -15,7 +15,7 @@ public class CfLexicographicalTest extends TestCase {
 		final Double c10result = c10.calculate(statistics);
 		assertEquals(20.246987, c10result, Settings.doubleEpsilon);
 	}
-	public void testCfLexicographical100() {
+	public void testLexicographicalCostFunction100() {
 		final Statistics statistics = TestHelper.getStatistics();
 
 		final LexicographicalCostFunction c100 = new LexicographicalCostFunction(100);
@@ -26,7 +26,7 @@ public class CfLexicographicalTest extends TestCase {
 		assertEquals(20024.9456978, c100result, Settings.doubleEpsilon);
 	}
 
-	public void testCfLexicographicalAnotherOrder() {
+	public void testLexicographicalCostFunctionAnotherOrder() {
 		final Statistics statistics = TestHelper.getStatistics();
 
 		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();

@@ -5,7 +5,7 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class CfWeightedSumTest extends TestCase {
+public class WeightedSumCostFunctionTest extends TestCase {
 	public void testCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
