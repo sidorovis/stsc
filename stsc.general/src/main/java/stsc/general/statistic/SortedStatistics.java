@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class SortedStatistics<T> {
-	private final SortedMap<T, List<Statistics>> values;
+public class SortedStatistics {
+	private final SortedMap<Double, List<Statistics>> values;
 
 	SortedStatistics() {
-		this.values = new TreeMap<T, List<Statistics>>();
+		this.values = new TreeMap<Double, List<Statistics>>();
 	}
 
-	void add(T key, Statistics value) {
+	void add(Double key, Statistics value) {
 		if (values.containsKey(key)) {
 			values.get(key).add(value);
 		} else {
@@ -36,13 +36,13 @@ public class SortedStatistics<T> {
 
 	public int size() {
 		int sum = 0;
-		for (Map.Entry<T, List<Statistics>> i : values.entrySet()) {
+		for (Map.Entry<Double, List<Statistics>> i : values.entrySet()) {
 			sum += i.getValue().size();
 		}
 		return sum;
 	}
 
-	public SortedMap<T, List<Statistics>> getValues() {
+	public SortedMap<Double, List<Statistics>> getValues() {
 		return values;
 	}
 

@@ -1,11 +1,12 @@
 package stsc.general.statistic;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
-
 import stsc.general.statistic.cost.comparator.StatisticsComparator;
 
-public class StatisticsCompareSelector {
+public class StatisticsCompareSelector implements StatisticsSelector {
 
 	private int selectLastElements;
 	private final TreeSet<Statistics> select;
@@ -15,6 +16,7 @@ public class StatisticsCompareSelector {
 		this.select = new TreeSet<Statistics>(comparator);
 	}
 
+	@Override
 	public synchronized void addStatistics(final Statistics statistics) {
 		select.add(statistics);
 		if (select.size() > selectLastElements) {
@@ -22,8 +24,13 @@ public class StatisticsCompareSelector {
 		}
 	}
 
-	public synchronized Set<Statistics> getSortedStatistics() {
-		return select;
+	@Override
+	public List<Statistics> getStatistics() {
+		final List<Statistics> result = new LinkedList<>();
+		for (Statistics i : select) {
+			result.add(i);
+		}
+		return Collections.unmodifiableList(result);
 	}
 
 }

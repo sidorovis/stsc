@@ -5,7 +5,7 @@ import java.util.List;
 
 import stsc.general.statistic.Statistics;
 
-public class LexicographicalCostFunction implements CostFunction<Double> {
+public class LexicographicalCostFunction implements CostFunction {
 
 	final List<String> order = new ArrayList<>();
 	private final double multiplikator;

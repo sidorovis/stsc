@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import stsc.general.statistic.Statistics;
 
-public class BayesianProbabilityCostFunction implements CostFunction<Double> {
+public class BayesianProbabilityCostFunction implements CostFunction {
 
 	private final List<Map<String, Double>> parameters = new ArrayList<Map<String, Double>>();
 

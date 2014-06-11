@@ -8,7 +8,7 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
-public class WeightedSumCostFunction implements CostFunction<Double> {
+public class WeightedSumCostFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 	private final Object[] emptyValues = {};

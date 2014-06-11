@@ -2,6 +2,6 @@ package stsc.general.simulator.multistarter;
 
 import stsc.general.statistic.StatisticsSelector;
 
-public interface StrategySearcher<T> {
-	public StatisticsSelector<T> getSelector() throws StrategySearcherException;
+public interface StrategySearcher {
+	public StatisticsSelector getSelector() throws StrategySearcherException;
 }

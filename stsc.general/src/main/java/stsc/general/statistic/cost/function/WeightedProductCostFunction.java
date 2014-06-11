@@ -7,7 +7,7 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
-public class WeightedProductCostFunction implements CostFunction<Double> {
+public class WeightedProductCostFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 
@@ -22,7 +22,7 @@ public class WeightedProductCostFunction implements CostFunction<Double> {
 	@Override
 	public Double calculate(Statistics statistics) {
 		Double sum = 0.0;
-		for(Double d : parameters.values()) {
+		for (Double d : parameters.values()) {
 			sum += d;
 		}
 		Double result = 0.0;

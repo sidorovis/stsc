@@ -25,25 +25,23 @@ import stsc.general.statistic.StatisticsSelector;
  * @author rilley_elf
  * 
  */
-public class StrategyGridSearcher implements StrategySearcher<Double> {
+public class StrategyGridSearcher implements StrategySearcher {
 
 	static {
-		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-				"./config/mt_strategy_grid_searcher_log4j2.xml");
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/mt_strategy_grid_searcher_log4j2.xml");
 	}
 
 	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
 
 	private final Set<String> processedSettings = new HashSet<>();
-	private final StatisticsSelector<Double> selector;
+	private final StatisticsSelector selector;
 
 	private class StatisticsCalculationThread extends Thread {
 
 		final Iterator<SimulatorSettings> iterator;
-		final StatisticsSelector<Double> selector;
+		final StatisticsSelector selector;
 
-		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator,
-				final StatisticsSelector<Double> selector) {
+		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator, final StatisticsSelector selector) {
 			this.iterator = iterator;
 			this.selector = selector;
 		}
@@ -86,8 +84,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 
 	final List<StatisticsCalculationThread> threads = new ArrayList<>();
 
-	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StatisticsSelector<Double> selector,
-			int threadAmount) {
+	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StatisticsSelector selector, int threadAmount) {
 		this.selector = selector;
 		final Iterator<SimulatorSettings> iterator = iterable.iterator();
 		logger.debug("Starting");
@@ -102,7 +99,7 @@ public class StrategyGridSearcher implements StrategySearcher<Double> {
 	}
 
 	@Override
-	public StatisticsSelector<Double> getSelector() throws StrategySearcherException {
+	public StatisticsSelector getSelector() throws StrategySearcherException {
 		try {
 			for (Thread t : threads) {
 				t.join();

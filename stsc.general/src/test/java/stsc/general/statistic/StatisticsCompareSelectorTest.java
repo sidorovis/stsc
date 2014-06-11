@@ -20,8 +20,8 @@ public class StatisticsCompareSelectorTest extends TestCase {
 		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16)));
 		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12)));
 
-		assertEquals(3, sel.getSortedStatistics().size());
-		final Iterator<Statistics> si = sel.getSortedStatistics().iterator();
+		assertEquals(3, sel.getStatistics().size());
+		final Iterator<Statistics> si = sel.getStatistics().iterator();
 		assertEquals(2.900946, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(0.195823, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);

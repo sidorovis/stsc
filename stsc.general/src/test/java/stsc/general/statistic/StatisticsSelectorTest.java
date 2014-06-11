@@ -2,9 +2,7 @@ package stsc.general.statistic;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import stsc.general.statistic.SortedStatistics;
-import stsc.general.statistic.StatisticsSelector;
+import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
@@ -12,7 +10,7 @@ import junit.framework.TestCase;
 public class StatisticsSelectorTest extends TestCase {
 	public void testStatisticsSelector() {
 		final WeightedSumCostFunction compareMethod = new WeightedSumCostFunction();
-		final StatisticsSelector<Double> statisticsSelector = new StatisticsSelector<>(2, compareMethod);
+		final StatisticsSelector statisticsSelector = new StatisticsByCostSelector(2, compareMethod);
 
 		final List<Double> values = new ArrayList<>();
 		values.add(compareMethod.calculate(TestHelper.getStatistics(100, 200)));
@@ -23,9 +21,9 @@ public class StatisticsSelectorTest extends TestCase {
 		statisticsSelector.addStatistics(TestHelper.getStatistics(200, 250));
 		statisticsSelector.addStatistics(TestHelper.getStatistics(150, 210));
 
-		final SortedStatistics<Double> select = statisticsSelector.getSortedStatistics();
-		assertEquals(2, select.size());
-		assertEquals(select.getValues().firstKey(), values.get(2));
-		assertEquals(select.getValues().lastKey(), values.get(0));
+		final List<Statistics> statistics = statisticsSelector.getStatistics();
+		assertEquals(2, statistics.size());
+		assertEquals(compareMethod.calculate((Statistics) statistics.toArray()[0]), values.get(2));
+		assertEquals(compareMethod.calculate((Statistics) statistics.toArray()[1]), values.get(0));
 	}
 }

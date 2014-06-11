@@ -5,9 +5,9 @@ import stsc.general.statistic.cost.function.CostFunction;
 
 public class CostFunctionToComparator implements StatisticsComparator {
 
-	private final CostFunction<Double> costFunction;
+	private final CostFunction costFunction;
 
-	public CostFunctionToComparator(final CostFunction<Double> costFunction) {
+	public CostFunctionToComparator(final CostFunction costFunction) {
 		this.costFunction = costFunction;
 	}
 
