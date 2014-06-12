@@ -28,7 +28,7 @@ public class StatisticsByCostSelector implements StatisticsSelector {
 	}
 
 	@Override
-	public List<Statistics> getStatistics() {
+	public synchronized List<Statistics> getStatistics() {
 		final List<Statistics> result = new LinkedList<>();
 		for (Entry<Double, List<Statistics>> i : select.getValues().entrySet()) {
 			for (Statistics statistics : i.getValue()) {

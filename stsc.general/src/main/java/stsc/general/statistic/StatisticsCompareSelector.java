@@ -25,7 +25,7 @@ public class StatisticsCompareSelector implements StatisticsSelector {
 	}
 
 	@Override
-	public List<Statistics> getStatistics() {
+	public synchronized List<Statistics> getStatistics() {
 		final List<Statistics> result = new LinkedList<>();
 		for (Statistics i : select) {
 			result.add(i);

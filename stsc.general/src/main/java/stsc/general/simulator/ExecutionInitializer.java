@@ -18,7 +18,6 @@ public class ExecutionInitializer implements ResetableIterator<AlgorithmSettings
 	}
 
 	private ExecutionInitializer(String eName, String algorithmName, AlgorithmSettingsGridIterator.Element iterator) {
-
 		super();
 		this.executionName = eName;
 		this.algorithmName = algorithmName;
