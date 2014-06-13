@@ -39,4 +39,9 @@ public class ExecutionsStorage {
 		return sb.toString();
 	}
 
+	public ExecutionsStorage mutate() {
+		// final ExecutionsStorage result = new ExecutionsStorage();
+		return this;
+	}
+
 }

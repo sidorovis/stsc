@@ -19,8 +19,7 @@ public class TradeProcessorInit {
 	private final FromToPeriod period;
 	private final ExecutionsStorage executionsStorage;
 
-	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period,
-			final ExecutionsStorage executionsStorage) {
+	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period, final ExecutionsStorage executionsStorage) {
 		this.broker = new BrokerImpl(stockStorage);
 		this.period = period;
 		this.executionsStorage = executionsStorage;
@@ -31,8 +30,7 @@ public class TradeProcessorInit {
 			Properties p = loadProperties(configPath);
 			final Set<String> stockNamesSet = getStockSet(p);
 			final String filterDataFolderPath = p.getProperty("Data.filter.folder");
-			final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet,
-					filterDataFolderPath);
+			final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet, filterDataFolderPath);
 
 			final String algsConfig = p.getProperty("Executions.path", "./algs.ini");
 			final FromToPeriod period = new FromToPeriod(p);
@@ -79,10 +77,14 @@ public class TradeProcessorInit {
 	public String stringHashCode() {
 		return executionsStorage.stringHashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		return executionsStorage.toString();
+	}
+
+	public TradeProcessorInit mutate() {
+		return new TradeProcessorInit(broker.getStockStorage(), period, executionsStorage.mutate());
 	}
 
 }

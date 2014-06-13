@@ -33,4 +33,12 @@ public class SimulatorSettings {
 		return tradeProcessorInit.toString();
 	}
 
+	public SimulatorSettings mutate() {
+		return new SimulatorSettings(id, tradeProcessorInit.mutate());
+	}
+
+	public SimulatorSettings merge(SimulatorSettings right) {
+		return this;
+	}
+
 }
