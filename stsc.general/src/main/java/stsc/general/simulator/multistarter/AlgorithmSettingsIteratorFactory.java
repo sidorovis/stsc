@@ -1,6 +1,7 @@
 package stsc.general.simulator.multistarter;
 
 import stsc.common.FromToPeriod;
+import stsc.general.simulator.multistarter.genetic.AlgorithmSettingsGeneticList;
 import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 
 public class AlgorithmSettingsIteratorFactory {
@@ -46,6 +47,10 @@ public class AlgorithmSettingsIteratorFactory {
 
 	public AlgorithmSettingsGridIterator getGridIterator() {
 		return new AlgorithmSettingsGridIterator(period, finished, parameters);
+	}
+
+	public AlgorithmSettingsGeneticList getGeneticList() {
+		return new AlgorithmSettingsGeneticList(period, parameters);
 	}
 
 }

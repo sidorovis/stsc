@@ -1,31 +1,30 @@
-package stsc.general.simulator;
+package stsc.general.simulator.multistarter.grid;
 
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.general.simulator.multistarter.ResetableIterable;
 import stsc.general.simulator.multistarter.ResetableIterator;
-import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 
-public class ExecutionInitializer implements ResetableIterator<AlgorithmSettings>, ResetableIterable<AlgorithmSettings>, Cloneable {
+public class GridExecutionInitializer implements ResetableIterator<AlgorithmSettings>, ResetableIterable<AlgorithmSettings>, Cloneable {
 	public String executionName;
 	public String algorithmName;
 	public AlgorithmSettingsGridIterator.Element iterator;
 
-	public ExecutionInitializer(String eName, String algorithmName, AlgorithmSettingsGridIterator mas) {
+	public GridExecutionInitializer(String eName, String algorithmName, AlgorithmSettingsGridIterator mas) {
 		super();
 		this.executionName = eName;
 		this.algorithmName = algorithmName;
 		this.iterator = mas.iterator();
 	}
 
-	private ExecutionInitializer(String eName, String algorithmName, AlgorithmSettingsGridIterator.Element iterator) {
+	private GridExecutionInitializer(String eName, String algorithmName, AlgorithmSettingsGridIterator.Element iterator) {
 		super();
 		this.executionName = eName;
 		this.algorithmName = algorithmName;
 		this.iterator = iterator;
 	}
 
-	public ExecutionInitializer clone() {
-		return new ExecutionInitializer(executionName, algorithmName, iterator.clone());
+	public GridExecutionInitializer clone() {
+		return new GridExecutionInitializer(executionName, algorithmName, iterator.clone());
 	}
 
 	public void reset() {

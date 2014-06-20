@@ -4,33 +4,31 @@ import java.util.List;
 
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
-import stsc.general.simulator.ExecutionInitializer;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 
 public class SimulatorSettingsGeneticList {
 
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
-	private final boolean finished;
 
-	private final List<ExecutionInitializer> stockInitializers;
-	private final List<ExecutionInitializer> eodInitializers;
+	private final List<GridExecutionInitializer> stockInitializers;
+	private final List<GridExecutionInitializer> eodInitializers;
 
-	public SimulatorSettingsGeneticList(List<ExecutionInitializer> stockInitializers, List<ExecutionInitializer> eodInitializers, StockStorage stockStorage,
-			FromToPeriod period, boolean finished) {
+	public SimulatorSettingsGeneticList(List<GridExecutionInitializer> stockInitializers, List<GridExecutionInitializer> eodInitializers, StockStorage stockStorage,
+			FromToPeriod period) {
 		super();
 		this.stockInitializers = stockInitializers;
 		this.eodInitializers = eodInitializers;
 		this.stockStorage = stockStorage;
 		this.period = period;
-		this.finished = finished;
 	}
 
-	public List<ExecutionInitializer> getStockInitializers() {
+	public List<GridExecutionInitializer> getStockInitializers() {
 		return stockInitializers;
 	}
 
-	public List<ExecutionInitializer> getEodInitializers() {
+	public List<GridExecutionInitializer> getEodInitializers() {
 		return eodInitializers;
 	}
 
@@ -40,10 +38,6 @@ public class SimulatorSettingsGeneticList {
 
 	public FromToPeriod getPeriod() {
 		return period;
-	}
-
-	public boolean isFinished() {
-		return finished;
 	}
 
 	public SimulatorSettings generateRandom() {

@@ -5,15 +5,14 @@ import java.util.List;
 
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
-import stsc.general.simulator.ExecutionInitializer;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpString;
 
 public class SimulatorSettingsGridFactory {
 
-	private List<ExecutionInitializer> stockInitializers = new ArrayList<>();
-	private List<ExecutionInitializer> eodInitializers = new ArrayList<>();
+	private List<GridExecutionInitializer> stockInitializers = new ArrayList<>();
+	private List<GridExecutionInitializer> eodInitializers = new ArrayList<>();
 
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
@@ -29,7 +28,7 @@ public class SimulatorSettingsGridFactory {
 
 	public SimulatorSettingsGridFactory addStock(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		synchronized (stockInitializers) {
-			addInitializer(stockInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
+			addInitializer(stockInitializers, new GridExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		}
 		return this;
 	}
@@ -40,7 +39,7 @@ public class SimulatorSettingsGridFactory {
 
 	public SimulatorSettingsGridFactory addEod(String eName, String aName, AlgorithmSettingsGridIterator multiAlgorithmSettings) {
 		synchronized (eodInitializers) {
-			addInitializer(eodInitializers, new ExecutionInitializer(eName, aName, multiAlgorithmSettings));
+			addInitializer(eodInitializers, new GridExecutionInitializer(eName, aName, multiAlgorithmSettings));
 		}
 		return this;
 	}
@@ -63,7 +62,7 @@ public class SimulatorSettingsGridFactory {
 		return addEod(eName, aName, algoFactory.getGridIterator());
 	}
 
-	private void addInitializer(List<ExecutionInitializer> toList, ExecutionInitializer ei) {
+	private void addInitializer(List<GridExecutionInitializer> toList, GridExecutionInitializer ei) {
 		if (ei.hasNext())
 			finished = false;
 		toList.add(ei);

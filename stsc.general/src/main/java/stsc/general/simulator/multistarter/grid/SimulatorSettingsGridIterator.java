@@ -13,7 +13,6 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
 import stsc.common.storage.StockStorage;
-import stsc.general.simulator.ExecutionInitializer;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
@@ -33,12 +32,12 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
 
-	private final List<ExecutionInitializer> stockInitializers;
-	private final List<ExecutionInitializer> eodInitializers;
+	private final List<GridExecutionInitializer> stockInitializers;
+	private final List<GridExecutionInitializer> eodInitializers;
 
 	private AtomicLong ssId;
 
-	SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period, List<ExecutionInitializer> stocks, List<ExecutionInitializer> eods,
+	SimulatorSettingsGridIterator(StockStorage stockStorage, FromToPeriod period, List<GridExecutionInitializer> stocks, List<GridExecutionInitializer> eods,
 			boolean finished) {
 		this.finished = finished;
 		this.stockStorage = stockStorage;
@@ -68,10 +67,10 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 	}
 
 	synchronized void reset() {
-		for (ExecutionInitializer i : stockInitializers) {
+		for (GridExecutionInitializer i : stockInitializers) {
 			i.reset();
 		}
-		for (ExecutionInitializer i : eodInitializers) {
+		for (GridExecutionInitializer i : eodInitializers) {
 			i.reset();
 		}
 	}
@@ -89,10 +88,10 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 		}
 	}
 
-	private int generateNext(final List<ExecutionInitializer> initializers) {
+	private int generateNext(final List<GridExecutionInitializer> initializers) {
 		int index = 0;
 		while (index < initializers.size()) {
-			final ExecutionInitializer ei = initializers.get(index);
+			final GridExecutionInitializer ei = initializers.get(index);
 			if (ei.hasNext()) {
 				ei.next();
 				if (ei.hasNext()) {
@@ -110,11 +109,11 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 
 	private SimulatorSettings generateSimulatorSettings() throws BadAlgorithmException {
 		ExecutionsStorage executionsStorage = new ExecutionsStorage();
-		for (ExecutionInitializer i : stockInitializers) {
+		for (GridExecutionInitializer i : stockInitializers) {
 			final StockExecution e = new StockExecution(i.executionName, i.algorithmName, i.current());
 			executionsStorage.addStockExecution(e);
 		}
-		for (ExecutionInitializer i : eodInitializers) {
+		for (GridExecutionInitializer i : eodInitializers) {
 			final EodExecution e = new EodExecution(i.executionName, i.algorithmName, i.current());
 			executionsStorage.addEodExecution(e);
 		}
