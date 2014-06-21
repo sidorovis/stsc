@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import com.google.common.math.DoubleMath;
 
 import stsc.common.Settings;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.StrategySearcher;
@@ -78,10 +80,10 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private void startSearcher() {
-		executor.execute(new GenerateInitialPopulationsTask(this));
+		executor.submit(new GenerateInitialPopulationsTask(this));
 	}
 
-	class GenerateInitialPopulationsTask implements Runnable {
+	private final class GenerateInitialPopulationsTask implements Runnable {
 
 		private StrategyGeneticSearcher searcher;
 
@@ -92,14 +94,18 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		@Override
 		public void run() {
 			for (int i = 0; i < populationSize; ++i) {
-				final SimulatorCalulatingTask task = new SimulatorCalulatingTask(searcher, searcher.getRandomSettings());
-				executor.submit(task);
+				try {
+					final SimulatorSettings ss = searcher.getRandomSettings();
+					final SimulatorCalulatingTask task = new SimulatorCalulatingTask(searcher, ss);
+					executor.submit(task);
+				} catch (BadAlgorithmException e) {
+					logger.error("Problem while generating random simulator settings: " + e.getMessage());
+				}
 			}
 		}
-
 	}
 
-	class SimulatorCalulatingTask implements Callable<Boolean> {
+	private final class SimulatorCalulatingTask implements Callable<Boolean> {
 
 		private StrategyGeneticSearcher searcher;
 		private SimulatorSettings settings;
@@ -144,7 +150,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		return selector;
 	}
 
-	private SimulatorSettings getRandomSettings() {
+	private SimulatorSettings getRandomSettings() throws BadAlgorithmException {
 		return algorithmSettings.generateRandom();
 	}
 

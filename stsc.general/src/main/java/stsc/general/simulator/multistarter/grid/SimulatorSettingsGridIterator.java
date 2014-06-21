@@ -59,7 +59,7 @@ public class SimulatorSettingsGridIterator implements Iterator<SimulatorSettings
 			result = generateSimulatorSettings();
 		} catch (BadAlgorithmException e) {
 			logger.error("Problem with generating SimulatorSettings: " + e.getMessage());
-			result = new SimulatorSettings(-1, new TradeProcessorInit(stockStorage, period, new ExecutionsStorage()));
+			result = new SimulatorSettings(-1, new TradeProcessorInit(stockStorage, period));
 			finished = true;
 		}
 		generateNext();

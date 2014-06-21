@@ -25,4 +25,5 @@ public class AlgorithmSettingsGeneticList {
 		}
 		return result;
 	}
+	
 }

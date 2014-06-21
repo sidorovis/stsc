@@ -19,6 +19,12 @@ public class TradeProcessorInit {
 	private final FromToPeriod period;
 	private final ExecutionsStorage executionsStorage;
 
+	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period) {
+		this.broker = new BrokerImpl(stockStorage);
+		this.period = period;
+		this.executionsStorage = new ExecutionsStorage();
+	}
+
 	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period, final ExecutionsStorage executionsStorage) {
 		this.broker = new BrokerImpl(stockStorage);
 		this.period = period;
