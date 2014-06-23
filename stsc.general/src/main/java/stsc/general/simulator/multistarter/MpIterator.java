@@ -1,14 +1,30 @@
 package stsc.general.simulator.multistarter;
 
-public interface MpIterator<T> extends ResetableIterator<T>, Cloneable {
+public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 
-	public Parameter<T> currentParameter();
+	private final String name;
 
-	public void increment();
+	protected MpIterator(String name) {
+		this.name = name;
+	}
 
-	public long size();
+	public String getName() {
+		return name;
+	}
 
-	public T parameter(int index);
+	public Parameter<T> currentParameter() {
+		return new Parameter<T>(getName(), current());
+	}
 
-	public MpIterator<T> clone();
+	public abstract void increment();
+
+	public abstract long size();
+
+	public abstract T parameter(int index);
+
+	public abstract MpIterator<T> clone();
+
+	public T getRangom() {
+		return parameter((int) (Math.random() * size()));
+	}
 }

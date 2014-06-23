@@ -3,8 +3,8 @@ package stsc.general.simulator.multistarter;
 import java.util.Arrays;
 import java.util.List;
 
-public class MpString implements MpIterator<String> {
-	private final String name;
+public class MpString extends MpIterator<String> {
+
 	private final List<String> domen;
 	int index;
 
@@ -13,8 +13,7 @@ public class MpString implements MpIterator<String> {
 	}
 
 	public MpString(String name, final List<String> domen) throws BadParameterException {
-		super();
-		this.name = name;
+		super(name);
 		if (domen.isEmpty())
 			throw new BadParameterException("String parameter should have at least one element: " + name);
 		this.domen = domen;
@@ -23,11 +22,11 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public MpIterator<String> clone() {
-		return new MpString(name, domen, true);
+		return new MpString(getName(), domen, true);
 	}
 
 	private MpString(String name, final List<String> domen, boolean privateBoolean) {
-		this.name = name;
+		super(name);
 		this.domen = domen;
 		this.index = 0;
 	}
@@ -41,11 +40,11 @@ public class MpString implements MpIterator<String> {
 	public String toString() {
 		if (index < domen.size()) {
 			if (1 == domen.size())
-				return name + "(" + domen.toString() + ")";
+				return getName() + "(" + domen.toString() + ")";
 			else
-				return name + "(" + domen.toString() + ")[" + domen.get(index) + "]";
+				return getName() + "(" + domen.toString() + ")[" + domen.get(index) + "]";
 		} else {
-			return name + "(" + domen.toString() + ")[ END ]";
+			return getName() + "(" + domen.toString() + ")[ END ]";
 		}
 	}
 
@@ -56,7 +55,7 @@ public class MpString implements MpIterator<String> {
 
 	@Override
 	public Parameter<String> currentParameter() {
-		return new Parameter<String>(name, current());
+		return new Parameter<String>(getName(), current());
 	}
 
 	@Override

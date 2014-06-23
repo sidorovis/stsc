@@ -4,17 +4,15 @@ import stsc.common.Settings;
 
 import com.google.common.math.DoubleMath;
 
-public class MpDouble implements MpIterator<Double> {
+public class MpDouble extends MpIterator<Double> {
 
-	private final String name;
 	private final double from;
 	private final double to;
 	private final double step;
 	private int iterator;
 
 	public MpDouble(String name, double from, double to, double step) throws BadParameterException {
-		super();
-		this.name = name;
+		super(name);
 		this.from = from;
 		this.to = to;
 		if (step == 0)
@@ -27,11 +25,11 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public MpIterator<Double> clone() {
-		return new MpDouble(name, from, to, step, true);
+		return new MpDouble(getName(), from, to, step, true);
 	}
 
 	private MpDouble(String name, double from, double to, double step, boolean privateBoolean) {
-		this.name = name;
+		super(name);
 		this.from = from;
 		this.to = to;
 		this.step = Double.valueOf(step);
@@ -45,8 +43,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public String toString() {
-		return name + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from)
-				+ ":" + String.valueOf(to) + ")";
+		return getName() + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from) + ":" + String.valueOf(to) + ")";
 	}
 
 	@Override
@@ -61,7 +58,7 @@ public class MpDouble implements MpIterator<Double> {
 
 	@Override
 	public Parameter<Double> currentParameter() {
-		final Parameter<Double> result = new Parameter<Double>(name, current());
+		final Parameter<Double> result = new Parameter<Double>(getName(), current());
 		return result;
 	}
 

@@ -1,16 +1,14 @@
 package stsc.general.simulator.multistarter;
 
-public class MpInteger implements MpIterator<Integer> {
+public class MpInteger extends MpIterator<Integer> {
 
-	private final String name;
 	private final int from;
 	private final int to;
 	private final int step;
 	private int iterator;
 
 	public MpInteger(String name, int from, int to, int step) throws BadParameterException {
-		super();
-		this.name = name;
+		super(name);
 		this.from = from;
 		this.to = to;
 		if (from >= to)
@@ -21,11 +19,11 @@ public class MpInteger implements MpIterator<Integer> {
 
 	@Override
 	public MpIterator<Integer> clone() {
-		return new MpInteger(name, from, to, step, true);
+		return new MpInteger(getName(), from, to, step, true);
 	}
 
 	private MpInteger(String name, int from, int to, int step, boolean privateBoolean) {
-		this.name = name;
+		super(name);
 		this.from = from;
 		this.to = to;
 		this.step = step;
@@ -39,8 +37,7 @@ public class MpInteger implements MpIterator<Integer> {
 
 	@Override
 	public String toString() {
-		return name + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from)
-				+ ":" + String.valueOf(to) + ")";
+		return getName() + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from) + ":" + String.valueOf(to) + ")";
 	}
 
 	@Override
@@ -51,11 +48,6 @@ public class MpInteger implements MpIterator<Integer> {
 	@Override
 	public void reset() {
 		iterator = 0;
-	}
-
-	@Override
-	public Parameter<Integer> currentParameter() {
-		return new Parameter<Integer>(name, current());
 	}
 
 	@Override
@@ -84,4 +76,5 @@ public class MpInteger implements MpIterator<Integer> {
 	public Integer parameter(int index) {
 		return Integer.valueOf(from + step * index);
 	}
+
 }

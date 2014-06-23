@@ -35,11 +35,11 @@ public class SimulatorSettingsGeneticList {
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 
 		for (GeneticExecutionInitializer i : stockInitializers) {
-			final StockExecution e = new StockExecution(i.executionName, i.algorithmName, i.generateRandom(period));
+			final StockExecution e = new StockExecution(i.executionName, i.algorithmName, i.generateRandom());
 			executionsStorage.addStockExecution(e);
 		}
 		for (GeneticExecutionInitializer i : eodInitializers) {
-			final EodExecution e = new EodExecution(i.executionName, i.algorithmName, i.generateRandom(period));
+			final EodExecution e = new EodExecution(i.executionName, i.algorithmName, i.generateRandom());
 			executionsStorage.addEodExecution(e);
 		}
 		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, executionsStorage);

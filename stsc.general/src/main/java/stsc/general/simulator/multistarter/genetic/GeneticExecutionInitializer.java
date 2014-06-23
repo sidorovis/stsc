@@ -1,7 +1,5 @@
 package stsc.general.simulator.multistarter.genetic;
 
-import stsc.algorithms.AlgorithmSettingsImpl;
-import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
 
 public class GeneticExecutionInitializer {
@@ -21,9 +19,8 @@ public class GeneticExecutionInitializer {
 		return executionName + "(" + algorithmName + ")\n" + geneticAlgorithmSettings + "\n";
 	}
 
-	public AlgorithmSettings generateRandom(FromToPeriod period) {
-		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
-		return result;
+	public AlgorithmSettings generateRandom() {
+		return geneticAlgorithmSettings.generateRandom();
 	}
 
 }
