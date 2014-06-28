@@ -4,7 +4,7 @@ import org.apache.commons.lang3.Validate;
 
 import stsc.general.trading.TradeProcessorInit;
 
-public class SimulatorSettings {
+public class SimulatorSettings implements Cloneable {
 
 	private long id;
 	private final TradeProcessorInit tradeProcessorInit;
@@ -33,12 +33,9 @@ public class SimulatorSettings {
 		return tradeProcessorInit.toString();
 	}
 
-	public SimulatorSettings mutate() {
-		return new SimulatorSettings(id, tradeProcessorInit.mutate());
-	}
-
-	public SimulatorSettings merge(SimulatorSettings right) {
-		return this;
+	@Override
+	public SimulatorSettings clone() {
+		return new SimulatorSettings(id, tradeProcessorInit.clone());
 	}
 
 }

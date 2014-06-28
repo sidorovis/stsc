@@ -8,7 +8,7 @@ import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
 import stsc.common.trading.Broker;
 
-public class ExecutionsStorage {
+public class ExecutionsStorage implements Cloneable {
 
 	private List<StockExecution> stockExecutions = new ArrayList<>();
 	private List<EodExecution> eodExecutions = new ArrayList<>();
@@ -16,11 +16,22 @@ public class ExecutionsStorage {
 	public ExecutionsStorage() {
 	}
 
-	public void addStockExecution(StockExecution execution) throws BadAlgorithmException {
+	private ExecutionsStorage(final ExecutionsStorage cloneFrom) {
+		this.stockExecutions = new ArrayList<>(cloneFrom.stockExecutions.size());
+		for (StockExecution se : cloneFrom.stockExecutions) {
+			this.stockExecutions.add(se.clone());
+		}
+		this.eodExecutions = new ArrayList<>(cloneFrom.eodExecutions);
+		for (EodExecution ee : cloneFrom.eodExecutions) {
+			this.eodExecutions.add(ee.clone());
+		}
+	}
+
+	public void addStockExecution(StockExecution execution) {
 		stockExecutions.add(execution);
 	}
 
-	public void addEodExecution(EodExecution execution) throws BadAlgorithmException {
+	public void addEodExecution(EodExecution execution) {
 		eodExecutions.add(execution);
 	}
 
@@ -39,9 +50,17 @@ public class ExecutionsStorage {
 		return sb.toString();
 	}
 
-	public ExecutionsStorage mutate() {
-		// final ExecutionsStorage result = new ExecutionsStorage();
-		return this;
+	@Override
+	public ExecutionsStorage clone() {
+		return new ExecutionsStorage(this);
+	}
+
+	public List<StockExecution> getStockExecutions() {
+		return stockExecutions;
+	}
+
+	public List<EodExecution> getEodExecutions() {
+		return eodExecutions;
 	}
 
 }

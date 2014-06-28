@@ -13,7 +13,7 @@ import stsc.common.storage.StockStorage;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorageFactory;
 
-public class TradeProcessorInit {
+public class TradeProcessorInit implements Cloneable {
 
 	private final BrokerImpl broker;
 	private final FromToPeriod period;
@@ -49,6 +49,12 @@ public class TradeProcessorInit {
 		} catch (ClassNotFoundException | IOException | InterruptedException | ParseException e) {
 			throw new BadAlgorithmException(e.getMessage());
 		}
+	}
+
+	private TradeProcessorInit(final BrokerImpl broker, final FromToPeriod period, final ExecutionsStorage executionsStorage) {
+		this.broker = broker;
+		this.period = period;
+		this.executionsStorage = executionsStorage;
 	}
 
 	private Set<String> getStockSet(final Properties p) {
@@ -89,8 +95,8 @@ public class TradeProcessorInit {
 		return executionsStorage.toString();
 	}
 
-	public TradeProcessorInit mutate() {
-		return new TradeProcessorInit(broker.getStockStorage(), period, executionsStorage.mutate());
+	@Override
+	public TradeProcessorInit clone() {
+		return new TradeProcessorInit(broker, period, executionsStorage.clone());
 	}
-
 }

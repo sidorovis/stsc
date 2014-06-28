@@ -53,7 +53,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	private int currentSelectionIndex = 0;
 
 	private final StatisticsSelector selector;
-	private final SimulatorSettingsGeneticList algorithmSettings;
+	private final SimulatorSettingsGeneticList settingsGeneticList;
 	private List<PopulationElement> population;
 
 	private final CostFunction costFunction;
@@ -69,7 +69,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount,
 			CostFunction costFunction) throws InterruptedException {
 		this.selector = selector;
-		this.algorithmSettings = algorithmSettings;
+		this.settingsGeneticList = algorithmSettings;
 		this.population = Collections.synchronizedList(new ArrayList<PopulationElement>());
 		this.executor = Executors.newFixedThreadPool(threadAmount);
 
@@ -151,7 +151,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private SimulatorSettings getRandomSettings() throws BadAlgorithmException {
-		return algorithmSettings.generateRandom();
+		return settingsGeneticList.generateRandom();
 	}
 
 	private void waitResults() throws InterruptedException {
@@ -191,9 +191,12 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 			final SimulatorSettings left = currentPopulation.get(leftIndex).settings;
 			final SimulatorSettings right = currentPopulation.get(rightIndex).settings;
-			final SimulatorSettings mergedStatistics = left.merge(right);
 
-			executor.submit(new SimulatorCalulatingTask(this, mergedStatistics));
+			// TODO create merge method
+//			final SimulatorSettings mergedStatistics = settingsGeneticList.merge(left, right);
+
+//			executor.submit(new SimulatorCalulatingTask(this, mergedStatistics));
+			executor.submit(new SimulatorCalulatingTask(this, left));
 		}
 	}
 
@@ -209,7 +212,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		for (int i = 0; i < mutationSize; ++i) {
 			final int index = r.nextInt(size);
 			final SimulatorSettings settings = currentPopulation.get(index).settings;
-			final SimulatorSettings mutatedSettings = settings.mutate();
+			final SimulatorSettings mutatedSettings = settingsGeneticList.mutate(settings);
 
 			executor.submit(new SimulatorCalulatingTask(this, mutatedSettings));
 		}

@@ -54,4 +54,5 @@ public class ExecutionsStorageTest extends TestCase {
 		}
 		assertEquals(true, throwed);
 	}
+
 }

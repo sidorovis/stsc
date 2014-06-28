@@ -20,6 +20,10 @@ public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 
 	public abstract long size();
 
+	public Parameter<T> getParameterByIndex(int index) {
+		return new Parameter<T>(getName(), parameter(index));
+	}
+
 	public abstract T parameter(int index);
 
 	public abstract MpIterator<T> clone();

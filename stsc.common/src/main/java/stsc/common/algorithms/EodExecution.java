@@ -69,4 +69,14 @@ public class EodExecution {
 		sb.append(executionName).append(algorithmName);
 		algorithmSettings.stringHashCode(sb);
 	}
+
+	public AlgorithmSettings getSettings() {
+		return algorithmSettings;
+	}
+
+	@Override
+	public EodExecution clone() {
+		return new EodExecution(executionName, algorithmType, algorithmSettings.clone());
+	}
+
 }

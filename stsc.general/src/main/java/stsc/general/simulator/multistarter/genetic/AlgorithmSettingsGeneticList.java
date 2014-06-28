@@ -1,9 +1,12 @@
 package stsc.general.simulator.multistarter.genetic;
 
+import java.util.Random;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.general.simulator.multistarter.MpIterator;
+import stsc.general.simulator.multistarter.Parameter;
 import stsc.general.simulator.multistarter.ParameterList;
 import stsc.general.simulator.multistarter.ParameterType;
 
@@ -49,4 +52,31 @@ public class AlgorithmSettingsGeneticList {
 		return algoSettings;
 	}
 
+	public void mutate(AlgorithmSettings settings) {
+		int parametersAmount = 0;
+		for (ParameterList list : parameters) {
+			parametersAmount += list.getParams().size();
+		}
+		if (parametersAmount > 0) {
+			mutateParameter(settings, parametersAmount);
+		}
+	}
+
+	private void mutateParameter(AlgorithmSettings settings, int parametersAmount) {
+		final Random random = new Random();
+		int indexOfMutatingParameter = random.nextInt(parametersAmount);
+		for (ParameterList list : parameters) {
+			final int size = list.getParams().size();
+			if (size != 0 && size > indexOfMutatingParameter) {
+				final MpIterator<?> parameter = list.getParams().get(indexOfMutatingParameter);
+				final int sizeOfValues = (int) parameter.size();
+				final int mutatedIndex = random.nextInt(sizeOfValues);
+				final Parameter<?> p = parameter.getParameterByIndex(mutatedIndex);
+				settings.mutate(p.getName(), p.getStringValue());
+				break;
+			} else {
+				indexOfMutatingParameter -= list.getParams().size();
+			}
+		}
+	}
 }

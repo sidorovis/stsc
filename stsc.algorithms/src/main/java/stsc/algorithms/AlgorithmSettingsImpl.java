@@ -14,7 +14,7 @@ import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
 
-public final class AlgorithmSettingsImpl implements Cloneable, AlgorithmSettings {
+public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable {
 
 	private final FromToPeriod period;
 	private final HashMap<String, Integer> integers;
@@ -226,6 +226,11 @@ public final class AlgorithmSettingsImpl implements Cloneable, AlgorithmSettings
 		for (String string : subExecutions) {
 			sb.append(string);
 		}
+	}
+
+	@Override
+	public void mutate(String name, String stringValue) {
+		set(name, stringValue);
 	}
 
 }

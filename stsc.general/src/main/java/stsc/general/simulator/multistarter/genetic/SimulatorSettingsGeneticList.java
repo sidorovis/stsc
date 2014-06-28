@@ -1,6 +1,7 @@
 package stsc.general.simulator.multistarter.genetic;
 
 import java.util.List;
+import java.util.Random;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -20,6 +21,7 @@ public class SimulatorSettingsGeneticList {
 	private final List<GeneticExecutionInitializer> eodInitializers;
 
 	private Long id;
+	private final Random randomizer = new Random();
 
 	public SimulatorSettingsGeneticList(List<GeneticExecutionInitializer> stockInitializers, List<GeneticExecutionInitializer> eodInitializers,
 			StockStorage stockStorage, FromToPeriod period) {
@@ -46,5 +48,20 @@ public class SimulatorSettingsGeneticList {
 		final SimulatorSettings ss = new SimulatorSettings(id, init);
 		id += 1;
 		return ss;
+	}
+
+	public SimulatorSettings mutate(SimulatorSettings settings) {
+		final int initializersAmount = stockInitializers.size() + eodInitializers.size();
+		final int mutateSettingIndex = randomizer.nextInt(initializersAmount);
+		final SimulatorSettings copy = settings.clone();
+		if (stockInitializers.size() >= mutateSettingIndex) {
+			final GeneticExecutionInitializer init = stockInitializers.get(mutateSettingIndex);
+			init.mutateStock(mutateSettingIndex, copy);
+		} else {
+			final int eodIndex = mutateSettingIndex - stockInitializers.size();
+			final GeneticExecutionInitializer init = eodInitializers.get(eodIndex);
+			init.mutateEod(eodIndex, copy);
+		}
+		return copy;
 	}
 }

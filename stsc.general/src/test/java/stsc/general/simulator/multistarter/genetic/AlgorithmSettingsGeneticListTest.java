@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
@@ -18,7 +19,7 @@ import junit.framework.TestCase;
 
 public class AlgorithmSettingsGeneticListTest extends TestCase {
 
-	public void testAlgorithmSettingsGeneticList() throws ParseException, BadParameterException, BadAlgorithmException {
+	private AlgorithmSettingsGeneticList getList() throws BadParameterException {
 		final FromToPeriod period = TestHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpInteger("q", -20, 100, 1));
@@ -29,6 +30,11 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 		factory.add(new MpString("z", Arrays.asList(new String[] { "vokrug", "fileName" })));
 		factory.add(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423", "234535-23424", "35345-234234135", "24454-65462245" })));
 		final AlgorithmSettingsGeneticList mas = factory.getGeneticList();
+		return mas;
+	}
+
+	public void testAlgorithmSettingsGeneticListGenerateRandom() throws ParseException, BadParameterException, BadAlgorithmException {
+		final AlgorithmSettingsGeneticList mas = getList();
 
 		final Set<String> codes = new HashSet<>();
 		final int TEST_SIZE = 500000;
@@ -40,5 +46,19 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 			}
 		}
 		assertEquals(true, codes.size() >= TEST_SIZE);
+	}
+
+	public void testAlgorithmSettingsGeneticListMutate() throws ParseException, BadParameterException, BadAlgorithmException {
+		final AlgorithmSettingsGeneticList mas = getList();
+		final AlgorithmSettings original = mas.generateRandom();
+		final AlgorithmSettings copy = original.clone();
+		mas.mutate(copy);
+
+		final StringBuilder originalSb = new StringBuilder();
+		final StringBuilder copySb = new StringBuilder();
+		do {
+			original.stringHashCode(originalSb);
+			copy.stringHashCode(copySb);
+		} while (originalSb.toString().equals(copySb.toString()));
 	}
 }

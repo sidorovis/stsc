@@ -15,7 +15,7 @@ public class Parameter<T> {
 		return name;
 	}
 
-	public String getStringName() {
+	public String getStringValue() {
 		return value.toString();
 	}
 

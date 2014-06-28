@@ -89,13 +89,13 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 				final ParameterList list = parameters[i];
 				for (MpIterator<?> p : list.getParams()) {
 					final String name = p.currentParameter().getName();
-					final String value = p.currentParameter().getStringName();
+					final String value = p.currentParameter().getStringValue();
 					algoSettings.set(name, value);
 				}
 			}
 			final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
 			for (MpIterator<?> p : list.getParams()) {
-				final String subExecutionName = p.currentParameter().getStringName();
+				final String subExecutionName = p.currentParameter().getStringValue();
 				algoSettings.addSubExecutionName(subExecutionName);
 			}
 			return algoSettings;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import stsc.common.FromToPeriod;
 
-public interface AlgorithmSettings {
+public interface AlgorithmSettings extends Cloneable {
 
 	public List<String> getSubExecutions();
 
@@ -29,5 +29,9 @@ public interface AlgorithmSettings {
 	public FromToPeriod getPeriod();
 
 	public void stringHashCode(StringBuilder sb);
+
+	public void mutate(String name, String stringValue);
+
+	public AlgorithmSettings clone();
 
 }
