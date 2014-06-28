@@ -54,11 +54,19 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 		final AlgorithmSettings copy = original.clone();
 		mas.mutate(copy);
 
-		final StringBuilder originalSb = new StringBuilder();
-		final StringBuilder copySb = new StringBuilder();
-		do {
+		int i = 0;
+		while (true) {
+			final StringBuilder originalSb = new StringBuilder();
+			final StringBuilder copySb = new StringBuilder();
+			mas.mutate(copy);
 			original.stringHashCode(originalSb);
 			copy.stringHashCode(copySb);
-		} while (originalSb.toString().equals(copySb.toString()));
+			i += 1;
+			if (!originalSb.toString().equals(copySb.toString()))
+				break;
+		}
+		if (i > 1)
+			System.out.println(i);
 	}
+
 }
