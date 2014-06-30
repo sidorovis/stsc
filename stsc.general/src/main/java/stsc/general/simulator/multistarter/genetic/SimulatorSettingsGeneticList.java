@@ -2,6 +2,7 @@ package stsc.general.simulator.multistarter.genetic;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -20,7 +21,7 @@ public class SimulatorSettingsGeneticList {
 	private final List<GeneticExecutionInitializer> stockInitializers;
 	private final List<GeneticExecutionInitializer> eodInitializers;
 
-	private Long id;
+	private AtomicLong id;
 	private final Random randomizer = new Random();
 
 	public SimulatorSettingsGeneticList(List<GeneticExecutionInitializer> stockInitializers, List<GeneticExecutionInitializer> eodInitializers,
@@ -30,7 +31,7 @@ public class SimulatorSettingsGeneticList {
 		this.eodInitializers = eodInitializers;
 		this.stockStorage = stockStorage;
 		this.period = period;
-		this.id = Long.valueOf(0);
+		this.id = new AtomicLong(0);
 	}
 
 	public synchronized SimulatorSettings generateRandom() throws BadAlgorithmException {
@@ -45,8 +46,7 @@ public class SimulatorSettingsGeneticList {
 			executionsStorage.addEodExecution(e);
 		}
 		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, executionsStorage);
-		final SimulatorSettings ss = new SimulatorSettings(id, init);
-		id += 1;
+		final SimulatorSettings ss = new SimulatorSettings(id.getAndIncrement(), init);
 		return ss;
 	}
 
@@ -64,4 +64,27 @@ public class SimulatorSettingsGeneticList {
 		}
 		return copy;
 	}
+
+	public SimulatorSettings merge(SimulatorSettings left, SimulatorSettings right) {
+		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period);
+		final ExecutionsStorage resultEs = init.getExecutionsStorage();
+
+		final ExecutionsStorage leftEs = left.getInit().getExecutionsStorage();
+		final ExecutionsStorage rightEs = right.getInit().getExecutionsStorage();
+
+		final List<StockExecution> leftSe = leftEs.getStockExecutions();
+		final List<StockExecution> rightSe = rightEs.getStockExecutions();
+
+		for (GeneticExecutionInitializer i : stockInitializers) {
+//			TODO
+//			final StockExecution se = i.mergeStock(leftEs, rightEs);
+//			resultEs.addStockExecution(se);
+		}
+		for (GeneticExecutionInitializer i : eodInitializers) {
+//			final EodExecution se = i.mergeEod(leftEs, rightEs);
+//			resultEs.addEodExecution(se);
+		}
+		return new SimulatorSettings(id.getAndIncrement(), init);
+	}
+
 }

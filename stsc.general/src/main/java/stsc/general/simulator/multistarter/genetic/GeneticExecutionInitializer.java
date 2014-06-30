@@ -4,6 +4,7 @@ import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.storage.ExecutionsStorage;
 
 public class GeneticExecutionInitializer {
 	public String executionName;
@@ -41,4 +42,5 @@ public class GeneticExecutionInitializer {
 	private void mutateAlgorithmSettings(final AlgorithmSettings algorithmSettings) {
 		geneticAlgorithmSettings.mutate(algorithmSettings);
 	}
+
 }

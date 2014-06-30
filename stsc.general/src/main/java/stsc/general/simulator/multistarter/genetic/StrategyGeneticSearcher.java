@@ -192,11 +192,9 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 			final SimulatorSettings left = currentPopulation.get(leftIndex).settings;
 			final SimulatorSettings right = currentPopulation.get(rightIndex).settings;
 
-			// TODO create merge method
-//			final SimulatorSettings mergedStatistics = settingsGeneticList.merge(left, right);
+			final SimulatorSettings mergedStatistics = settingsGeneticList.merge(left, right);
 
-//			executor.submit(new SimulatorCalulatingTask(this, mergedStatistics));
-			executor.submit(new SimulatorCalulatingTask(this, left));
+			executor.submit(new SimulatorCalulatingTask(this, mergedStatistics));
 		}
 	}
 
