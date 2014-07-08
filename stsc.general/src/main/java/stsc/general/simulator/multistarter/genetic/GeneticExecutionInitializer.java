@@ -4,9 +4,9 @@ import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
 import stsc.general.simulator.SimulatorSettings;
-import stsc.storage.ExecutionsStorage;
 
 public class GeneticExecutionInitializer {
+
 	public String executionName;
 	public String algorithmName;
 	public AlgorithmSettingsGeneticList geneticAlgorithmSettings;
@@ -16,6 +16,14 @@ public class GeneticExecutionInitializer {
 		this.executionName = eName;
 		this.algorithmName = algorithmName;
 		this.geneticAlgorithmSettings = algorithmSettings;
+	}
+
+	public String getExecutionName() {
+		return executionName;
+	}
+
+	public String getAlgorithmName() {
+		return algorithmName;
 	}
 
 	@Override
@@ -41,6 +49,10 @@ public class GeneticExecutionInitializer {
 
 	private void mutateAlgorithmSettings(final AlgorithmSettings algorithmSettings) {
 		geneticAlgorithmSettings.mutate(algorithmSettings);
+	}
+
+	public AlgorithmSettings mergeStock(StockExecution leftSe, StockExecution rightSe) {
+		return geneticAlgorithmSettings.mergeStock(leftSe.getSettings(), rightSe.getSettings());
 	}
 
 }

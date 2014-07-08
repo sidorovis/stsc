@@ -1,10 +1,16 @@
 package stsc.general.simulator.multistarter.genetic;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
@@ -14,6 +20,12 @@ import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
 
 public class SimulatorSettingsGeneticList {
+
+	static {
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/simulator_settings_genetic_list_log4j2.xml");
+	}
+
+	private static Logger logger = LogManager.getLogger("SimulatorSettingsGeneticList");
 
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
@@ -69,22 +81,68 @@ public class SimulatorSettingsGeneticList {
 		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period);
 		final ExecutionsStorage resultEs = init.getExecutionsStorage();
 
-		final ExecutionsStorage leftEs = left.getInit().getExecutionsStorage();
-		final ExecutionsStorage rightEs = right.getInit().getExecutionsStorage();
+		mergeStocks(resultEs, left, right);
+		mergeEods(resultEs, left, right);
 
-		final List<StockExecution> leftSe = leftEs.getStockExecutions();
-		final List<StockExecution> rightSe = rightEs.getStockExecutions();
-
-		for (GeneticExecutionInitializer i : stockInitializers) {
-//			TODO
-//			final StockExecution se = i.mergeStock(leftEs, rightEs);
-//			resultEs.addStockExecution(se);
-		}
-		for (GeneticExecutionInitializer i : eodInitializers) {
-//			final EodExecution se = i.mergeEod(leftEs, rightEs);
-//			resultEs.addEodExecution(se);
-		}
 		return new SimulatorSettings(id.getAndIncrement(), init);
 	}
 
+	private ExecutionsStorage mergeStocks(ExecutionsStorage result, SimulatorSettings left, SimulatorSettings right) {
+		final List<StockExecution> leftList = left.getInit().getExecutionsStorage().getStockExecutions();
+		final List<StockExecution> rightList = right.getInit().getExecutionsStorage().getStockExecutions();
+
+		if (leftList.size() != stockInitializers.size()) {
+			logger.error(id + " merge Stock SimulatorSettings have different amount of StockExecutions from stockInitializers");
+		}
+
+		if (leftList.size() != rightList.size()) {
+			logger.error(id + " merge Stock SimulatorSettings have different amount of StockExecutions");
+		}
+
+		final Iterator<GeneticExecutionInitializer> initializer = eodInitializers.iterator();
+		final Iterator<StockExecution> leftIterator = leftList.iterator();
+		final Iterator<StockExecution> rightIterator = rightList.iterator();
+
+		// final MpIterator<?> parameter =
+		// list.getParams().get(indexOfMutatingParameter);
+		// final int sizeOfValues = (int) parameter.size();
+
+		while (leftIterator.hasNext() && rightIterator.hasNext()) {
+			final GeneticExecutionInitializer geneticInitializer = initializer.next();
+			final StockExecution leftSe = leftIterator.next();
+			final StockExecution rightSe = rightIterator.next();
+
+			final AlgorithmSettings settings = geneticInitializer.mergeStock(leftSe, rightSe);
+			result.addStockExecution(new StockExecution(geneticInitializer.getExecutionName(), leftSe.getAlgorithmType(), settings));
+		}
+		return result;
+	}
+
+	private ExecutionsStorage mergeEods(ExecutionsStorage result, SimulatorSettings left, SimulatorSettings right) {
+		final List<EodExecution> leftList = left.getInit().getExecutionsStorage().getEodExecutions();
+		final List<EodExecution> rightList = right.getInit().getExecutionsStorage().getEodExecutions();
+
+		if (leftList.size() != eodInitializers.size()) {
+			logger.error(id + " merge Eod SimulatorSettings have different amount of StockExecutions from eodInitializers");
+		}
+
+		if (leftList.size() != rightList.size()) {
+			logger.error(id + " merge Eod SimulatorSettings have different amount of StockExecutions");
+		}
+
+		final Iterator<GeneticExecutionInitializer> initializer = eodInitializers.iterator();
+
+		final Iterator<EodExecution> leftIterator = leftList.iterator();
+		final Iterator<EodExecution> rightIterator = rightList.iterator();
+
+		while (initializer.hasNext() && leftIterator.hasNext() && rightIterator.hasNext()) {
+			final GeneticExecutionInitializer geneticInitializer = initializer.next();
+			final EodExecution leftSe = leftIterator.next();
+			final EodExecution rightSe = rightIterator.next();
+
+			final AlgorithmSettings settings = geneticInitializer.mergeEod(leftSe, rightSe);
+			result.addEodExecution(new EodExecution(geneticInitializer.getExecutionName(), leftSe.getAlgorithmType(), settings));
+		}
+		return result;
+	}
 }

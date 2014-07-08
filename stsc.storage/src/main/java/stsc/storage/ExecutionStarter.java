@@ -30,12 +30,12 @@ public final class ExecutionStarter {
 		for (StockExecution execution : stockExecutions) {
 			for (String stockName : stockNames) {
 				final StockAlgorithm algo = execution.getInstance(stockName, signalsStorage);
-				stockAlgorithms.addExecutionOnStock(stockName, execution.getName(), algo);
+				stockAlgorithms.addExecutionOnStock(stockName, execution.getExecutionName(), algo);
 			}
 		}
 		for (EodExecution execution : eodExecutions) {
 			final EodAlgorithm algo = execution.getInstance(broker, signalsStorage);
-			tradeAlgorithms.put(execution.getName(), algo);
+			tradeAlgorithms.put(execution.getExecutionName(), algo);
 		}
 		this.hashCode = generateHashCode(stockExecutions, eodExecutions);
 	}

@@ -10,6 +10,7 @@ public class EodExecution {
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends EodAlgorithm> algorithmType;
+
 	private AlgorithmSettings algorithmSettings;
 
 	public static Class<? extends EodAlgorithm> generateAlgorithm(final String algorithmName) throws BadAlgorithmException {
@@ -32,12 +33,16 @@ public class EodExecution {
 		this.algorithmSettings = algorithmSettings;
 	}
 
-	public String getName() {
+	public String getExecutionName() {
 		return executionName;
 	}
 
 	public String getAlgorithmName() {
 		return algorithmName;
+	}
+
+	public Class<? extends EodAlgorithm> getAlgorithmType() {
+		return algorithmType;
 	}
 
 	public EodAlgorithm getInstance(Broker broker, SignalsStorage signals) throws BadAlgorithmException {

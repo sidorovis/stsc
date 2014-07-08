@@ -5,6 +5,7 @@ import java.util.Random;
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.StockExecution;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.Parameter;
 import stsc.general.simulator.multistarter.ParameterList;
@@ -78,5 +79,18 @@ public class AlgorithmSettingsGeneticList {
 				indexOfMutatingParameter -= list.getParams().size();
 			}
 		}
+	}
+
+	public AlgorithmSettings mergeStock(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
+
+		for (ParameterList list : parameters) {
+			for(MpIterator<?> p : list.getParams()) {
+				p.getName();
+// TODO create merge
+			}
+		}
+
+		return result;
 	}
 }

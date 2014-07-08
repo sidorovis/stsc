@@ -25,6 +25,6 @@ public final class EodAlgorithmExecutionTest extends TestCase {
 	public void testExecution() throws BadAlgorithmException {
 		EodExecution e3 = new EodExecution("e1", TestingEodAlgorithm.class.getName(), TestAlgorithmsHelper.getSettings());
 		assertEquals(TestingEodAlgorithm.class.getName(), e3.getAlgorithmName());
-		assertEquals("e1", e3.getName());
+		assertEquals("e1", e3.getExecutionName());
 	}
 }

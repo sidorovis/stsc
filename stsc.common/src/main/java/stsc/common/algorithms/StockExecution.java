@@ -37,7 +37,7 @@ public class StockExecution implements Cloneable {
 		this.settings = settings;
 	}
 
-	public String getName() {
+	public String getExecutionName() {
 		return executionName;
 	}
 
@@ -47,6 +47,10 @@ public class StockExecution implements Cloneable {
 
 	public AlgorithmSettings getSettings() {
 		return settings;
+	}
+
+	public Class<? extends StockAlgorithm> getAlgorithmType() {
+		return algorithmType;
 	}
 
 	public StockAlgorithm getInstance(final String stockName, final SignalsStorage signalsStorage) throws BadAlgorithmException {
