@@ -1,6 +1,7 @@
 package stsc.general.simulator.multistarter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MpString extends MpIterator<String> {
@@ -54,11 +55,6 @@ public class MpString extends MpIterator<String> {
 	}
 
 	@Override
-	public Parameter<String> currentParameter() {
-		return new Parameter<String>(getName(), current());
-	}
-
-	@Override
 	public void reset() {
 		index = 0;
 	}
@@ -89,4 +85,8 @@ public class MpString extends MpIterator<String> {
 		return domen.get(index);
 	}
 
+	@Override
+	public int getIndexByValue(String value) {
+		return Collections.binarySearch(domen, value);
+	}
 }

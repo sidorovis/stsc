@@ -55,4 +55,8 @@ public class GeneticExecutionInitializer {
 		return geneticAlgorithmSettings.mergeStock(leftSe.getSettings(), rightSe.getSettings());
 	}
 
+	public AlgorithmSettings mergeEod(EodExecution leftSe, EodExecution rightSe) {
+		return geneticAlgorithmSettings.mergeEod(leftSe.getSettings(), rightSe.getSettings());
+	}
+
 }

@@ -77,4 +77,22 @@ public class MpInteger extends MpIterator<Integer> {
 		return Integer.valueOf(from + step * index);
 	}
 
+	@Override
+	public int getIndexByValue(String value) {
+		final Integer v = Integer.valueOf(value);
+		final int index = ((v - from) / step);
+		return index;
+	}
+
+	@Override
+	public int getIndexByValue(Integer value) {
+		final int index = (int) ((value - from) / step);
+		return index;
+	}
+
+	public final Integer mutate(Integer leftValue, Integer rightValue) {
+		final int leftIndex = getIndexByValue(leftValue);
+		final int rightIndex = getIndexByValue(rightValue);
+		return mutateByIndex(leftIndex, rightIndex);
+	}
 }

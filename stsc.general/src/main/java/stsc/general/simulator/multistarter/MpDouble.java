@@ -57,12 +57,6 @@ public class MpDouble extends MpIterator<Double> {
 	}
 
 	@Override
-	public Parameter<Double> currentParameter() {
-		final Parameter<Double> result = new Parameter<Double>(getName(), current());
-		return result;
-	}
-
-	@Override
 	public Double current() {
 		return Double.valueOf(from + step * iterator);
 	}
@@ -86,6 +80,24 @@ public class MpDouble extends MpIterator<Double> {
 	@Override
 	public Double parameter(int index) {
 		return Double.valueOf(from + step * index);
+	}
+
+	@Override
+	public int getIndexByValue(String value) {
+		final double v = Double.valueOf(value);
+		return getIndexByValue(v);
+	}
+
+	@Override
+	public int getIndexByValue(Double value) {
+		final int index = (int) Math.round((value - from) / step);
+		return index;
+	}
+
+	public final Double mutate(Double leftValue, Double rightValue) {
+		final int leftIndex = getIndexByValue(leftValue);
+		final int rightIndex = getIndexByValue(rightValue);
+		return mutateByIndex(leftIndex, rightIndex);
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
-import stsc.common.algorithms.StockExecution;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.Parameter;
 import stsc.general.simulator.multistarter.ParameterList;
@@ -82,15 +81,26 @@ public class AlgorithmSettingsGeneticList {
 	}
 
 	public AlgorithmSettings mergeStock(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		return mergeParameters(leftSe, rightSe);
+	}
+
+	public AlgorithmSettings mergeEod(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		return mergeParameters(leftSe, rightSe);
+	}
+
+	private AlgorithmSettings mergeParameters(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
 		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
 
 		for (ParameterList list : parameters) {
-			for(MpIterator<?> p : list.getParams()) {
-				p.getName();
-// TODO create merge
+			for (MpIterator<?> p : list.getParams()) {
+				final String settingName = p.getName();
+				final String leftValue = leftSe.get(settingName);
+				final String rightValue = rightSe.get(settingName);
+				final String mutatedValue = p.mutate(leftValue, rightValue).toString();
+				result.set(settingName, mutatedValue);
 			}
 		}
-
 		return result;
 	}
+
 }

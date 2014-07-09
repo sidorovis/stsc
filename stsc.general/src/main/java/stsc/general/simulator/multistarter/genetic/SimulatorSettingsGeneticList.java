@@ -103,10 +103,6 @@ public class SimulatorSettingsGeneticList {
 		final Iterator<StockExecution> leftIterator = leftList.iterator();
 		final Iterator<StockExecution> rightIterator = rightList.iterator();
 
-		// final MpIterator<?> parameter =
-		// list.getParams().get(indexOfMutatingParameter);
-		// final int sizeOfValues = (int) parameter.size();
-
 		while (leftIterator.hasNext() && rightIterator.hasNext()) {
 			final GeneticExecutionInitializer geneticInitializer = initializer.next();
 			final StockExecution leftSe = leftIterator.next();
