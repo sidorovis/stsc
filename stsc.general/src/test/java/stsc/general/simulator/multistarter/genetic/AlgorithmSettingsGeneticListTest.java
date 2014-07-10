@@ -2,8 +2,6 @@ package stsc.general.simulator.multistarter.genetic;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
@@ -33,26 +31,26 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 		return mas;
 	}
 
-	public void testAlgorithmSettingsGeneticListGenerateRandom() throws ParseException, BadParameterException, BadAlgorithmException {
-		final AlgorithmSettingsGeneticList mas = getList();
-
-		final Set<String> codes = new HashSet<>();
-		final int TEST_SIZE = 500000;
-		while (codes.size() < TEST_SIZE) {
-			for (int i = 0; i < TEST_SIZE; ++i) {
-				final StringBuilder b = new StringBuilder();
-				mas.generateRandom().stringHashCode(b);
-				codes.add(b.toString());
-			}
-		}
-		assertEquals(true, codes.size() >= TEST_SIZE);
-	}
+	// public void testAlgorithmSettingsGeneticListGenerateRandom() throws
+	// ParseException, BadParameterException, BadAlgorithmException {
+	// final AlgorithmSettingsGeneticList mas = getList();
+	//
+	// final Set<String> codes = new HashSet<>();
+	// final int TEST_SIZE = 500000;
+	// while (codes.size() < TEST_SIZE) {
+	// for (int i = 0; i < TEST_SIZE; ++i) {
+	// final StringBuilder b = new StringBuilder();
+	// mas.generateRandom().stringHashCode(b);
+	// codes.add(b.toString());
+	// }
+	// }
+	// assertEquals(true, codes.size() >= TEST_SIZE);
+	// }
 
 	public void testAlgorithmSettingsGeneticListMutate() throws ParseException, BadParameterException, BadAlgorithmException {
 		final AlgorithmSettingsGeneticList mas = getList();
 		final AlgorithmSettings original = mas.generateRandom();
 		final AlgorithmSettings copy = original.clone();
-		mas.mutate(copy);
 
 		int i = 0;
 		while (true) {
@@ -65,8 +63,24 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 			if (!originalSb.toString().equals(copySb.toString()))
 				break;
 		}
-		if (i > 1)
+		if (i > 1) {
+			fail("mutation test failed, there were no mutation");
 			System.out.println(i);
+		}
 	}
 
+	public void testAlgorithmSettingsGeneticListMerge() throws ParseException, BadParameterException, BadAlgorithmException {
+		final AlgorithmSettingsGeneticList mas = getList();
+		final AlgorithmSettings original = mas.generateRandom();
+		final AlgorithmSettings copy = original.clone();
+
+		final AlgorithmSettings merge = mas.merge(original, copy);
+		assertEquals(merge.getSubExecutions().size(), original.getSubExecutions().size());
+		assertEquals(merge.getSubExecutions().get(0), original.getSubExecutions().get(0));
+		assertEquals(merge.get("q"), original.get("q"));
+		assertEquals(merge.get("w"), original.get("w"));
+		assertEquals(merge.get("a"), original.get("a"));
+		assertEquals(merge.get("s"), original.get("s"));
+		assertEquals(merge.get("z"), original.get("z"));
+	}
 }

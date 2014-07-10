@@ -52,11 +52,11 @@ public class GeneticExecutionInitializer {
 	}
 
 	public AlgorithmSettings mergeStock(StockExecution leftSe, StockExecution rightSe) {
-		return geneticAlgorithmSettings.mergeStock(leftSe.getSettings(), rightSe.getSettings());
+		return geneticAlgorithmSettings.merge(leftSe.getSettings(), rightSe.getSettings());
 	}
 
 	public AlgorithmSettings mergeEod(EodExecution leftSe, EodExecution rightSe) {
-		return geneticAlgorithmSettings.mergeEod(leftSe.getSettings(), rightSe.getSettings());
+		return geneticAlgorithmSettings.merge(leftSe.getSettings(), rightSe.getSettings());
 	}
 
 }

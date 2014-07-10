@@ -1,5 +1,6 @@
 package stsc.general.simulator.multistarter.genetic;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
@@ -80,25 +81,31 @@ public class AlgorithmSettingsGeneticList {
 		}
 	}
 
-	public AlgorithmSettings mergeStock(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
-		return mergeParameters(leftSe, rightSe);
-	}
-
-	public AlgorithmSettings mergeEod(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+	public AlgorithmSettings merge(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
 		return mergeParameters(leftSe, rightSe);
 	}
 
 	private AlgorithmSettings mergeParameters(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
 		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
 
-		for (ParameterList list : parameters) {
-			for (MpIterator<?> p : list.getParams()) {
+		for (int i = 0; i < ParameterType.typesSize; ++i) {
+			for (MpIterator<?> p : parameters[i].getParams()) {
 				final String settingName = p.getName();
 				final String leftValue = leftSe.get(settingName);
 				final String rightValue = rightSe.get(settingName);
 				final String mutatedValue = p.mutate(leftValue, rightValue).toString();
 				result.set(settingName, mutatedValue);
 			}
+		}
+		final Iterator<MpIterator<?>> subExecutionIterator = parameters[ParameterType.typesSize].getParams().iterator();
+		final Iterator<String> lv = leftSe.getSubExecutions().iterator();
+		final Iterator<String> rv = leftSe.getSubExecutions().iterator();
+		while (subExecutionIterator.hasNext() && lv.hasNext() && rv.hasNext()) {
+			final MpIterator<?> p = subExecutionIterator.next();
+			final String leftValue = lv.next();
+			final String rightValue = rv.next();
+			final String mutatedValue = p.mutate(leftValue, rightValue).toString();
+			result.addSubExecutionName(mutatedValue);
 		}
 		return result;
 	}
