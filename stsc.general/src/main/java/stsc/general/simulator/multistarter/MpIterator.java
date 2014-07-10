@@ -44,9 +44,12 @@ public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 
 	protected T mutateByIndex(int leftIndex, int rightIndex) {
 		int newIndex = 0;
+		if (leftIndex < 0 || rightIndex < 0) {
+			return parameter((int) (size() / 2));
+		}
 		while (true) {
 			newIndex = mutateIndexes(leftIndex, rightIndex);
-			if (newIndex >= leftIndex && newIndex < rightIndex) 
+			if (newIndex >= leftIndex && newIndex < rightIndex)
 				break;
 		}
 		return parameter(newIndex);
