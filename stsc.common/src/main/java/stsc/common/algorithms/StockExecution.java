@@ -12,7 +12,7 @@ public class StockExecution implements Cloneable {
 	private final String algorithmName;
 	private final Class<? extends StockAlgorithm> algorithmType;
 
-	private final AlgorithmSettings settings;
+	private final AlgorithmSettings algorithmSettings;
 
 	static Class<? extends StockAlgorithm> generateAlgorithm(final String algorithmName) throws BadAlgorithmException {
 		try {
@@ -34,7 +34,7 @@ public class StockExecution implements Cloneable {
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
-		this.settings = settings;
+		this.algorithmSettings = settings;
 	}
 
 	public String getExecutionName() {
@@ -46,7 +46,7 @@ public class StockExecution implements Cloneable {
 	}
 
 	public AlgorithmSettings getSettings() {
-		return settings;
+		return algorithmSettings;
 	}
 
 	public Class<? extends StockAlgorithm> getAlgorithmType() {
@@ -58,7 +58,7 @@ public class StockExecution implements Cloneable {
 			final Class<?>[] params = { StockAlgorithmInit.class };
 			final Constructor<? extends StockAlgorithm> constructor = algorithmType.getConstructor(params);
 
-			final StockAlgorithmInit init = new StockAlgorithmInit(executionName, signalsStorage, stockName, settings);
+			final StockAlgorithmInit init = new StockAlgorithmInit(executionName, signalsStorage, stockName, algorithmSettings);
 			final Object[] values = { init };
 
 			try {
@@ -83,11 +83,18 @@ public class StockExecution implements Cloneable {
 
 	public void stringHashCode(StringBuilder sb) {
 		sb.append(executionName).append(algorithmName);
-		settings.stringHashCode(sb);
+		algorithmSettings.stringHashCode(sb);
 	}
 
 	@Override
 	public StockExecution clone() {
-		return new StockExecution(executionName, algorithmType, settings.clone());
+		return new StockExecution(executionName, algorithmType, algorithmSettings.clone());
 	}
+	
+
+	@Override
+	public String toString() {
+		return "StockExecution( " + executionName + ", " + executionName + ", " + algorithmSettings + ")";
+	}
+	
 }
