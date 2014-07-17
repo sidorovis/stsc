@@ -36,8 +36,8 @@ public class SimulatorSettingsGeneticList {
 	private AtomicLong id;
 	private final Random randomizer = new Random();
 
-	public SimulatorSettingsGeneticList(List<GeneticExecutionInitializer> stockInitializers, List<GeneticExecutionInitializer> eodInitializers,
-			StockStorage stockStorage, FromToPeriod period) {
+	public SimulatorSettingsGeneticList(StockStorage stockStorage, FromToPeriod period, List<GeneticExecutionInitializer> stockInitializers,
+			List<GeneticExecutionInitializer> eodInitializers) {
 		super();
 		this.stockInitializers = stockInitializers;
 		this.eodInitializers = eodInitializers;
@@ -66,7 +66,7 @@ public class SimulatorSettingsGeneticList {
 		final int initializersAmount = stockInitializers.size() + eodInitializers.size();
 		final int mutateSettingIndex = randomizer.nextInt(initializersAmount);
 		final SimulatorSettings copy = settings.clone();
-		if (stockInitializers.size() >= mutateSettingIndex) {
+		if (stockInitializers.size() > mutateSettingIndex) {
 			final GeneticExecutionInitializer init = stockInitializers.get(mutateSettingIndex);
 			init.mutateStock(mutateSettingIndex, copy);
 		} else {
@@ -99,11 +99,11 @@ public class SimulatorSettingsGeneticList {
 			logger.error(id + " merge Stock SimulatorSettings have different amount of StockExecutions");
 		}
 
-		final Iterator<GeneticExecutionInitializer> initializer = eodInitializers.iterator();
+		final Iterator<GeneticExecutionInitializer> initializer = stockInitializers.iterator();
 		final Iterator<StockExecution> leftIterator = leftList.iterator();
 		final Iterator<StockExecution> rightIterator = rightList.iterator();
 
-		while (leftIterator.hasNext() && rightIterator.hasNext()) {
+		while (initializer.hasNext() && leftIterator.hasNext() && rightIterator.hasNext()) {
 			final GeneticExecutionInitializer geneticInitializer = initializer.next();
 			final StockExecution leftSe = leftIterator.next();
 			final StockExecution rightSe = rightIterator.next();
@@ -127,7 +127,6 @@ public class SimulatorSettingsGeneticList {
 		}
 
 		final Iterator<GeneticExecutionInitializer> initializer = eodInitializers.iterator();
-
 		final Iterator<EodExecution> leftIterator = leftList.iterator();
 		final Iterator<EodExecution> rightIterator = rightList.iterator();
 
@@ -137,6 +136,9 @@ public class SimulatorSettingsGeneticList {
 			final EodExecution rightSe = rightIterator.next();
 
 			final AlgorithmSettings settings = geneticInitializer.mergeEod(leftSe, rightSe);
+			if (result.getEodExecutions().size() == 2) {
+				result.getEodExecutions();
+			}
 			result.addEodExecution(new EodExecution(geneticInitializer.getExecutionName(), leftSe.getAlgorithmType(), settings));
 		}
 		return result;

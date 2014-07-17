@@ -18,6 +18,7 @@ public class MpString extends MpIterator<String> {
 		if (domen.isEmpty())
 			throw new BadParameterException("String parameter should have at least one element: " + name);
 		this.domen = domen;
+		Collections.sort(this.domen);
 		this.index = 0;
 	}
 

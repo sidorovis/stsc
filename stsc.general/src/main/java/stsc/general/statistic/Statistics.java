@@ -342,4 +342,10 @@ public class Statistics {
 		}
 		return 0.0;
 	}
+
+	@Override
+	public String toString() {
+		return "Statistics: " + String.valueOf(avGain);
+	}
+
 }

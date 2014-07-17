@@ -15,6 +15,7 @@ public class AlgorithmSettingsGeneticList {
 
 	private final FromToPeriod period;
 	private final ParameterList[] parameters;
+	final Random random = new Random();
 
 	public AlgorithmSettingsGeneticList(final FromToPeriod period, ParameterList[] parameters) {
 		this.period = period;
@@ -64,9 +65,10 @@ public class AlgorithmSettingsGeneticList {
 	}
 
 	private void mutateParameter(AlgorithmSettings settings, int parametersAmount) {
-		final Random random = new Random();
 		int indexOfMutatingParameter = random.nextInt(parametersAmount);
-		for (ParameterList list : parameters) {
+
+		for (int i = 0; i < ParameterType.typesSize; ++i) {
+			final ParameterList list = parameters[i];
 			final int size = list.getParams().size();
 			if (size != 0 && size > indexOfMutatingParameter) {
 				final MpIterator<?> parameter = list.getParams().get(indexOfMutatingParameter);
@@ -74,10 +76,21 @@ public class AlgorithmSettingsGeneticList {
 				final int mutatedIndex = random.nextInt(sizeOfValues);
 				final Parameter<?> p = parameter.getParameterByIndex(mutatedIndex);
 				settings.mutate(p.getName(), p.getStringValue());
-				break;
+				return; // this should return from function to avoid mutating of
+						// subExecutions
 			} else {
 				indexOfMutatingParameter -= list.getParams().size();
 			}
+		}
+
+		final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
+		final int size = list.getParams().size();
+		if (size != 0 && size > indexOfMutatingParameter) {
+			final MpIterator<?> parameter = list.getParams().get(indexOfMutatingParameter);
+			final int sizeOfValues = (int) parameter.size();
+			final int mutatedIndex = random.nextInt(sizeOfValues);
+			final Parameter<?> p = parameter.getParameterByIndex(mutatedIndex);
+			settings.mutateSubExecution(indexOfMutatingParameter, p.getStringValue());
 		}
 	}
 
@@ -97,9 +110,9 @@ public class AlgorithmSettingsGeneticList {
 				result.set(settingName, mutatedValue);
 			}
 		}
-		final Iterator<MpIterator<?>> subExecutionIterator = parameters[ParameterType.typesSize].getParams().iterator();
+		final Iterator<MpIterator<?>> subExecutionIterator = parameters[ParameterType.subExecutionType.getValue()].getParams().iterator();
 		final Iterator<String> lv = leftSe.getSubExecutions().iterator();
-		final Iterator<String> rv = leftSe.getSubExecutions().iterator();
+		final Iterator<String> rv = rightSe.getSubExecutions().iterator();
 		while (subExecutionIterator.hasNext() && lv.hasNext() && rv.hasNext()) {
 			final MpIterator<?> p = subExecutionIterator.next();
 			final String leftValue = lv.next();

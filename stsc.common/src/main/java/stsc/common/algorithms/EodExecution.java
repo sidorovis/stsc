@@ -84,4 +84,9 @@ public class EodExecution {
 		return new EodExecution(executionName, algorithmType, algorithmSettings.clone());
 	}
 
+	@Override
+	public String toString() {
+		return "EodExecution( " + executionName + ", " + executionName + ", " + algorithmSettings + ")";
+	}
+
 }

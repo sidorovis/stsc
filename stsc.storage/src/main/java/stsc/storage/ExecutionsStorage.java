@@ -21,7 +21,7 @@ public class ExecutionsStorage implements Cloneable {
 		for (StockExecution se : cloneFrom.stockExecutions) {
 			this.stockExecutions.add(se.clone());
 		}
-		this.eodExecutions = new ArrayList<>(cloneFrom.eodExecutions);
+		this.eodExecutions = new ArrayList<>(cloneFrom.eodExecutions.size());
 		for (EodExecution ee : cloneFrom.eodExecutions) {
 			this.eodExecutions.add(ee.clone());
 		}

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.AlgorithmSettings;
@@ -231,4 +232,10 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable
 	public void mutate(String name, String stringValue) {
 		set(name, stringValue);
 	}
+
+	@Override
+	public void mutateSubExecution(int index, String value) {
+		subExecutions.set(index, value);
+	}
+
 }

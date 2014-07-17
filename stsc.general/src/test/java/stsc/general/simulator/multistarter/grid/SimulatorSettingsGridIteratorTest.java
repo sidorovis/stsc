@@ -18,7 +18,7 @@ import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.testhelper.TestHelper;
-import stsc.general.testhelper.TestSimulatorSettings;
+import stsc.general.testhelper.TestGridSimulatorSettings;
 import stsc.general.trading.BrokerImpl;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
@@ -44,7 +44,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 	public void testSimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageMock();
 
-		final SimulatorSettingsGridList settings = TestSimulatorSettings.getGridList();
+		final SimulatorSettingsGridList settings = TestGridSimulatorSettings.getGridList();
 
 		int count = 0;
 		for (SimulatorSettings simulatorSettings : settings) {
@@ -72,10 +72,10 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		f1.add(new MpDouble("c", 0.1, 0.2, 0.1));
 		f1.add(new MpString("side2", Arrays.asList(new String[] { "long", "long" })));
 
-		ssFactory.addStock("a1", TestSimulatorSettings.algoStockName("In"), f1.getGridIterator());
-		ssFactory.addStock("a2", TestSimulatorSettings.algoStockName("In"), f1.getGridIterator());
-		ssFactory.addEod("a3", TestSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
-		ssFactory.addEod("a4", TestSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
+		ssFactory.addStock("a1", TestGridSimulatorSettings.algoStockName("In"), f1.getGridIterator());
+		ssFactory.addStock("a2", TestGridSimulatorSettings.algoStockName("In"), f1.getGridIterator());
+		ssFactory.addEod("a3", TestGridSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
+		ssFactory.addEod("a4", TestGridSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 
 		final Set<String> hashes = new HashSet<>();
 		int allSize = 0;

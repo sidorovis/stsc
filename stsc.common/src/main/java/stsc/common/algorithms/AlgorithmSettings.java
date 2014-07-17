@@ -32,6 +32,8 @@ public interface AlgorithmSettings extends Cloneable {
 
 	public void mutate(String name, String stringValue);
 
+	public void mutateSubExecution(int index, String value);
+
 	public AlgorithmSettings clone();
 
 }

@@ -60,14 +60,15 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private final ExecutorService executor;
 	private CountDownLatch countDownLatch;
+	private final List<SimulatorCalulatingTask> simulatorCalculatingTasks;
 
-	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount)
-			throws InterruptedException {
-		this(selector, algorithmSettings, threadAmount, new WeightedSumCostFunction());
+	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount, int maxSelectionIndex,
+			int populationSize) throws InterruptedException {
+		this(selector, algorithmSettings, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize);
 	}
 
 	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount,
-			CostFunction costFunction) throws InterruptedException {
+			CostFunction costFunction, int maxSelectionIndex, int populationSize) throws InterruptedException {
 		this.selector = selector;
 		this.settingsGeneticList = algorithmSettings;
 		this.population = Collections.synchronizedList(new ArrayList<PopulationElement>());
@@ -75,6 +76,10 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 		this.costFunction = costFunction;
 		this.countDownLatch = new CountDownLatch(populationSize);
+		this.simulatorCalculatingTasks = new ArrayList<>();
+
+		this.maxSelectionSize = maxSelectionIndex;
+		this.populationSize = populationSize;
 
 		startSearcher();
 	}
@@ -117,12 +122,15 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 		@Override
 		public Boolean call() throws Exception {
-			final Statistics statistics = simulate();
-			countDownLatch.countDown();
-			if (statistics != null) {
-				searcher.population.add(new PopulationElement(settings, statistics));
-				searcher.selector.addStatistics(statistics);
-				return true;
+			try {
+				final Statistics statistics = simulate();
+				if (statistics != null) {
+					searcher.population.add(new PopulationElement(settings, statistics));
+					searcher.selector.addStatistics(statistics);
+					return true;
+				}
+			} finally {
+				countDownLatch.countDown();
 			}
 			return false;
 		}
@@ -155,26 +163,33 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private void waitResults() throws InterruptedException {
+		double lastCostSum = 0;
 		while (currentSelectionIndex < maxSelectionSize) {
 			countDownLatch.await();
 			countDownLatch = new CountDownLatch(populationSize);
-			geneticAlgorithmIteration();
+			lastCostSum = geneticAlgorithmIteration(lastCostSum);
 		}
 	}
 
-	private void geneticAlgorithmIteration() {
+	private double geneticAlgorithmIteration(final double lastCostSum) {
+		final double newCostSum = calculateCostSum();
+
 		final List<PopulationElement> currentPopulation = population;
 		population = Collections.synchronizedList(new ArrayList<PopulationElement>());
 
-		final double lastCostSum = calculateCostSum();
 		crossover(currentPopulation);
 		mutation(currentPopulation);
-		final double newCostSum = calculateCostSum();
-		if (shouldTerminate(newCostSum, lastCostSum)) {
+		if (currentSelectionIndex > 1 && shouldTerminate(newCostSum, lastCostSum)) {
 			currentSelectionIndex = maxSelectionSize;
 			logger.debug("summary cost of statistics not changed throw iteration on valuable value");
+		} else {
+			for (SimulatorCalulatingTask task : simulatorCalculatingTasks) {
+				executor.submit(task);
+			}
+			simulatorCalculatingTasks.clear();
 		}
 		currentSelectionIndex += 1;
+		return newCostSum;
 	}
 
 	private void crossover(final List<PopulationElement> currentPopulation) {
@@ -194,7 +209,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 			final SimulatorSettings mergedStatistics = settingsGeneticList.merge(left, right);
 
-			executor.submit(new SimulatorCalulatingTask(this, mergedStatistics));
+			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, mergedStatistics));
 		}
 	}
 
@@ -205,14 +220,15 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		}
 		final Random r = new Random();
 
-		final int mutationSize = (int) (populationSize * (1 - crossoverPart));
+		final int crossoverSize = (int) (populationSize * crossoverPart);
+		final int mutationSize = populationSize - crossoverSize;
 
 		for (int i = 0; i < mutationSize; ++i) {
 			final int index = r.nextInt(size);
 			final SimulatorSettings settings = currentPopulation.get(index).settings;
 			final SimulatorSettings mutatedSettings = settingsGeneticList.mutate(settings);
 
-			executor.submit(new SimulatorCalulatingTask(this, mutatedSettings));
+			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, mutatedSettings));
 		}
 	}
 

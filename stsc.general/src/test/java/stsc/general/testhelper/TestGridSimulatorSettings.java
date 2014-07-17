@@ -17,7 +17,7 @@ import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.mocks.StockStorageMock;
 
-public class TestSimulatorSettings {
+public class TestGridSimulatorSettings {
 
 	public static String algoStockName(String aname) throws BadAlgorithmException {
 		return AlgorithmsStorage.getInstance().getStock(aname).getName();
@@ -53,16 +53,7 @@ public class TestSimulatorSettings {
 	}
 
 	public static SimulatorSettingsGridList getGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
-		try {
-			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
-
-			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
-			fillFactory(factory, period, openTypes, 4.0, 10, 10, 50000.0);
-
-			return factory.getList();
-		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
-		}
-		return null;
+		return getGridFactory(stockStorage, openTypes, periodTo).getList();
 	}
 
 	public static SimulatorSettingsGridFactory getGridFactory(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
