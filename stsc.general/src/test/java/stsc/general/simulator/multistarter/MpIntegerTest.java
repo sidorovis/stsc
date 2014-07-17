@@ -22,8 +22,10 @@ public class MpIntegerTest extends TestCase {
 
 	public void testMpIntegerBadIndex() throws BadParameterException {
 		final MpInteger md = new MpInteger("a", -15, 15, 2);
-		final Integer mutatedResult = md.mutate(-10, 4);
-		assertTrue(mutatedResult >= -10);
-		assertTrue(mutatedResult <= 4);
+		for (int i = 0; i < 1000; ++i) {
+			final Integer mutatedResult = md.mutate(-11, 5);
+			assertTrue(mutatedResult >= -11);
+			assertTrue(mutatedResult <= 5);
+		}
 	}
 }

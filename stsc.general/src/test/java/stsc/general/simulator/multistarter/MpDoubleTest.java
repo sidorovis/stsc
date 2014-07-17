@@ -15,8 +15,8 @@ public class MpDoubleTest extends TestCase {
 		final MpDouble md = new MpDouble("a", 0.5, 5.9, 0.1);
 		for (int i = 0; i < 1000; ++i) {
 			final Double mutatedResult = md.mutate(1.7, 3.3);
-			assertTrue(mutatedResult >= 1.7);
-			assertTrue(mutatedResult <= 3.3);
+			assertTrue(mutatedResult >= 1.6999);
+			assertTrue(mutatedResult <= 3.3001);
 		}
 	}
 }

@@ -22,7 +22,7 @@ public class MpStringTest extends TestCase {
 		for (int i = 0; i < 1000; ++i) {
 			final String mutatedResult = md.mutate("b", "g");
 			assertTrue(mutatedResult.charAt(0) >= 'b');
-			assertTrue(mutatedResult.charAt(0) <= 'f');
+			assertTrue(mutatedResult.charAt(0) <= 'g');
 		}
 	}
 }
