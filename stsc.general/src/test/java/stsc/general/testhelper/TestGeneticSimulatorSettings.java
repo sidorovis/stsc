@@ -66,4 +66,23 @@ public class TestGeneticSimulatorSettings {
 		}
 		return null;
 	}
+
+	public static SimulatorSettingsGeneticList getBigGeneticList() {
+		return getBigGeneticList(StockStorageMock.getStockStorage(), Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), "31-12-2009");
+	}
+
+	public static SimulatorSettingsGeneticList getBigGeneticList(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
+		return getBigGeneticFactory(stockStorage, openTypes, periodTo).getList();
+	}
+
+	public static SimulatorSettingsGeneticFactory getBigGeneticFactory(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
+		try {
+			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
+			final SimulatorSettingsGeneticFactory factory = new SimulatorSettingsGeneticFactory(stockStorage, period);
+			fillFactory(factory, period, openTypes, 0.1, 1, 1, 1.0);
+			return factory;
+		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
+		}
+		return null;
+	}
 }

@@ -126,10 +126,10 @@ public final class StatisticsProcessor {
 		}
 
 		public void processEod() {
-			int tradingRecordSize = tradingRecords.size();
+			final int tradingRecordSize = tradingRecords.size();
 			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
-				TradingRecord record = tradingRecords.get(i);
-				String stockName = record.getStockName();
+				final TradingRecord record = tradingRecords.get(i);
+				final String stockName = record.getStockName();
 
 				final double price = lastPrice.get(stockName);
 				final int shares = record.getAmount();

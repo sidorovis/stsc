@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+
 import stsc.general.statistic.cost.function.CostFunction;
 
 public class StatisticsByCostSelector implements StatisticsSelector {
@@ -19,12 +20,16 @@ public class StatisticsByCostSelector implements StatisticsSelector {
 	}
 
 	@Override
-	public synchronized void addStatistics(final Statistics statistics) {
+	public synchronized boolean addStatistics(final Statistics statistics) {
 		final Double compareValue = evaluationFunction.calculate(statistics);
 		select.add(compareValue, statistics);
 		if (select.size() > selectLastElements) {
-			select.deleteLast();
+			final Statistics deletedElement = select.deleteLast();
+			if (deletedElement == statistics) {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	@Override

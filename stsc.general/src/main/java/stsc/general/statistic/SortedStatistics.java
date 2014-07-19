@@ -23,15 +23,16 @@ public class SortedStatistics {
 		}
 	}
 
-	void deleteLast() {
+	Statistics deleteLast() {
 		if (values.isEmpty()) {
-			return;
+			return null;
 		}
 		final List<Statistics> statistics = values.get(values.firstKey());
-		statistics.remove(statistics.size() - 1);
+		Statistics result = statistics.remove(statistics.size() - 1);
 		if (statistics.isEmpty()) {
 			values.remove(values.firstKey());
 		}
+		return result;
 	}
 
 	public int size() {

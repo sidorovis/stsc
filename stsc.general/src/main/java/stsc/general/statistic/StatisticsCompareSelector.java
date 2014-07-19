@@ -17,11 +17,15 @@ public class StatisticsCompareSelector implements StatisticsSelector {
 	}
 
 	@Override
-	public synchronized void addStatistics(final Statistics statistics) {
+	public synchronized boolean addStatistics(final Statistics statistics) {
 		select.add(statistics);
 		if (select.size() > selectLastElements) {
-			select.pollLast();
+			final Statistics deleted = select.pollLast();
+			if (deleted == statistics) {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	@Override

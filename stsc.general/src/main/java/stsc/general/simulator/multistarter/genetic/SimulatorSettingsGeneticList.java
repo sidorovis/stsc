@@ -136,9 +136,6 @@ public class SimulatorSettingsGeneticList {
 			final EodExecution rightSe = rightIterator.next();
 
 			final AlgorithmSettings settings = geneticInitializer.mergeEod(leftSe, rightSe);
-			if (result.getEodExecutions().size() == 2) {
-				result.getEodExecutions();
-			}
 			result.addEodExecution(new EodExecution(geneticInitializer.getExecutionName(), leftSe.getAlgorithmType(), settings));
 		}
 		return result;

@@ -2,7 +2,9 @@ package stsc.general.simulator.multistarter.genetic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -32,29 +34,34 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/strategy_genetic_searcher_log4j2.xml");
 	}
 
-	class PopulationElement {
+	private class PopulationElement {
 		SimulatorSettings settings;
+		Statistics statistics;
+		boolean addedAsBestStatistics;
 
-		public PopulationElement(SimulatorSettings settings, Statistics statistics) {
+		PopulationElement(SimulatorSettings settings, Statistics statistics, boolean addedAsBestStatistics) {
 			super();
 			this.settings = settings;
 			this.statistics = statistics;
+			this.addedAsBestStatistics = addedAsBestStatistics;
 		}
-
-		Statistics statistics;
 	}
 
 	private static Logger logger = LogManager.getLogger("StrategyGeneticSearcher");
 
-	private int populationSize = 100;
-	private double crossoverPart = 0.8;
+	private final static int MINIMUM_STEPS_AMOUNT = 10;
+	private final static double BEST_DEFAULT_PART = 0.7;
+	private final static double CROSSOVER_DEFAULT_PART = 0.8;
 
-	private int maxSelectionSize = 1000;
 	private int currentSelectionIndex = 0;
+	private int lastSelectionIndex;
+
+	double maxCostSum = Double.MIN_VALUE;
 
 	private final StatisticsSelector selector;
 	private final SimulatorSettingsGeneticList settingsGeneticList;
 	private List<PopulationElement> population;
+	private Map<Statistics, PopulationElement> sortedPopulation;
 
 	private final CostFunction costFunction;
 
@@ -62,24 +69,52 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	private CountDownLatch countDownLatch;
 	private final List<SimulatorCalulatingTask> simulatorCalculatingTasks;
 
+	class GeneticSearchSettings {
+		final int maxSelectionIndex;
+		final int sizeOfBest;
+		final int populationSize;
+		final int crossoverSize;
+		final int mutationSize;
+
+		final int tasksSize;
+
+		public GeneticSearchSettings(int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) {
+			this.maxSelectionIndex = maxSelectionIndex;
+			this.populationSize = populationSize;
+			this.sizeOfBest = (int) (bestPart * populationSize);
+			this.crossoverSize = (int) ((populationSize - this.sizeOfBest) * crossoverPart);
+			this.mutationSize = populationSize - crossoverSize - sizeOfBest;
+			this.tasksSize = crossoverSize + mutationSize;
+		}
+
+		public int getTasksSize() {
+			return tasksSize;
+		}
+
+	}
+
+	private final GeneticSearchSettings settings;
+
 	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount, int maxSelectionIndex,
 			int populationSize) throws InterruptedException {
-		this(selector, algorithmSettings, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize);
+		this(selector, algorithmSettings, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
+				CROSSOVER_DEFAULT_PART);
 	}
 
 	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount,
-			CostFunction costFunction, int maxSelectionIndex, int populationSize) throws InterruptedException {
+			CostFunction costFunction, int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) throws InterruptedException {
 		this.selector = selector;
 		this.settingsGeneticList = algorithmSettings;
 		this.population = Collections.synchronizedList(new ArrayList<PopulationElement>());
+		this.sortedPopulation = Collections.synchronizedMap(new HashMap<Statistics, PopulationElement>());
 		this.executor = Executors.newFixedThreadPool(threadAmount);
 
 		this.costFunction = costFunction;
 		this.countDownLatch = new CountDownLatch(populationSize);
 		this.simulatorCalculatingTasks = new ArrayList<>();
 
-		this.maxSelectionSize = maxSelectionIndex;
-		this.populationSize = populationSize;
+		this.settings = new GeneticSearchSettings(maxSelectionIndex, populationSize, bestPart, crossoverPart);
+		this.lastSelectionIndex = maxSelectionIndex;
 
 		startSearcher();
 	}
@@ -98,7 +133,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 		@Override
 		public void run() {
-			for (int i = 0; i < populationSize; ++i) {
+			for (int i = 0; i < settings.populationSize; ++i) {
 				try {
 					final SimulatorSettings ss = searcher.getRandomSettings();
 					final SimulatorCalulatingTask task = new SimulatorCalulatingTask(searcher, ss);
@@ -122,27 +157,31 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 		@Override
 		public Boolean call() throws Exception {
+			boolean result = false;
 			try {
 				final Statistics statistics = simulate();
 				if (statistics != null) {
-					searcher.population.add(new PopulationElement(settings, statistics));
-					searcher.selector.addStatistics(statistics);
-					return true;
+					final boolean addedToStatistics = searcher.selector.addStatistics(statistics);
+					final PopulationElement populationElement = new PopulationElement(settings, statistics, addedToStatistics);
+					searcher.population.add(populationElement);
+					searcher.sortedPopulation.put(statistics, populationElement);
+					result = true;
 				}
 			} finally {
 				countDownLatch.countDown();
 			}
-			return false;
+			return result;
 		}
 
 		private Statistics simulate() {
+			Simulator simulator = null;
 			try {
-				Simulator simulator = new Simulator(settings);
-				return simulator.getStatistics();
+				simulator = new Simulator(settings);
 			} catch (Exception e) {
 				logger.error("Error while calculating statistics: " + e.getMessage());
+				return null;
 			}
-			return null;
+			return simulator.getStatistics();
 		}
 
 	}
@@ -164,23 +203,29 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private void waitResults() throws InterruptedException {
 		double lastCostSum = 0;
-		while (currentSelectionIndex < maxSelectionSize) {
+		while (currentSelectionIndex < settings.maxSelectionIndex) {
 			countDownLatch.await();
-			countDownLatch = new CountDownLatch(populationSize);
+			countDownLatch = new CountDownLatch(settings.getTasksSize());
 			lastCostSum = geneticAlgorithmIteration(lastCostSum);
 		}
 	}
 
 	private double geneticAlgorithmIteration(final double lastCostSum) {
 		final double newCostSum = calculateCostSum();
-
 		final List<PopulationElement> currentPopulation = population;
-		population = Collections.synchronizedList(new ArrayList<PopulationElement>());
 
+		createNewPopulation(currentPopulation);
 		crossover(currentPopulation);
 		mutation(currentPopulation);
-		if (currentSelectionIndex > 1 && shouldTerminate(newCostSum, lastCostSum)) {
-			currentSelectionIndex = maxSelectionSize;
+		checkResult(newCostSum, lastCostSum);
+
+		return newCostSum;
+	}
+
+	private void checkResult(double newCostSum, double lastCostSum) {
+		if (currentSelectionIndex > MINIMUM_STEPS_AMOUNT && shouldTerminate(newCostSum, lastCostSum)) {
+			lastSelectionIndex = currentSelectionIndex;
+			currentSelectionIndex = settings.maxSelectionIndex;
 			logger.debug("summary cost of statistics not changed throw iteration on valuable value");
 		} else {
 			for (SimulatorCalulatingTask task : simulatorCalculatingTasks) {
@@ -188,19 +233,41 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 			}
 			simulatorCalculatingTasks.clear();
 		}
+		if (lastCostSum > maxCostSum) {
+			maxCostSum = lastCostSum;
+		}
 		currentSelectionIndex += 1;
-		return newCostSum;
+	}
+
+	private void createNewPopulation(List<PopulationElement> currentPopulation) {
+		population = Collections.synchronizedList(new ArrayList<PopulationElement>());
+
+		if (settings.sizeOfBest > 0) {
+			for (Statistics statistic : selector.getStatistics()) {
+				final PopulationElement pe = sortedPopulation.get(statistic);
+				if (pe != null && pe.addedAsBestStatistics) {
+					population.add(pe);
+					if (population.size() == settings.sizeOfBest) {
+						break;
+					}
+				}
+			}
+		}
+
+		sortedPopulation.clear();
+		for (PopulationElement populationElement : population) {
+			sortedPopulation.put(populationElement.statistics, populationElement);
+		}
 	}
 
 	private void crossover(final List<PopulationElement> currentPopulation) {
 		final int size = currentPopulation.size();
-		final int crossoverSize = (int) (populationSize * crossoverPart);
 		if (size == 0) {
 			return;
 		}
 		final Random r = new Random();
 
-		for (int i = 0; i < crossoverSize; ++i) {
+		for (int i = 0; i < settings.crossoverSize; ++i) {
 			final int leftIndex = r.nextInt(size);
 			final int rightIndex = r.nextInt(size);
 
@@ -220,10 +287,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		}
 		final Random r = new Random();
 
-		final int crossoverSize = (int) (populationSize * crossoverPart);
-		final int mutationSize = populationSize - crossoverSize;
-
-		for (int i = 0; i < mutationSize; ++i) {
+		for (int i = 0; i < settings.mutationSize; ++i) {
 			final int index = r.nextInt(size);
 			final SimulatorSettings settings = currentPopulation.get(index).settings;
 			final SimulatorSettings mutatedSettings = settingsGeneticList.mutate(settings);
@@ -233,7 +297,9 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private boolean shouldTerminate(double newCostSum, double lastCostSum) {
-		return DoubleMath.fuzzyEquals(newCostSum, lastCostSum, Settings.doubleEpsilon);
+		final boolean isMaxCostSum = DoubleMath.fuzzyEquals(newCostSum, maxCostSum, Settings.doubleEpsilon);
+		final boolean costSumNotChanged = DoubleMath.fuzzyEquals(newCostSum, lastCostSum, Settings.doubleEpsilon);
+		return isMaxCostSum && costSumNotChanged;
 	}
 
 	private double calculateCostSum() {
@@ -243,4 +309,13 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		}
 		return lastCostSum;
 	}
+
+	public double getMaxCostSum() {
+		return maxCostSum;
+	}
+
+	public int getLastSelectionIndex() {
+		return lastSelectionIndex;
+	}
+
 }

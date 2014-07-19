@@ -52,7 +52,7 @@ public class TradeProcessorInit implements Cloneable {
 	}
 
 	private TradeProcessorInit(final BrokerImpl broker, final FromToPeriod period, final ExecutionsStorage executionsStorage) {
-		this.broker = broker;
+		this.broker = new BrokerImpl(broker.getStockStorage());
 		this.period = period;
 		this.executionsStorage = executionsStorage;
 	}

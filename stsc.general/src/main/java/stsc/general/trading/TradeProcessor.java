@@ -59,7 +59,6 @@ public class TradeProcessor {
 						datafeed.put(stockName, stockDay);
 					} else {
 						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);
-						// TODO only for debugging, delete it later
 					}
 				}
 			}
