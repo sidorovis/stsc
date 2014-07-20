@@ -6,20 +6,19 @@ import java.util.List;
 import java.util.TreeSet;
 import stsc.general.statistic.cost.comparator.StatisticsComparator;
 
-public class StatisticsCompareSelector implements StatisticsSelector {
+public class StatisticsCompareSelector extends StatisticsSelector {
 
-	private int selectLastElements;
 	private final TreeSet<Statistics> select;
 
 	public StatisticsCompareSelector(int selectLastElements, StatisticsComparator comparator) {
-		this.selectLastElements = selectLastElements;
+		super(selectLastElements);
 		this.select = new TreeSet<Statistics>(comparator);
 	}
 
 	@Override
 	public synchronized boolean addStatistics(final Statistics statistics) {
 		select.add(statistics);
-		if (select.size() > selectLastElements) {
+		if (select.size() > size()) {
 			final Statistics deleted = select.pollLast();
 			if (deleted == statistics) {
 				return false;

@@ -56,7 +56,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	private int currentSelectionIndex = 0;
 	private int lastSelectionIndex;
 
-	double maxCostSum = Double.MIN_VALUE;
+	private double maxCostSum = -Double.MAX_VALUE;
 
 	private final StatisticsSelector selector;
 	private final SimulatorSettingsGeneticList settingsGeneticList;
@@ -69,7 +69,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	private CountDownLatch countDownLatch;
 	private final List<SimulatorCalulatingTask> simulatorCalculatingTasks;
 
-	class GeneticSearchSettings {
+	final private class GeneticSearchSettings {
 		final int maxSelectionIndex;
 		final int sizeOfBest;
 		final int populationSize;
@@ -78,16 +78,21 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 		final int tasksSize;
 
-		public GeneticSearchSettings(int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) {
+		GeneticSearchSettings(int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart, int selectorSize) {
 			this.maxSelectionIndex = maxSelectionIndex;
 			this.populationSize = populationSize;
-			this.sizeOfBest = (int) (bestPart * populationSize);
+			final int preSizeOfBest = (int) (bestPart * populationSize);
+			if (preSizeOfBest > selectorSize) {
+				this.sizeOfBest = selectorSize;
+			} else {
+				this.sizeOfBest = preSizeOfBest;
+			}
 			this.crossoverSize = (int) ((populationSize - this.sizeOfBest) * crossoverPart);
-			this.mutationSize = populationSize - crossoverSize - sizeOfBest;
+			this.mutationSize = populationSize - crossoverSize - this.sizeOfBest;
 			this.tasksSize = crossoverSize + mutationSize;
 		}
 
-		public int getTasksSize() {
+		int getTasksSize() {
 			return tasksSize;
 		}
 
@@ -113,7 +118,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		this.countDownLatch = new CountDownLatch(populationSize);
 		this.simulatorCalculatingTasks = new ArrayList<>();
 
-		this.settings = new GeneticSearchSettings(maxSelectionIndex, populationSize, bestPart, crossoverPart);
+		this.settings = new GeneticSearchSettings(maxSelectionIndex, populationSize, bestPart, crossoverPart, selector.size());
 		this.lastSelectionIndex = maxSelectionIndex;
 
 		startSearcher();
@@ -202,7 +207,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private void waitResults() throws InterruptedException {
-		double lastCostSum = 0;
+		double lastCostSum = maxCostSum;
 		while (currentSelectionIndex < settings.maxSelectionIndex) {
 			countDownLatch.await();
 			countDownLatch = new CountDownLatch(settings.getTasksSize());

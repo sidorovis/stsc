@@ -2,9 +2,19 @@ package stsc.general.statistic;
 
 import java.util.List;
 
-public interface StatisticsSelector {
+public abstract class StatisticsSelector {
 
-	public boolean addStatistics(final Statistics statistics);
+	private final int selectLastElements;
 
-	public List<Statistics> getStatistics();
+	protected StatisticsSelector(final int selectLastElements) {
+		this.selectLastElements = selectLastElements;
+	}
+
+	public abstract boolean addStatistics(final Statistics statistics);
+
+	public abstract List<Statistics> getStatistics();
+
+	public int size() {
+		return selectLastElements;
+	}
 }

@@ -7,14 +7,13 @@ import java.util.Map.Entry;
 
 import stsc.general.statistic.cost.function.CostFunction;
 
-public class StatisticsByCostSelector implements StatisticsSelector {
+public class StatisticsByCostSelector extends StatisticsSelector {
 
-	private int selectLastElements;
 	private final CostFunction evaluationFunction;
 	private final SortedStatistics select;
 
 	public StatisticsByCostSelector(int selectLastElements, CostFunction evaluationFunction) {
-		this.selectLastElements = selectLastElements;
+		super(selectLastElements);
 		this.evaluationFunction = evaluationFunction;
 		this.select = new SortedStatistics();
 	}
@@ -23,7 +22,7 @@ public class StatisticsByCostSelector implements StatisticsSelector {
 	public synchronized boolean addStatistics(final Statistics statistics) {
 		final Double compareValue = evaluationFunction.calculate(statistics);
 		select.add(compareValue, statistics);
-		if (select.size() > selectLastElements) {
+		if (select.size() > size()) {
 			final Statistics deletedElement = select.deleteLast();
 			if (deletedElement == statistics) {
 				return false;
