@@ -50,8 +50,16 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	private static Logger logger = LogManager.getLogger("StrategyGeneticSearcher");
 
 	private final static int MINIMUM_STEPS_AMOUNT = 10;
-	private final static double BEST_DEFAULT_PART = 0.94; // empirical by StrategyGeneticSearcherTest (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
-	private final static double CROSSOVER_DEFAULT_PART = 0.86; // empirical by StrategyGeneticSearcherTest (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
+	private final static double BEST_DEFAULT_PART = 0.94; // empirical by
+															// StrategyGeneticSearcherTest
+															// (see commit #
+															// a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
+	private final static double CROSSOVER_DEFAULT_PART = 0.86; // empirical by
+																// StrategyGeneticSearcherTest
+																// (see commit #
+																// a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
+
+	private final static int POPULATION_DEFAULT_SIZE = 100;
 
 	private int currentSelectionIndex = 0;
 	private int lastSelectionIndex;
@@ -99,6 +107,11 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private final GeneticSearchSettings settings;
+
+	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StatisticsSelector selector, int threadAmount)
+			throws InterruptedException {
+		this(selector, algorithmSettings, threadAmount, selector.size(), POPULATION_DEFAULT_SIZE);
+	}
 
 	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount, int maxSelectionIndex,
 			int populationSize) throws InterruptedException {

@@ -14,6 +14,8 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.StrategySearcherException;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
+import stsc.general.simulator.multistarter.genetic.StrategyGeneticSearcher;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.general.statistic.StatisticsCalculationException;
@@ -27,7 +29,7 @@ class PerformanceCalculator {
 
 	private int currentTestThreadAmount = 1;
 
-	final private StockStorage stockStorage;
+	final StockStorage stockStorage;
 
 	private final static int calculationsForAverage = 20;
 	private final static int threadsFrom = 1;
@@ -37,12 +39,16 @@ class PerformanceCalculator {
 
 	final List<String> elements = Arrays.asList(new String[] { "open", "high", "low", "close", "value", "open", "high", "low", "close" });
 
+	private final SearcherType searcherType;
+	private PerformanceSearcher searcher;
+
 	private StockStorage loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
-		return SimulatorSettingsGenerator.StockStorageSingleton.getInstance();
+		return StockStorageSingleton.getInstance();
 	}
 
-	PerformanceCalculator() throws Exception {
-		stockStorage = loadStocks();
+	PerformanceCalculator(final SearcherType type) throws Exception {
+		this.searcherType = type;
+		this.stockStorage = loadStocks();
 		System.out.println("Size of stocks: " + stockStorage.getStockNames().size());
 		warmUp();
 		calculateAmountOfSimulations();
@@ -113,13 +119,6 @@ class PerformanceCalculator {
 		calculateTime(getDateRepresentation(endDate), printData);
 	}
 
-	private String getDateRepresentation(LocalDate date) {
-		int day = date.getDayOfMonth();
-		int month = date.getMonthOfYear();
-		int year = date.getYear();
-		return String.format("%02d-%02d-%04d", day, month, year);
-	}
-
 	private void calculateTime(String end, boolean printData) throws Exception {
 		final double timeInSeconds = TimeTracker.lengthInSeconds(getTimeFor(currentTestThreadAmount, end));
 		if (printData) {
@@ -135,22 +134,47 @@ class PerformanceCalculator {
 		final int n = calculationsForAverage;
 		double av = 0.0;
 
+		if (searcherType == SearcherType.GENETIC_SEARCHER) {
+			searcher = new GeneticSearcher(this, elements, threads, endOfPeriod);
+		} else {
+			searcher = new GridSearcher(this, elements, threads, endOfPeriod);
+		}
+
 		for (int i = 0; i < n; ++i) {
-			av += timeForSearch(threads, endOfPeriod).length();
+			av += searcher.search().length();
 		}
 		return Math.round(av / calculationsForAverage);
 	}
 
-	private TimeTracker timeForSearch(int threadSize, String endOfPeriod) throws StrategySearcherException, BadAlgorithmException,
-			StatisticsCalculationException, BadSignalException {
+	static TimeTracker timeForGridSearch(final StockStorage stockStorage, final List<String> openTypes, int threadSize, String endOfPeriod)
+			throws StrategySearcherException, BadAlgorithmException, StatisticsCalculationException, BadSignalException {
 		final TimeTracker timeTracker = new TimeTracker();
 		final String startDate = getDateRepresentation(startOfPeriod);
-		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage, elements, startDate, endOfPeriod);
+		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getSimulatorSettingsGridList(stockStorage, openTypes, startDate, endOfPeriod);
 		final StatisticsSelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
 		searcher.getSelector().getStatistics();
 		timeTracker.finish();
 		return timeTracker;
+	}
+
+	static TimeTracker timeForGeneticSearch(final StockStorage stockStorage, final List<String> openTypes, int threadSize, String endOfPeriod)
+			throws InterruptedException, StrategySearcherException {
+		final TimeTracker timeTracker = new TimeTracker();
+		final String startDate = getDateRepresentation(startOfPeriod);
+		final SimulatorSettingsGeneticList list = SimulatorSettingsGenerator.getSimulatorSettingsGeneticList(stockStorage, openTypes, startDate, endOfPeriod);
+		final StatisticsSelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
+		final StrategyGeneticSearcher searcher = new StrategyGeneticSearcher(list, selector, threadSize);
+		searcher.getSelector().getStatistics();
+		timeTracker.finish();
+		return timeTracker;
+	}
+
+	static private String getDateRepresentation(LocalDate date) {
+		int day = date.getDayOfMonth();
+		int month = date.getMonthOfYear();
+		int year = date.getYear();
+		return String.format("%02d-%02d-%04d", day, month, year);
 	}
 
 }

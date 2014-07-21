@@ -1,13 +1,11 @@
 package stsc.performance;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
@@ -16,47 +14,13 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.SimulatorSettingsFactory;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.storage.AlgorithmsStorage;
-import stsc.storage.ThreadSafeStockStorage;
-import stsc.yahoo.YahooFileStockStorage;
 
 class SimulatorSettingsGenerator {
-
-	static class StockStorageSingleton {
-
-		private static StockStorage stockStorage = null;
-
-		static StockStorage getInstance(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException, IOException,
-				InterruptedException {
-			if (stockStorage == null) {
-				stockStorage = new YahooFileStockStorage(dataFolder, filteredDataFolder);
-			}
-			return stockStorage;
-		}
-
-		static StockStorage getInstance() {
-			if (stockStorage == null) {
-				stockStorage = new ThreadSafeStockStorage();
-				try {
-					stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf"));
-					stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
-					stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
-				} catch (IOException e) {
-				}
-			}
-			return stockStorage;
-		}
-	}
-
-	static String algoStockName(String aname) throws BadAlgorithmException {
-		return AlgorithmsStorage.getInstance().getStock(aname).getName();
-	}
-
-	static String algoEodName(String aname) throws BadAlgorithmException {
-		return AlgorithmsStorage.getInstance().getEod(aname).getName();
-	}
 
 	static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodFrom,
 			final String periodTo) {
@@ -64,7 +28,7 @@ class SimulatorSettingsGenerator {
 			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
 
 			final SimulatorSettingsGridFactory settings = new SimulatorSettingsGridFactory(stockStorage, period);
-			fillIterator(settings, period, openTypes);
+			fillIterator(settings, openTypes);
 
 			return settings.getList();
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
@@ -72,37 +36,55 @@ class SimulatorSettingsGenerator {
 		return null;
 	}
 
-	static <T> SimulatorSettingsFactory<T> getSimulatorSettingsList(final SimulatorSettingsFactory<T> settingsFactory) {
-		return settingsFactory;
+	static SimulatorSettingsGeneticList getSimulatorSettingsGeneticList(final StockStorage stockStorage, final List<String> openTypes, final String periodFrom,
+			final String periodTo) {
+		try {
+			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
 
+			final SimulatorSettingsGeneticFactory settings = new SimulatorSettingsGeneticFactory(stockStorage, period);
+			fillIterator(settings, openTypes);
+
+			return settings.getList();
+		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
+		}
+		return null;
 	}
 
-	static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes) throws BadParameterException,
+	private static <T> void fillIterator(SimulatorSettingsFactory<T> settings, final List<String> openTypes) throws BadParameterException,
 			BadAlgorithmException {
-		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryIn.add(new MpString("e", openTypes));
-		settings.addStock("in", algoStockName("In"), factoryIn.getGridIterator());
+		settings.addStock("in", algoStockName("In"), factoryIn);
 
-		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.6));
 		factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
-		settings.addStock("ema", algoStockName("Ema"), factoryEma.getGridIterator());
+		settings.addStock("ema", algoStockName("Ema"), factoryEma);
 
-		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 5.0));
 		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema" })));
-		settings.addStock("level", algoStockName("Level"), factoryLevel.getGridIterator());
+		settings.addStock("level", algoStockName("Level"), factoryLevel);
 
-		final AlgorithmSettingsIteratorFactory factoryOneSide = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory factoryOneSide = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryOneSide.add(new MpString("side", Arrays.asList(new String[] { "long", "short" })));
-		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), factoryOneSide.getGridIterator());
+		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), factoryOneSide);
 
-		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level" })));
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
 		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
 		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
 		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200000.0, 150000.0));
-		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide.getGridIterator());
+		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
+
+	private static String algoStockName(String aname) throws BadAlgorithmException {
+		return AlgorithmsStorage.getInstance().getStock(aname).getName();
+	}
+
+	private static String algoEodName(String aname) throws BadAlgorithmException {
+		return AlgorithmsStorage.getInstance().getEod(aname).getName();
+	}
+
 }

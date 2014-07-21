@@ -12,7 +12,7 @@ public class StrategySearchPerformance {
 	private static void initialize() {
 		try {
 			AlgorithmsStorage.getInstance();
-			SimulatorSettingsGenerator.StockStorageSingleton.getInstance("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data");
+			StockStorageSingleton.getInstance("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -23,7 +23,10 @@ public class StrategySearchPerformance {
 		initialize();
 		logger.debug("Algorithms and Stocks reader");
 		try {
-			new PerformanceCalculator();
+			// System.out.println("Grid Search");
+			// new PerformanceCalculator(SearcherType.GRID_SEARCHER);
+			System.out.println("Genetic Search");
+			new PerformanceCalculator(SearcherType.GENETIC_SEARCHER);
 			logger.debug("Performance Calculator finished");
 		} catch (Exception e) {
 			e.printStackTrace();
