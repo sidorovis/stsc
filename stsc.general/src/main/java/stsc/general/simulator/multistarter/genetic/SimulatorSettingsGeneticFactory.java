@@ -8,18 +8,15 @@ import stsc.common.storage.StockStorage;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpString;
+import stsc.general.simulator.multistarter.SimulatorSettingsFactory;
 
-public class SimulatorSettingsGeneticFactory {
+public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<SimulatorSettingsGeneticList> {
 
 	private List<GeneticExecutionInitializer> stockInitializers = new ArrayList<>();
 	private List<GeneticExecutionInitializer> eodInitializers = new ArrayList<>();
 
-	private final StockStorage stockStorage;
-	private final FromToPeriod period;
-
 	public SimulatorSettingsGeneticFactory(final StockStorage stockStorage, final FromToPeriod period) {
-		this.stockStorage = stockStorage;
-		this.period = period;
+		super(stockStorage, period);
 	}
 
 	// add sub-algorithms
@@ -31,6 +28,7 @@ public class SimulatorSettingsGeneticFactory {
 		return this;
 	}
 
+	@Override
 	public SimulatorSettingsGeneticFactory addStock(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addStock(eName, aName, factory.getGeneticList());
 	}
@@ -42,20 +40,23 @@ public class SimulatorSettingsGeneticFactory {
 		return this;
 	}
 
+	@Override
 	public SimulatorSettingsGeneticFactory addEod(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addEod(eName, aName, factory.getGeneticList());
 	}
 
 	// add predefined algorithms
 
+	@Override
 	public SimulatorSettingsGeneticFactory addStock(String eName, String aName, String pName, List<String> values) throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory algoFactory = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addStock(eName, aName, algoFactory.getGeneticList());
 	}
 
+	@Override
 	public SimulatorSettingsGeneticFactory addEod(String eName, String aName, String pName, List<String> values) throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory algoFactory = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addEod(eName, aName, algoFactory.getGeneticList());
 	}
@@ -64,8 +65,9 @@ public class SimulatorSettingsGeneticFactory {
 		toList.add(ei);
 	}
 
+	@Override
 	public SimulatorSettingsGeneticList getList() {
-		final SimulatorSettingsGeneticList result = new SimulatorSettingsGeneticList(stockStorage, period, stockInitializers, eodInitializers);
+		final SimulatorSettingsGeneticList result = new SimulatorSettingsGeneticList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;

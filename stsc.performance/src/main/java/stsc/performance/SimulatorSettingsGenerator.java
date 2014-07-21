@@ -15,6 +15,7 @@ import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
+import stsc.general.simulator.multistarter.SimulatorSettingsFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.storage.AlgorithmsStorage;
@@ -69,6 +70,11 @@ class SimulatorSettingsGenerator {
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
 		return null;
+	}
+
+	static <T> SimulatorSettingsFactory<T> getSimulatorSettingsList(final SimulatorSettingsFactory<T> settingsFactory) {
+		return settingsFactory;
+
 	}
 
 	static void fillIterator(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes) throws BadParameterException,

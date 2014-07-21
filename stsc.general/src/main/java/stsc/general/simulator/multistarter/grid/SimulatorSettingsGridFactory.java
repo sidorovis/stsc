@@ -8,19 +8,17 @@ import stsc.common.storage.StockStorage;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpString;
+import stsc.general.simulator.multistarter.SimulatorSettingsFactory;
 
-public class SimulatorSettingsGridFactory {
+public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<SimulatorSettingsGridList> {
 
 	private List<GridExecutionInitializer> stockInitializers = new ArrayList<>();
 	private List<GridExecutionInitializer> eodInitializers = new ArrayList<>();
 
-	private final StockStorage stockStorage;
-	private final FromToPeriod period;
 	private boolean finished;
 
 	public SimulatorSettingsGridFactory(final StockStorage stockStorage, final FromToPeriod period) {
-		this.stockStorage = stockStorage;
-		this.period = period;
+		super(stockStorage, period);
 		this.finished = true;
 	}
 
@@ -33,6 +31,7 @@ public class SimulatorSettingsGridFactory {
 		return this;
 	}
 
+	@Override
 	public SimulatorSettingsGridFactory addStock(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addStock(eName, aName, factory.getGridIterator());
 	}
@@ -44,20 +43,23 @@ public class SimulatorSettingsGridFactory {
 		return this;
 	}
 
+	@Override
 	public SimulatorSettingsGridFactory addEod(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addEod(eName, aName, factory.getGridIterator());
 	}
 
 	// add predefined algorithms
 
+	@Override
 	public SimulatorSettingsGridFactory addStock(String eName, String aName, String pName, List<String> values) throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory algoFactory = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addStock(eName, aName, algoFactory.getGridIterator());
 	}
 
+	@Override
 	public SimulatorSettingsGridFactory addEod(String eName, String aName, String pName, List<String> values) throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory algoFactory = new AlgorithmSettingsIteratorFactory(period);
+		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addEod(eName, aName, algoFactory.getGridIterator());
 	}
@@ -68,15 +70,18 @@ public class SimulatorSettingsGridFactory {
 		toList.add(ei);
 	}
 
+	@Override
 	public SimulatorSettingsGridList getList() {
-		final SimulatorSettingsGridList result = new SimulatorSettingsGridList(stockStorage, period, stockInitializers, eodInitializers, finished);
+		final SimulatorSettingsGridList result = new SimulatorSettingsGridList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers, finished);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;
 	}
 
+	// TODO - method is experimental, see tests it is not finished
 	public SimulatorSettingsGridCopyList getCopyList() {
-		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(stockStorage, period, stockInitializers, eodInitializers, finished);
+		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers,
+				finished);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;
