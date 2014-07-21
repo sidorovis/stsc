@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.storage.AlgorithmsStorage;
 
-public class StrategySearchPerformance {
+class StrategySearchPerformance {
 
 	private static Logger logger = LogManager.getLogger("StrategySearchPerformance");
 

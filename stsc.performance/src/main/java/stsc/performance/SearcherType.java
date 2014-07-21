@@ -1,5 +1,5 @@
 package stsc.performance;
 
-public enum SearcherType {
+enum SearcherType {
 	GRID_SEARCHER, GENETIC_SEARCHER
 }

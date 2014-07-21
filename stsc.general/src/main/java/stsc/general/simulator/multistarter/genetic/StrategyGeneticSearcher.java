@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +18,6 @@ import com.google.common.math.DoubleMath;
 
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.StrategySearcher;
 import stsc.general.simulator.multistarter.StrategySearcherException;
@@ -34,31 +32,17 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/strategy_genetic_searcher_log4j2.xml");
 	}
 
-	private class PopulationElement {
-		SimulatorSettings settings;
-		Statistics statistics;
-		boolean addedAsBestStatistics;
-
-		PopulationElement(SimulatorSettings settings, Statistics statistics, boolean addedAsBestStatistics) {
-			super();
-			this.settings = settings;
-			this.statistics = statistics;
-			this.addedAsBestStatistics = addedAsBestStatistics;
-		}
-	}
-
-	private static Logger logger = LogManager.getLogger("StrategyGeneticSearcher");
+	static Logger logger = LogManager.getLogger("StrategyGeneticSearcher");
 
 	private final static int MINIMUM_STEPS_AMOUNT = 10;
-	private final static double BEST_DEFAULT_PART = 0.94; // empirical by
-															// StrategyGeneticSearcherTest
-															// (see commit #
-															// a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
-	private final static double CROSSOVER_DEFAULT_PART = 0.86; // empirical by
-																// StrategyGeneticSearcherTest
-																// (see commit #
-																// a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
 
+	// empirical by StrategyGeneticSearcherTest
+	// (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
+	private final static double BEST_DEFAULT_PART = 0.94;
+
+	// empirical by StrategyGeneticSearcherTest
+	// (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
+	private final static double CROSSOVER_DEFAULT_PART = 0.86;
 	private final static int POPULATION_DEFAULT_SIZE = 100;
 
 	private int currentSelectionIndex = 0;
@@ -66,47 +50,20 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private double maxCostSum = -Double.MAX_VALUE;
 
-	private final StatisticsSelector selector;
+	final StatisticsSelector selector;
 	private final SimulatorSettingsGeneticList settingsGeneticList;
-	private List<PopulationElement> population;
-	private Map<Statistics, PopulationElement> sortedPopulation;
+	List<PopulationElement> population;
+	Map<Statistics, PopulationElement> sortedPopulation;
 
 	private final CostFunction costFunction;
 
-	private final ExecutorService executor;
-	private CountDownLatch countDownLatch;
+	final ExecutorService executor;
+	CountDownLatch countDownLatch;
 	private final List<SimulatorCalulatingTask> simulatorCalculatingTasks;
 
-	final private class GeneticSearchSettings {
-		final int maxSelectionIndex;
-		final int sizeOfBest;
-		final int populationSize;
-		final int crossoverSize;
-		final int mutationSize;
+	private final Random indexRandomizator = new Random();
 
-		final int tasksSize;
-
-		GeneticSearchSettings(int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart, int selectorSize) {
-			this.maxSelectionIndex = maxSelectionIndex;
-			this.populationSize = populationSize;
-			final int preSizeOfBest = (int) (bestPart * populationSize);
-			if (preSizeOfBest > selectorSize) {
-				this.sizeOfBest = selectorSize;
-			} else {
-				this.sizeOfBest = preSizeOfBest;
-			}
-			this.crossoverSize = (int) ((populationSize - this.sizeOfBest) * crossoverPart);
-			this.mutationSize = populationSize - crossoverSize - this.sizeOfBest;
-			this.tasksSize = crossoverSize + mutationSize;
-		}
-
-		int getTasksSize() {
-			return tasksSize;
-		}
-
-	}
-
-	private final GeneticSearchSettings settings;
+	final GeneticSearchSettings settings;
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StatisticsSelector selector, int threadAmount)
 			throws InterruptedException {
@@ -138,70 +95,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	}
 
 	private void startSearcher() {
-		executor.submit(new GenerateInitialPopulationsTask(this));
-	}
-
-	private final class GenerateInitialPopulationsTask implements Runnable {
-
-		private StrategyGeneticSearcher searcher;
-
-		GenerateInitialPopulationsTask(StrategyGeneticSearcher searcher) {
-			this.searcher = searcher;
-		}
-
-		@Override
-		public void run() {
-			for (int i = 0; i < settings.populationSize; ++i) {
-				try {
-					final SimulatorSettings ss = searcher.getRandomSettings();
-					final SimulatorCalulatingTask task = new SimulatorCalulatingTask(searcher, ss);
-					executor.submit(task);
-				} catch (BadAlgorithmException e) {
-					logger.error("Problem while generating random simulator settings: " + e.getMessage());
-				}
-			}
-		}
-	}
-
-	private final class SimulatorCalulatingTask implements Callable<Boolean> {
-
-		private StrategyGeneticSearcher searcher;
-		private SimulatorSettings settings;
-
-		SimulatorCalulatingTask(StrategyGeneticSearcher searcher, SimulatorSettings settings) {
-			this.searcher = searcher;
-			this.settings = settings;
-		}
-
-		@Override
-		public Boolean call() throws Exception {
-			boolean result = false;
-			try {
-				final Statistics statistics = simulate();
-				if (statistics != null) {
-					final boolean addedToStatistics = searcher.selector.addStatistics(statistics);
-					final PopulationElement populationElement = new PopulationElement(settings, statistics, addedToStatistics);
-					searcher.population.add(populationElement);
-					searcher.sortedPopulation.put(statistics, populationElement);
-					result = true;
-				}
-			} finally {
-				countDownLatch.countDown();
-			}
-			return result;
-		}
-
-		private Statistics simulate() {
-			Simulator simulator = null;
-			try {
-				simulator = new Simulator(settings);
-			} catch (Exception e) {
-				logger.error("Error while calculating statistics: " + e.getMessage());
-				return null;
-			}
-			return simulator.getStatistics();
-		}
-
+		executor.submit(new GenerateInitialPopulationsTask(this, this));
 	}
 
 	@Override
@@ -215,7 +109,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		return selector;
 	}
 
-	private SimulatorSettings getRandomSettings() throws BadAlgorithmException {
+	SimulatorSettings getRandomSettings() throws BadAlgorithmException {
 		return settingsGeneticList.generateRandom();
 	}
 
@@ -294,7 +188,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 			final SimulatorSettings mergedStatistics = settingsGeneticList.merge(left, right);
 
-			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, mergedStatistics));
+			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, this, mergedStatistics));
 		}
 	}
 
@@ -303,14 +197,11 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		if (size == 0) {
 			return;
 		}
-		final Random r = new Random();
-
 		for (int i = 0; i < settings.mutationSize; ++i) {
-			final int index = r.nextInt(size);
+			final int index = indexRandomizator.nextInt(size);
 			final SimulatorSettings settings = currentPopulation.get(index).settings;
 			final SimulatorSettings mutatedSettings = settingsGeneticList.mutate(settings);
-
-			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, mutatedSettings));
+			simulatorCalculatingTasks.add(new SimulatorCalulatingTask(this, this, mutatedSettings));
 		}
 	}
 
