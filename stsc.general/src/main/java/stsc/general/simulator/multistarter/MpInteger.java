@@ -32,7 +32,8 @@ public class MpInteger extends MpIterator<Integer> {
 
 	@Override
 	public long size() {
-		return Math.round((to - from) / step);
+		long result = Math.round((to - from) / step);
+		return (result == 0) ? 1 : result;
 	}
 
 	@Override
