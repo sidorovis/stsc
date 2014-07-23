@@ -60,4 +60,9 @@ public class GridExecutionInitializer implements ResetableIterator<AlgorithmSett
 	public ResetableIterator<AlgorithmSettings> iterator() {
 		return this;
 	}
+
+	public long size() {
+		return iterator.size();
+	}
+
 }

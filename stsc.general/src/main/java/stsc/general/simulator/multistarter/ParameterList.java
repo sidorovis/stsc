@@ -65,4 +65,11 @@ public class ParameterList implements Cloneable {
 		return String.valueOf(index) + ": " + params.toString();
 	}
 
+	public long size() {
+		int result = 1;
+		for (MpIterator<?> i : params) {
+			result *= i.size();
+		}
+		return result;
+	}
 }

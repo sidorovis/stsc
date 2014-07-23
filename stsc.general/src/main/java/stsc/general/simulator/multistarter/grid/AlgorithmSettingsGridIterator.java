@@ -107,6 +107,14 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 				list.reset();
 			}
 		}
+
+		public long size() {
+			int result = 1;
+			for (ParameterList pl : parameters) {
+				result *= pl.size();
+			}
+			return result;
+		}
 	}
 
 	private final FromToPeriod period;
@@ -142,6 +150,14 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		parameters.toString();
 		for (ParameterList p : parameters) {
 			result += "\n" + p.type.toString() + " " + p.toString();
+		}
+		return result;
+	}
+
+	public long size() {
+		long result = 0;
+		for (ParameterList pl : parameters) {
+			result += pl.size();
 		}
 		return result;
 	}

@@ -87,4 +87,16 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 		return result;
 	}
 
+	@Override
+	public long size() {
+		long result = 1;
+		for (GridExecutionInitializer ei : stockInitializers) {
+			result *= ei.size();
+		}
+		for (GridExecutionInitializer ei : eodInitializers) {
+			result *= ei.size();
+		}
+		return result;
+	}
+
 }

@@ -59,4 +59,8 @@ public class GeneticExecutionInitializer {
 		return geneticAlgorithmSettings.merge(leftSe.getSettings(), rightSe.getSettings());
 	}
 
+	public long size() {
+		return geneticAlgorithmSettings.size();
+	}
+
 }

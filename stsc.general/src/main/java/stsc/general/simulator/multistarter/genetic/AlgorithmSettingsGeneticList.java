@@ -123,4 +123,12 @@ public class AlgorithmSettingsGeneticList {
 		return result;
 	}
 
+	public long size() {
+		long result = 1;
+		for (ParameterList pl : parameters) {
+			result *= pl.size();
+		}
+		return result;
+	}
+
 }

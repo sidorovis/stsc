@@ -67,16 +67,16 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StatisticsSelector selector, int threadAmount)
 			throws InterruptedException {
-		this(selector, algorithmSettings, threadAmount, selector.size(), POPULATION_DEFAULT_SIZE);
+		this(algorithmSettings, selector, threadAmount, selector.size(), POPULATION_DEFAULT_SIZE);
 	}
 
-	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount, int maxSelectionIndex,
+	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StatisticsSelector selector, int threadAmount, int maxSelectionIndex,
 			int populationSize) throws InterruptedException {
-		this(selector, algorithmSettings, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
+		this(algorithmSettings, selector, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
 				CROSSOVER_DEFAULT_PART);
 	}
 
-	public StrategyGeneticSearcher(final StatisticsSelector selector, SimulatorSettingsGeneticList algorithmSettings, int threadAmount,
+	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StatisticsSelector selector, int threadAmount,
 			CostFunction costFunction, int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) throws InterruptedException {
 		this.selector = selector;
 		this.settingsGeneticList = algorithmSettings;

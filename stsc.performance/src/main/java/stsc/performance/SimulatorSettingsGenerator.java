@@ -15,36 +15,30 @@ import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.SimulatorSettingsFactory;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
-import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
-import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.storage.AlgorithmsStorage;
 
 class SimulatorSettingsGenerator {
 
-	static SimulatorSettingsGridList getSimulatorSettingsGridList(final StockStorage stockStorage, final List<String> openTypes, final String periodFrom,
+	static SimulatorSettingsGridFactory getGridFactory(final StockStorage stockStorage, final List<String> openTypes, final String periodFrom,
 			final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
-
 			final SimulatorSettingsGridFactory settings = new SimulatorSettingsGridFactory(stockStorage, period);
 			fillIterator(settings, openTypes);
-
-			return settings.getList();
+			return settings;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
 		return null;
 	}
 
-	static SimulatorSettingsGeneticList getSimulatorSettingsGeneticList(final StockStorage stockStorage, final List<String> openTypes, final String periodFrom,
-			final String periodTo) {
+	static SimulatorSettingsGeneticFactory getGeneticFactory(final StockStorage stockStorage, final List<String> openTypes,
+			final String periodFrom, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
-
 			final SimulatorSettingsGeneticFactory settings = new SimulatorSettingsGeneticFactory(stockStorage, period);
 			fillIterator(settings, openTypes);
-
-			return settings.getList();
+			return settings;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
 		return null;
@@ -57,12 +51,12 @@ class SimulatorSettingsGenerator {
 		settings.addStock("in", algoStockName("In"), factoryIn);
 
 		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
-		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.6));
+		factoryEma.add(new MpDouble("P", 0.1, 0.6, 0.1));
 		factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
 		settings.addStock("ema", algoStockName("Ema"), factoryEma);
 
 		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
-		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 5.0));
+		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 2.0));
 		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema" })));
 		settings.addStock("level", algoStockName("Level"), factoryLevel);
 
@@ -73,9 +67,9 @@ class SimulatorSettingsGenerator {
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level" })));
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
-		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
-		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
-		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200000.0, 150000.0));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, 31));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, 31));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200000.0, 5000.0));
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 

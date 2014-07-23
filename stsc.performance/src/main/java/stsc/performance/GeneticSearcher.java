@@ -2,8 +2,6 @@ package stsc.performance;
 
 import java.util.List;
 
-import stsc.common.TimeTracker;
-
 class GeneticSearcher implements PerformanceSearcher {
 	private final PerformanceCalculator parent;
 	private final List<String> openTypes;
@@ -17,7 +15,7 @@ class GeneticSearcher implements PerformanceSearcher {
 		this.endOfPeriod = endOfPeriod;
 	}
 
-	public TimeTracker search() throws Exception {
+	public PerformanceResult search() throws Exception {
 		return PerformanceCalculator.timeForGeneticSearch(parent.stockStorage, openTypes, threadSize, endOfPeriod);
 	}
 }

@@ -25,7 +25,7 @@ public class StrategyGeneticSearcherTest extends TestCase {
 		final SimulatorSettingsGeneticList geneticList = TestGeneticSimulatorSettings.getBigGeneticList();
 		final int maxGeneticStepsAmount = 100;
 		final int populationSize = 100;
-		final StrategyGeneticSearcher sgs = new StrategyGeneticSearcher(selector, geneticList, 4, costFunction, maxGeneticStepsAmount, populationSize, 0.94,
+		final StrategyGeneticSearcher sgs = new StrategyGeneticSearcher(geneticList, selector, 4, costFunction, maxGeneticStepsAmount, populationSize, 0.94,
 				0.86);
 		sgs.getSelector();
 		assertEquals(100, selector.getStatistics().size());

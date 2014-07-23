@@ -23,8 +23,8 @@ class StrategySearchPerformance {
 		initialize();
 		logger.debug("Algorithms and Stocks reader");
 		try {
-			// System.out.println("Grid Search");
-			// new PerformanceCalculator(SearcherType.GRID_SEARCHER);
+			System.out.println("Grid Search");
+			new PerformanceCalculator(SearcherType.GRID_SEARCHER);
 			System.out.println("Genetic Search");
 			new PerformanceCalculator(SearcherType.GENETIC_SEARCHER);
 			logger.debug("Performance Calculator finished");

@@ -31,6 +31,8 @@ public abstract class SimulatorSettingsFactory<SimulatorSettingsList> {
 
 	public abstract SimulatorSettingsList getList();
 
+	public abstract long size();
+
 	public StockStorage getStockStorage() {
 		return stockStorage;
 	}
@@ -38,4 +40,5 @@ public abstract class SimulatorSettingsFactory<SimulatorSettingsList> {
 	public FromToPeriod getPeriod() {
 		return period;
 	}
+
 }

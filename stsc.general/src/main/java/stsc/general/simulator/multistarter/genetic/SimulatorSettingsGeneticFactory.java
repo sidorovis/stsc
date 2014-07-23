@@ -73,4 +73,16 @@ public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<Si
 		return result;
 	}
 
+	@Override
+	public long size() {
+		long result = 1;
+		for (GeneticExecutionInitializer ei : stockInitializers) {
+			result *= ei.size();
+		}
+		for (GeneticExecutionInitializer ei : eodInitializers) {
+			result *= ei.size();
+		}
+		return result;
+	}
+
 }
