@@ -3,7 +3,7 @@ package stsc.general.simulator.multistarter.genetic;
 import stsc.common.Settings;
 import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StatisticsByCostSelector;
-import stsc.general.statistic.StatisticsSelector;
+import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
 import stsc.general.testhelper.TestGeneticSimulatorSettings;
 import junit.framework.TestCase;
@@ -20,7 +20,7 @@ public class StrategyGeneticSearcherTest extends TestCase {
 		costFunction.addParameter("getMaxLoss", -0.3);
 		costFunction.addParameter("getAvLoss", -0.5);
 
-		final StatisticsSelector selector = new StatisticsByCostSelector(100, costFunction);
+		final StrategySelector selector = new StatisticsByCostSelector(100, costFunction);
 
 		final SimulatorSettingsGeneticList geneticList = TestGeneticSimulatorSettings.getBigGeneticList();
 		final int maxGeneticStepsAmount = 100;
@@ -28,7 +28,7 @@ public class StrategyGeneticSearcherTest extends TestCase {
 		final StrategyGeneticSearcher sgs = new StrategyGeneticSearcher(geneticList, selector, 4, costFunction, maxGeneticStepsAmount, populationSize, 0.94,
 				0.86);
 		sgs.getSelector();
-		assertEquals(100, selector.getStatistics().size());
-		assertEquals(32.979967, selector.getStatistics().get(0).getAvGain(), Settings.doubleEpsilon);
+		assertEquals(100, selector.getStrategies().size());
+		assertEquals(32.979967, selector.getStrategies().get(0).getStatistics().getAvGain(), Settings.doubleEpsilon);
 	}
 }

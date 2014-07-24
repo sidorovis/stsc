@@ -17,7 +17,8 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.StrategySearcher;
 import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StatisticsCalculationException;
-import stsc.general.statistic.StatisticsSelector;
+import stsc.general.statistic.StrategySelector;
+import stsc.general.strategy.Strategy;
 
 /**
  * Multithread Strategy Grid Searcher
@@ -34,14 +35,14 @@ public class StrategyGridSearcher implements StrategySearcher {
 	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
 
 	private final Set<String> processedSettings = new HashSet<>();
-	private final StatisticsSelector selector;
+	private final StrategySelector selector;
 
 	private class StatisticsCalculationThread extends Thread {
 
 		final Iterator<SimulatorSettings> iterator;
-		final StatisticsSelector selector;
+		final StrategySelector selector;
 
-		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator, final StatisticsSelector selector) {
+		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator, final StrategySelector selector) {
 			this.iterator = iterator;
 			this.selector = selector;
 		}
@@ -54,7 +55,8 @@ public class StrategyGridSearcher implements StrategySearcher {
 				Simulator simulator;
 				try {
 					simulator = new Simulator(settings);
-					selector.addStatistics(simulator.getStatistics());
+					final Strategy strategy = new Strategy(settings, simulator.getStatistics());
+					selector.addStrategy(strategy);
 					settings = getNextSimulatorSettings();
 				} catch (BadAlgorithmException | StatisticsCalculationException | BadSignalException e) {
 					logger.error("Error while calculating statistics: " + e.getMessage());
@@ -84,7 +86,7 @@ public class StrategyGridSearcher implements StrategySearcher {
 
 	final List<StatisticsCalculationThread> threads = new ArrayList<>();
 
-	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StatisticsSelector selector, int threadAmount) {
+	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StrategySelector selector, int threadAmount) {
 		this.selector = selector;
 		final Iterator<SimulatorSettings> iterator = iterable.iterator();
 		logger.debug("Starting");
@@ -99,7 +101,7 @@ public class StrategyGridSearcher implements StrategySearcher {
 	}
 
 	@Override
-	public StatisticsSelector getSelector() throws StrategySearcherException {
+	public StrategySelector getSelector() throws StrategySearcherException {
 		try {
 			for (Thread t : threads) {
 				t.join();

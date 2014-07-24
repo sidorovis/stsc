@@ -63,7 +63,7 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 			if (!originalSb.toString().equals(copySb.toString()))
 				break;
 		}
-		if (i > 1) {
+		if (i > 2) { // it is highly impossible that two times we will have the same mutation result
 			fail("mutation test failed, there were no mutation");
 			System.out.println(i);
 		}

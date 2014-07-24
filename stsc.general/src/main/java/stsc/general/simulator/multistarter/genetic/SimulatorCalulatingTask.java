@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
+import stsc.general.strategy.Strategy;
 
 final class SimulatorCalulatingTask implements Callable<Boolean> {
 
@@ -24,10 +25,10 @@ final class SimulatorCalulatingTask implements Callable<Boolean> {
 		try {
 			final Statistics statistics = simulate();
 			if (statistics != null) {
-				final boolean addedToStatistics = searcher.selector.addStatistics(statistics);
-				final PopulationElement populationElement = new PopulationElement(settings, statistics, addedToStatistics);
-				searcher.population.add(populationElement);
-				searcher.sortedPopulation.put(statistics, populationElement);
+				final Strategy strategy = new Strategy(settings, statistics);
+				final boolean addedToStatistics = searcher.selector.addStrategy(strategy);
+				searcher.population.add(strategy);
+				searcher.sortedPopulation.put(strategy, addedToStatistics);
 				result = true;
 			}
 		} finally {

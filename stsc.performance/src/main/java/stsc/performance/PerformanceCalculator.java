@@ -18,11 +18,11 @@ import stsc.general.simulator.multistarter.genetic.StrategyGeneticSearcher;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
-import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsByCostSelector;
-import stsc.general.statistic.StatisticsSelector;
+import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.strategy.Strategy;
 import stsc.performance.PerformanceSearcher.PerformanceResult;
 
 class PerformanceCalculator {
@@ -148,9 +148,9 @@ class PerformanceCalculator {
 		final TimeTracker timeTracker = new TimeTracker();
 		final String startDate = getDateRepresentation(startOfPeriod);
 		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getGridFactory(stockStorage, openTypes, startDate, endOfPeriod).getList();
-		final StatisticsSelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
+		final StrategySelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
-		return createResult(searcher.getSelector().getStatistics(), timeTracker);
+		return createResult(searcher.getSelector().getStrategies(), timeTracker);
 	}
 
 	static PerformanceResult timeForGeneticSearch(final StockStorage stockStorage, final List<String> openTypes, int threadSize, String endOfPeriod)
@@ -158,18 +158,18 @@ class PerformanceCalculator {
 		final TimeTracker timeTracker = new TimeTracker();
 		final String startDate = getDateRepresentation(startOfPeriod);
 		final SimulatorSettingsGeneticList list = SimulatorSettingsGenerator.getGeneticFactory(stockStorage, openTypes, startDate, endOfPeriod).getList();
-		final StatisticsSelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
+		final StrategySelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
 		final StrategyGeneticSearcher searcher = new StrategyGeneticSearcher(list, selector, threadSize, maxSelectionIndex, populationSize);
-		return createResult(searcher.getSelector().getStatistics(), timeTracker);
+		return createResult(searcher.getSelector().getStrategies(), timeTracker);
 	}
 
-	private static PerformanceResult createResult(List<Statistics> statistics, TimeTracker timeTracker) {
+	private static PerformanceResult createResult(List<Strategy> strategies, TimeTracker timeTracker) {
 		double sumGetAvGain = 0.0;
 		timeTracker.finish();
-		sumGetAvGain = statistics.get(0).getAvGain();
-//		for (Statistics statistic : statistics) {
-//			sumGetAvGain += statistic.getAvGain();
-//		}
+		sumGetAvGain = strategies.get(0).getStatistics().getAvGain();
+		// for (Statistics statistic : statistics) {
+		// sumGetAvGain += statistic.getAvGain();
+		// }
 		return new PerformanceResult(timeTracker, sumGetAvGain);
 	}
 

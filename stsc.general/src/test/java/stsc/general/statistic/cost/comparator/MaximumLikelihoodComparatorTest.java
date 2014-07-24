@@ -7,6 +7,7 @@ import org.joda.time.LocalDate;
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCompareSelector;
+import stsc.general.strategy.Strategy;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
@@ -34,13 +35,13 @@ public class MaximumLikelihoodComparatorTest extends TestCase {
 		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
 
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12)));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12))));
 
-		assertEquals(3, sel.getStatistics().size());
-		final Iterator<Statistics> si = sel.getStatistics().iterator();
+		assertEquals(3, sel.getStrategies().size());
+		final Iterator<Strategy> si = sel.getStrategies().iterator();
 		assertEquals(2.900946, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(0.195823, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);
@@ -50,13 +51,13 @@ public class MaximumLikelihoodComparatorTest extends TestCase {
 		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
 		c.addParameter("getKelly", -10.0);
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16)));
-		sel.addStatistics(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12)));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16))));
+		sel.addStrategy(Strategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12))));
 
-		assertEquals(3, sel.getStatistics().size());
-		final Iterator<Statistics> si = sel.getStatistics().iterator();
+		assertEquals(3, sel.getStrategies().size());
+		final Iterator<Strategy> si = sel.getStrategies().iterator();
 		assertEquals(2.900946, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(-2.522204, si.next().getAvGain(), Settings.doubleEpsilon);

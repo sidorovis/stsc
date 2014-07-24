@@ -6,25 +6,27 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import stsc.general.statistic.cost.function.CostFunction;
+import stsc.general.strategy.Strategy;
 
-public class StatisticsByCostSelector extends StatisticsSelector {
+public class StatisticsByCostSelector extends StrategySelector {
 
 	private final CostFunction evaluationFunction;
-	private final SortedStatistics select;
+	private final SortedStrategies select;
 
 	public StatisticsByCostSelector(int selectLastElements, CostFunction evaluationFunction) {
 		super(selectLastElements);
 		this.evaluationFunction = evaluationFunction;
-		this.select = new SortedStatistics();
+		this.select = new SortedStrategies();
 	}
 
 	@Override
-	public synchronized boolean addStatistics(final Statistics statistics) {
+	public synchronized boolean addStrategy(final Strategy strategy) {
+		final Statistics statistics = strategy.getStatistics();
 		final Double compareValue = evaluationFunction.calculate(statistics);
-		select.add(compareValue, statistics);
+		select.add(compareValue, strategy);
 		if (select.size() > size()) {
-			final Statistics deletedElement = select.deleteLast();
-			if (deletedElement == statistics) {
+			final Strategy deletedElement = select.deleteLast();
+			if (deletedElement == strategy) {
 				return false;
 			}
 		}
@@ -32,11 +34,11 @@ public class StatisticsByCostSelector extends StatisticsSelector {
 	}
 
 	@Override
-	public synchronized List<Statistics> getStatistics() {
-		final List<Statistics> result = new LinkedList<>();
-		for (Entry<Double, List<Statistics>> i : select.getValues().entrySet()) {
-			for (Statistics statistics : i.getValue()) {
-				result.add(statistics);
+	public synchronized List<Strategy> getStrategies() {
+		final List<Strategy> result = new LinkedList<>();
+		for (Entry<Double, List<Strategy>> i : select.getValues().entrySet()) {
+			for (Strategy strategy : i.getValue()) {
+				result.add(strategy);
 			}
 		}
 		return Collections.unmodifiableList(result);
