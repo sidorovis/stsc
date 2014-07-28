@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.storage.AlgorithmsStorage;
 
-class StrategySearchPerformance {
+public class GeneticParameterPerformance {
 
-	private static Logger logger = LogManager.getLogger("StrategySearchPerformance");
+	private static Logger logger = LogManager.getLogger("GeneticParameterPerformance");
 
 	private static void initialize() {
 		try {
@@ -23,10 +23,9 @@ class StrategySearchPerformance {
 		initialize();
 		logger.debug("Algorithms and Stocks reader");
 		try {
-//			System.out.println("Grid Search");
-//			new PerformanceCalculator(SearcherType.GRID_SEARCHER);
-			System.out.println("Genetic Search");
-			new PerformanceCalculator(SearcherType.GENETIC_SEARCHER);
+			for (int i = 10; i < 450; i += 50)
+				for (int u = 10; u < 450; u += 50)
+					new PerformanceCalculator(SearcherType.GENETIC_SEARCHER, i, u);
 			logger.debug("Performance Calculator finished");
 		} catch (Exception e) {
 			e.printStackTrace();

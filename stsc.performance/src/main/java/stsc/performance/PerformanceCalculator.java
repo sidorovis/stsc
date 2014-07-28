@@ -41,8 +41,10 @@ class PerformanceCalculator {
 
 	private static boolean shouldWarmUp = false;
 
-	private static int maxSelectionIndex = 150;
-	private static int populationSize = 150;
+	private static int maxSelectionIndex;
+	private static int populationSize;
+
+	private static boolean printAdditionalInfo = false;
 
 	final List<String> elements = Arrays.asList(new String[] { "open", "high", "low", "close", "value", "open", "high", "low", "close" });
 
@@ -53,15 +55,23 @@ class PerformanceCalculator {
 		return StockStorageSingleton.getInstance();
 	}
 
-	PerformanceCalculator(final SearcherType type) throws Exception {
+	PerformanceCalculator(final SearcherType type, int maxSelectionIndex, int populationSize) throws Exception {
+		System.out.print(maxSelectionIndex + " " + populationSize + " ");
+		PerformanceCalculator.maxSelectionIndex = maxSelectionIndex;
+		PerformanceCalculator.populationSize = populationSize;
 		this.searcherType = type;
 		this.stockStorage = loadStocks();
-		System.out.println("Size of stocks: " + stockStorage.getStockNames().size());
+		if (printAdditionalInfo)
+			System.out.println("Size of stocks: " + stockStorage.getStockNames().size());
 		if (shouldWarmUp) {
 			warmUp();
 		}
 		calculateAmountOfSimulations();
 		calculateStatistics();
+	}
+
+	PerformanceCalculator(final SearcherType type) throws Exception {
+		this(type, 350, 300);
 	}
 
 	private void calculateStatistics() throws Exception {
@@ -84,7 +94,8 @@ class PerformanceCalculator {
 	}
 
 	private void calculateForThreads(LocalDate endDate) throws Exception {
-		System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
+		if (printAdditionalInfo)
+			System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
 		for (int thread = threadsFrom; thread <= threadsTo; ++thread) {
 			currentTestThreadAmount = thread;
 			calculateAverageTime(endDate, true);
@@ -95,7 +106,8 @@ class PerformanceCalculator {
 	private void calculateAmountOfSimulations() throws StrategySearcherException {
 		final SimulatorSettingsGridFactory factory = SimulatorSettingsGenerator.getGridFactory(stockStorage, elements, getDateRepresentation(startOfPeriod),
 				getDateRepresentation(startOfPeriod.plusMonths(1)));
-		System.out.println("Simulation amount: " + factory.size());
+		if (printAdditionalInfo)
+			System.out.println("Simulation amount: " + factory.size());
 	}
 
 	private void warmUp() throws Exception {
