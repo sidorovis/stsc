@@ -66,7 +66,7 @@ public class ParameterList implements Cloneable {
 	}
 
 	public long size() {
-		int result = 1;
+		long result = 1;
 		for (MpIterator<?> i : params) {
 			result *= i.size();
 		}

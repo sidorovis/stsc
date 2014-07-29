@@ -109,7 +109,7 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		}
 
 		public long size() {
-			int result = 1;
+			long result = 1;
 			for (ParameterList pl : parameters) {
 				result *= pl.size();
 			}

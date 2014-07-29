@@ -149,7 +149,7 @@ class PerformanceCalculator {
 		final DecimalFormat formatter = new DecimalFormat("#0.000000000");
 
 		if (printData) {
-			System.out.print(" T:" + formatter.format(avTime) + " (Gain:" + formatter.format(avRes) + ") ");
+			System.out.print(" " + formatter.format(avTime) + " " + formatter.format(avRes) + " ");
 		}
 
 		return Math.round(time / calculationsForAverage);

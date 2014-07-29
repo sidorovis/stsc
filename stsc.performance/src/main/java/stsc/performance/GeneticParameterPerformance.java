@@ -23,8 +23,8 @@ public class GeneticParameterPerformance {
 		initialize();
 		logger.debug("Algorithms and Stocks reader");
 		try {
-			for (int i = 10; i < 110; i += 10)
-				for (int u = 10; u < 110; u += 10)
+			for (int i = 50; i <= 70; i += 10)
+				for (int u = 50; u <= 70; u += 10)
 					new PerformanceCalculator(SearcherType.GENETIC_SEARCHER, i, u);
 			logger.debug("Performance Calculator finished");
 		} catch (Exception e) {
