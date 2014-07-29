@@ -33,9 +33,9 @@ class PerformanceCalculator {
 
 	final StockStorage stockStorage;
 
-	private final static int calculationsForAverage = 1;
-	private final static int threadsFrom = 6;
-	private final static int threadsTo = 6;
+	private final static int calculationsForAverage = 10;
+	private final static int threadsFrom = 4;
+	private final static int threadsTo = 4;
 
 	private static LocalDate startOfPeriod = new LocalDate(1970, 1, 1);
 
@@ -75,17 +75,17 @@ class PerformanceCalculator {
 	}
 
 	private void calculateStatistics() throws Exception {
-		for (int i = 31; i <= 31; ++i) {
-			calculateForThreads(startOfPeriod.plusDays(i));
-		}
+		// for (int i = 10; i <= 31; ++i) {
+		// calculateForThreads(startOfPeriod.plusDays(i));
+		// }
 		//
 		// for (int i = 1; i <= 12; ++i) {
 		// calculateForThreads(startOfPeriod.plusMonths(i));
 		// }
 
-		// for (int i = 1; i <= 12; i += 1) {
-		// calculateForThreads(startOfPeriod.plusYears(i));
-		// }
+		for (int i = 3; i <= 3; i += 1) {
+			calculateForThreads(startOfPeriod.plusYears(i));
+		}
 		//
 		// for (int i = 42; i <= 42; i += 1) {
 		// calculateForThreads(startOfPeriod.plusYears(i));

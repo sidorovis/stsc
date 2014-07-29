@@ -51,12 +51,12 @@ class SimulatorSettingsGenerator {
 		settings.addStock("in", algoStockName("In"), factoryIn);
 
 		final AlgorithmSettingsIteratorFactory factoryEma = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
-		factoryEma.add(new MpDouble("P", 0.1, 1.1, 0.1));
+		factoryEma.add(new MpDouble("P", 0.1, 1.1, 0.05));
 		factoryEma.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
 		settings.addStock("ema", algoStockName("Ema"), factoryEma);
 
 		final AlgorithmSettingsIteratorFactory factoryLevel = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
-		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 1.0));
+		factoryLevel.add(new MpDouble("f", 15.0, 20.0, 0.01));
 		factoryLevel.add(new MpSubExecution("", Arrays.asList(new String[] { "ema" })));
 		settings.addStock("level", algoStockName("Level"), factoryLevel);
 
@@ -67,9 +67,9 @@ class SimulatorSettingsGenerator {
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "level" })));
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level", "ema" })));
-		factoryPositionSide.add(new MpInteger("n", 1, 32, 5));
-		factoryPositionSide.add(new MpInteger("m", 1, 32, 5));
-		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200000.0, 5000.0));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, 1));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, 1));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200000.0, 50.0));
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 
