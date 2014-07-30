@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.storage.AlgorithmsStorage;
 
-public class GeneticParameterPerformance {
+class TimePerformanceCalculator {
 
-	private static Logger logger = LogManager.getLogger("GeneticParameterPerformance");
+	private static Logger logger = LogManager.getLogger("StrategySearchPerformance");
 
 	private static void initialize() {
 		try {
@@ -23,9 +23,13 @@ public class GeneticParameterPerformance {
 		initialize();
 		logger.debug("Algorithms and Stocks reader");
 		try {
-			for (int i = 50; i <= 70; i += 10)
-				for (int u = 50; u <= 70; u += 10)
-					new PerformanceCalculator(SearcherType.GENETIC_SEARCHER, i, u);
+			final PerformanceCalculatorSettings settings = new PerformanceCalculatorSettings();
+			System.out.println("Grid Search");
+			settings.searcherType = SearcherType.GRID_SEARCHER;
+			new PerformanceCalculator(settings).calculateTimeStatistics();
+			System.out.println("Genetic Search");
+			settings.searcherType = SearcherType.GENETIC_SEARCHER;
+			new PerformanceCalculator(settings).calculateTimeStatistics();
 			logger.debug("Performance Calculator finished");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,8 +1,6 @@
 package stsc.performance;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 
 import org.joda.time.Days;
@@ -23,156 +21,125 @@ import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
 import stsc.general.strategy.Strategy;
-import stsc.performance.PerformanceSearcher.PerformanceResult;
 
 class PerformanceCalculator {
 
-	private final static int storedStrategyAmount = 100;
-
-	private int currentTestThreadAmount = 1;
-
 	final StockStorage stockStorage;
 
-	private final static int calculationsForAverage = 10;
-	private final static int threadsFrom = 4;
-	private final static int threadsTo = 4;
-
-	private static LocalDate startOfPeriod = new LocalDate(1970, 1, 1);
-
-	private static boolean shouldWarmUp = false;
-
-	private static int maxSelectionIndex;
-	private static int populationSize;
-
-	private static boolean printAdditionalInfo = false;
-
-	final List<String> elements = Arrays.asList(new String[] { "open", "high", "low", "close", "value", "open", "high", "low", "close" });
-
-	private final SearcherType searcherType;
-	private PerformanceSearcher searcher;
+	final private PerformanceCalculatorSettings settings;
 
 	private StockStorage loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
 		return StockStorageSingleton.getInstance();
 	}
 
-	PerformanceCalculator(final SearcherType type, int maxSelectionIndex, int populationSize) throws Exception {
-		System.out.print(maxSelectionIndex + " " + populationSize + " ");
-		PerformanceCalculator.maxSelectionIndex = maxSelectionIndex;
-		PerformanceCalculator.populationSize = populationSize;
-		this.searcherType = type;
+	PerformanceCalculator(PerformanceCalculatorSettings settings) throws Exception {
+		this.settings = settings;
 		this.stockStorage = loadStocks();
-		if (printAdditionalInfo)
+
+		if (settings.printAdditionalInfo && settings.searcherType == SearcherType.GENETIC_SEARCHER) {
+			System.out.print(settings.maxSelectionIndex + " " + settings.populationSize + " ");
+		}
+		if (settings.printStarterInfo) {
 			System.out.println("Size of stocks: " + stockStorage.getStockNames().size());
-		if (shouldWarmUp) {
+			calculateAmountOfSimulations(stockStorage, settings);
+		}
+		if (settings.shouldWarmUp) {
 			warmUp();
 		}
-		calculateAmountOfSimulations();
-		calculateStatistics();
 	}
 
-	PerformanceCalculator(final SearcherType type) throws Exception {
-		this(type, 350, 300);
-	}
-
-	private void calculateStatistics() throws Exception {
-		// for (int i = 10; i <= 31; ++i) {
-		// calculateForThreads(startOfPeriod.plusDays(i));
-		// }
-		//
-		// for (int i = 1; i <= 12; ++i) {
-		// calculateForThreads(startOfPeriod.plusMonths(i));
-		// }
-
-		for (int i = 3; i <= 3; i += 1) {
-			calculateForThreads(startOfPeriod.plusYears(i));
+	public void calculateTimeStatistics() throws Exception {
+		for (int i = 10; i <= 31; ++i) {
+			calculateForThreads(settings.startOfPeriod.plusDays(i));
 		}
-		//
-		// for (int i = 42; i <= 42; i += 1) {
-		// calculateForThreads(startOfPeriod.plusYears(i));
-		// }
 
+		for (int i = 1; i <= 12; ++i) {
+			calculateForThreads(settings.startOfPeriod.plusMonths(i));
+		}
+
+		for (int i = 1; i <= 12; i += 1) {
+			calculateForThreads(settings.startOfPeriod.plusYears(i));
+		}
+
+		for (int i = 42; i <= 42; i += 1) {
+			calculateForThreads(settings.startOfPeriod.plusYears(i));
+		}
+
+	}
+
+	public void calculateSmallStatistics() throws Exception {
+		for (int i = 3; i <= 3; i += 1) {
+			calculateForThreads(settings.startOfPeriod.plusYears(i));
+		}
 	}
 
 	private void calculateForThreads(LocalDate endDate) throws Exception {
-		if (printAdditionalInfo)
-			System.out.print(Days.daysBetween(startOfPeriod, endDate).getDays());
-		for (int thread = threadsFrom; thread <= threadsTo; ++thread) {
-			currentTestThreadAmount = thread;
-			calculateAverageTime(endDate, true);
+		if (settings.printAdditionalInfo)
+			System.out.print(Days.daysBetween(settings.startOfPeriod, endDate).getDays());
+		for (int thread = settings.threadsFrom; thread <= settings.threadsTo; ++thread) {
+			calculateAverageTime(endDate, true, thread);
 		}
 		System.out.println();
 	}
 
-	private void calculateAmountOfSimulations() throws StrategySearcherException {
-		final SimulatorSettingsGridFactory factory = SimulatorSettingsGenerator.getGridFactory(stockStorage, elements, getDateRepresentation(startOfPeriod),
-				getDateRepresentation(startOfPeriod.plusMonths(1)));
-		if (printAdditionalInfo)
-			System.out.println("Simulation amount: " + factory.size());
+	static public void calculateAmountOfSimulations(StockStorage stockStorage, PerformanceCalculatorSettings settings) throws StrategySearcherException {
+		final SimulatorSettingsGridFactory factory = SimulatorSettingsGenerator.getGridFactory(stockStorage, settings.elements, settings.getStartOfPeriod(),
+				getDateRepresentation(settings.startOfPeriod.plusMonths(1)));
+		System.out.println("Simulation amount: " + factory.size());
 	}
 
 	private void warmUp() throws Exception {
-		final LocalDate newDate = startOfPeriod.plusDays(31);
-		calculateAverageTime(newDate, false);
-		currentTestThreadAmount = 2;
-		calculateAverageTime(newDate, false);
-		currentTestThreadAmount = 8;
-		calculateAverageTime(newDate, false);
-		final LocalDate tenDate = startOfPeriod.plusDays(31);
-		currentTestThreadAmount = 1;
-		calculateAverageTime(tenDate, false);
-		currentTestThreadAmount = 2;
-		calculateAverageTime(tenDate, false);
-		currentTestThreadAmount = 8;
-		calculateAverageTime(tenDate, false);
+		final LocalDate newDate = settings.startOfPeriod.plusDays(31);
+		final int[] threadToWarmUp = { 1, 2, 8 };
+		for (int i : threadToWarmUp) {
+			calculateAverageTime(newDate, false, i);
+		}
+		final LocalDate tenDate = settings.startOfPeriod.plusDays(10);
+		for (int i : threadToWarmUp) {
+			calculateAverageTime(tenDate, false, i);
+		}
 	}
 
-	private long calculateAverageTime(LocalDate endDate, boolean printData) throws Exception {
+	private long calculateAverageTime(LocalDate endDate, boolean printData, int threadAmount) throws Exception {
 		final String endOfPeriod = getDateRepresentation(endDate);
-
-		if (searcherType == SearcherType.GENETIC_SEARCHER) {
-			searcher = new GeneticSearcher(this, elements, currentTestThreadAmount, endOfPeriod);
-		} else {
-			searcher = new GridSearcher(this, elements, currentTestThreadAmount, endOfPeriod);
-		}
 
 		double time = 0.0;
 		double avGain = 0.0;
-		for (int i = 0; i < calculationsForAverage; ++i) {
-			final PerformanceResult result = searcher.search();
+		for (int i = 0; i < settings.calculationsForAverage; ++i) {
+			final PerformanceResult result = timeForGridSearch(threadAmount, endOfPeriod);
 			time += TimeTracker.lengthInSeconds(result.timeTracker.length());
 			avGain += result.sumAvGainForBest;
 		}
 
-		final double avTime = time / calculationsForAverage;
-		final double avRes = avGain / calculationsForAverage;
-
-		final DecimalFormat formatter = new DecimalFormat("#0.000000000");
+		final double avTime = time / settings.calculationsForAverage;
+		final double avRes = avGain / settings.calculationsForAverage;
 
 		if (printData) {
-			System.out.print(" " + formatter.format(avTime) + " " + formatter.format(avRes) + " ");
+			System.out.print(" " + settings.format(avTime) + " " + settings.format(avRes) + " ");
 		}
 
-		return Math.round(time / calculationsForAverage);
+		return Math.round(time / settings.calculationsForAverage);
 	}
 
-	static PerformanceResult timeForGridSearch(final StockStorage stockStorage, final List<String> openTypes, int threadSize, String endOfPeriod)
-			throws StrategySearcherException, BadAlgorithmException, StatisticsCalculationException, BadSignalException {
+	public PerformanceResult timeForGridSearch(int threadSize, String endOfPeriod) throws StrategySearcherException, BadAlgorithmException,
+			StatisticsCalculationException, BadSignalException, InterruptedException {
 		final TimeTracker timeTracker = new TimeTracker();
-		final String startDate = getDateRepresentation(startOfPeriod);
-		final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getGridFactory(stockStorage, openTypes, startDate, endOfPeriod).getList();
-		final StrategySelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
-		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
-		return createResult(searcher.getSelector().getStrategies(), timeTracker);
-	}
+		final String startDate = getDateRepresentation(settings.startOfPeriod);
+		final StrategySelector selector = new StatisticsByCostSelector(settings.storedStrategyAmount, new WeightedSumCostFunction());
 
-	static PerformanceResult timeForGeneticSearch(final StockStorage stockStorage, final List<String> openTypes, int threadSize, String endOfPeriod)
-			throws InterruptedException, StrategySearcherException {
-		final TimeTracker timeTracker = new TimeTracker();
-		final String startDate = getDateRepresentation(startOfPeriod);
-		final SimulatorSettingsGeneticList list = SimulatorSettingsGenerator.getGeneticFactory(stockStorage, openTypes, startDate, endOfPeriod).getList();
-		final StrategySelector selector = new StatisticsByCostSelector(storedStrategyAmount, new WeightedSumCostFunction());
-		final StrategyGeneticSearcher searcher = new StrategyGeneticSearcher(list, selector, threadSize, maxSelectionIndex, populationSize);
-		return createResult(searcher.getSelector().getStrategies(), timeTracker);
+		List<Strategy> strategies = null;
+		if (settings.searcherType == SearcherType.GRID_SEARCHER) {
+			final SimulatorSettingsGridList list = SimulatorSettingsGenerator.getGridFactory(stockStorage, settings.elements, startDate, endOfPeriod).getList();
+			final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, threadSize);
+			strategies = searcher.getSelector().getStrategies();
+		} else {
+			final SimulatorSettingsGeneticList list = SimulatorSettingsGenerator.getGeneticFactory(stockStorage, settings.elements, startDate, endOfPeriod)
+					.getList();
+			final StrategyGeneticSearcher searcher = new StrategyGeneticSearcher(list, selector, threadSize, settings.maxSelectionIndex,
+					settings.populationSize);
+			strategies = searcher.getSelector().getStrategies();
+		}
+		return createResult(strategies, timeTracker);
 	}
 
 	private static PerformanceResult createResult(List<Strategy> strategies, TimeTracker timeTracker) {
