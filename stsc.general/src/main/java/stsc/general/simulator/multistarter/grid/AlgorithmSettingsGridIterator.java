@@ -3,6 +3,7 @@ package stsc.general.simulator.multistarter.grid;
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
+import stsc.general.simulator.multistarter.AlgorithmParameters;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.ParameterList;
 import stsc.general.simulator.multistarter.ParameterType;
@@ -13,31 +14,31 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 
 	public class Element implements ResetableIterator<AlgorithmSettings>, Cloneable {
 
-		private final ParameterList[] parameters;
+		private final AlgorithmParameters parameters;
 		private boolean finished;
 
-		public Element(ParameterList parameterList[], boolean finished) {
+		public Element(AlgorithmParameters parameterList, boolean finished) {
 			this.parameters = parameterList;
 			this.finished = finished;
 		}
 
 		public Element clone() {
-			ParameterList[] pList = new ParameterList[this.parameters.length];
-			for (int i = 0; i < this.parameters.length; ++i) {
-				pList[i] = this.parameters[i].clone();
-			}
-			return new Element(pList, this.finished);
+			final AlgorithmParameters copyParameters = new AlgorithmParameters(parameters);
+			return new Element(copyParameters, this.finished);
 		}
 
 		@Override
 		public boolean hasNext() {
 			if (finished)
 				return false;
-			for (int i = 0; i < ParameterType.size.getValue(); ++i) {
-				ParameterList list = parameters[i];
-				if (list.hasCurrent())
-					return true;
-			}
+			if (parameters.getIntegers().hasCurrent())
+				return true;
+			if (parameters.getDoubles().hasCurrent())
+				return true;
+			if (parameters.getStrings().hasCurrent())
+				return true;
+			if (parameters.getSubExecutions().hasCurrent())
+				return true;
 			return false;
 		}
 
@@ -57,11 +58,11 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		}
 
 		protected void generateNext() {
-			int parameterIndex = 0;
-			while (parameterIndex < ParameterType.size.getValue()) {
-				final ParameterList list = parameters[parameterIndex];
+			ParameterType currentType = ParameterType.integerType;
+			while (currentType != ParameterType.size) {
+				final ParameterList<?> list = parameters.getParameters()[currentType.getValue()];
 				if (list.empty()) {
-					parameterIndex += 1;
+					currentType = ParameterType.values()[currentType.getValue() + 1];
 					continue;
 				}
 				final MpIterator<?> iterator = list.getCurrentParam();
@@ -75,7 +76,7 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 					list.increment();
 				} else {
 					list.reset();
-					parameterIndex += 1;
+					currentType = ParameterType.values()[currentType.getValue() + 1];
 				}
 			}
 			finished = true;
@@ -84,18 +85,17 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 
 		protected AlgorithmSettingsImpl generateSettings() {
 			final AlgorithmSettingsImpl algoSettings = new AlgorithmSettingsImpl(period);
-
 			for (int i = 0; i < ParameterType.typesSize; ++i) {
-				final ParameterList list = parameters[i];
+				final ParameterList<?> list = parameters.getParameters()[i];
 				for (MpIterator<?> p : list.getParams()) {
 					final String name = p.currentParameter().getName();
 					final String value = p.currentParameter().getStringValue();
 					algoSettings.set(name, value);
 				}
 			}
-			final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
-			for (MpIterator<?> p : list.getParams()) {
-				final String subExecutionName = p.currentParameter().getStringValue();
+			final ParameterList<String> list = parameters.getSubExecutions();
+			for (MpIterator<String> p : list.getParams()) {
+				final String subExecutionName = p.currentParameter().getValue();
 				algoSettings.addSubExecutionName(subExecutionName);
 			}
 			return algoSettings;
@@ -103,32 +103,22 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 
 		public void reset() {
 			finished = false;
-			for (ParameterList list : parameters) {
-				list.reset();
-			}
+			parameters.reset();
 		}
 
 		public long size() {
-			long result = 1;
-			for (ParameterList pl : parameters) {
-				result *= pl.size();
-			}
-			return result;
+			return parameters.size();
 		}
 	}
 
 	private final FromToPeriod period;
+	private final AlgorithmParameters parameters;
 	private boolean finished;
 
-	private final ParameterList[] parameters;
-
-	public AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, ParameterList[] parameters) {
+	public AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, final AlgorithmParameters parameters) {
 		this.period = period;
+		this.parameters = new AlgorithmParameters(parameters);
 		this.finished = finished;
-		this.parameters = new ParameterList[parameters.length];
-		for (int i = 0; i < parameters.length; ++i) {
-			this.parameters[i] = parameters[i].clone();
-		}
 	}
 
 	@Override
@@ -146,19 +136,10 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 
 	@Override
 	public String toString() {
-		String result = period.toString();
-		parameters.toString();
-		for (ParameterList p : parameters) {
-			result += "\n" + p.type.toString() + " " + p.toString();
-		}
-		return result;
+		return period.toString() + parameters.toString();
 	}
 
 	public long size() {
-		long result = 0;
-		for (ParameterList pl : parameters) {
-			result += pl.size();
-		}
-		return result;
+		return parameters.size();
 	}
 }

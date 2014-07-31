@@ -32,7 +32,7 @@ public class MpDouble extends MpIterator<Double> {
 		super(name);
 		this.from = from;
 		this.to = to;
-		this.step = Double.valueOf(step);
+		this.step = step;
 		this.iterator = 0;
 	}
 

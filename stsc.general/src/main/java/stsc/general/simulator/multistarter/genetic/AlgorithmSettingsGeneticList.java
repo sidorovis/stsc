@@ -6,6 +6,7 @@ import java.util.Random;
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
+import stsc.general.simulator.multistarter.AlgorithmParameters;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.Parameter;
 import stsc.general.simulator.multistarter.ParameterList;
@@ -14,39 +15,32 @@ import stsc.general.simulator.multistarter.ParameterType;
 public class AlgorithmSettingsGeneticList {
 
 	private final FromToPeriod period;
-	private final ParameterList[] parameters;
+
+	private final AlgorithmParameters parameters;
 	final Random random = new Random();
 
-	public AlgorithmSettingsGeneticList(final FromToPeriod period, ParameterList[] parameters) {
+	public AlgorithmSettingsGeneticList(final FromToPeriod period, final AlgorithmParameters parameters) {
 		this.period = period;
-		this.parameters = new ParameterList[parameters.length];
-		for (int i = 0; i < parameters.length; ++i) {
-			this.parameters[i] = parameters[i].clone();
-		}
+		this.parameters = new AlgorithmParameters(parameters);
 	}
 
 	@Override
 	public String toString() {
-		String result = period.toString();
-		parameters.toString();
-		for (ParameterList p : parameters) {
-			result += "\n" + p.type.toString() + " " + p.toString();
-		}
-		return result;
+		return period.toString() + parameters.toString();
 	}
 
 	public AlgorithmSettings generateRandom() {
 		final AlgorithmSettingsImpl algoSettings = new AlgorithmSettingsImpl(period);
 
 		for (int i = 0; i < ParameterType.typesSize; ++i) {
-			final ParameterList list = parameters[i];
+			final ParameterList<?> list = parameters.getParamsFor(i);
 			for (MpIterator<?> p : list.getParams()) {
 				final String name = p.getName();
 				final String value = p.getRangom().toString();
 				algoSettings.set(name, value);
 			}
 		}
-		final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
+		final ParameterList<String> list = parameters.getSubExecutions();
 		for (MpIterator<?> p : list.getParams()) {
 			final String subExecutionName = p.getRangom().toString();
 			algoSettings.addSubExecutionName(subExecutionName);
@@ -54,21 +48,18 @@ public class AlgorithmSettingsGeneticList {
 		return algoSettings;
 	}
 
-	public void mutate(AlgorithmSettings settings) {
-		int parametersAmount = 0;
-		for (ParameterList list : parameters) {
-			parametersAmount += list.getParams().size();
-		}
+	public void mutate(final AlgorithmSettings settings) {
+		final int parametersAmount = parameters.parametersSize();
 		if (parametersAmount > 0) {
 			mutateParameter(settings, parametersAmount);
 		}
 	}
 
-	private void mutateParameter(AlgorithmSettings settings, int parametersAmount) {
+	private void mutateParameter(final AlgorithmSettings settings, final int parametersAmount) {
 		int indexOfMutatingParameter = random.nextInt(parametersAmount);
 
 		for (int i = 0; i < ParameterType.typesSize; ++i) {
-			final ParameterList list = parameters[i];
+			final ParameterList<?> list = parameters.getParamsFor(i);
 			final int size = list.getParams().size();
 			if (size != 0 && size > indexOfMutatingParameter) {
 				final MpIterator<?> parameter = list.getParams().get(indexOfMutatingParameter);
@@ -79,11 +70,11 @@ public class AlgorithmSettingsGeneticList {
 				return; // this should return from function to avoid mutating of
 						// subExecutions
 			} else {
-				indexOfMutatingParameter -= list.getParams().size();
+				indexOfMutatingParameter -= size;
 			}
 		}
 
-		final ParameterList list = parameters[ParameterType.subExecutionType.getValue()];
+		final ParameterList<String> list = parameters.getSubExecutions();
 		final int size = list.getParams().size();
 		if (size != 0 && size > indexOfMutatingParameter) {
 			final MpIterator<?> parameter = list.getParams().get(indexOfMutatingParameter);
@@ -102,7 +93,7 @@ public class AlgorithmSettingsGeneticList {
 		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
 
 		for (int i = 0; i < ParameterType.typesSize; ++i) {
-			for (MpIterator<?> p : parameters[i].getParams()) {
+			for (MpIterator<?> p : parameters.getParamsFor(i).getParams()) {
 				final String settingName = p.getName();
 				final String leftValue = leftSe.get(settingName);
 				final String rightValue = rightSe.get(settingName);
@@ -110,7 +101,7 @@ public class AlgorithmSettingsGeneticList {
 				result.set(settingName, mutatedValue);
 			}
 		}
-		final Iterator<MpIterator<?>> subExecutionIterator = parameters[ParameterType.subExecutionType.getValue()].getParams().iterator();
+		final Iterator<MpIterator<String>> subExecutionIterator = parameters.getSubExecutionIterator();
 		final Iterator<String> lv = leftSe.getSubExecutions().iterator();
 		final Iterator<String> rv = rightSe.getSubExecutions().iterator();
 		while (subExecutionIterator.hasNext() && lv.hasNext() && rv.hasNext()) {
@@ -124,11 +115,7 @@ public class AlgorithmSettingsGeneticList {
 	}
 
 	public long size() {
-		long result = 1;
-		for (ParameterList pl : parameters) {
-			result *= pl.size();
-		}
-		return result;
+		return parameters.size();
 	}
 
 }
