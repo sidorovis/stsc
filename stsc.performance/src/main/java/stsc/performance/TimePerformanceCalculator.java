@@ -24,6 +24,13 @@ class TimePerformanceCalculator {
 		logger.debug("Algorithms and Stocks reader");
 		try {
 			final PerformanceCalculatorSettings settings = new PerformanceCalculatorSettings();
+			settings.performanceForGridTest = true;
+			settings.shouldWarmUp = true;
+			settings.threadsFrom = 1;
+			settings.threadsTo = 4;
+			settings.calculationsForAverage = 1;
+			settings.printAdditionalInfo = true;
+
 			System.out.println("Grid Search");
 			settings.searcherType = SearcherType.GRID_SEARCHER;
 			new PerformanceCalculator(settings).calculateTimeStatistics();

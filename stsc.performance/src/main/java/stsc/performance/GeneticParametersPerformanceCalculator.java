@@ -27,12 +27,14 @@ public class GeneticParametersPerformanceCalculator {
 			settings.searcherType = SearcherType.GENETIC_SEARCHER;
 			settings.printAdditionalInfo = true;
 			settings.printStarterInfo = false;
+			settings.printAvGainAndTime = true;
+			settings.calculationsForAverage = 1;
 
 			System.out.println("Size of stocks: " + StockStorageSingleton.getInstance().getStockNames().size());
 			PerformanceCalculator.calculateAmountOfSimulations(StockStorageSingleton.getInstance(), settings);
 
-			for (int i = 50; i <= 70; i += 10)
-				for (int u = 50; u <= 70; u += 10) {
+			for (int i = 50; i <= 350; i += 50)
+				for (int u = 50; u <= 350; u += 50) {
 					settings.maxSelectionIndex = i;
 					settings.populationSize = u;
 					new PerformanceCalculator(settings).calculateSmallStatistics();

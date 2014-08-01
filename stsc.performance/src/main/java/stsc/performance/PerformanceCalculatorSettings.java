@@ -11,16 +11,18 @@ class PerformanceCalculatorSettings {
 	final DecimalFormat formatter = new DecimalFormat("#0.000000000");
 
 	final int storedStrategyAmount = 100;
-	final int calculationsForAverage = 10;
+	int calculationsForAverage = 10;
 
 	final LocalDate startOfPeriod = new LocalDate(1970, 1, 1);
 
-	final int threadsFrom = 4;
-	final int threadsTo = 4;
+	int threadsFrom = 4;
+	int threadsTo = 4;
 
 	boolean shouldWarmUp = false;
 	boolean printAdditionalInfo = false;
+	boolean printAvGainAndTime = false;
 	boolean printStarterInfo = true;
+	boolean performanceForGridTest = false;
 
 	int maxSelectionIndex = 10;
 	int populationSize = 10;
