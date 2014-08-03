@@ -34,4 +34,11 @@ public class MpIntegerTest extends TestCase {
 		assertEquals(7L, new MpInteger("a", 0, 30, 4).size());
 		assertEquals(75L, new MpInteger("a", 100, 1000, 12).size());
 	}
+
+	public void testMpIntegerClone() throws BadParameterException {
+		final MpInteger from = new MpInteger("a", 0, 10, 3);
+		final MpIterator<Integer> to = from.clone();
+		to.next();
+		assertFalse(from.next().intValue() == to.next().intValue());
+	}
 }
