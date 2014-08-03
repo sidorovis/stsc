@@ -1,5 +1,6 @@
 package stsc.general.simulator.multistarter;
 
+import stsc.common.Settings;
 import junit.framework.TestCase;
 
 public class MpDoubleTest extends TestCase {
@@ -18,5 +19,18 @@ public class MpDoubleTest extends TestCase {
 			assertTrue(mutatedResult >= 1.6999);
 			assertTrue(mutatedResult <= 3.3001);
 		}
+	}
+
+	public void testMpDoubleSize() throws BadParameterException {
+		assertEquals(7, new MpDouble("b", -0.6, 0.4, 0.15).size());
+		assertEquals(3, new MpDouble("b", -0.6, 0.4, 0.3).size());
+		assertEquals(200, new MpDouble("b", -0.6, 1.4, 0.01).size());
+	}
+
+	public void testMpDoubleClone() throws BadParameterException {
+		final MpDouble value = new MpDouble("a", -0.29, 0.63, 0.21);
+		final MpIterator<Double> copy = value.clone();
+		value.next();
+		assertFalse(Settings.doubleEpsilon < copy.next().doubleValue() - value.next().doubleValue());
 	}
 }

@@ -25,4 +25,16 @@ public class MpStringTest extends TestCase {
 			assertTrue(mutatedResult.charAt(0) <= 'g');
 		}
 	}
+
+	public void testMpStringSize() throws BadParameterException {
+		final MpString v = new MpString("a", Arrays.asList(new String[] { "a", "b", "c" }));
+		assertEquals(3l, v.size());
+	}
+
+	public void testMpStringClone() throws BadParameterException {
+		final MpString v = new MpString("a", Arrays.asList(new String[] { "a", "b", "c" }));
+		final MpIterator<String> copy = v.clone();
+		v.next();
+		assertFalse(copy.next().equals(v.next()));
+	}
 }
