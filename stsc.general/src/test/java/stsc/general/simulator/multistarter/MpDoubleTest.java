@@ -19,4 +19,10 @@ public class MpDoubleTest extends TestCase {
 			assertTrue(mutatedResult <= 3.3001);
 		}
 	}
+
+	public void testMpDoubleSize() throws BadParameterException {
+		assertEquals(7, new MpDouble("b", -0.6, 0.4, 0.15).size());
+		assertEquals(3, new MpDouble("b", -0.6, 0.4, 0.3).size());
+		assertEquals(200, new MpDouble("b", -0.6, 1.4, 0.01).size());
+	}
 }
