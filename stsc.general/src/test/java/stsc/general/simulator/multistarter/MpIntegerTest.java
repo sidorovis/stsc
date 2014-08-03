@@ -28,4 +28,10 @@ public class MpIntegerTest extends TestCase {
 			assertTrue(mutatedResult <= 5);
 		}
 	}
+
+	public void testMpIntegerSize() throws BadParameterException {
+		assertEquals(20L, new MpInteger("a", -10, 10, 1).size());
+		assertEquals(7L, new MpInteger("a", 0, 30, 4).size());
+		assertEquals(75L, new MpInteger("a", 100, 1000, 12).size());
+	}
 }
