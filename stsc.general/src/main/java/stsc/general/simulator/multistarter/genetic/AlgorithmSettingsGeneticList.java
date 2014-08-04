@@ -92,15 +92,10 @@ public class AlgorithmSettingsGeneticList {
 	private AlgorithmSettings mergeParameters(AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
 		final AlgorithmSettingsImpl result = new AlgorithmSettingsImpl(period);
 
-		for (int i = 0; i < ParameterType.typesSize; ++i) {
-			for (MpIterator<?> p : parameters.getParamsFor(i).getParams()) {
-				final String settingName = p.getName();
-				final String leftValue = leftSe.get(settingName);
-				final String rightValue = rightSe.get(settingName);
-				final String mutatedValue = p.mutate(leftValue, rightValue).toString();
-				result.set(settingName, mutatedValue);
-			}
-		}
+		mergeIntegers(result, leftSe, rightSe);
+		mergeDouble(result, leftSe, rightSe);
+		mergeStrings(result, leftSe, rightSe);
+
 		final Iterator<MpIterator<String>> subExecutionIterator = parameters.getSubExecutionIterator();
 		final Iterator<String> lv = leftSe.getSubExecutions().iterator();
 		final Iterator<String> rv = rightSe.getSubExecutions().iterator();
@@ -112,6 +107,38 @@ public class AlgorithmSettingsGeneticList {
 			result.addSubExecutionName(mutatedValue);
 		}
 		return result;
+	}
+
+	private void mergeIntegers(final AlgorithmSettingsImpl result, final AlgorithmSettings leftSe, final AlgorithmSettings rightSe) {
+		for (MpIterator<Integer> p : parameters.getIntegers().getParams()) {
+			final String settingName = p.getName();
+			final Integer resultValue = mutate(p, leftSe, rightSe);
+			result.set(settingName, resultValue.toString());
+		}
+	}
+
+	private void mergeDouble(AlgorithmSettingsImpl result, AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		for (MpIterator<Double> p : parameters.getDoubles().getParams()) {
+			final String settingName = p.getName();
+			final Double resultValue = mutate(p, leftSe, rightSe);
+			result.set(settingName, resultValue.toString());
+		}
+	}
+
+	private void mergeStrings(AlgorithmSettingsImpl result, AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		for (MpIterator<String> p : parameters.getStrings().getParams()) {
+			final String settingName = p.getName();
+			final String resultValue = mutate(p, leftSe, rightSe);
+			result.set(settingName, resultValue);
+		}
+	}
+
+	private <Type> Type mutate(MpIterator<Type> p, AlgorithmSettings leftSe, AlgorithmSettings rightSe) {
+		final String settingName = p.getName();
+		final String leftValue = leftSe.get(settingName);
+		final String rightValue = rightSe.get(settingName);
+		final Type mutatedValue = p.mutate(leftValue, rightValue);
+		return mutatedValue;
 	}
 
 	public long size() {
