@@ -23,7 +23,7 @@ public class DiffTest extends TestCase {
 	public void testDiff() throws BadAlgorithmException, IOException, BadSignalException, ParseException {
 
 		StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
-		stockInit.getSettings().set("e", "open");
+		stockInit.getSettings().setString("e", "open");
 		final In in = new In(stockInit.getInit());
 
 		StockAlgoInitHelper emaInit = new StockAlgoInitHelper("ema", "aapl", stockInit.getStorage());

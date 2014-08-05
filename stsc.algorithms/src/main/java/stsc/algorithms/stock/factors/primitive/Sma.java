@@ -3,7 +3,6 @@ package stsc.algorithms.stock.factors.primitive;
 import java.util.LinkedList;
 import java.util.List;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.AlgorithmSetting;
@@ -18,14 +17,14 @@ import stsc.signals.series.LimitSignalsSerie;
 public class Sma extends StockAlgorithm {
 
 	private final String subAlgoName;
-	private final AlgorithmSetting<Integer> n = new AlgorithmSettingImpl<>(Integer.valueOf(5));
+	private final AlgorithmSetting<Integer> n;
 
 	final LinkedList<Double> elements = new LinkedList<>();
 	Double sum = Double.valueOf(0.0);
 
 	public Sma(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		init.getSettings().get("n", n);
+		n = init.getSettings().getIntegerSetting("n", 5);
 		List<String> subExecutionNames = init.getSettings().getSubExecutions();
 		if (subExecutionNames.size() < 1)
 			throw new BadAlgorithmException("Sma algorithm should receive at least one sub algorithm");

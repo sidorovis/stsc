@@ -18,9 +18,9 @@ public class MpStringTest extends TestCase {
 
 	public void testMpStringMutate() throws BadParameterException {
 		final MpString md = new MpString("a", Arrays.asList(new String[] { "a", "b", "c", "d", "e", "f", "g" }));
-		assertEquals("d", md.mutate("h", "g"));
+		assertEquals("d", md.merge("h", "g"));
 		for (int i = 0; i < 1000; ++i) {
-			final String mutatedResult = md.mutate("b", "g");
+			final String mutatedResult = md.merge("b", "g");
 			assertTrue(mutatedResult.charAt(0) >= 'b');
 			assertTrue(mutatedResult.charAt(0) <= 'g');
 		}

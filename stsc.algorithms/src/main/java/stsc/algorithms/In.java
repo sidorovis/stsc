@@ -39,7 +39,7 @@ public class In extends StockAlgorithm {
 
 	public In(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
-		dayField = fromString(initialize.getSettings().get("e"));
+		dayField = fromString(initialize.getSettings().getString("e"));
 	}
 
 	private DoubleSignal getData(final Day day) {

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.algorithms.EodPosition;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -31,9 +30,9 @@ import stsc.signals.DoubleSignal;
  */
 public class PositionNDayMStocks extends EodAlgorithm {
 
-	private final AlgorithmSetting<Integer> n = new AlgorithmSettingImpl<Integer>(22);
-	private final AlgorithmSetting<Integer> m = new AlgorithmSettingImpl<Integer>(2);
-	private final AlgorithmSetting<Double> ps = new AlgorithmSettingImpl<Double>(100000.0);
+	private final AlgorithmSetting<Integer> n;
+	private final AlgorithmSetting<Integer> m;
+	private final AlgorithmSetting<Double> ps;
 	private final String factorExecutionName;
 
 	private class Factor implements Comparable<Factor> {
@@ -64,9 +63,9 @@ public class PositionNDayMStocks extends EodAlgorithm {
 
 	public PositionNDayMStocks(EodAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		init.getSettings().get("n", n);
-		init.getSettings().get("ps", ps);
-		init.getSettings().get("m", m);
+		n = init.getSettings().getIntegerSetting("n", 22);
+		ps = init.getSettings().getDoubleSetting("ps", 100000.0);
+		m = init.getSettings().getIntegerSetting("m", 2);
 		lastDate = init.getSettings().getPeriod().getTo();
 		final List<String> subExecutions = init.getSettings().getSubExecutions();
 		if (subExecutions.size() < 1)

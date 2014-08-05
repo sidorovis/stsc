@@ -84,10 +84,10 @@ public class AlgorithmSettingsGeneticListTest extends TestCase {
 		final AlgorithmSettings merge = mas.merge(original, copy);
 		assertEquals(merge.getSubExecutions().size(), original.getSubExecutions().size());
 		assertEquals(merge.getSubExecutions().get(0), original.getSubExecutions().get(0));
-		assertEquals(merge.get("q"), original.get("q"));
-		assertEquals(merge.get("w"), original.get("w"));
-		assertEquals(merge.get("a"), original.get("a"));
-		assertEquals(merge.get("s"), original.get("s"));
-		assertEquals(merge.get("z"), original.get("z"));
+		assertEquals(merge.getInteger("q"), original.getInteger("q"));
+		assertEquals(merge.getInteger("w"), original.getInteger("w"));
+		assertEquals(merge.getDouble("a"), original.getDouble("a"));
+		assertEquals(merge.getDouble("s"), original.getDouble("s"));
+		assertEquals(merge.getString("z"), original.getString("z"));
 	}
 }

@@ -49,7 +49,7 @@ public class ParameterList<Type> implements Cloneable {
 		return index < params.size();
 	}
 
-	public MpIterator<?> getCurrentParam() {
+	public MpIterator<Type> getCurrentParam() {
 		return params.get(index);
 	}
 

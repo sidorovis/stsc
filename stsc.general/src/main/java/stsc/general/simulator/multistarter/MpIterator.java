@@ -36,13 +36,13 @@ public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 
 	public abstract int getIndexByValue(T value);
 
-	public final T mutate(String leftValue, String rightValue) {
+	public final T merge(T leftValue, T rightValue) {
 		final int leftIndex = getIndexByValue(leftValue);
 		final int rightIndex = getIndexByValue(rightValue);
-		return mutateByIndex(leftIndex, rightIndex);
+		return mergeByIndex(leftIndex, rightIndex);
 	}
 
-	protected T mutateByIndex(int leftIndex, int rightIndex) {
+	protected T mergeByIndex(int leftIndex, int rightIndex) {
 		int newIndex = 0;
 		if (leftIndex < 0 || rightIndex < 0) {
 			return parameter((int) (size() / 2));
@@ -56,14 +56,14 @@ public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 			rightIndex = temp;
 		}
 		while (true) {
-			newIndex = mutateIndexes(leftIndex, rightIndex);
+			newIndex = mergeIndexes(leftIndex, rightIndex);
 			if (newIndex >= leftIndex && newIndex <= rightIndex)
 				break;
 		}
 		return parameter(newIndex);
 	}
 
-	private int mutateIndexes(int leftIndex, int rightIndex) {
+	private int mergeIndexes(int leftIndex, int rightIndex) {
 		int newIndex = 0;
 		int binaryIndex = 0;
 		while (leftIndex > 0 || rightIndex > 0) {

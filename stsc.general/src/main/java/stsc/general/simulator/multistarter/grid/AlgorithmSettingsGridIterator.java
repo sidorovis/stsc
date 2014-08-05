@@ -6,7 +6,6 @@ import stsc.common.algorithms.AlgorithmSettings;
 import stsc.general.simulator.multistarter.AlgorithmParameters;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.ParameterList;
-import stsc.general.simulator.multistarter.ParameterType;
 import stsc.general.simulator.multistarter.ResetableIterable;
 import stsc.general.simulator.multistarter.ResetableIterator;
 
@@ -58,41 +57,63 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		}
 
 		protected void generateNext() {
-			ParameterType currentType = ParameterType.integerType;
-			while (currentType != ParameterType.size) {
-				final ParameterList<?> list = parameters.getParameters()[currentType.getValue()];
+			if (getNext(parameters.getIntegers()))
+				return;
+			if (getNext(parameters.getDoubles()))
+				return;
+			if (getNext(parameters.getStrings()))
+				return;
+			if (getNext(parameters.getSubExecutions()))
+				return;
+			finished = true;
+			return;
+		}
+
+		private <T> boolean getNext(ParameterList<T> list) {
+			while (true) {
 				if (list.empty()) {
-					currentType = ParameterType.values()[currentType.getValue() + 1];
-					continue;
+					return false;
 				}
-				final MpIterator<?> iterator = list.getCurrentParam();
+				final MpIterator<T> iterator = list.getCurrentParam();
 				iterator.increment();
 				if (iterator.hasNext()) {
 					list.reset();
-					return;
+					return true;
 				}
 				iterator.reset();
 				if (list.hasNext()) {
 					list.increment();
 				} else {
 					list.reset();
-					currentType = ParameterType.values()[currentType.getValue() + 1];
+					return false;
 				}
 			}
-			finished = true;
-			return;
 		}
 
 		protected AlgorithmSettingsImpl generateSettings() {
 			final AlgorithmSettingsImpl algoSettings = new AlgorithmSettingsImpl(period);
-			for (int i = 0; i < ParameterType.typesSize; ++i) {
-				final ParameterList<?> list = parameters.getParameters()[i];
-				for (MpIterator<?> p : list.getParams()) {
-					final String name = p.currentParameter().getName();
-					final String value = p.currentParameter().getStringValue();
-					algoSettings.set(name, value);
-				}
+
+			final ParameterList<Integer> integers = parameters.getIntegers();
+			for (MpIterator<Integer> p : integers.getParams()) {
+				final String name = p.currentParameter().getName();
+				final Integer value = p.currentParameter().getValue();
+				algoSettings.setInteger(name, value);
 			}
+
+			final ParameterList<Double> doubles = parameters.getDoubles();
+			for (MpIterator<Double> p : doubles.getParams()) {
+				final String name = p.currentParameter().getName();
+				final Double value = p.currentParameter().getValue();
+				algoSettings.setDouble(name, value);
+			}
+
+			final ParameterList<String> strings = parameters.getStrings();
+			for (MpIterator<String> p : strings.getParams()) {
+				final String name = p.currentParameter().getName();
+				final String value = p.currentParameter().getValue();
+				algoSettings.setString(name, value);
+			}
+
 			final ParameterList<String> list = parameters.getSubExecutions();
 			for (MpIterator<String> p : list.getParams()) {
 				final String subExecutionName = p.currentParameter().getValue();

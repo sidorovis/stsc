@@ -16,12 +16,12 @@ public class LevelTest extends TestCase {
 	public void testLevel() throws Exception {
 
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
-		stockInit.getSettings().set("e", "open");
+		stockInit.getSettings().setString("e", "open");
 		final In in = new In(stockInit.getInit());
 
 		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", stockInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");
-		levelInit.getSettings().set("f", "699.0");
+		levelInit.getSettings().setDouble("f", 699.0);
 		final Level level = new Level(levelInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");

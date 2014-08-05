@@ -39,7 +39,9 @@ final class ExecutionsLoader {
 	private static final class Regexps {
 		public static final Pattern loadLine = Pattern.compile("^(\\w+)\\((.*)\\)$");
 		public static final Pattern subAlgoParameter = Pattern.compile("^([^\\(]+)\\((.*)\\)(\\s)*$");
-		public static final Pattern dataParameter = Pattern.compile("^(.+)=(.+)$");
+		public static final Pattern integerParameter = Pattern.compile("^(.+)=(.+)[iI]$");
+		public static final Pattern doubleParameter = Pattern.compile("^(.+)=(.+)[dD]$");
+		public static final Pattern stringParameter = Pattern.compile("^(.+)=(.+)$");
 		public static final Pattern subExecutionParameter = Pattern.compile("^(.+)$");
 	}
 
@@ -215,14 +217,20 @@ final class ExecutionsLoader {
 
 		for (final String parameter : params) {
 			final Matcher subAlgoMatch = Regexps.subAlgoParameter.matcher(parameter);
-			final Matcher dataMatch = Regexps.dataParameter.matcher(parameter);
+			final Matcher integerMatch = Regexps.integerParameter.matcher(parameter);
+			final Matcher doubleMatch = Regexps.doubleParameter.matcher(parameter);
+			final Matcher stringMatch = Regexps.stringParameter.matcher(parameter);
 			final Matcher subExecutionMatch = Regexps.subExecutionParameter.matcher(parameter);
 			if (subAlgoMatch.matches()) {
 				final String subName = processStockSubExecution(subAlgoMatch);
 				registeredStockExecutions.add(subName);
 				algorithmSettings.addSubExecutionName(subName);
-			} else if (dataMatch.matches()) {
-				algorithmSettings.set(dataMatch.group(1).trim(), dataMatch.group(2).trim());
+			} else if (integerMatch.matches()) {
+				algorithmSettings.setInteger(integerMatch.group(1).trim(), Integer.valueOf(integerMatch.group(2).trim()));
+			} else if (doubleMatch.matches()) {
+				algorithmSettings.setDouble(doubleMatch.group(1).trim(), Double.valueOf(doubleMatch.group(2).trim()));
+			} else if (stringMatch.matches()) {
+				algorithmSettings.setString(stringMatch.group(1).trim(), stringMatch.group(2).trim());
 			} else if (subExecutionMatch.matches()) {
 				final String subExecutionName = subExecutionMatch.group(1).trim();
 				final String executionCode = namedStockExecutions.get(subExecutionName);

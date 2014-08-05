@@ -14,7 +14,7 @@ public class MpIntegerTest extends TestCase {
 	public void testMpIntegerMutate() throws BadParameterException {
 		final MpInteger md = new MpInteger("a", -15, 15, 2);
 		for (int i = 0; i < 1000; ++i) {
-			final Integer mutatedResult = md.mutate(-11, 7);
+			final Integer mutatedResult = md.merge(-11, 7);
 			assertTrue(mutatedResult >= -11);
 			assertTrue(mutatedResult <= 7);
 		}
@@ -23,7 +23,7 @@ public class MpIntegerTest extends TestCase {
 	public void testMpIntegerBadIndex() throws BadParameterException {
 		final MpInteger md = new MpInteger("a", -15, 15, 2);
 		for (int i = 0; i < 1000; ++i) {
-			final Integer mutatedResult = md.mutate(-11, 5);
+			final Integer mutatedResult = md.merge(-11, 5);
 			assertTrue(mutatedResult >= -11);
 			assertTrue(mutatedResult <= 5);
 		}

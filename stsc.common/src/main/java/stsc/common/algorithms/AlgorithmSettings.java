@@ -6,13 +6,17 @@ import stsc.common.FromToPeriod;
 
 public interface AlgorithmSettings extends Cloneable {
 
+	// Getters
+
+	public Integer getInteger(String key);
+
+	public Double getDouble(String key);
+
+	public String getString(String key);
+
 	public List<String> getSubExecutions();
 
-	public String get(String key);
-
-	public Integer getInteger(String key) throws BadAlgorithmException;
-
-	public void getInteger(String key, AlgorithmSetting<Integer> setting);
+	// Old Getters
 
 	public AlgorithmSetting<Integer> getIntegerSetting(String key, Integer defaultValue);
 
@@ -20,19 +24,21 @@ public interface AlgorithmSettings extends Cloneable {
 
 	public AlgorithmSetting<String> getStringSetting(String key, String defaultValue);
 
-	public Double getDouble(String key) throws BadAlgorithmException;
-
-	public void getDouble(String key, AlgorithmSetting<Double> setting);
-
-	public <T> void get(String key, AlgorithmSetting<T> setting) throws BadAlgorithmException;
-
 	public FromToPeriod getPeriod();
 
-	public void stringHashCode(StringBuilder sb);
+	// Mutate methods
 
-	public void mutate(String name, String stringValue);
+	public void mutate(String name, Integer mutatedValue);
+
+	public void mutate(String name, Double mutatedValue);
+
+	public void mutate(String name, String mutatedValue);
 
 	public void mutateSubExecution(int index, String value);
+
+	// hash code and clone
+
+	public void stringHashCode(StringBuilder sb);
 
 	public AlgorithmSettings clone();
 

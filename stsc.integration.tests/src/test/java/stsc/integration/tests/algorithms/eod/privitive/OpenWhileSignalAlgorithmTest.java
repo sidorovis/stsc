@@ -28,12 +28,12 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException, ParseException {
 
 		final StockAlgoInitHelper inInit = new StockAlgoInitHelper("in", "aapl");
-		inInit.getSettings().set("e", "open");
+		inInit.getSettings().setString("e", "open");
 		final In in = new In(inInit.getInit());
 
 		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", inInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");
-		levelInit.getSettings().set("f", "699.0");
+		levelInit.getSettings().setDouble("f", 699.0);
 		final Level level = new Level(levelInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
@@ -42,7 +42,7 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 		final BrokerImpl broker = new BrokerImpl(stockStorage);
 
 		final EodAlgoInitHelper initOwsa = new EodAlgoInitHelper("eodOwsa", inInit.getStorage(), broker);
-		initOwsa.getSettings().set("P", "10000.0");
+		initOwsa.getSettings().setDouble("P", 10000.0);
 		initOwsa.getSettings().addSubExecutionName("level");
 		final OpenWhileSignalAlgorithm eodOwsa = new OpenWhileSignalAlgorithm(initOwsa.getInit());
 

@@ -90,10 +90,4 @@ public class MpInteger extends MpIterator<Integer> {
 		final int index = (int) ((value - from) / step);
 		return index;
 	}
-
-	public final Integer mutate(Integer leftValue, Integer rightValue) {
-		final int leftIndex = getIndexByValue(leftValue);
-		final int rightIndex = getIndexByValue(rightValue);
-		return mutateByIndex(leftIndex, rightIndex);
-	}
 }

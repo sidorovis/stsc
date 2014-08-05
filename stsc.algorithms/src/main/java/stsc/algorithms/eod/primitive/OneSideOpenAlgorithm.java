@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
@@ -17,12 +16,17 @@ import stsc.common.signals.SignalsSerie;
 
 public class OneSideOpenAlgorithm extends EodAlgorithm {
 
-	final AlgorithmSetting<String> side = new AlgorithmSettingImpl<String>("long");
+	final Side side;
 	boolean opened = false;
 
 	public OneSideOpenAlgorithm(EodAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		init.getSettings().get("side", side);
+		final AlgorithmSetting<String> sideValue = init.getSettings().getStringSetting("side", "long");
+		if (sideValue.getValue().compareTo("long") == 0) {
+			this.side = Side.LONG;
+		} else {
+			this.side = Side.SHORT;
+		}
 	}
 
 	@Override
@@ -37,12 +41,8 @@ public class OneSideOpenAlgorithm extends EodAlgorithm {
 		if (datafeed.isEmpty())
 			return;
 
-		Side s = Side.SHORT;
-		if (side.getValue().compareTo("long") == 0) {
-			s = Side.LONG;
-		}
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
-			broker().buy(i.getKey(), s, 100);
+			broker().buy(i.getKey(), side, 100);
 		}
 
 		opened = true;

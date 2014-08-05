@@ -95,10 +95,4 @@ public class MpDouble extends MpIterator<Double> {
 		return index;
 	}
 
-	public final Double mutate(Double leftValue, Double rightValue) {
-		final int leftIndex = getIndexByValue(leftValue);
-		final int rightIndex = getIndexByValue(rightValue);
-		return mutateByIndex(leftIndex, rightIndex);
-	}
-
 }

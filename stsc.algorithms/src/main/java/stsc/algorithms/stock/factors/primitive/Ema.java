@@ -2,7 +2,6 @@ package stsc.algorithms.stock.factors.primitive;
 
 import java.util.List;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.AlgorithmSetting;
@@ -18,11 +17,11 @@ import stsc.signals.series.LimitSignalsSerie;
 public class Ema extends StockAlgorithm {
 
 	private final String subAlgoName;
-	private final AlgorithmSetting<Double> P = new AlgorithmSettingImpl<Double>(0.2);
+	private final AlgorithmSetting<Double> P;
 
 	public Ema(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		init.getSettings().get("P", P);
+		P = init.getSettings().getDoubleSetting("P", 0.2);
 		List<String> subExecutionNames = init.getSettings().getSubExecutions();
 		if (subExecutionNames.size() < 1)
 			throw new BadAlgorithmException("sub executions parameters not enought");

@@ -1,10 +1,8 @@
 package stsc.algorithms.stock.factors.primitive;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
@@ -21,9 +19,7 @@ public class Level extends StockAlgorithm {
 
 	public Level(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
-		AlgorithmSetting<Double> factorLevel = new AlgorithmSettingImpl<Double>(0.0);
-		initialize.getSettings().get("f", factorLevel);
-		level = Math.abs(factorLevel.getValue());
+		level = Math.abs(initialize.getSettings().getDoubleSetting("f", 0.0).getValue());
 		factorName = initialize.getSettings().getSubExecutions().get(0);
 	}
 

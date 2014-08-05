@@ -22,14 +22,13 @@ public class EmaTest extends TestCase {
 	public void testEma() throws IOException, BadSignalException, BadAlgorithmException, ParseException {
 
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
-		stockInit.getSettings().set("e", "open");
+		stockInit.getSettings().setString("e", "open");
 		final In inAlgo = new In(stockInit.getInit());
 
 		final StockAlgoInitHelper init = new StockAlgoInitHelper("testEma", "aapl", stockInit.getStorage());
-		init.getSettings().set("P", 0.3);
+		init.getSettings().setDouble("P", 0.3);
 		init.getSettings().setInteger("size", 100000);
 		init.getSettings().addSubExecutionName("testIn");
-
 		final Ema ema = new Ema(init.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");

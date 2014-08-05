@@ -4,12 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import stsc.algorithms.AlgorithmSettingImpl;
 import stsc.algorithms.EodPosition;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
-import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
@@ -29,9 +27,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 
 	public OpenWhileSignalAlgorithm(EodAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		AlgorithmSetting<Double> p = new AlgorithmSettingImpl<Double>(10000.0);
-		init.getSettings().get("P", p);
-		this.P = p.getValue();
+		this.P = init.getSettings().getDoubleSetting("P", 10000.0).getValue();
 		if (init.getSettings().getSubExecutions().isEmpty())
 			throw new BadAlgorithmException("Open While Signal Algorithm should receive at least one sub-algorithm");
 		this.sideSignalAlgoName = init.getSettings().getSubExecutions().get(0);

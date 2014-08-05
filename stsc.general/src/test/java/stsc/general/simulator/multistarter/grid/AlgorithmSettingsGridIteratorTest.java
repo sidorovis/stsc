@@ -19,10 +19,10 @@ import junit.framework.TestCase;
 
 public class AlgorithmSettingsGridIteratorTest extends TestCase {
 
-	private void testHelperNlmParameters(String n, String l, String m, AlgorithmSettings s) {
-		assertEquals(n, s.get("n"));
-		assertEquals(l, s.get("l"));
-		assertEquals(m, s.get("m"));
+	private void testHelperNlmParameters(Integer n, String l, Integer m, AlgorithmSettings s) {
+		assertEquals(n, s.getInteger("n"));
+		assertEquals(m, s.getInteger("m"));
+		assertEquals(l, s.getString("l"));
 	}
 
 	public void testAlgorithmSettingsGridSearcher() throws ParseException, BadParameterException, BadAlgorithmException {
@@ -39,14 +39,14 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 			settings.add(se);
 		}
 		assertEquals(8, settings.size());
-		testHelperNlmParameters("1", "asd", "-4", settings.get(0));
-		testHelperNlmParameters("2", "asd", "-4", settings.get(1));
-		testHelperNlmParameters("1", "asd", "-2", settings.get(2));
-		testHelperNlmParameters("2", "asd", "-2", settings.get(3));
-		testHelperNlmParameters("1", "ibm", "-4", settings.get(4));
-		testHelperNlmParameters("2", "ibm", "-4", settings.get(5));
-		testHelperNlmParameters("1", "ibm", "-2", settings.get(6));
-		testHelperNlmParameters("2", "ibm", "-2", settings.get(7));
+		testHelperNlmParameters(1, "asd", -4, settings.get(0));
+		testHelperNlmParameters(2, "asd", -4, settings.get(1));
+		testHelperNlmParameters(1, "asd", -2, settings.get(2));
+		testHelperNlmParameters(2, "asd", -2, settings.get(3));
+		testHelperNlmParameters(1, "ibm", -4, settings.get(4));
+		testHelperNlmParameters(2, "ibm", -4, settings.get(5));
+		testHelperNlmParameters(1, "ibm", -2, settings.get(6));
+		testHelperNlmParameters(2, "ibm", -2, settings.get(7));
 	}
 
 	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException, BadAlgorithmException {
@@ -91,7 +91,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		int sum = 0;
 		while (i.hasNext()) {
 			AlgorithmSettings as = i.next();
-			assertEquals(as.get("z"), arr[sum]);
+			assertEquals(as.getString("z"), arr[sum]);
 			sum += 1;
 		}
 		assertEquals(2, sum);
