@@ -17,6 +17,10 @@ public final class TimeTracker {
 		return timeEnd - timeStart;
 	}
 
+	public long lengthNonStop() {
+		return System.nanoTime() - timeStart;
+	}
+
 	public double lengthInSeconds() {
 		return lengthInSeconds(length());
 	}
