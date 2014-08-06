@@ -6,10 +6,16 @@ import stsc.general.simulator.multistarter.ParameterList;
 import junit.framework.TestCase;
 
 public class ParameterListTest extends TestCase {
-	public void testParameterList() throws BadParameterException {
+
+	private ParameterList<Double> getList() throws BadParameterException {
 		final ParameterList<Double> list = new ParameterList<Double>();
 		list.add(new MpDouble("asd", 0.0, 1.0, 0.1));
 		list.add(new MpDouble("vrt", 0.5, 1.0, 0.1));
+		return list;
+	}
+
+	public void testParameterList() throws BadParameterException {
+		final ParameterList<Double> list = getList();
 		list.increment();
 		list.increment();
 		list.increment();
@@ -18,5 +24,10 @@ public class ParameterListTest extends TestCase {
 		final ParameterList<Double> clone = list.clone();
 		assertEquals("5: [asd:0.0 from (0.1|0.0:1.0), vrt:0.5 from (0.1|0.5:1.0)]", list.toString());
 		assertEquals("0: [asd:0.0 from (0.1|0.0:1.0), vrt:0.5 from (0.1|0.5:1.0)]", clone.toString());
+	}
+
+	public void testParameterListSize() throws BadParameterException {
+		final ParameterList<Double> list = getList();
+		assertEquals(50L, list.size());
 	}
 }
