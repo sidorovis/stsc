@@ -28,7 +28,7 @@ public class GeneticParametersPerformanceCalculator {
 			settings.printAdditionalInfo = true;
 			settings.printStarterInfo = false;
 			settings.printAvGainAndTime = true;
-			settings.calculationsForAverage = 1;
+			settings.calculationsForAverage = 10;
 
 			System.out.println("Size of stocks: " + StockStorageSingleton.getInstance().getStockNames().size());
 			PerformanceCalculator.calculateAmountOfSimulations(StockStorageSingleton.getInstance(), settings);

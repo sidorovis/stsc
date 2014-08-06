@@ -79,8 +79,6 @@ class PerformanceCalculator {
 			System.out.print(Days.daysBetween(settings.startOfPeriod, endDate).getDays());
 		for (int thread = settings.threadsFrom; thread <= settings.threadsTo; ++thread) {
 			final double averageTime = calculateAverageTime(endDate, true, thread);
-			if (settings.printAdditionalInfo)
-				System.out.print(" " + settings.format(averageTime));
 		}
 		if (settings.printAdditionalInfo)
 			System.out.println();
