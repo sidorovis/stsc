@@ -17,3 +17,5 @@ target
 .classpath
 _*.log
 *.versionsBackup
+
+.~lock*#
