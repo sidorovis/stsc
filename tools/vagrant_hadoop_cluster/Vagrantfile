@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define :hadoop1 do |hadoop1|
-    hadoop1.vm.network "private_network", ip: "10.0.0.2"
+    hadoop1.vm.network "private_network", ip: "10.0.0.11"
     hadoop1.vm.hostname = "hadoop1.local"
 
     config.vm.provision :puppet do |puppet|
@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define :master, primary: true do |master|
-    master.vm.network "private_network", ip: "10.0.0.3"
+    master.vm.network "private_network", ip: "10.0.0.10"
     master.vm.hostname = "master.local"
 
     config.vm.provision :puppet do |puppet|
