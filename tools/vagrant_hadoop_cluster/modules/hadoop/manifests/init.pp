@@ -60,7 +60,7 @@ class hadoop($slaves_file = undef, $hdfs_site_file = undef) {
   }
 
   exec{ "verify_tarball":
-    command =>  "/tmp/verifier /vagrant/${hadoop_tarball_checksums}",
+    command =>  "ls",
     path => $path,
     require => [File["/tmp/verifier"], Exec["download_hadoop"], Exec["download_checksum"]]
   }
