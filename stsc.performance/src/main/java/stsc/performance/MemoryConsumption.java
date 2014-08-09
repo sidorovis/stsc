@@ -159,15 +159,15 @@ final class MemoryConsumption {
 			if (!onlyReport)
 				System.out.println(" " + N + " " + TimeTracker.lengthInSeconds(tt.lengthNonStop()));
 			if (!warmUp)
-				System.out.println(TimeTracker.lengthInSeconds(tt.finish()) + " ");
+				System.out.print(TimeTracker.lengthInSeconds(tt.finish()) + " ");
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
 		try {
-			final long N = 500000;
-			final long lastN = N * 4;
-			final long stepN = N / 10;
+			final long N = 5000000;
+			final long lastN = N;
+			final long stepN = N / 1;
 			new MemoryConsumption(SearcherType.GRID_SEARCHER, 2 * N, false);
 			new MemoryConsumption(SearcherType.GENETIC_SEARCHER, 2 * N, false);
 			warmUp = false;
