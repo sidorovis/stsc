@@ -1,6 +1,0 @@
-127.0.0.1       localhost
-192.168.7.10  master.local  master 
-192.168.7.11  backup.local  backup 
-192.168.7.12  hadoop1.local hadoop1
-192.168.7.13  hadoop2.local hadoop2
-192.168.7.14  hadoop3.local hadoop3
