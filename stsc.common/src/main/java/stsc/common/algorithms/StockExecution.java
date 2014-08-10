@@ -27,14 +27,14 @@ public class StockExecution implements Cloneable {
 		this(executionName, generateAlgorithm(algorithmName), settings);
 	}
 
-	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType, AlgorithmSettings settings) {
+	public StockExecution(String executionName, Class<? extends StockAlgorithm> algorithmType, AlgorithmSettings algorithmSettings) {
 		Validate.notNull(executionName);
 		Validate.notNull(algorithmType);
-		Validate.notNull(settings);
+		Validate.notNull(algorithmSettings);
 		this.executionName = executionName;
 		this.algorithmName = algorithmType.getName();
 		this.algorithmType = algorithmType;
-		this.algorithmSettings = settings;
+		this.algorithmSettings = algorithmSettings;
 	}
 
 	public String getExecutionName() {

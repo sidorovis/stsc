@@ -345,7 +345,10 @@ public class Statistics {
 
 	@Override
 	public String toString() {
-		return "Statistics: " + String.valueOf(avGain);
+		String result = "Statistics: \n";
+		for (String methodName : Statistics.getStatisticsMethods()) {
+			result += " " + methodName + " " + invokeMethod(this, methodName) + "\n";
+		}
+		return result;
 	}
-
 }

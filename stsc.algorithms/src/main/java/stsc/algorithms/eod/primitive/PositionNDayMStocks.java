@@ -33,6 +33,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	private final AlgorithmSetting<Integer> n;
 	private final AlgorithmSetting<Integer> m;
 	private final AlgorithmSetting<Double> ps;
+	private final AlgorithmSetting<Integer> lastClosedDays;
 	private final String factorExecutionName;
 
 	private class Factor implements Comparable<Factor> {
@@ -66,6 +67,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		n = init.getSettings().getIntegerSetting("n", 22);
 		ps = init.getSettings().getDoubleSetting("ps", 100000.0);
 		m = init.getSettings().getIntegerSetting("m", 2);
+		lastClosedDays = init.getSettings().getIntegerSetting("ld", 10);
 		lastDate = init.getSettings().getPeriod().getTo();
 		final List<String> subExecutions = init.getSettings().getSubExecutions();
 		if (subExecutions.size() < 1)
@@ -75,7 +77,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 
 	@Override
 	public void process(final Date date, final HashMap<String, Day> datafeed) throws BadSignalException {
-		if (new LocalDate(date).plusDays(10).isAfter(new LocalDate(lastDate))) {
+		if (new LocalDate(date).plusDays(lastClosedDays.getValue()).isAfter(new LocalDate(lastDate))) {
 			close();
 			openDate = null;
 		} else if (longPositions.isEmpty()) {
@@ -128,7 +130,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 			final String stockName = sortedStocks.get(i).stockName;
 			final double price = datafeed.get(stockName).getPrices().getOpen();
 			final int sharesAmount = (int) (ps.getValue() / price);
-			broker().buy(sortedStocks.get(i).stockName, Side.SHORT, sharesAmount);
+			broker().buy(stockName, Side.SHORT, sharesAmount);
 			shortPositions.put(stockName, new EodPosition(stockName, Side.SHORT, sharesAmount));
 		}
 		for (int i = sortedStocks.size() - m.getValue(); i < sortedStocks.size(); ++i) {

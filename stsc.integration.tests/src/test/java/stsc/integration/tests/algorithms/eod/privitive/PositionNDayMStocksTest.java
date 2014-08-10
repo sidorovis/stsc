@@ -1,11 +1,26 @@
 package stsc.integration.tests.algorithms.eod.privitive;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import stsc.algorithms.AlgorithmSettingsImpl;
+import stsc.algorithms.In;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
+import stsc.common.BadSignalException;
+import stsc.common.FromToPeriod;
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.algorithms.EodExecution;
+import stsc.common.algorithms.StockExecution;
+import stsc.common.stocks.UnitedFormatStock;
+import stsc.common.storage.StockStorage;
 import stsc.general.simulator.Simulator;
+import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
+import stsc.general.statistic.StatisticsCalculationException;
+import stsc.general.trading.TradeProcessorInit;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
+import stsc.storage.mocks.StockStorageMock;
 import junit.framework.TestCase;
 
 public class PositionNDayMStocksTest extends TestCase {
@@ -24,5 +39,26 @@ public class PositionNDayMStocksTest extends TestCase {
 		assertNotNull(s);
 		assertEquals(550.0, s.getPeriod());
 		assertEquals(69.255712, s.getAvGain(), Settings.doubleEpsilon);
+	}
+
+	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, StatisticsCalculationException, BadSignalException, IOException {
+		final FromToPeriod period = new FromToPeriod("01-01-2000", "31-12-2013");
+		final StockStorage stockStorage = StockStorageMock.getStockStorage();
+		stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/apa.uf"));
+		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period);
+
+		final AlgorithmSettingsImpl in = new AlgorithmSettingsImpl(period);
+		in.setString("e", "open");
+		init.getExecutionsStorage().addStockExecution(new StockExecution("in", In.class, in));
+
+		final AlgorithmSettingsImpl positionNDayMStocks = new AlgorithmSettingsImpl(period);
+		positionNDayMStocks.setInteger("n", 22);
+		positionNDayMStocks.setInteger("m", 2);
+		positionNDayMStocks.addSubExecutionName("in");
+		init.getExecutionsStorage().addEodExecution(new EodExecution("positionNDayMStocks", PositionNDayMStocks.class, positionNDayMStocks));
+
+		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
+		final Statistics s = simulator.getStatistics();
+		assertEquals(0.247727, s.getFreq(), Settings.doubleEpsilon);
 	}
 }
