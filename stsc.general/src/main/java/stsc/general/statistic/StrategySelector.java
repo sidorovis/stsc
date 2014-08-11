@@ -2,7 +2,7 @@ package stsc.general.statistic;
 
 import java.util.List;
 
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 public abstract class StrategySelector {
 
@@ -12,9 +12,9 @@ public abstract class StrategySelector {
 		this.selectLastElements = selectLastElements;
 	}
 
-	public abstract boolean addStrategy(final Strategy strategy);
+	public abstract boolean addStrategy(final TradingStrategy strategy);
 
-	public abstract List<Strategy> getStrategies();
+	public abstract List<TradingStrategy> getStrategies();
 
 	public int size() {
 		return selectLastElements;

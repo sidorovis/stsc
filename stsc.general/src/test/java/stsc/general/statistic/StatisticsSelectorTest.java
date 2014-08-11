@@ -7,7 +7,7 @@ import java.util.List;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestGridSimulatorSettings;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
@@ -24,13 +24,13 @@ public class StatisticsSelectorTest extends TestCase {
 
 		Iterator<SimulatorSettings> testSettings = TestGridSimulatorSettings.getGridList().iterator();
 
-		statisticsSelector.addStrategy(new Strategy(testSettings.next(), TestHelper.getStatistics(100, 200)));
-		statisticsSelector.addStrategy(new Strategy(testSettings.next(), TestHelper.getStatistics(200, 250)));
-		statisticsSelector.addStrategy(new Strategy(testSettings.next(), TestHelper.getStatistics(150, 210)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(100, 200)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(200, 250)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(150, 210)));
 
-		final List<Strategy> strategies = statisticsSelector.getStrategies();
+		final List<TradingStrategy> strategies = statisticsSelector.getStrategies();
 		assertEquals(2, strategies.size());
-		assertEquals(compareMethod.calculate(((Strategy) strategies.toArray()[0]).getStatistics()), values.get(2));
-		assertEquals(compareMethod.calculate(((Strategy) strategies.toArray()[1]).getStatistics()), values.get(0));
+		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[0]).getStatistics()), values.get(2));
+		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[1]).getStatistics()), values.get(0));
 	}
 }

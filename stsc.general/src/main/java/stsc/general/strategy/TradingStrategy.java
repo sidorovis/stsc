@@ -3,15 +3,15 @@ package stsc.general.strategy;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
 
-public class Strategy {
+public class TradingStrategy {
 	private final SimulatorSettings simulatorSettings;
 	private final Statistics statistics;
 
-	public static Strategy createTest(final Statistics statistics) {
-		return new Strategy(null, statistics);
+	public static TradingStrategy createTest(final Statistics statistics) {
+		return new TradingStrategy(null, statistics);
 	}
 
-	public Strategy(final SimulatorSettings simulatorSettings, final Statistics statistics) {
+	public TradingStrategy(final SimulatorSettings simulatorSettings, final Statistics statistics) {
 		this.simulatorSettings = simulatorSettings;
 		this.statistics = statistics;
 	}

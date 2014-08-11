@@ -34,6 +34,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	private final AlgorithmSetting<Integer> m;
 	private final AlgorithmSetting<Double> ps;
 	private final AlgorithmSetting<Integer> lastClosedDays;
+	private final Side side;
 	private final String factorExecutionName;
 
 	private class Factor implements Comparable<Factor> {
@@ -68,6 +69,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		ps = init.getSettings().getDoubleSetting("ps", 100000.0);
 		m = init.getSettings().getIntegerSetting("m", 2);
 		lastClosedDays = init.getSettings().getIntegerSetting("ld", 10);
+		side = (init.getSettings().getStringSetting("side", "long").getValue().equals("long") ? Side.LONG : Side.SHORT);
 		lastDate = init.getSettings().getPeriod().getTo();
 		final List<String> subExecutions = init.getSettings().getSubExecutions();
 		if (subExecutions.size() < 1)
@@ -130,17 +132,23 @@ public class PositionNDayMStocks extends EodAlgorithm {
 			final String stockName = sortedStocks.get(i).stockName;
 			final double price = datafeed.get(stockName).getPrices().getOpen();
 			final int sharesAmount = (int) (ps.getValue() / price);
-			broker().buy(stockName, Side.SHORT, sharesAmount);
-			shortPositions.put(stockName, new EodPosition(stockName, Side.SHORT, sharesAmount));
+			addPositionToStorage(stockName, side, sharesAmount);
 		}
 		for (int i = sortedStocks.size() - m.getValue(); i < sortedStocks.size(); ++i) {
 			final String stockName = sortedStocks.get(i).stockName;
 			final double price = datafeed.get(stockName).getPrices().getOpen();
 			final int sharesAmount = (int) (ps.getValue() / price);
-			broker().buy(sortedStocks.get(i).stockName, Side.LONG, sharesAmount);
-			longPositions.put(stockName, new EodPosition(stockName, Side.LONG, sharesAmount));
+			addPositionToStorage(stockName, side.reverse(), sharesAmount);
 		}
 		openDate = date;
+	}
+
+	private void addPositionToStorage(String stockName, Side s, int sharesAmount) {
+		broker().buy(stockName, s, sharesAmount);
+		if (s == Side.SHORT)
+			shortPositions.put(stockName, new EodPosition(stockName, s, sharesAmount));
+		else
+			longPositions.put(stockName, new EodPosition(stockName, s, sharesAmount));
 	}
 
 	@Override

@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.TreeSet;
 
 import stsc.general.statistic.cost.comparator.StatisticsComparator;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 public class StatisticsCompareSelector extends StrategySelector {
 
-	private final class StrategyComparator implements Comparator<Strategy> {
+	private final class StrategyComparator implements Comparator<TradingStrategy> {
 		private StatisticsComparator comparator;
 
 		StrategyComparator(StatisticsComparator comparator) {
@@ -19,24 +19,24 @@ public class StatisticsCompareSelector extends StrategySelector {
 		}
 
 		@Override
-		public int compare(Strategy o1, Strategy o2) {
+		public int compare(TradingStrategy o1, TradingStrategy o2) {
 			return comparator.compare(o1.getStatistics(), o2.getStatistics());
 		}
 
 	}
 
-	private final TreeSet<Strategy> select;
+	private final TreeSet<TradingStrategy> select;
 
 	public StatisticsCompareSelector(int selectLastElements, StatisticsComparator comparator) {
 		super(selectLastElements);
-		this.select = new TreeSet<Strategy>(new StrategyComparator(comparator));
+		this.select = new TreeSet<TradingStrategy>(new StrategyComparator(comparator));
 	}
 
 	@Override
-	public synchronized boolean addStrategy(final Strategy strategy) {
+	public synchronized boolean addStrategy(final TradingStrategy strategy) {
 		select.add(strategy);
 		if (select.size() > size()) {
-			final Strategy deleted = select.pollLast();
+			final TradingStrategy deleted = select.pollLast();
 			if (deleted == strategy) {
 				return false;
 			}
@@ -45,9 +45,9 @@ public class StatisticsCompareSelector extends StrategySelector {
 	}
 
 	@Override
-	public synchronized List<Strategy> getStrategies() {
-		final List<Strategy> result = new LinkedList<>();
-		for (Strategy i : select) {
+	public synchronized List<TradingStrategy> getStrategies() {
+		final List<TradingStrategy> result = new LinkedList<>();
+		for (TradingStrategy i : select) {
 			result.add(i);
 		}
 		return Collections.unmodifiableList(result);

@@ -24,7 +24,7 @@ import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.CostFunction;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 public class StrategyGeneticSearcher implements StrategySearcher {
 
@@ -59,12 +59,12 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	// should be visible to package for tasks
 	final StrategySelector selector;
-	List<Strategy> population;
+	List<TradingStrategy> population;
 	final ExecutorService executor;
 	CountDownLatch countDownLatch;
 	final GeneticSearchSettings settings;
 	// Boolean mean that Strategy was added as part of best strategies
-	Map<Strategy, Boolean> sortedPopulation;
+	Map<TradingStrategy, Boolean> sortedPopulation;
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount)
 			throws InterruptedException {
@@ -81,8 +81,8 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 			CostFunction costFunction, int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) throws InterruptedException {
 		this.selector = selector;
 		this.settingsGeneticList = algorithmSettings;
-		this.population = Collections.synchronizedList(new ArrayList<Strategy>());
-		this.sortedPopulation = Collections.synchronizedMap(new HashMap<Strategy, Boolean>());
+		this.population = Collections.synchronizedList(new ArrayList<TradingStrategy>());
+		this.sortedPopulation = Collections.synchronizedMap(new HashMap<TradingStrategy, Boolean>());
 		this.executor = Executors.newFixedThreadPool(threadAmount);
 
 		this.costFunction = costFunction;
@@ -125,7 +125,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private double geneticAlgorithmIteration(final double lastCostSum) {
 		final double newCostSum = calculateCostSum();
-		final List<Strategy> currentPopulation = population;
+		final List<TradingStrategy> currentPopulation = population;
 
 		createNewPopulation(currentPopulation);
 		crossover(currentPopulation);
@@ -152,11 +152,11 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		currentSelectionIndex += 1;
 	}
 
-	private void createNewPopulation(List<Strategy> currentPopulation) {
-		population = Collections.synchronizedList(new ArrayList<Strategy>());
+	private void createNewPopulation(List<TradingStrategy> currentPopulation) {
+		population = Collections.synchronizedList(new ArrayList<TradingStrategy>());
 
 		if (settings.sizeOfBest > 0) {
-			for (Strategy strategy : selector.getStrategies()) {
+			for (TradingStrategy strategy : selector.getStrategies()) {
 				final Boolean pe = sortedPopulation.get(strategy);
 				if (pe != null && pe) {
 					population.add(strategy);
@@ -168,12 +168,12 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		}
 
 		sortedPopulation.clear();
-		for (Strategy strategy : population) {
+		for (TradingStrategy strategy : population) {
 			sortedPopulation.put(strategy, true);
 		}
 	}
 
-	private void crossover(final List<Strategy> currentPopulation) {
+	private void crossover(final List<TradingStrategy> currentPopulation) {
 		final int size = currentPopulation.size();
 		if (size == 0) {
 			return;
@@ -193,7 +193,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 		}
 	}
 
-	private void mutation(final List<Strategy> currentPopulation) {
+	private void mutation(final List<TradingStrategy> currentPopulation) {
 		final int size = currentPopulation.size();
 		if (size == 0) {
 			return;
@@ -214,7 +214,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private double calculateCostSum() {
 		double lastCostSum = 0.0;
-		for (Strategy e : population) {
+		for (TradingStrategy e : population) {
 			lastCostSum += costFunction.calculate(e.getStatistics());
 		}
 		return lastCostSum;

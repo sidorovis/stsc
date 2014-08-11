@@ -41,7 +41,7 @@ public class PositionNDayMStocksTest extends TestCase {
 		assertEquals(69.255712, s.getAvGain(), Settings.doubleEpsilon);
 	}
 
-	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, StatisticsCalculationException, BadSignalException, IOException {
+	private void testHelper(String side) throws BadAlgorithmException, StatisticsCalculationException, BadSignalException, ParseException, IOException {
 		final FromToPeriod period = new FromToPeriod("01-01-2000", "31-12-2013");
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/apa.uf"));
@@ -54,11 +54,18 @@ public class PositionNDayMStocksTest extends TestCase {
 		final AlgorithmSettingsImpl positionNDayMStocks = new AlgorithmSettingsImpl(period);
 		positionNDayMStocks.setInteger("n", 22);
 		positionNDayMStocks.setInteger("m", 2);
+		positionNDayMStocks.setString("side", side);
 		positionNDayMStocks.addSubExecutionName("in");
 		init.getExecutionsStorage().addEodExecution(new EodExecution("positionNDayMStocks", PositionNDayMStocks.class, positionNDayMStocks));
 
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
 		final Statistics s = simulator.getStatistics();
+		System.out.println(s.toString());
 		assertEquals(0.247727, s.getFreq(), Settings.doubleEpsilon);
+	}
+
+	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, StatisticsCalculationException, BadSignalException, IOException {
+		testHelper("long");
+		testHelper("short");
 	}
 }

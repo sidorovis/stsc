@@ -18,7 +18,7 @@ import stsc.general.simulator.multistarter.StrategySearcher;
 import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StrategySelector;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 /**
  * Multithread Strategy Grid Searcher
@@ -55,7 +55,7 @@ public class StrategyGridSearcher implements StrategySearcher {
 				Simulator simulator;
 				try {
 					simulator = new Simulator(settings);
-					final Strategy strategy = new Strategy(settings, simulator.getStatistics());
+					final TradingStrategy strategy = new TradingStrategy(settings, simulator.getStatistics());
 					selector.addStrategy(strategy);
 					settings = getNextSimulatorSettings();
 				} catch (BadAlgorithmException | StatisticsCalculationException | BadSignalException e) {

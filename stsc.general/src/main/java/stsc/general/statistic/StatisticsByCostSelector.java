@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import stsc.general.statistic.cost.function.CostFunction;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 public class StatisticsByCostSelector extends StrategySelector {
 
@@ -20,12 +20,12 @@ public class StatisticsByCostSelector extends StrategySelector {
 	}
 
 	@Override
-	public synchronized boolean addStrategy(final Strategy strategy) {
+	public synchronized boolean addStrategy(final TradingStrategy strategy) {
 		final Statistics statistics = strategy.getStatistics();
 		final Double compareValue = evaluationFunction.calculate(statistics);
 		select.add(compareValue, strategy);
 		if (select.size() > size()) {
-			final Strategy deletedElement = select.deleteLast();
+			final TradingStrategy deletedElement = select.deleteLast();
 			if (deletedElement == strategy) {
 				return false;
 			}
@@ -34,10 +34,10 @@ public class StatisticsByCostSelector extends StrategySelector {
 	}
 
 	@Override
-	public synchronized List<Strategy> getStrategies() {
-		final List<Strategy> result = new LinkedList<>();
-		for (Entry<Double, List<Strategy>> i : select.getValues().entrySet()) {
-			for (Strategy strategy : i.getValue()) {
+	public synchronized List<TradingStrategy> getStrategies() {
+		final List<TradingStrategy> result = new LinkedList<>();
+		for (Entry<Double, List<TradingStrategy>> i : select.getValues().entrySet()) {
+			for (TradingStrategy strategy : i.getValue()) {
 				result.add(strategy);
 			}
 		}

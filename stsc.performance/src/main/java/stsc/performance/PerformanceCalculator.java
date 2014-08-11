@@ -21,7 +21,7 @@ import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
-import stsc.general.strategy.Strategy;
+import stsc.general.strategy.TradingStrategy;
 
 class PerformanceCalculator {
 
@@ -128,7 +128,7 @@ class PerformanceCalculator {
 		final TimeTracker timeTracker = new TimeTracker();
 
 		final StrategySearcher searcher = generateSearcher(threadSize, endOfPeriod);
-		final List<Strategy> strategies = searcher.getSelector().getStrategies();
+		final List<TradingStrategy> strategies = searcher.getSelector().getStrategies();
 		return createResult(strategies, timeTracker);
 	}
 
@@ -146,7 +146,7 @@ class PerformanceCalculator {
 		}
 	}
 
-	private static PerformanceResult createResult(List<Strategy> strategies, TimeTracker timeTracker) {
+	private static PerformanceResult createResult(List<TradingStrategy> strategies, TimeTracker timeTracker) {
 		double sumGetAvGain = 0.0;
 		timeTracker.finish();
 		sumGetAvGain = strategies.get(0).getStatistics().getAvGain();

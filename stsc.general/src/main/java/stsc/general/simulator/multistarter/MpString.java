@@ -13,6 +13,10 @@ public class MpString extends MpIterator<String> {
 		this(name, Arrays.asList(new String[] { singleElement }));
 	}
 
+	public MpString(String name, final String[] elements) throws BadParameterException {
+		this(name, Arrays.asList(elements));
+	}
+
 	public MpString(String name, final List<String> domen) throws BadParameterException {
 		super(name);
 		if (domen.isEmpty())
