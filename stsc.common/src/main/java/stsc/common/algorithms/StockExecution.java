@@ -8,6 +8,7 @@ import org.apache.commons.lang3.Validate;
 import stsc.common.storage.SignalsStorage;
 
 public class StockExecution implements Cloneable {
+
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends StockAlgorithm> algorithmType;
@@ -90,11 +91,10 @@ public class StockExecution implements Cloneable {
 	public StockExecution clone() {
 		return new StockExecution(executionName, algorithmType, algorithmSettings.clone());
 	}
-	
 
 	@Override
 	public String toString() {
-		return "StockExecution( " + executionName + ", " + executionName + ", " + algorithmSettings + ")";
+		return executionName + ".loadLine = " + algorithmType.getSimpleName() + "( " + algorithmSettings.toString() + " )";
 	}
-	
+
 }

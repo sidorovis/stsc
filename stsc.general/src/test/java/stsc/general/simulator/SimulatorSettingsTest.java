@@ -24,4 +24,10 @@ public class SimulatorSettingsTest extends TestCase {
 		set.add(ssToEqual.stringHashCode());
 		assertEquals(1, set.size());
 	}
+
+	public void testSimulatorSettingsToString() throws BadAlgorithmException {
+		final TradeProcessorInit init = new TradeProcessorInit("./test_data/simulator_tests/ndays.ini");
+		final SimulatorSettings ss = new SimulatorSettings(0, init);
+		System.out.println(ss.toString());
+	}
 }

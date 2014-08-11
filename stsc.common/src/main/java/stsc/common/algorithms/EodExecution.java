@@ -7,6 +7,7 @@ import stsc.common.storage.SignalsStorage;
 import stsc.common.trading.Broker;
 
 public class EodExecution {
+
 	private final String executionName;
 	private final String algorithmName;
 	private final Class<? extends EodAlgorithm> algorithmType;
@@ -86,7 +87,7 @@ public class EodExecution {
 
 	@Override
 	public String toString() {
-		return "EodExecution( " + executionName + ", " + executionName + ", " + algorithmSettings + ")";
+		return executionName + ".loadLine = " + algorithmType.getSimpleName() + "( " + algorithmSettings.toString() + " )";
 	}
 
 }

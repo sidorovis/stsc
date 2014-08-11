@@ -50,11 +50,6 @@ public class ExecutionsStorage implements Cloneable {
 		return sb.toString();
 	}
 
-	@Override
-	public ExecutionsStorage clone() {
-		return new ExecutionsStorage(this);
-	}
-
 	public List<StockExecution> getStockExecutions() {
 		return stockExecutions;
 	}
@@ -63,4 +58,27 @@ public class ExecutionsStorage implements Cloneable {
 		return eodExecutions;
 	}
 
+	@Override
+	public ExecutionsStorage clone() {
+		return new ExecutionsStorage(this);
+	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		result += "StockExecutions = ";
+		for (StockExecution se : stockExecutions) {
+			result += se.getExecutionName();
+			if (se != stockExecutions.get(stockExecutions.size() - 1))
+				result += ", ";
+		}
+		result += "\n";
+		for (StockExecution se : stockExecutions) {
+			result += se.toString() + "\n";
+		}
+		for (EodExecution se : eodExecutions) {
+			result += se.toString() + "\n";
+		}
+		return result;
+	}
 }

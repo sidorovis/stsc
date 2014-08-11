@@ -60,7 +60,6 @@ public class PositionNDayMStocksTest extends TestCase {
 
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
 		final Statistics s = simulator.getStatistics();
-		System.out.println(s.toString());
 		assertEquals(0.247727, s.getFreq(), Settings.doubleEpsilon);
 	}
 

@@ -5,8 +5,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSetting;
@@ -122,11 +124,6 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable
 	}
 
 	@Override
-	public String toString() {
-		return strings.toString() + " " + subExecutions.toString();
-	}
-
-	@Override
 	public Integer getInteger(final String key) {
 		return integers.get(key);
 	}
@@ -220,4 +217,33 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable
 		subExecutions.set(index, value);
 	}
 
+	// common methods
+
+	@Override
+	public String toString() {
+		String result = "";
+		for (String subExecution : subExecutions) {
+			result += subExecution;
+			if (!subExecution.equals(subExecutions.get(subExecutions.size() - 1)))
+				result += ", ";
+		}
+		result = addParameters(result, integers, "I");
+		result = addParameters(result, doubles, "D");
+		result = addParameters(result, strings, "");
+
+		return result;
+	}
+
+	private <T> String addParameters(String result, HashMap<String, T> data, String postfix) {
+		if (!result.isEmpty() && !data.isEmpty())
+			result += ", ";
+		final Iterator<Entry<String, T>> i = data.entrySet().iterator();
+		while (i.hasNext()) {
+			final Entry<String, T> e = i.next();
+			result += e.getKey() + " = " + String.valueOf(e.getValue()) + postfix;
+			if (i.hasNext())
+				result += ", ";
+		}
+		return result;
+	}
 }
