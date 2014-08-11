@@ -76,6 +76,13 @@ public class ExecutionsStorage implements Cloneable {
 		for (StockExecution se : stockExecutions) {
 			result += se.toString() + "\n";
 		}
+		result += "EodExecutions = ";
+		for (EodExecution ee : eodExecutions) {
+			result += ee.getExecutionName();
+			if (ee != eodExecutions.get(eodExecutions.size() - 1))
+				result += ", ";
+		}
+		result += "\n";
 		for (EodExecution se : eodExecutions) {
 			result += se.toString() + "\n";
 		}
