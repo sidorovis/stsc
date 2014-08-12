@@ -25,11 +25,11 @@ public final class TradingRecord {
 
 	private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-	TradingType type;
-	Date date;
-	String stockName;
-	Side side;
-	int amount;
+	private final TradingType type;
+	private final Date date;
+	private final String stockName;
+	private final Side side;
+	private final int amount;
 
 	static TradingRecord buy(Date when, String stockName, Side side, int amount) {
 		return new TradingRecord(TradingType.BUY, when, stockName, side, amount);

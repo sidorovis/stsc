@@ -41,7 +41,7 @@ public final class StatisticsProcessor {
 			public boolean decrement(int shares, double spentMoney) {
 				this.shares -= shares;
 				this.spentMoney -= spentMoney;
-				return this.shares == 0.0;
+				return this.shares == 0;
 			}
 
 			public double sharePrice() {

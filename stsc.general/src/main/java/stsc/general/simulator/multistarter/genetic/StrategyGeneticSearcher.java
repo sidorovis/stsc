@@ -38,12 +38,12 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	// empirical by StrategyGeneticSearcherTest
 	// (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
-	private final static double BEST_DEFAULT_PART = 0.94;
+	public final static double BEST_DEFAULT_PART = 0.94;
 
 	// empirical by StrategyGeneticSearcherTest
 	// (see commit # a43c64c01d765f266b8bfae5bb3c3a1a58e4bf24)
-	private final static double CROSSOVER_DEFAULT_PART = 0.86;
-	private final static int POPULATION_DEFAULT_SIZE = 100;
+	public final static double CROSSOVER_DEFAULT_PART = 0.86;
+	public final static int POPULATION_DEFAULT_SIZE = 100;
 
 	private int currentSelectionIndex = 0;
 	private int lastSelectionIndex;

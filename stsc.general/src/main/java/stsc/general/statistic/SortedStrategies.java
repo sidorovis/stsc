@@ -19,7 +19,7 @@ class SortedStrategies {
 	}
 
 	boolean add(Double rating, TradingStrategy value) {
-		final String hashCode = value.getSettingsHashCode();
+		final String hashCode = value.stringHashCode();
 		if (storageByHashCode.containsKey(hashCode)) {
 			return false;
 		}
@@ -42,7 +42,7 @@ class SortedStrategies {
 		}
 		final List<TradingStrategy> strategies = storageByRating.get(storageByRating.firstKey());
 		final TradingStrategy result = strategies.remove(strategies.size() - 1);
-		storageByHashCode.remove(result.getSettingsHashCode());
+		storageByHashCode.remove(result.stringHashCode());
 		if (strategies.isEmpty()) {
 			storageByRating.remove(storageByRating.firstKey());
 		}

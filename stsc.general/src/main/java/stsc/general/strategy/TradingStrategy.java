@@ -28,7 +28,12 @@ public class TradingStrategy {
 		return statistics.getAvGain();
 	}
 
-	public String getSettingsHashCode() {
+	public String stringHashCode() {
 		return simulatorSettings.stringHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return simulatorSettings.toString() + "\n" + statistics.toString();
 	}
 }

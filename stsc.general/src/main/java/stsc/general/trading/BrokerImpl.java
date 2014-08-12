@@ -62,6 +62,9 @@ public class BrokerImpl implements Broker {
 	@Override
 	public int buy(String stockName, Side side, int sharesAmount) {
 		if (dataExist(stockName)) {
+			if (sharesAmount == 0) {
+				return 0;
+			}
 			if (side == Side.LONG)
 				buyLong(stockName, sharesAmount);
 			else
@@ -92,6 +95,9 @@ public class BrokerImpl implements Broker {
 	@Override
 	public int sell(String stockName, Side side, int sharesAmount) {
 		if (dataExist(stockName)) {
+			if (sharesAmount == 0) {
+				return 0;
+			}
 			int selledAmount = 0;
 			if (side == Side.LONG)
 				selledAmount = sellLong(stockName, sharesAmount);

@@ -143,12 +143,16 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		openDate = date;
 	}
 
-	private void addPositionToStorage(String stockName, Side s, int sharesAmount) {
-		broker().buy(stockName, s, sharesAmount);
+	private boolean addPositionToStorage(String stockName, Side s, int sharesAmount) {
+		final int realAmount = broker().buy(stockName, s, sharesAmount);
+		if (realAmount == 0) {
+			return false;
+		}
 		if (s == Side.SHORT)
 			shortPositions.put(stockName, new EodPosition(stockName, s, sharesAmount));
 		else
 			longPositions.put(stockName, new EodPosition(stockName, s, sharesAmount));
+		return true;
 	}
 
 	@Override
