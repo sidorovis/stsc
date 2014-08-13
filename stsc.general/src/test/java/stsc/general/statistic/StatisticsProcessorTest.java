@@ -11,7 +11,6 @@ import stsc.common.Side;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsProcessor;
 import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.TradingLog;
@@ -88,7 +87,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(0.246987, statisticsData.getAvGain(), Settings.doubleEpsilon);
 	}
 
-	public void testProbabilityStatistics() throws IOException, StatisticsCalculationException {
+	public void testProbabilityStatistics() throws IOException {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");
@@ -151,7 +150,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(0.585417, statisticsData.getKelly(), Settings.doubleEpsilon);
 	}
 
-	public void testEquityCurveOn518DaysStatistics() throws IOException, StatisticsCalculationException {
+	public void testEquityCurveOn518DaysStatistics() throws IOException {
 		final Statistics stats = testTradingHelper(518, true);
 
 		assertEquals(18.698462, stats.getAvGain(), Settings.doubleEpsilon);
@@ -178,7 +177,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(28.383005, stats.getDdValueMax(), Settings.doubleEpsilon);
 	}
 
-	public void testEquityCurveOn251DaysStatistics() throws IOException, StatisticsCalculationException {
+	public void testEquityCurveOn251DaysStatistics() throws IOException {
 		Statistics stats = testTradingHelper(251, true);
 
 		assertEquals(-13.030631, stats.getAvGain(), Settings.doubleEpsilon);
@@ -205,7 +204,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(40.984757, stats.getDdValueMax(), Settings.doubleEpsilon);
 	}
 
-	public void testStatisticsOnLastClose() throws IOException, StatisticsCalculationException, IllegalArgumentException, IllegalAccessException {
+	public void testStatisticsOnLastClose() throws IOException, IllegalArgumentException, IllegalAccessException {
 		final Statistics stats = testTradingHelper(3, false);
 		stats.print("./test/out.csv");
 
@@ -216,7 +215,7 @@ public class StatisticsProcessorTest extends TestCase {
 		file.delete();
 	}
 
-	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException, StatisticsCalculationException {
+	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		final Stock aapl = stockStorage.getStock("aapl");
 		final Stock adm = stockStorage.getStock("adm");

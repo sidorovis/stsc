@@ -209,7 +209,7 @@ public final class StatisticsProcessor {
 				statisticsInit.maxLoss = moneyDiff;
 		}
 
-		public Statistics calculate() throws StatisticsCalculationException {
+		public Statistics calculate() {
 			statisticsInit.period = statisticsInit.equityCurve.size();
 			closeAllPositions();
 			statisticsInit.copyMoneyEquityCurve();
@@ -464,7 +464,7 @@ public final class StatisticsProcessor {
 		equityProcessor.processEod();
 	}
 
-	public Statistics calculate() throws StatisticsCalculationException {
+	public Statistics calculate() {
 		Statistics statisticsData = equityProcessor.calculate();
 		equityProcessor = null;
 		return statisticsData;

@@ -17,7 +17,6 @@ import stsc.common.storage.StockStorage;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
 import stsc.storage.mocks.StockStorageMock;
@@ -41,7 +40,7 @@ public class PositionNDayMStocksTest extends TestCase {
 		assertEquals(69.255712, s.getAvGain(), Settings.doubleEpsilon);
 	}
 
-	private void testHelper(String side) throws BadAlgorithmException, StatisticsCalculationException, BadSignalException, ParseException, IOException {
+	private void testHelper(String side) throws BadAlgorithmException, BadSignalException, ParseException, IOException {
 		final FromToPeriod period = new FromToPeriod("01-01-2000", "31-12-2013");
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 		stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/apa.uf"));
@@ -63,7 +62,7 @@ public class PositionNDayMStocksTest extends TestCase {
 		assertEquals(0.247727, s.getFreq(), Settings.doubleEpsilon);
 	}
 
-	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, StatisticsCalculationException, BadSignalException, IOException {
+	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, BadSignalException, IOException {
 		testHelper("long");
 		testHelper("short");
 	}

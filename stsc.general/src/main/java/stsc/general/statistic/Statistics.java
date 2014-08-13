@@ -12,9 +12,14 @@ import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import stsc.general.statistic.EquityCurve.Element;
 
 public class Statistics {
+
+	static Logger logger = LogManager.getLogger(Statistics.class.getSimpleName());
 
 	private static final Class<?>[] emptyInvoker = {};
 	private static final Object[] emptyValues = {};
@@ -55,9 +60,11 @@ public class Statistics {
 		public double ddValueAvGain = 0.0;
 		public double ddValueMax = 0.0;
 
-		double getAvGain() throws StatisticsCalculationException {
-			if (equityCurve.size() == 0)
-				throw new StatisticsCalculationException("no elements at equity curve: ");
+		double getAvGain() {
+			if (equityCurve.size() == 0) {
+				logger.warn("strange equityCurve, seems that algorithms won't trade that time");
+				return 0.0;
+			}
 			return equityCurve.getLastElement().value;
 		}
 
@@ -115,13 +122,13 @@ public class Statistics {
 		return new StatisticsInit();
 	}
 
-	Statistics(StatisticsInit init) throws StatisticsCalculationException {
+	Statistics(StatisticsInit init) {
 		calculateProbabilityStatistics(init);
 		calculateEquityStatistics(init);
 		equityCurveInMoney = init.equityCurveInMoney;
 	}
 
-	private void calculateProbabilityStatistics(StatisticsInit init) throws StatisticsCalculationException {
+	private void calculateProbabilityStatistics(StatisticsInit init) {
 		avGain = init.getAvGain();
 		period = init.period;
 

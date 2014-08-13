@@ -17,7 +17,6 @@ import stsc.general.simulator.multistarter.genetic.StrategyGeneticSearcher;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
-import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.WeightedSumCostFunction;
@@ -123,8 +122,8 @@ class PerformanceCalculator {
 		return avTime;
 	}
 
-	public PerformanceResult timeForSearch(int threadSize, String endOfPeriod) throws StrategySearcherException, BadAlgorithmException,
-			StatisticsCalculationException, BadSignalException, InterruptedException {
+	public PerformanceResult timeForSearch(int threadSize, String endOfPeriod) throws StrategySearcherException, BadAlgorithmException, BadSignalException,
+			InterruptedException {
 		final TimeTracker timeTracker = new TimeTracker();
 
 		final StrategySearcher searcher = generateSearcher(threadSize, endOfPeriod);

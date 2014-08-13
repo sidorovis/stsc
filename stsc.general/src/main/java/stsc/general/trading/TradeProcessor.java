@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.LocalDate;
 
 import stsc.common.BadSignalException;
@@ -12,11 +14,12 @@ import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsCalculationException;
 import stsc.general.statistic.StatisticsProcessor;
 import stsc.storage.ExecutionStarter;
 
 public class TradeProcessor {
+
+	static Logger logger = LogManager.getLogger(TradeProcessor.class.getSimpleName());
 
 	private final BrokerImpl broker;
 	private final ExecutionStarter executionsStarter;
@@ -29,7 +32,7 @@ public class TradeProcessor {
 		this.executionsStarter = settings.getExecutionsStorage().initialize(broker);
 	}
 
-	public Statistics simulate(final FromToPeriod period) throws StatisticsCalculationException, BadSignalException {
+	public Statistics simulate(final FromToPeriod period) throws BadSignalException {
 		final StatisticsProcessor statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
 
 		LocalDate dayIterator = new LocalDate(period.getFrom());
@@ -58,7 +61,7 @@ public class TradeProcessor {
 
 						datafeed.put(stockName, stockDay);
 					} else {
-						throw new StatisticsCalculationException("Bad day returned for stock " + stockName + " for day " + today);
+						logger.error("Bad day returned for stock " + stockName + " for day " + today);
 					}
 				}
 			}
