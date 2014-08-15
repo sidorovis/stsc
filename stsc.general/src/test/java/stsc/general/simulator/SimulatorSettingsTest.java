@@ -28,6 +28,6 @@ public class SimulatorSettingsTest extends TestCase {
 	public void testSimulatorSettingsToString() throws BadAlgorithmException {
 		final TradeProcessorInit init = new TradeProcessorInit("./test_data/simulator_tests/ndays.ini");
 		final SimulatorSettings ss = new SimulatorSettings(0, init);
-		System.out.println(ss.toString());
+		assertEquals(10, ss.toString().split("\n").length);
 	}
 }

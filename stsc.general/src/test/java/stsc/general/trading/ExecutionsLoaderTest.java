@@ -54,7 +54,7 @@ public class ExecutionsLoaderTest extends TestCase {
 		throwTesthelper("./test_data/executions_loader_tests/algs_bad_load_line2.ini", "bad algorithm load line: IN)");
 		throwTesthelper(
 				"./test_data/executions_loader_tests/algs_bad_load_line3.ini",
-				"Exception while loading algo: stsc.algorithms.stock.factors.primitive.Sma( 3533721117350624 ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
+				"Exception while loading algo: stsc.algorithms.stock.factors.primitive.Sma( 35337210 ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
 	}
 
 	public void testAlgorithmLoaderWithEod() throws Exception {

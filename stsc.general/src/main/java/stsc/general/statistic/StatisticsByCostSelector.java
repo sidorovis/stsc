@@ -11,12 +11,12 @@ import stsc.general.strategy.TradingStrategy;
 public class StatisticsByCostSelector extends StrategySelector {
 
 	private final CostFunction evaluationFunction;
-	private final SortedStrategies select;
+	private final SimpleSortedStrategies select;
 
 	public StatisticsByCostSelector(int selectLastElements, CostFunction evaluationFunction) {
 		super(selectLastElements);
 		this.evaluationFunction = evaluationFunction;
-		this.select = new SortedStrategies();
+		this.select = new SimpleSortedStrategies();
 	}
 
 	@Override

@@ -69,7 +69,7 @@ public class SimulatorTest extends TestCase {
 	public void testPositiveNDaysSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile("./test_data/simulator_tests/ndays.ini").getStatistics().print("./test/statistics.csv");
-		assertEquals(11685, new File("./test/statistics.csv").length());
+		assertEquals(11767, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
