@@ -43,4 +43,8 @@ public class StatisticsByCostSelector extends StrategySelector {
 		}
 		return Collections.unmodifiableList(result);
 	}
+
+	protected SimpleSortedStrategies getSortedStrategies() {
+		return select;
+	}
 }
