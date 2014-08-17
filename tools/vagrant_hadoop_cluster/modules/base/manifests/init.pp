@@ -6,9 +6,49 @@ class base{
     command => '/usr/bin/apt-get update',
   }
 
-  package { "openjdk-6-jdk" :
+  package { "mc" :
     ensure => present,
     require => Exec['apt-get update']
+  }
+
+  package { "git" :
+    ensure => present,
+    require => Exec['apt-get update']
+  }
+
+#  package { "openjdk-7-jdk" :
+#    ensure => present,
+#    require => Exec['apt-get update']
+#  }
+
+  package { "python-software-properties":
+	ensure => present,
+	require => Exec['apt-get update']
+  }
+
+  exec { 'create-repository-for-oracle-java':
+    command => '/usr/bin/add-apt-repository ppa:webupd8team/java',
+	require => Package['python-software-properties']
+  }
+
+  exec { 'webupd8team-repository apt-get update':
+    command => '/usr/bin/apt-get update',
+	require => Exec['create-repository-for-oracle-java']
+  }
+
+  exec { 'create-auto-accepted-oracle':
+    command => '/bin/echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections',
+	require => Exec['webupd8team-repository apt-get update']
+  }
+
+  package { "oracle-java7-installer":
+	ensure => present,
+	require => Exec['create-auto-accepted-oracle']
+  }
+
+  exec { 'oracle-java7-set-default':
+    command => '/usr/bin/apt-get install oracle-java7-set-default',
+	require => Package['oracle-java7-installer']
   }
 
   file { "/root/.ssh":
