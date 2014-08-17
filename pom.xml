@@ -39,6 +39,7 @@
 	<module>stsc.yahoo.downloader</module>
 	<module>stsc.yahoo.liquidator</module>
 	<module>stsc.performance</module>
+	<module>stsc.distributed.hadoop</module>
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>
