@@ -17,6 +17,7 @@ target
 .classpath
 _*.log
 *.versionsBackup
+tools/vagrant_hadoop_cluster/single-node/package
 
 .~lock*#
 
