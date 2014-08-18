@@ -5,9 +5,6 @@ import stsc.general.simulator.SimulatorSettings;
 
 final class GenerateInitialPopulationsTask implements Runnable {
 
-	/**
-	 * 
-	 */
 	private final StrategyGeneticSearcher strategyGeneticSearcher;
 	private StrategyGeneticSearcher searcher;
 
