@@ -43,7 +43,7 @@ public final class AlgorithmsStorage {
 
 	private void loadAlgorithms() throws BadAlgorithmException {
 		try {
-			for (ClassInfo e : ClassPath.from(ClassLoader.getSystemClassLoader()).getAllClasses()) {
+			for (ClassInfo e : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClasses()) {
 				final String eName = e.getName().toLowerCase();
 				if (eName.contains("$") || eName.contains("test"))
 					continue;

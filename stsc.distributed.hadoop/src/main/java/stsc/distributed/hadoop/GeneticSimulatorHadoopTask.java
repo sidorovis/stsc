@@ -4,10 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.MapWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
@@ -85,17 +91,22 @@ class GeneticSimulatorHadoopTask {
 		return settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 
-	public static class SimulatorSettingsCalculatingMap extends MapReduceBase implements
-			Mapper<SimulatorSettingsGeneticFactory, SimulatorSettings, SimulatorSettingsGeneticFactory, TradingStrategy> {
+	public static class SimulatorSettingsCalculatingMap extends MapReduceBase
+	//
+			implements Mapper<Text, MapWritable, Text, MapWritable> {
 
 		@Override
-		public void map(SimulatorSettingsGeneticFactory key, SimulatorSettings settings,
-				OutputCollector<SimulatorSettingsGeneticFactory, TradingStrategy> output, Reporter reporter) throws IOException {
+		public void map(Text key, MapWritable ss, OutputCollector<Text, MapWritable> output, Reporter reporter) throws IOException {
 			try {
+				final HashMap<String, String> v = new HashMap<>(); 
+				for (Entry<Writable,Writable> i : ss.entrySet()) {
+					
+				}
+				SimulatorSettings settings;
 				final Simulator simulator = new Simulator(settings);
 				final Statistics statistics = simulator.getStatistics();
 				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
-				output.collect(key, strategy);
+				output.collect(key, );
 			} catch (BadAlgorithmException | BadSignalException e) {
 				e.printStackTrace();
 			}
