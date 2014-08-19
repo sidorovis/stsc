@@ -1,14 +1,33 @@
 package stsc.distributed.hadoop;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Properties;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.mapred.InputSplit;
+import org.apache.hadoop.mapred.JobClient;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.MapReduceBase;
+import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.OutputFormat;
+import org.apache.hadoop.mapred.RecordWriter;
+import org.apache.hadoop.mapred.Reducer;
+import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.util.Progressable;
 import org.joda.time.LocalDate;
 
+import cascading.tap.hadoop.io.MultiInputSplit;
+import stsc.common.BadSignalException;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
+import stsc.general.simulator.Simulator;
+import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpDouble;
@@ -16,11 +35,12 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
+import stsc.general.statistic.Statistics;
+import stsc.general.statistic.StatisticsByCostSelector;
+import stsc.general.statistic.StrategySelector;
+import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.strategy.TradingStrategy;
 import stsc.storage.AlgorithmsStorage;
-import cascading.flow.FlowConnector;
-import cascading.flow.hadoop.HadoopFlowConnector;
-import cascading.pipe.SubAssembly;
-import cascading.property.AppProps;
 
 class GeneticSimulatorHadoopTask {
 
@@ -65,36 +85,179 @@ class GeneticSimulatorHadoopTask {
 		return settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 
-	private static class ReadDatafeed extends SubAssembly {
+	public static class SimulatorSettingsCalculatingMap extends MapReduceBase implements
+			Mapper<SimulatorSettingsGeneticFactory, SimulatorSettings, SimulatorSettingsGeneticFactory, TradingStrategy> {
 
-		private static final long serialVersionUID = -4869412462406981877L;
-
-		ReadDatafeed(String inputName) {
-			loadData();
-			//
+		@Override
+		public void map(SimulatorSettingsGeneticFactory key, SimulatorSettings settings,
+				OutputCollector<SimulatorSettingsGeneticFactory, TradingStrategy> output, Reporter reporter) throws IOException {
 			try {
-				final SimulatorSettingsGeneticFactory factory = getFactory();
-
-			} catch (BadParameterException | BadAlgorithmException e) {
-				e.printStackTrace();
-			}
-		}
-
-		private void loadData() {
-			try {
-				AlgorithmsStorage.getInstance();
-				StockStorageSingleton.getInstance("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data");
-			} catch (BadAlgorithmException | ClassNotFoundException | IOException | InterruptedException e) {
+				final Simulator simulator = new Simulator(settings);
+				final Statistics statistics = simulator.getStatistics();
+				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
+				output.collect(key, strategy);
+			} catch (BadAlgorithmException | BadSignalException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	GeneticSimulatorHadoopTask(final String path, final String filteredPath) {
-		Properties properties = new Properties();
-		AppProps.setApplicationJarClass(properties, GeneticSimulatorHadoopTask.class);
-		FlowConnector flowConnector = new HadoopFlowConnector(properties);
+	public static class TradingStrategiesReduce extends MapReduceBase implements
+			Reducer<SimulatorSettingsGeneticFactory, TradingStrategy, SimulatorSettingsGeneticFactory, List<TradingStrategy>> {
 
+		@Override
+		public void reduce(SimulatorSettingsGeneticFactory key, Iterator<TradingStrategy> values,
+				OutputCollector<SimulatorSettingsGeneticFactory, List<TradingStrategy>> output, Reporter reporter) throws IOException {
+			StrategySelector selector = new StatisticsByCostSelector(100, new WeightedSumCostFunction());
+			while (values.hasNext()) {
+				final TradingStrategy strategy = values.next();
+				selector.addStrategy(strategy);
+			}
+			output.collect(key, selector.getStrategies());
+		}
+	}
+
+	class InputRecordReader implements org.apache.hadoop.mapred.RecordReader<SimulatorSettingsGeneticFactory, SimulatorSettings> {
+
+		SimulatorSettingsGeneticFactory factory;
+		int N = 100;
+		Integer n = 0;
+
+		InputRecordReader(SimulatorSettingsGeneticFactory factory) {
+			this.factory = factory;
+		}
+
+		@Override
+		public boolean next(SimulatorSettingsGeneticFactory key, SimulatorSettings value) throws IOException {
+			synchronized (n) {
+				if (n == N) {
+					return false;
+				}
+				++n;
+			}
+			return true;
+		}
+
+		@Override
+		public SimulatorSettingsGeneticFactory createKey() {
+			return factory;
+		}
+
+		@Override
+		public SimulatorSettings createValue() {
+			try {
+				return factory.getList().generateRandom();
+			} catch (BadAlgorithmException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		public long getPos() throws IOException {
+			return n;
+		}
+
+		@Override
+		public void close() throws IOException {
+		}
+
+		@Override
+		public float getProgress() throws IOException {
+			return (float) ((1.0 * n) / N);
+		}
+
+	}
+
+	class StatisticsInputFormat implements org.apache.hadoop.mapred.InputFormat<SimulatorSettingsGeneticFactory, SimulatorSettings> {
+
+		InputRecordReader record;
+
+		StatisticsInputFormat(SimulatorSettingsGeneticFactory factory) {
+			try {
+				record = new InputRecordReader(getFactory());
+			} catch (BadParameterException | BadAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public InputSplit[] getSplits(JobConf job, int numSplits) throws IOException {
+			MultiInputSplit a[] = {};
+			return a;
+		}
+
+		@Override
+		public InputRecordReader getRecordReader(InputSplit split, JobConf job, Reporter reporter) throws IOException {
+			return record;
+		}
+	}
+
+	class OutputRecordWriter implements RecordWriter<SimulatorSettingsGeneticFactory, List<TradingStrategy>> {
+
+		@Override
+		public void close(Reporter reporter) throws IOException {
+		}
+
+		@Override
+		public void write(SimulatorSettingsGeneticFactory key, List<TradingStrategy> value) throws IOException {
+			for (TradingStrategy tradingStrategy : value) {
+				synchronized (this) {
+					File file = new File("~/output/out.txt");
+					PrintWriter writer = new PrintWriter(file);
+					writer.println(tradingStrategy.getAvGain());
+					writer.close();
+				}
+			}
+		}
+	}
+
+	class StatisticsOutputFormat implements OutputFormat<SimulatorSettingsGeneticFactory, List<TradingStrategy>> {
+
+		OutputRecordWriter writer = new OutputRecordWriter();
+
+		@Override
+		public OutputRecordWriter getRecordWriter(FileSystem ignored, JobConf job, String name, Progressable progress) throws IOException {
+			return writer;
+		}
+
+		@Override
+		public void checkOutputSpecs(FileSystem ignored, JobConf job) throws IOException {
+		}
+
+	}
+
+	private void loadData() {
+		try {
+			AlgorithmsStorage.getInstance();
+			StockStorageSingleton.getInstance("D:/dev/java/StscData/data/", "D:/dev/java/StscData/filtered_data");
+		} catch (BadAlgorithmException | ClassNotFoundException | IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	GeneticSimulatorHadoopTask(final String path, final String filteredPath) {
+		loadData();
+
+		JobConf conf = new JobConf(GeneticSimulatorHadoopTask.class);
+		conf.setJobName("generate_first_population");
+
+		conf.setOutputKeyClass(SimulatorSettingsGeneticFactory.class);
+		conf.setOutputValueClass(List.class);
+
+		conf.setMapperClass(SimulatorSettingsCalculatingMap.class);
+
+		conf.setCombinerClass(TradingStrategiesReduce.class);
+		conf.setReducerClass(TradingStrategiesReduce.class);
+
+		conf.setInputFormat(StatisticsInputFormat.class);
+		conf.setOutputFormat(StatisticsOutputFormat.class);
+
+		try {
+			JobClient.runJob(conf);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
