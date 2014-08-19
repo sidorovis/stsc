@@ -97,19 +97,20 @@ class GeneticSimulatorHadoopTask {
 
 		@Override
 		public void map(Text key, MapWritable ss, OutputCollector<Text, MapWritable> output, Reporter reporter) throws IOException {
-			try {
-				final HashMap<String, String> v = new HashMap<>(); 
-				for (Entry<Writable,Writable> i : ss.entrySet()) {
-					
-				}
-				SimulatorSettings settings;
-				final Simulator simulator = new Simulator(settings);
-				final Statistics statistics = simulator.getStatistics();
-				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
-				output.collect(key, );
-			} catch (BadAlgorithmException | BadSignalException e) {
-				e.printStackTrace();
-			}
+			// try {
+			// final HashMap<String, String> v = new HashMap<>();
+			// for (Entry<Writable,Writable> i : ss.entrySet()) {
+			//
+			// }
+			// SimulatorSettings settings;
+			// final Simulator simulator = new Simulator(settings);
+			// final Statistics statistics = simulator.getStatistics();
+			// final TradingStrategy strategy = new TradingStrategy(settings,
+			// statistics);
+			// output.collect(key, );
+			// } catch (BadAlgorithmException | BadSignalException e) {
+			// e.printStackTrace();
+			// }
 		}
 	}
 
