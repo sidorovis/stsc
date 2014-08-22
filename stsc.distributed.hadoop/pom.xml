@@ -47,7 +47,7 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.distributed.hadoop.Main</mainClass>
+          			<mainClass>stsc.distributed.hadoop.MapReduceExample</mainClass>
         		</manifest>
       		</archive>
         </configuration>
