@@ -11,6 +11,7 @@ target
 /filtered_data/*.uf
 /*/logs
 /test/*.uf
+*/test_data/*.out/*
 /.*
 .project
 .settings

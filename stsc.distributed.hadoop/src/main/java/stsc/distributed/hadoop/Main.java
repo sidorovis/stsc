@@ -2,6 +2,7 @@ package stsc.distributed.hadoop;
 
 import java.util.Map;
 import java.util.Properties;
+
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.cascade.Cascades;
@@ -123,6 +124,7 @@ public class Main {
 		Tap<?, ?, ?> sinkUrl = new Hfs(new SequenceFile(new Fields("url", "word", "count")), urlsPath);
 		Tap<?, ?, ?> sinkWord = new Hfs(new SequenceFile(new Fields("word", "count")), wordsPath);
 		// convenience method to bind multiple pipes and taps
+		@SuppressWarnings("rawtypes")
 		Map<String, Tap> sinks = Cascades.tapsMap(new String[] { "url pipe", "word pipe" }, Tap.taps(sinkUrl, sinkWord));
 		// wordCountPipe will be recognized as an assembly and handled
 		// appropriately

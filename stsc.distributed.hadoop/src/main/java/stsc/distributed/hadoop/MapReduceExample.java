@@ -1,7 +1,9 @@
 package stsc.distributed.hadoop;
 
+import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -11,7 +13,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MapFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -30,10 +31,10 @@ public class MapReduceExample extends Configured implements Tool {
 			job.setMapperClass(MyMapper.class);
 			job.setCombinerClass(MyReducer.class);
 			job.setReducerClass(MyFilter.class);
-			
+
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(LongWritable.class);
-			
+
 			job.setInputFormatClass(TextInputFormat.class);
 			job.setOutputFormatClass(TextOutputFormat.class);
 
@@ -52,10 +53,11 @@ public class MapReduceExample extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws IOException {
-		// if (new File("out").exists()) {
-		// FileUtils.deleteDirectory(new File("out"));
-		// }
-		args = new String[] { "in.txt", "out" };
+		final String pathToOut = "test_data/a1.out";
+		if (new File(pathToOut).exists()) {
+			FileUtils.deleteDirectory(new File(pathToOut));
+		}
+		args = new String[] { "test_data/a1.txt", pathToOut };
 		try {
 			ToolRunner.run(new MapReduceExample(), args);
 		} catch (Exception e) {
