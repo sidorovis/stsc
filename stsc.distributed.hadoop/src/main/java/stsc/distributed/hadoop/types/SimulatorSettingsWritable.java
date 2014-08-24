@@ -22,7 +22,7 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
 
-public class HadoopSimulatorSettings implements Writable {
+public class SimulatorSettingsWritable implements Writable {
 
 	private static final String SIMULATOR_SETTINGS_ID = "SimulatorSettingsId";
 
@@ -65,7 +65,7 @@ public class HadoopSimulatorSettings implements Writable {
 	// will be filled in the middle of generating
 	private FromToPeriod period;
 
-	protected HadoopSimulatorSettings() {
+	protected SimulatorSettingsWritable() {
 		this.strings = new HashMap<>();
 		this.longs = new HashMap<>();
 		this.integers = new HashMap<>();
@@ -74,7 +74,7 @@ public class HadoopSimulatorSettings implements Writable {
 	}
 
 	// SimulatorSettings -> HadoopSimulatorSettings
-	public HadoopSimulatorSettings(final SimulatorSettings ss) {
+	public SimulatorSettingsWritable(final SimulatorSettings ss) {
 		this();
 		longs.put(SIMULATOR_SETTINGS_ID, ss.getId());
 		saveTradeProcessorInit(ss.getInit());
