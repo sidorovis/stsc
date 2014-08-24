@@ -14,7 +14,7 @@ import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.AlgorithmSettings;
 
-public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable {
+public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 
 	private final FromToPeriod period;
 	private final HashMap<String, Integer> integers;
@@ -121,6 +121,21 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable
 	public AlgorithmSettingsImpl addSubExecutionName(final String subExecutionName) {
 		subExecutions.add(subExecutionName);
 		return this;
+	}
+
+	@Override
+	public Map<String, Integer> getIntegers() {
+		return integers;
+	}
+
+	@Override
+	public Map<String, Double> getDoubles() {
+		return doubles;
+	}
+
+	@Override
+	public Map<String, String> getStrings() {
+		return strings;
 	}
 
 	@Override
@@ -246,4 +261,5 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings, Cloneable
 		}
 		return result;
 	}
+
 }

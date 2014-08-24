@@ -140,4 +140,8 @@ public class SimulatorSettingsGeneticList {
 		}
 		return result;
 	}
+
+	public StockStorage getStockStorage() {
+		return stockStorage;
+	}
 }

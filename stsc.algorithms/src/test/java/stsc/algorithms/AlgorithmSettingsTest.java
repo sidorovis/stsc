@@ -39,7 +39,6 @@ public final class AlgorithmSettingsTest extends TestCase {
 		ObjectOutputStream oos = new ObjectOutputStream(os);
 		as.writeExternal(oos);
 		oos.flush();
-		// os.flush();
 
 		byte[] buffer = os.toByteArray();
 		InputStream is = new ByteArrayInputStream(buffer);

@@ -1,10 +1,19 @@
 package stsc.common.algorithms;
 
 import java.util.List;
+import java.util.Map;
 
 import stsc.common.FromToPeriod;
 
 public interface AlgorithmSettings extends Cloneable {
+
+	// Getters for vectors
+
+	public Map<String, Integer> getIntegers();
+
+	public Map<String, Double> getDoubles();
+
+	public Map<String, String> getStrings();
 
 	// Getters
 
