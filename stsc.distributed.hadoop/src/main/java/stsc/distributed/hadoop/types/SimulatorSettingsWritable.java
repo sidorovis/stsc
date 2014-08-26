@@ -133,45 +133,15 @@ public class SimulatorSettingsWritable implements Writable {
 	}
 
 	private void saveIntegers(AlgorithmSettings settings, String algoSettingsPrefix) {
-		final Map<String, Integer> originalIntegers = settings.getIntegers();
-		integers.put(algoSettingsPrefix + INTEGERS_SIZE, originalIntegers.size());
-		long index = 0;
-		for (Entry<String, Integer> i : originalIntegers.entrySet()) {
-			final String parameterPrefix = algoSettingsPrefix + INTEGER_NAME + String.valueOf(index);
-			final String key = parameterPrefix + KEY_POSTFIX;
-			final String value = parameterPrefix + VALUE_POSTFIX;
-			strings.put(key, i.getKey());
-			integers.put(value, i.getValue());
-			index += 1;
-		}
+		saveTypes(settings, algoSettingsPrefix, settings.getIntegers(), INTEGERS_SIZE, INTEGER_NAME, integers);
 	}
 
 	private void saveDoubles(AlgorithmSettings settings, String algoSettingsPrefix) {
-		final Map<String, Double> originalDoubles = settings.getDoubles();
-		integers.put(algoSettingsPrefix + DOUBLES_SIZE, originalDoubles.size());
-		long index = 0;
-		for (Entry<String, Double> i : originalDoubles.entrySet()) {
-			final String parameterPrefix = algoSettingsPrefix + DOUBLE_NAME + String.valueOf(index);
-			final String key = parameterPrefix + KEY_POSTFIX;
-			final String value = parameterPrefix + VALUE_POSTFIX;
-			strings.put(key, i.getKey());
-			doubles.put(value, i.getValue());
-			index += 1;
-		}
+		saveTypes(settings, algoSettingsPrefix, settings.getDoubles(), DOUBLES_SIZE, DOUBLE_NAME, doubles);
 	}
 
 	private void saveStrings(AlgorithmSettings settings, String algoSettingsPrefix) {
-		final Map<String, String> originalStrings = settings.getStrings();
-		integers.put(algoSettingsPrefix + STRINGS_SIZE, originalStrings.size());
-		long index = 0;
-		for (Entry<String, String> i : originalStrings.entrySet()) {
-			final String parameterPrefix = algoSettingsPrefix + STRING_NAME + String.valueOf(index);
-			final String key = parameterPrefix + KEY_POSTFIX;
-			final String value = parameterPrefix + VALUE_POSTFIX;
-			strings.put(key, i.getKey());
-			strings.put(value, i.getValue());
-			index += 1;
-		}
+		saveTypes(settings, algoSettingsPrefix, settings.getStrings(), STRINGS_SIZE, STRING_NAME, strings);
 	}
 
 	private void saveSubExecutions(AlgorithmSettings settings, String algoSettingsPrefix) {
@@ -182,6 +152,20 @@ public class SimulatorSettingsWritable implements Writable {
 			final String parameterPrefix = algoSettingsPrefix + SUB_EXECUTION_NAME + String.valueOf(index);
 			final String value = parameterPrefix + VALUE_POSTFIX;
 			strings.put(value, i);
+			index += 1;
+		}
+	}
+
+	private <T> void saveTypes(AlgorithmSettings settings, String algoSettingsPrefix, Map<String, T> from, String sizePostfix, String fieldNamePostFix,
+			Map<String, T> to) {
+		integers.put(algoSettingsPrefix + sizePostfix, from.size());
+		long index = 0;
+		for (Entry<String, T> i : from.entrySet()) {
+			final String parameterPrefix = algoSettingsPrefix + fieldNamePostFix + String.valueOf(index);
+			final String key = parameterPrefix + KEY_POSTFIX;
+			final String value = parameterPrefix + VALUE_POSTFIX;
+			strings.put(key, i.getKey());
+			to.put(value, i.getValue());
 			index += 1;
 		}
 	}
