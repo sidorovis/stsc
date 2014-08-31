@@ -1,15 +1,9 @@
 package stsc.distributed.hadoop.types;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.hadoop.io.Writable;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
@@ -22,9 +16,9 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
 
-public class SimulatorSettingsWritable implements Writable {
+public class SimulatorSettingsWritable extends MapEasyWritable {
 
-	private static final String SIMULATOR_SETTINGS_ID = "SimulatorSettingsId";
+	private static final String SIMULATOR_SETTINGS_ID = "_SimulatorSettingsId";
 
 	private static final String PERIOD_FROM = "periodFrom";
 	private static final String PERIOD_TO = "periodTo";
@@ -56,38 +50,27 @@ public class SimulatorSettingsWritable implements Writable {
 	private static final String KEY_POSTFIX = ".key";
 	private static final String VALUE_POSTFIX = ".value";
 
-	private final Map<String, String> strings;
-	private final Map<String, Long> longs;
-	private final Map<String, Integer> integers;
-	private final Map<String, Boolean> booleans;
-	private final Map<String, Double> doubles;
-
 	// will be filled in the middle of generating
 	private FromToPeriod period;
 
 	protected SimulatorSettingsWritable() {
-		this.strings = new HashMap<>();
-		this.longs = new HashMap<>();
-		this.integers = new HashMap<>();
-		this.booleans = new HashMap<>();
-		this.doubles = new HashMap<>();
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	public SimulatorSettingsWritable(final SimulatorSettings ss) {
 		this();
 		longs.put(SIMULATOR_SETTINGS_ID, ss.getId());
 		saveTradeProcessorInit(ss.getInit());
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	private void saveTradeProcessorInit(TradeProcessorInit init) {
 		longs.put(PERIOD_FROM, init.getPeriod().getFrom().getTime());
 		longs.put(PERIOD_TO, init.getPeriod().getTo().getTime());
 		saveExecutionsStorage(init.getExecutionsStorage());
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	private void saveExecutionsStorage(ExecutionsStorage executionsStorage) {
 		final List<StockExecution> stockExecutions = executionsStorage.getStockExecutions();
 		integers.put(STOCK_EXECUTION_SIZE, stockExecutions.size());
@@ -105,7 +88,7 @@ public class SimulatorSettingsWritable implements Writable {
 		}
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	private void saveStockExecution(StockExecution stockExecution, long stockIndex) {
 		final String prefix = generateStockPrefix(stockIndex);
 		final String executionName = stockExecution.getExecutionName();
@@ -114,7 +97,7 @@ public class SimulatorSettingsWritable implements Writable {
 		saveAlgorithmSettings(prefix, executionName, stockExecution.getSettings());
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	private void saveEodExecution(EodExecution eodExecution, long stockIndex) {
 		final String prefix = generateEodPrefix(stockIndex);
 		final String executionName = eodExecution.getExecutionName();
@@ -123,7 +106,7 @@ public class SimulatorSettingsWritable implements Writable {
 		saveAlgorithmSettings(prefix, executionName, eodExecution.getSettings());
 	}
 
-	// SimulatorSettings -> HadoopSimulatorSettings
+	// SimulatorSettings -> SimulatorSettingsWritable
 	private void saveAlgorithmSettings(String prefix, String executionName, AlgorithmSettings settings) {
 		final String algoSettingsPrefix = generateAlgoSettingsPrefix(executionName, prefix);
 		saveIntegers(settings, algoSettingsPrefix);
@@ -170,14 +153,14 @@ public class SimulatorSettingsWritable implements Writable {
 		}
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	public SimulatorSettings getSimulatorSettings(final StockStorage stockStorage) throws BadAlgorithmException {
 		final TradeProcessorInit init = loadTradeProcessor(stockStorage);
 		final long id = longs.get(SIMULATOR_SETTINGS_ID);
 		return new SimulatorSettings(id, init);
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	private TradeProcessorInit loadTradeProcessor(StockStorage stockStorage) throws BadAlgorithmException {
 		final long periodFrom = longs.get(PERIOD_FROM);
 		final long periodTo = longs.get(PERIOD_TO);
@@ -187,7 +170,7 @@ public class SimulatorSettingsWritable implements Writable {
 		return init;
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	private void loadExecutionStorage(ExecutionsStorage executionsStorage) throws BadAlgorithmException {
 		final long stockExecutionsSize = integers.get(STOCK_EXECUTION_SIZE);
 		for (long i = 0; i < stockExecutionsSize; ++i) {
@@ -199,7 +182,7 @@ public class SimulatorSettingsWritable implements Writable {
 		}
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	private StockExecution loadStockExecution(long index) throws BadAlgorithmException {
 		// prefix = "StockExecutions_1"
 		// prefix = "StockExecutions_24"
@@ -212,7 +195,7 @@ public class SimulatorSettingsWritable implements Writable {
 		return new StockExecution(executionName, algorithmName, algorithmSettings);
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	private EodExecution loadEodExecution(long index) throws BadAlgorithmException {
 		// prefix = "EodExecutions_1"
 		// prefix = "EodExecutions_24"
@@ -225,7 +208,7 @@ public class SimulatorSettingsWritable implements Writable {
 		return new EodExecution(executionName, algorithmName, algorithmSettings);
 	}
 
-	// HadoopSimulatorSettings -> SimulatorSettings
+	// SimulatorSettingsWritable -> SimulatorSettings
 	private AlgorithmSettingsImpl loadAlgorithmSettings(String executionName, String prefix) {
 		final AlgorithmSettingsImpl algorithmSettings = new AlgorithmSettingsImpl(this.period);
 		// algoSettingsPrefix = "StockExecutions_54.ExecutionName";
@@ -277,132 +260,20 @@ public class SimulatorSettingsWritable implements Writable {
 		}
 	}
 
-	// common methods for HadoopSimulatorSettings -> SimulatorSettings
-	// and SimulatorSettings -> HadoopSimulatorSettings
+	// common methods for SimulatorSettingsWritable -> SimulatorSettings
+	// and SimulatorSettings -> SimulatorSettingsWritable
 	private String generateStockPrefix(long index) {
 		return STOCK_EXECUTIONS_PREFIX + String.valueOf(index);
 	}
 
-	// common methods for HadoopSimulatorSettings -> SimulatorSettings
-	// and SimulatorSettings -> HadoopSimulatorSettings
+	// common methods for SimulatorSettingsWritable -> SimulatorSettings
+	// and SimulatorSettings -> SimulatorSettingsWritable
 	private String generateEodPrefix(long index) {
 		return EOD_EXECUTIONS_PREFIX + String.valueOf(index);
 	}
 
 	private String generateAlgoSettingsPrefix(String executionName, String prefix) {
 		return prefix + "." + executionName;
-	}
-
-	// Hadoop write methods
-	@Override
-	public void write(DataOutput out) throws IOException {
-		writeStrings(out);
-		writeLongs(out);
-		writeIntegers(out);
-		writeBooleans(out);
-		writeDoubles(out);
-	}
-
-	private void writeStrings(DataOutput out) throws IOException {
-		out.writeLong(strings.size());
-		for (Entry<String, String> s : strings.entrySet()) {
-			out.writeUTF(s.getKey());
-			out.writeUTF(s.getValue());
-		}
-	}
-
-	private void writeLongs(DataOutput out) throws IOException {
-		out.writeLong(longs.size());
-		for (Entry<String, Long> s : longs.entrySet()) {
-			out.writeUTF(s.getKey());
-			out.writeLong(s.getValue());
-		}
-	}
-
-	private void writeIntegers(DataOutput out) throws IOException {
-		out.writeLong(integers.size());
-		for (Entry<String, Integer> s : integers.entrySet()) {
-			out.writeUTF(s.getKey());
-			out.writeInt(s.getValue());
-		}
-	}
-
-	private void writeBooleans(DataOutput out) throws IOException {
-		out.writeLong(booleans.size());
-		for (Entry<String, Boolean> s : booleans.entrySet()) {
-			out.writeUTF(s.getKey());
-			out.writeBoolean(s.getValue());
-		}
-	}
-
-	private void writeDoubles(DataOutput out) throws IOException {
-		out.writeLong(doubles.size());
-		for (Entry<String, Double> s : doubles.entrySet()) {
-			out.writeUTF(s.getKey());
-			out.writeDouble(s.getValue());
-		}
-	}
-
-	// Hadoop read methods
-
-	@Override
-	public void readFields(DataInput in) throws IOException {
-		readStrings(in);
-		readLongs(in);
-		readIntegers(in);
-		readBooleans(in);
-		readDoubles(in);
-	}
-
-	private void readStrings(DataInput in) throws IOException {
-		final long sizeOfCollection = in.readLong();
-		for (long i = 0; i < sizeOfCollection; ++i) {
-			final String key = in.readUTF();
-			final String value = in.readUTF();
-			strings.put(key, value);
-		}
-	}
-
-	private void readLongs(DataInput in) throws IOException {
-		final long sizeOfCollection = in.readLong();
-		for (long i = 0; i < sizeOfCollection; ++i) {
-			final String key = in.readUTF();
-			final Long value = in.readLong();
-			longs.put(key, value);
-		}
-	}
-
-	private void readIntegers(DataInput in) throws IOException {
-		final long sizeOfCollection = in.readLong();
-		for (long i = 0; i < sizeOfCollection; ++i) {
-			final String key = in.readUTF();
-			final Integer value = in.readInt();
-			integers.put(key, value);
-		}
-	}
-
-	private void readBooleans(DataInput in) throws IOException {
-		final long sizeOfCollection = in.readLong();
-		for (long i = 0; i < sizeOfCollection; ++i) {
-			final String key = in.readUTF();
-			final Boolean value = in.readBoolean();
-			booleans.put(key, value);
-		}
-	}
-
-	private void readDoubles(DataInput in) throws IOException {
-		final long sizeOfCollection = in.readLong();
-		for (long i = 0; i < sizeOfCollection; ++i) {
-			final String key = in.readUTF();
-			final Double value = in.readDouble();
-			doubles.put(key, value);
-		}
-	}
-
-	// test helper methods
-
-	public String getStringForTest(final String key) {
-		return this.strings.get(key);
 	}
 
 }

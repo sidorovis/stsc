@@ -1,5 +1,7 @@
 package stsc.general.simulator.multistarter;
 
+import java.util.List;
+
 public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 
 	private final String name;
@@ -83,4 +85,12 @@ public abstract class MpIterator<T> implements ResetableIterator<T>, Cloneable {
 		}
 		return newIndex;
 	}
+
+	public abstract T getFrom();
+
+	public abstract T getTo();
+
+	public abstract T getStep();
+
+	public abstract List<T> getDomen();
 }

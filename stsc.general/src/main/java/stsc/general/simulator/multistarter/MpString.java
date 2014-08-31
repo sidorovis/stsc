@@ -7,6 +7,7 @@ import java.util.List;
 public class MpString extends MpIterator<String> {
 
 	private final List<String> domen;
+
 	int index;
 
 	public MpString(String name, final String singleElement) throws BadParameterException {
@@ -93,5 +94,25 @@ public class MpString extends MpIterator<String> {
 	@Override
 	public int getIndexByValue(String value) {
 		return Collections.binarySearch(domen, value);
+	}
+
+	@Override
+	public String getFrom() {
+		return domen.get(0);
+	}
+
+	@Override
+	public String getTo() {
+		return domen.get(domen.size() - 1);
+	}
+
+	@Override
+	public String getStep() {
+		return "";
+	}
+
+	@Override
+	public List<String> getDomen() {
+		return domen;
 	}
 }

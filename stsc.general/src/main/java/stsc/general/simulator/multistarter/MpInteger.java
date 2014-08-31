@@ -1,5 +1,7 @@
 package stsc.general.simulator.multistarter;
 
+import java.util.List;
+
 public class MpInteger extends MpIterator<Integer> {
 
 	private final int from;
@@ -89,5 +91,25 @@ public class MpInteger extends MpIterator<Integer> {
 	public int getIndexByValue(Integer value) {
 		final int index = (int) ((value - from) / step);
 		return index;
+	}
+
+	@Override
+	public Integer getFrom() {
+		return from;
+	}
+
+	@Override
+	public Integer getTo() {
+		return to;
+	}
+
+	@Override
+	public Integer getStep() {
+		return step;
+	}
+
+	@Override
+	public List<Integer> getDomen() {
+		return null;
 	}
 }

@@ -27,23 +27,23 @@ public class SimulatorSettingsGeneticList {
 
 	private static Logger logger = LogManager.getLogger("SimulatorSettingsGeneticList");
 
+	private AtomicLong id;
+	private final Random randomizer = new Random();
+
 	private final StockStorage stockStorage;
 	private final FromToPeriod period;
 
 	private final List<GeneticExecutionInitializer> stockInitializers;
 	private final List<GeneticExecutionInitializer> eodInitializers;
 
-	private AtomicLong id;
-	private final Random randomizer = new Random();
-
 	public SimulatorSettingsGeneticList(StockStorage stockStorage, FromToPeriod period, List<GeneticExecutionInitializer> stockInitializers,
 			List<GeneticExecutionInitializer> eodInitializers) {
 		super();
-		this.stockInitializers = stockInitializers;
-		this.eodInitializers = eodInitializers;
+		this.id = new AtomicLong(0);
 		this.stockStorage = stockStorage;
 		this.period = period;
-		this.id = new AtomicLong(0);
+		this.stockInitializers = stockInitializers;
+		this.eodInitializers = eodInitializers;
 	}
 
 	public synchronized SimulatorSettings generateRandom() throws BadAlgorithmException {
@@ -141,7 +141,24 @@ public class SimulatorSettingsGeneticList {
 		return result;
 	}
 
+	public long getId() {
+		return id.get();
+	}
+
 	public StockStorage getStockStorage() {
 		return stockStorage;
 	}
+
+	public FromToPeriod getPeriod() {
+		return period;
+	}
+
+	public List<GeneticExecutionInitializer> getStockInitializers() {
+		return stockInitializers;
+	}
+
+	public List<GeneticExecutionInitializer> getEodInitializers() {
+		return eodInitializers;
+	}
+
 }

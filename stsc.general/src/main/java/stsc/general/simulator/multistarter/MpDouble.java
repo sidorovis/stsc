@@ -1,5 +1,7 @@
 package stsc.general.simulator.multistarter;
 
+import java.util.List;
+
 import stsc.common.Settings;
 
 import com.google.common.math.DoubleMath;
@@ -95,4 +97,23 @@ public class MpDouble extends MpIterator<Double> {
 		return index;
 	}
 
+	@Override
+	public Double getFrom() {
+		return from;
+	}
+
+	@Override
+	public Double getTo() {
+		return to;
+	}
+
+	@Override
+	public Double getStep() {
+		return step;
+	}
+
+	@Override
+	public List<Double> getDomen() {
+		return null;
+	}
 }

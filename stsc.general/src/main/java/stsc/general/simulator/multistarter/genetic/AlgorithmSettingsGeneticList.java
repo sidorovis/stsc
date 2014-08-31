@@ -16,6 +16,7 @@ public class AlgorithmSettingsGeneticList {
 
 	private final FromToPeriod period;
 	private final AlgorithmParameters parameters;
+
 	final Random random = new Random();
 
 	public AlgorithmSettingsGeneticList(final FromToPeriod period, final AlgorithmParameters parameters) {
@@ -200,6 +201,10 @@ public class AlgorithmSettingsGeneticList {
 	private <Type> Type mutate(MpIterator<Type> p, Type leftValue, Type rightValue) {
 		final Type mutatedValue = p.merge(leftValue, rightValue);
 		return mutatedValue;
+	}
+
+	public AlgorithmParameters getParameters() {
+		return parameters;
 	}
 
 	public long size() {
