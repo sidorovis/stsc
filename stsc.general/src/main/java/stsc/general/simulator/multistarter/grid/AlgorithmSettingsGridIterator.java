@@ -130,10 +130,15 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 		public long size() {
 			return parameters.size();
 		}
+
+		public AlgorithmParameters getParameters() {
+			return parameters;
+		}
 	}
 
 	private final FromToPeriod period;
 	private final AlgorithmParameters parameters;
+
 	private boolean finished;
 
 	public AlgorithmSettingsGridIterator(final FromToPeriod period, final boolean finished, final AlgorithmParameters parameters) {
@@ -163,4 +168,5 @@ public class AlgorithmSettingsGridIterator implements ResetableIterable<Algorith
 	public long size() {
 		return parameters.size();
 	}
+
 }
