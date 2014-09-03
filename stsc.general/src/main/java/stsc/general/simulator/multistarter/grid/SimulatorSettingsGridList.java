@@ -16,8 +16,8 @@ public class SimulatorSettingsGridList implements Iterable<SimulatorSettings> {
 	protected final FromToPeriod period;
 	protected final boolean finished;
 
-	SimulatorSettingsGridList(StockStorage stockStorage, FromToPeriod period, List<GridExecutionInitializer> stocks, List<GridExecutionInitializer> eods,
-			boolean finished) {
+	public SimulatorSettingsGridList(StockStorage stockStorage, FromToPeriod period, List<GridExecutionInitializer> stocks,
+			List<GridExecutionInitializer> eods, boolean finished) {
 		this.stockStorage = stockStorage;
 		this.period = period;
 		this.stockInitializers = stocks;
