@@ -11,6 +11,12 @@ stsc.common
 
 Core (smallest) elements for strategy generating: Day, Stock, FromToPeriod, Prices, TimeTracker, UnitedFormatStock and etc.
 
+stsc.distributed.hadoop
+-----------
+
+Distributed hadoop - is a realisation for hadoop calculation.
+
+
 stsc.signals
 ------------
 
