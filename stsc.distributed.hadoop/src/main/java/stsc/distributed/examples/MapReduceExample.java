@@ -1,4 +1,4 @@
-package stsc.distributed.hadoop;
+package stsc.distributed.examples;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package stsc.distributed.hadoop;
+package stsc.distributed.examples;
 
 import java.util.Map;
 import java.util.Properties;
