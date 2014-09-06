@@ -10,6 +10,8 @@ import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -126,6 +128,84 @@ public class Statistics {
 		calculateProbabilityStatistics(init);
 		calculateEquityStatistics(init);
 		equityCurveInMoney = init.equityCurveInMoney;
+	}
+
+	public Statistics(final Map<String, Double> list) {
+		for (Entry<String, Double> i : list.entrySet()) {
+			switch (i.getKey()) {
+			case "getAvGain":
+				setAvGain(i.getValue());
+				break;
+			case "getPeriod":
+				setPeriod(i.getValue());
+				break;
+			case "getFreq":
+				setFreq(i.getValue());
+				break;
+			case "getWinProb":
+				setWinProb(i.getValue());
+				break;
+			case "getAvWin":
+				setAvWin(i.getValue());
+				break;
+			case "getAvLoss":
+				setAvLoss(i.getValue());
+				break;
+			case "getAvWinAvLoss":
+				setAvWinAvLoss(i.getValue());
+				break;
+			case "getMaxWin":
+				setMaxWin(i.getValue());
+				break;
+			case "getMaxLoss":
+				setMaxLoss(i.getValue());
+				break;
+			case "getKelly":
+				setKelly(i.getValue());
+				break;
+			case "getSharpeRatio":
+				setSharpeRatio(i.getValue());
+				break;
+			case "getStartMonthAvGain":
+				setStartMonthAvGain(i.getValue());
+				break;
+			case "getStartMonthStdDevGain":
+				setStartMonthStdDevGain(i.getValue());
+				break;
+			case "getStartMonthMax":
+				setStartMonthMax(i.getValue());
+				break;
+			case "getStartMonthMin":
+				setStartMonthMin(i.getValue());
+				break;
+			case "getMonth12AvGain":
+				setMonth12AvGain(i.getValue());
+				break;
+			case "getMonth12StdDevGain":
+				setMonth12StdDevGain(i.getValue());
+				break;
+			case "getMonth12Min":
+				setMonth12Min(i.getValue());
+				break;
+			case "getMonth12Max":
+				setMonth12Max(i.getValue());
+				break;
+			case "getDdDurationAvGain":
+				setDdDurationAvGain(i.getValue());
+				break;
+			case "getDdDurationMax":
+				setDdDurationMax(i.getValue());
+				break;
+			case "getDdValueAvGain":
+				setDdValueAvGain(i.getValue());
+				break;
+			case "getDdValueMax":
+				setDdValueMax(i.getValue());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	private void calculateProbabilityStatistics(StatisticsInit init) {
@@ -280,6 +360,102 @@ public class Statistics {
 	public double getDdValueMax() {
 		return ddValueMax;
 	}
+
+	//
+
+	private void setAvGain(Double value) {
+		avGain = value;
+	}
+
+	private void setPeriod(Double value) {
+		period = value.intValue();
+	}
+
+	private void setWinProb(Double value) {
+		winProb = value;
+	}
+
+	private void setFreq(Double value) {
+		freq = value;
+	}
+
+	private void setAvWin(Double value) {
+		avWin = value;
+	}
+
+	private void setAvLoss(Double value) {
+		avLoss = value;
+	}
+
+	private void setAvWinAvLoss(Double value) {
+		avWinAvLoss = value;
+	}
+
+	private void setKelly(Double value) {
+		kelly = value;
+	}
+
+	private void setSharpeRatio(Double value) {
+		sharpeRatio = value;
+	}
+
+	private void setMaxWin(Double value) {
+		maxWin = value;
+	}
+
+	private void setMaxLoss(Double value) {
+		maxLoss = value;
+	}
+
+	private void setStartMonthAvGain(Double value) {
+		startMonthAvGain = value;
+	}
+
+	private void setStartMonthStdDevGain(Double value) {
+		startMonthStdDevGain = value;
+	}
+
+	private void setStartMonthMax(Double value) {
+		startMonthMax = value;
+	}
+
+	private void setStartMonthMin(Double value) {
+		startMonthMin = value;
+	}
+
+	private void setMonth12AvGain(Double value) {
+		month12AvGain = value;
+	}
+
+	private void setMonth12StdDevGain(Double value) {
+		month12StdDevGain = value;
+	}
+
+	private void setMonth12Min(Double value) {
+		month12Min = value;
+	}
+
+	private void setMonth12Max(Double value) {
+		month12Max = value;
+	}
+
+	private void setDdDurationAvGain(Double value) {
+		ddDurationAvGain = value;
+	}
+
+	private void setDdDurationMax(Double value) {
+		ddDurationMax = value;
+	}
+
+	private void setDdValueAvGain(Double value) {
+		ddValueAvGain = value;
+	}
+
+	private void setDdValueMax(Double value) {
+		ddValueMax = value;
+	}
+
+	//
 
 	public void print(final String outputFile) throws IOException, IllegalArgumentException, IllegalAccessException {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {

@@ -50,4 +50,14 @@ public class SimulatorSettingsGridList implements Iterable<SimulatorSettings> {
 		return finished;
 	}
 
+	public long size() {
+		long result = 1;
+		for (GridExecutionInitializer ei : stockInitializers) {
+			result *= ei.size();
+		}
+		for (GridExecutionInitializer ei : eodInitializers) {
+			result *= ei.size();
+		}
+		return result;
+	}
 }
