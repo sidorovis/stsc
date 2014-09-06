@@ -6,15 +6,15 @@ import java.util.Map.Entry;
 
 import stsc.general.statistic.Statistics;
 
-public class MaximumLikelihoodComparator implements StatisticsComparator {
+public class CostMaximumLikelihoodComparator implements CostStatisticsComparator {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 
-	public MaximumLikelihoodComparator() {
+	public CostMaximumLikelihoodComparator() {
 		parameters.put("getAvGain", 100.0);
 	}
 
-	public MaximumLikelihoodComparator addParameter(String name, Double value) {
+	public CostMaximumLikelihoodComparator addParameter(String name, Double value) {
 		parameters.put(name, value);
 		return this;
 	}

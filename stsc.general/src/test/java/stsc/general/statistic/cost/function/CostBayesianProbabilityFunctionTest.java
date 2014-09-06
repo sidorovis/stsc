@@ -5,11 +5,12 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class BayesianProbabilityCostFunctionTest extends TestCase {
+public class CostBayesianProbabilityFunctionTest extends TestCase {
+
 	public void testBayesianProbabilityCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final BayesianProbabilityCostFunction bayesian = new BayesianProbabilityCostFunction();
+		final CostBayesianProbabilityFunction bayesian = new CostBayesianProbabilityFunction();
 		bayesian.addLayer().put("getPeriod", 10.0);
 		bayesian.addLayer().put("getAvGain", 12.0);
 		final Double bayesianResult = bayesian.calculate(statistics);

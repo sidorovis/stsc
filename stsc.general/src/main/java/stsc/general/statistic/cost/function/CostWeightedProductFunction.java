@@ -7,11 +7,11 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
-public class WeightedProductCostFunction implements CostFunction {
+public class CostWeightedProductFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 
-	public WeightedProductCostFunction() {
+	public CostWeightedProductFunction() {
 		parameters.put("getAvGain", 1.0);
 	}
 

@@ -11,10 +11,10 @@ import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class MaximumLikelihoodComparatorTest extends TestCase {
+public class CostMaximumLikelihoodComparatorTest extends TestCase {
 
-	public void testMaximumLikelihoodComparatorOnSeveral() {
-		final MaximumLikelihoodComparator comparator = new MaximumLikelihoodComparator();
+	public void testCostMaximumLikelihoodComparatorOnSeveral() {
+		final CostMaximumLikelihoodComparator comparator = new CostMaximumLikelihoodComparator();
 		comparator.addParameter("getKelly", 0.8);
 		comparator.addParameter("getWinProb", 0.4);
 		comparator.addParameter("getMaxWin", 0.9);
@@ -31,8 +31,8 @@ public class MaximumLikelihoodComparatorTest extends TestCase {
 		}
 	}
 
-	public void testStatisticsCompareSelectorWithLikelihood() {
-		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
+	public void testCostStatisticsCompareSelectorWithLikelihood() {
+		final CostMaximumLikelihoodComparator c = new CostMaximumLikelihoodComparator();
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
 
 		sel.addStrategy(TradingStrategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));
@@ -47,8 +47,8 @@ public class MaximumLikelihoodComparatorTest extends TestCase {
 		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 
-	public void testStatisticsCompareSelectorWithLikelihoodWithKelly() {
-		final MaximumLikelihoodComparator c = new MaximumLikelihoodComparator();
+	public void testCostStatisticsCompareSelectorWithLikelihoodWithKelly() {
+		final CostMaximumLikelihoodComparator c = new CostMaximumLikelihoodComparator();
 		c.addParameter("getKelly", -10.0);
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
 		sel.addStrategy(TradingStrategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));

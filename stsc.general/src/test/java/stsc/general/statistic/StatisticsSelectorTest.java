@@ -6,7 +6,7 @@ import java.util.List;
 
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.StatisticsByCostSelector;
-import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestGridSimulatorSettings;
 import stsc.general.testhelper.TestHelper;
@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 
 public class StatisticsSelectorTest extends TestCase {
 	public void testStatisticsSelector() {
-		final WeightedSumCostFunction compareMethod = new WeightedSumCostFunction();
+		final CostWeightedSumFunction compareMethod = new CostWeightedSumFunction();
 		final StrategySelector statisticsSelector = new StatisticsByCostSelector(2, compareMethod);
 
 		final List<Double> values = new ArrayList<>();

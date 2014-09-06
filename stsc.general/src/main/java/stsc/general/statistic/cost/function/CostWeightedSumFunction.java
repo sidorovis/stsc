@@ -8,12 +8,12 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
-public class WeightedSumCostFunction implements CostFunction {
+public class CostWeightedSumFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 	private final Object[] emptyValues = {};
 
-	public WeightedSumCostFunction() {
+	public CostWeightedSumFunction() {
 		parameters.put("getAvGain", 1.0);
 	}
 

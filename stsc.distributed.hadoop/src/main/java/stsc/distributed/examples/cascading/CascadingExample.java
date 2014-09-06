@@ -1,4 +1,4 @@
-package stsc.distributed.examples;
+package stsc.distributed.examples.cascading;
 
 import java.util.Map;
 import java.util.Properties;
@@ -31,7 +31,7 @@ import cascading.tap.hadoop.Hfs;
 import cascading.tap.hadoop.Lfs;
 import cascading.tuple.Fields;
 
-public class Main {
+class CascadingExample {
 	private static class ImportCrawlDataAssembly extends SubAssembly {
 
 		private static final long serialVersionUID = 205951867261184146L;
@@ -91,7 +91,7 @@ public class Main {
 	public static void main(String[] args) {
 		// set the current job jar
 		Properties properties = new Properties();
-		AppProps.setApplicationJarClass(properties, Main.class);
+		AppProps.setApplicationJarClass(properties, CascadingExample.class);
 		FlowConnector flowConnector = new HadoopFlowConnector(properties);
 		String inputPath = args[0];
 		String pagesPath = args[1] + "/pages/";

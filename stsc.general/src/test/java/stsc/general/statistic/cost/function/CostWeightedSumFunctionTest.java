@@ -5,11 +5,11 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class WeightedSumCostFunctionTest extends TestCase {
-	public void testCostFunction() {
+public class CostWeightedSumFunctionTest extends TestCase {
+	public void testCostWeightedSumFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final WeightedSumCostFunction function = new WeightedSumCostFunction();
+		final CostWeightedSumFunction function = new CostWeightedSumFunction();
 		final Double result = function.calculate(statistics);
 		assertEquals(0.246987, result, Settings.doubleEpsilon);
 

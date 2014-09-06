@@ -4,5 +4,5 @@ import java.util.Comparator;
 
 import stsc.general.statistic.Statistics;
 
-public interface StatisticsComparator extends Comparator<Statistics> {
+public interface CostStatisticsComparator extends Comparator<Statistics> {
 }

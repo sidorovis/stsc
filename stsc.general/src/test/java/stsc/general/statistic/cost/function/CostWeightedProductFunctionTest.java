@@ -5,11 +5,11 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class WeightedProductCostFunctionTest extends TestCase {
-	public void testWeightedProductCostFunction() {
+public class CostWeightedProductFunctionTest extends TestCase {
+	public void testCostWeightedProductFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		WeightedProductCostFunction function = new WeightedProductCostFunction();
+		CostWeightedProductFunction function = new CostWeightedProductFunction();
 		function.addParameter("getKelly", 0.8);
 		final Double result = function.calculate(statistics);
 		assertEquals(0.277441, result, Settings.doubleEpsilon);

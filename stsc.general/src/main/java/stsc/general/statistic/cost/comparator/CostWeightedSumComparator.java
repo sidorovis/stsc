@@ -6,15 +6,15 @@ import java.util.Map.Entry;
 
 import stsc.general.statistic.Statistics;
 
-public class WeightedSumComparator implements StatisticsComparator {
+public class CostWeightedSumComparator implements CostStatisticsComparator {
 
 	private final Map<String, Double> parameters = new HashMap<>();
 
-	public WeightedSumComparator() {
+	public CostWeightedSumComparator() {
 		parameters.put("getAvGain", 1.0);
 	}
 
-	public WeightedSumComparator addParameter(String name, Double value) {
+	public CostWeightedSumComparator addParameter(String name, Double value) {
 		parameters.put(name, value);
 		return this;
 	}

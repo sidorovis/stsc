@@ -4,14 +4,14 @@ import stsc.common.Settings;
 import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
-import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.testhelper.TestGeneticSimulatorSettings;
 import junit.framework.TestCase;
 
 public class StrategyGeneticSearcherTest extends TestCase {
 
 	public void testStrategyGeneticSearcher() throws InterruptedException, StrategySearcherException {
-		final WeightedSumCostFunction costFunction = new WeightedSumCostFunction();
+		final CostWeightedSumFunction costFunction = new CostWeightedSumFunction();
 		costFunction.addParameter("getWinProb", 1.2);
 		costFunction.addParameter("getKelly", 0.6);
 		costFunction.addParameter("getDdDurationAvGain", 0.4);

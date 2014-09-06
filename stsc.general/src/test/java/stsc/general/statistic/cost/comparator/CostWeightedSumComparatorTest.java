@@ -6,11 +6,11 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class WeightedSumComparatorTest extends TestCase {
-	public void testWeightedSumComparator() {
+public class CostWeightedSumComparatorTest extends TestCase {
+	public void testCostWeightedSumComparator() {
 		final Statistics stat = TestHelper.getStatistics();
 
-		final WeightedSumComparator comparator = new WeightedSumComparator();
+		final CostWeightedSumComparator comparator = new CostWeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 
 		assertEquals(0, comparator.compare(stat, stat));
@@ -22,8 +22,8 @@ public class WeightedSumComparatorTest extends TestCase {
 		assertEquals(1, comparator.compare(newStat, stat));
 	}
 
-	public void testWeightedSumComparatorOnSeveralStatistics() {
-		final WeightedSumComparator comparator = new WeightedSumComparator();
+	public void testCostWeightedSumComparatorOnSeveralStatistics() {
+		final CostWeightedSumComparator comparator = new CostWeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 		comparator.addParameter("getWinProb", 0.4);
 		comparator.addParameter("getMaxWin", 0.9);

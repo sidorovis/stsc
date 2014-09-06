@@ -3,7 +3,7 @@ package stsc.general.statistic.cost.comparator;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.cost.function.CostFunction;
 
-public class CostFunctionToComparator implements StatisticsComparator {
+public class CostFunctionToComparator implements CostStatisticsComparator {
 
 	private final CostFunction costFunction;
 

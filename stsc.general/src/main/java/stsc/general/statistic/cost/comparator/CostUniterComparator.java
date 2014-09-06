@@ -6,21 +6,21 @@ import java.util.Map.Entry;
 
 import stsc.general.statistic.Statistics;
 
-public class ComparatorUniter implements StatisticsComparator {
+public class CostUniterComparator implements CostStatisticsComparator {
 
-	final private Map<StatisticsComparator, Double> parameters = new HashMap<StatisticsComparator, Double>();
+	final private Map<CostStatisticsComparator, Double> parameters = new HashMap<CostStatisticsComparator, Double>();
 
-	public ComparatorUniter() {
+	public CostUniterComparator() {
 	}
 
-	public ComparatorUniter addComparator(StatisticsComparator sc, Double d) {
+	public CostUniterComparator addComparator(CostStatisticsComparator sc, Double d) {
 		parameters.put(sc, d);
 		return this;
 	}
 
 	public int compare(Statistics o1, Statistics o2) {
 		Double sumResult = 0.0;
-		for (Entry<StatisticsComparator, Double> v : parameters.entrySet()) {
+		for (Entry<CostStatisticsComparator, Double> v : parameters.entrySet()) {
 			final Double value = Double.valueOf(v.getKey().compare(o1, o2));
 			sumResult += value * v.getValue();
 		}

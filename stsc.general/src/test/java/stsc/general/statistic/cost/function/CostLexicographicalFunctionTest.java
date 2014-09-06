@@ -5,11 +5,11 @@ import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
-public class LexicographicalCostFunctionTest extends TestCase {
+public class CostLexicographicalFunctionTest extends TestCase {
 	public void testLexicographicalCostFunction() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();
+		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();
 		c10.addNextValue("getPeriod");
 		c10.addNextValue("getAvGain");
 		final Double c10result = c10.calculate(statistics);
@@ -18,7 +18,7 @@ public class LexicographicalCostFunctionTest extends TestCase {
 	public void testLexicographicalCostFunction100() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final LexicographicalCostFunction c100 = new LexicographicalCostFunction(100);
+		final CostLexicographicalFunction c100 = new CostLexicographicalFunction(100);
 		c100.addNextValue("getPeriod");
 		c100.addNextValue("getAvGain");
 		c100.addNextValue("getAvGain");
@@ -29,7 +29,7 @@ public class LexicographicalCostFunctionTest extends TestCase {
 	public void testLexicographicalCostFunctionAnotherOrder() {
 		final Statistics statistics = TestHelper.getStatistics();
 
-		final LexicographicalCostFunction c10 = new LexicographicalCostFunction();
+		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();
 		c10.addNextValue("getAvGain");
 		c10.addNextValue("getPeriod");
 		final Double c10result = c10.calculate(statistics);

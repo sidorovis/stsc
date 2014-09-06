@@ -6,15 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
-import stsc.general.statistic.cost.comparator.StatisticsComparator;
+import stsc.general.statistic.cost.comparator.CostStatisticsComparator;
 import stsc.general.strategy.TradingStrategy;
 
 public class StatisticsCompareSelector extends StrategySelector {
 
 	private final class StrategyComparator implements Comparator<TradingStrategy> {
-		private StatisticsComparator comparator;
+		private CostStatisticsComparator comparator;
 
-		StrategyComparator(StatisticsComparator comparator) {
+		StrategyComparator(CostStatisticsComparator comparator) {
 			this.comparator = comparator;
 		}
 
@@ -27,7 +27,7 @@ public class StatisticsCompareSelector extends StrategySelector {
 
 	private final TreeSet<TradingStrategy> select;
 
-	public StatisticsCompareSelector(int selectLastElements, StatisticsComparator comparator) {
+	public StatisticsCompareSelector(int selectLastElements, CostStatisticsComparator comparator) {
 		super(selectLastElements);
 		this.select = new TreeSet<TradingStrategy>(new StrategyComparator(comparator));
 	}

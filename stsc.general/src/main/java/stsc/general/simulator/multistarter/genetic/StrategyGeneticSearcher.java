@@ -23,7 +23,7 @@ import stsc.general.simulator.multistarter.StrategySearcher;
 import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.CostFunction;
-import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 
 public class StrategyGeneticSearcher implements StrategySearcher {
@@ -73,7 +73,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount, int maxSelectionIndex,
 			int populationSize) throws InterruptedException {
-		this(algorithmSettings, selector, threadAmount, new WeightedSumCostFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
+		this(algorithmSettings, selector, threadAmount, new CostWeightedSumFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
 				CROSSOVER_DEFAULT_PART);
 	}
 

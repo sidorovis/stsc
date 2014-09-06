@@ -17,7 +17,7 @@ import stsc.general.simulator.multistarter.genetic.StrategyGeneticSearcher;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
-import stsc.general.statistic.cost.function.WeightedSumCostFunction;
+import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 import stsc.storage.AlgorithmsStorage;
 
@@ -71,7 +71,7 @@ final class GetBestStatistics {
 
 		final SimulatorSettingsGeneticList list = settings.getList();
 
-		final WeightedSumCostFunction cf = new WeightedSumCostFunction();
+		final CostWeightedSumFunction cf = new CostWeightedSumFunction();
 		cf.addParameter("getAvGain", 0.5);
 		cf.addParameter("getWinProb", 1000.0);
 		cf.addParameter("getKelly", 0.6);

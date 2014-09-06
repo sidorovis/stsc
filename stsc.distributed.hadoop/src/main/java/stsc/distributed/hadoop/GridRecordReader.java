@@ -12,7 +12,7 @@ import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 
-public class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWritable> {
+class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWritable> {
 
 	private LongWritable id;
 	private final SimulatorSettingsGridList list;

@@ -5,16 +5,16 @@ import java.util.List;
 
 import stsc.general.statistic.Statistics;
 
-public class LexicographicalCostFunction implements CostFunction {
+public class CostLexicographicalFunction implements CostFunction {
 
 	final List<String> order = new ArrayList<>();
 	private final double multiplikator;
 
-	public LexicographicalCostFunction() {
+	public CostLexicographicalFunction() {
 		this(10.0);
 	}
 
-	public LexicographicalCostFunction(double multiplikator) {
+	public CostLexicographicalFunction(double multiplikator) {
 		this.multiplikator = multiplikator;
 
 	}

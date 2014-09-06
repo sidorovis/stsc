@@ -5,15 +5,15 @@ import java.util.Iterator;
 import org.joda.time.LocalDate;
 
 import stsc.common.Settings;
-import stsc.general.statistic.cost.comparator.StatisticsComparator;
-import stsc.general.statistic.cost.comparator.WeightedSumComparator;
+import stsc.general.statistic.cost.comparator.CostStatisticsComparator;
+import stsc.general.statistic.cost.comparator.CostWeightedSumComparator;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestHelper;
 import junit.framework.TestCase;
 
 public class StatisticsCompareSelectorTest extends TestCase {
 	public void testStatisticsCompareSelector() {
-		final StatisticsComparator c = new WeightedSumComparator();
+		final CostStatisticsComparator c = new CostWeightedSumComparator();
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
 
 		sel.addStrategy(TradingStrategy.createTest(TestHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));

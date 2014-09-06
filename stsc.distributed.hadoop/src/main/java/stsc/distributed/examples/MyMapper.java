@@ -4,7 +4,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class MyMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+class MyMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
 
 	private final static LongWritable one = new LongWritable(1);
 
