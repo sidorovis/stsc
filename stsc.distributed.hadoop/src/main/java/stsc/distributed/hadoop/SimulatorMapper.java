@@ -13,7 +13,7 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
 import stsc.general.strategy.TradingStrategy;
 
-class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable> {
+class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, LongWritable, SimulatorSettingsWritable> {
 
 	final private StockStorage stockStorage;
 
@@ -29,7 +29,7 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Lo
 			final Statistics statistics = simulator.getStatistics();
 			final TradingStrategy ts = new TradingStrategy(simulatorSettings, statistics);
 			final TradingStrategyWritable tsw = new TradingStrategyWritable(ts);
-			context.write(key, tsw);
+			context.write(key, value);
 		} catch (BadAlgorithmException | BadSignalException e) {
 			throw new InterruptedException(e.getMessage());
 		}

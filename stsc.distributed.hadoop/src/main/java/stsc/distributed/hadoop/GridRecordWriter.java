@@ -13,10 +13,10 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
-class GridRecordWriter extends RecordWriter<LongWritable, TradingStrategyWritable> {
+class GridRecordWriter extends RecordWriter<LongWritable, SimulatorSettingsWritable> {
 
 	@Override
-	public void write(LongWritable key, TradingStrategyWritable value) throws IOException, InterruptedException {
+	public void write(LongWritable key, SimulatorSettingsWritable value) throws IOException, InterruptedException {
 		System.out.println("OUT");
 	}
 
@@ -28,10 +28,10 @@ class GridRecordWriter extends RecordWriter<LongWritable, TradingStrategyWritabl
 
 }
 
-class GridOutputFormat extends OutputFormat<LongWritable, TradingStrategyWritable> {
+class GridOutputFormat extends OutputFormat<LongWritable, SimulatorSettingsWritable> {
 
 	@Override
-	public RecordWriter<LongWritable, TradingStrategyWritable> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
+	public RecordWriter<LongWritable, SimulatorSettingsWritable> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
 		return new GridRecordWriter();
 	}
 
