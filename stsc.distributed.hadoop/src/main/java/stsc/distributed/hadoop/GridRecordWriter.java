@@ -2,7 +2,6 @@ package stsc.distributed.hadoop;
 
 import java.io.IOException;
 
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -11,10 +10,13 @@ import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-class GridRecordWriter extends RecordWriter<LongWritable, ArrayWritable> {
+import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
+import stsc.distributed.hadoop.types.TradingStrategyWritable;
+
+class GridRecordWriter extends RecordWriter<LongWritable, TradingStrategyWritable> {
 
 	@Override
-	public void write(LongWritable key, ArrayWritable value) throws IOException, InterruptedException {
+	public void write(LongWritable key, TradingStrategyWritable value) throws IOException, InterruptedException {
 		System.out.println("OUT");
 	}
 
@@ -26,10 +28,10 @@ class GridRecordWriter extends RecordWriter<LongWritable, ArrayWritable> {
 
 }
 
-class GridOutputFormat extends OutputFormat<LongWritable, ArrayWritable> {
+class GridOutputFormat extends OutputFormat<LongWritable, TradingStrategyWritable> {
 
 	@Override
-	public RecordWriter<LongWritable, ArrayWritable> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
+	public RecordWriter<LongWritable, TradingStrategyWritable> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
 		return new GridRecordWriter();
 	}
 

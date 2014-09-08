@@ -3,10 +3,13 @@ package stsc.distributed.hadoop;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+
+import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
 public class HadoopStarterExample extends Configured implements Tool {
 
@@ -19,8 +22,11 @@ public class HadoopStarterExample extends Configured implements Tool {
 		job.setInputFormatClass(GridInputFormat.class);
 		job.setOutputFormatClass(GridOutputFormat.class);
 
+		job.setOutputKeyClass(LongWritable.class);
+		job.setOutputValueClass(TradingStrategyWritable.class);
+
 		job.setMapperClass(SimulatorMapper.class);
-		job.setReducerClass(SimulatorReducer.class);
+		// job.setReducerClass(SimulatorReducer.class);
 
 		job.waitForCompletion(true);
 		return 0;

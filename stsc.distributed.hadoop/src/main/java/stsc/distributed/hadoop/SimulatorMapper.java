@@ -17,8 +17,8 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Lo
 
 	final private StockStorage stockStorage;
 
-	public SimulatorMapper(final StockStorage stockStorage) {
-		this.stockStorage = stockStorage;
+	public SimulatorMapper() {
+		this.stockStorage = StockStorageSingleton.getInstance();
 	}
 
 	@Override
