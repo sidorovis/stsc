@@ -10,6 +10,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
+import stsc.distributed.hadoop.types.StatisticsWritable;
 import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
 public class HadoopStarterExample extends Configured implements Tool {
@@ -22,9 +23,13 @@ public class HadoopStarterExample extends Configured implements Tool {
 
 		job.setInputFormatClass(GridInputFormat.class);
 		job.setOutputFormatClass(GridOutputFormat.class);
+//		job.setOutputFormatClass(GridOutputFormat.class);
 
+		job.setMapOutputKeyClass(LongWritable.class);
+		job.setMapOutputValueClass(TradingStrategyWritable.class);
+		
 		job.setOutputKeyClass(LongWritable.class);
-		job.setOutputValueClass(SimulatorSettingsWritable.class);
+		job.setOutputValueClass(TradingStrategyWritable.class);
 
 		job.setMapperClass(SimulatorMapper.class);
 		job.setReducerClass(SimulatorReducer.class);

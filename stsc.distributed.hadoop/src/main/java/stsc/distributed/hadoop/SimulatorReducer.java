@@ -25,7 +25,7 @@ import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.CostWeightedProductFunction;
 import stsc.general.strategy.TradingStrategy;
 
-class SimulatorReducer extends Reducer<LongWritable, SimulatorSettingsWritable, LongWritable, SimulatorSettingsWritable> {
+class SimulatorReducer extends Reducer<LongWritable, TradingStrategyWritable, LongWritable, TradingStrategyWritable> {
 
 	private final StrategySelector strategySelector;
 
@@ -34,20 +34,20 @@ class SimulatorReducer extends Reducer<LongWritable, SimulatorSettingsWritable, 
 	}
 
 	@Override
-	protected void reduce(LongWritable key, Iterable<SimulatorSettingsWritable> values, Context context) throws IOException, InterruptedException {
-		// final ArrayWritable answer = new
-		// ArrayWritable(StatisticsWritable.class);
-		// for (TradingStrategyWritable v : values) {
-		// strategySelector.addStrategy(v.getTradingStrategy());
-		// }
-		// final List<TradingStrategy> list = strategySelector.getStrategies();
-		// final Writable[] array = new Writable[list.size()];
-		// int index = 0;
-		// for (TradingStrategy ts : list) {
-		// array[index] = new TradingStrategyWritable(ts);
-		// }
-		// answer.set(array);
-		context.write(key, values.iterator().next());
+	protected void reduce(LongWritable key, Iterable<TradingStrategyWritable> values, Context context) throws IOException, InterruptedException {
+
+		//		final ArrayWritable answer = new ArrayWritable(StatisticsWritable.class);
+//		for (TradingStrategyWritable v : values) {
+//			strategySelector.addStrategy(v.getTradingStrategy());
+//		}
+//		final List<TradingStrategy> list = strategySelector.getStrategies();
+//		final Writable[] array = new Writable[list.size()];
+//		int index = 0;
+//		for (TradingStrategy ts : list) {
+//			array[index] = new TradingStrategyWritable(ts);
+//		}
+//		answer.set(array);
+//		context.write(key, values.iterator().next());
 	}
 
 }
