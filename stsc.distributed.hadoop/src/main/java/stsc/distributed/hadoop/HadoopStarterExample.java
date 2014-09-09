@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
@@ -23,7 +24,6 @@ public class HadoopStarterExample extends Configured implements Tool {
 
 		job.setInputFormatClass(GridInputFormat.class);
 		job.setOutputFormatClass(GridOutputFormat.class);
-//		job.setOutputFormatClass(GridOutputFormat.class);
 
 		job.setMapOutputKeyClass(LongWritable.class);
 		job.setMapOutputValueClass(TradingStrategyWritable.class);

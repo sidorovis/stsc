@@ -1,6 +1,7 @@
 package stsc.distributed.hadoop;
 
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import stsc.common.BadSignalException;
@@ -10,8 +11,10 @@ import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.distributed.hadoop.types.TradingStrategyWritable;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
 import stsc.general.statistic.Statistics;
 import stsc.general.strategy.TradingStrategy;
+import stsc.general.testhelper.TestGeneticSimulatorSettings;
 
 class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable> {
 
@@ -24,7 +27,7 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Lo
 	@Override
 	protected void map(LongWritable key, SimulatorSettingsWritable value, Context context) throws java.io.IOException, InterruptedException {
 		try {
-			final SimulatorSettings simulatorSettings = value.getSimulatorSettings(stockStorage);
+			final SimulatorSettings simulatorSettings = getSettings(); // value.getSimulatorSettings(stockStorage);
 			final Simulator simulator = new Simulator(simulatorSettings);
 			final Statistics statistics = simulator.getStatistics();
 			final TradingStrategy ts = new TradingStrategy(simulatorSettings, statistics);
@@ -34,5 +37,10 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Lo
 			throw new InterruptedException(e.getMessage());
 		}
 	};
+
+	private SimulatorSettings getSettings() throws BadAlgorithmException {
+		final SimulatorSettingsGeneticList list = TestGeneticSimulatorSettings.getGeneticList();
+		return list.generateRandom();
+	}
 
 }

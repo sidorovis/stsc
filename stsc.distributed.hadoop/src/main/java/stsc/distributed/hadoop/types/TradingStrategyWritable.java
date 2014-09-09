@@ -21,6 +21,13 @@ public class TradingStrategyWritable implements Writable {
 		this.tradingStrategy = ts;
 	}
 
+	protected TradingStrategyWritable() {
+	}
+
+	public void setStockStorage(StockStorage stockStorage) {
+		this.stockStorage = stockStorage;
+	}
+
 	public TradingStrategyWritable(StockStorage stockStorage) {
 		this.stockStorage = stockStorage;
 		this.tradingStrategy = null;
@@ -30,8 +37,10 @@ public class TradingStrategyWritable implements Writable {
 	public void write(DataOutput out) throws IOException {
 		final SimulatorSettings settings = tradingStrategy.getSettings();
 		final Statistics statistics = tradingStrategy.getStatistics();
-		new SimulatorSettingsWritable(settings).write(out);
-		new StatisticsWritable(statistics).write(out);
+		final SimulatorSettingsWritable ssw = new SimulatorSettingsWritable(settings);
+		ssw.write(out);
+		final StatisticsWritable sw = new StatisticsWritable(statistics);
+		sw.write(out);
 	}
 
 	@Override
