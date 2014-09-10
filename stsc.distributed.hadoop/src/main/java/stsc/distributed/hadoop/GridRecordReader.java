@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputFormat;
@@ -18,17 +19,18 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.testhelper.TestGridSimulatorSettings;
 
 class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWritable> {
 
-	private LongWritable id;
+	private long id;
 	private Iterator<SimulatorSettings> iterator;
+	private SimulatorSettings current;
 	private long size;
 
 	public GridRecordReader(final SimulatorSettingsGridList list) {
-		this.id = new LongWritable(0);
+		this.id = 0;
 		this.iterator = list.iterator();
+		this.current = iterator.next();
 		this.size = list.size();
 	}
 
@@ -44,20 +46,20 @@ class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWrita
 
 	@Override
 	public LongWritable getCurrentKey() throws IOException, InterruptedException {
-		final LongWritable result = id;
-		id = new LongWritable(id.get() + 1);
-		return result;
+		id = current.getId();
+		return new LongWritable(id);
 	}
 
 	@Override
 	public SimulatorSettingsWritable getCurrentValue() throws IOException, InterruptedException {
-		final SimulatorSettings result = iterator.next();
-		return new SimulatorSettingsWritable(result);
+		final SimulatorSettingsWritable result = new SimulatorSettingsWritable(current);
+		current = iterator.next();
+		return result;
 	}
 
 	@Override
 	public float getProgress() throws IOException, InterruptedException {
-		return ((float) id.get()) / size;
+		return ((float) id) / size;
 	}
 
 	@Override
@@ -69,24 +71,20 @@ class GridInputSplit extends InputSplit implements Writable {
 
 	@Override
 	public long getLength() throws IOException, InterruptedException {
-		return 2;
+		return 1;
 	}
 
 	@Override
 	public String[] getLocations() throws IOException, InterruptedException {
-		return new String[] { "main1", "main2" };
+		return new String[] {};
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeLong(2);
-		System.out.println("GridInputSplit.write");
 	}
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		final long l = in.readLong();
-		System.out.println("GridInputSplit.readFields: " + l);
 	}
 
 }
@@ -96,14 +94,16 @@ class GridInputFormat extends InputFormat<LongWritable, SimulatorSettingsWritabl
 	final SimulatorSettingsGridList list;
 
 	public GridInputFormat() {
-		this.list = TestGridSimulatorSettings.getSmallGridList();
+		this.list = HadoopStaticDataSingleton.getGridList();
+		Validate.notNull(this.list, "SimulatorSettingsGridList should not be null for " + GridInputFormat.class.getName());
 	}
 
 	@Override
 	public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-		final GridInputSplit gis = new GridInputSplit();
-		final List<InputSplit> splits = new ArrayList<InputSplit>();
-		splits.add(gis);
+		final List<InputSplit> splits = new ArrayList<InputSplit>((int) list.size());
+		for (int i = 0; i < list.size(); i++) {
+			splits.add(new GridInputSplit());
+		}
 		return splits;
 	}
 

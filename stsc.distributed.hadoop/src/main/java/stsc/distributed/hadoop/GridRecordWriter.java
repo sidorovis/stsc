@@ -3,7 +3,6 @@ package stsc.distributed.hadoop;
 import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.OutputCommitter;
@@ -11,7 +10,6 @@ import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
 class GridRecordWriter extends RecordWriter<LongWritable, TradingStrategyWritable> {

@@ -4,30 +4,27 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
-import stsc.distributed.hadoop.types.StatisticsWritable;
 import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
-public class HadoopStarterExample extends Configured implements Tool {
+public class GridHadoopStarterExample extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
 		@SuppressWarnings("deprecation")
 		final Job job = new Job(new JobConf(this.getConf()), "StscOnHadoopExample");
-		job.setJarByClass(HadoopStarterExample.class);
+		job.setJarByClass(GridHadoopStarterExample.class);
 
 		job.setInputFormatClass(GridInputFormat.class);
 		job.setOutputFormatClass(GridOutputFormat.class);
 
 		job.setMapOutputKeyClass(LongWritable.class);
 		job.setMapOutputValueClass(TradingStrategyWritable.class);
-		
+
 		job.setOutputKeyClass(LongWritable.class);
 		job.setOutputValueClass(TradingStrategyWritable.class);
 
@@ -40,7 +37,7 @@ public class HadoopStarterExample extends Configured implements Tool {
 
 	public static void main(String[] args) throws IOException {
 		try {
-			ToolRunner.run(new HadoopStarterExample(), args);
+			ToolRunner.run(new GridHadoopStarterExample(), args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,8 +1,14 @@
 package stsc.distributed.hadoop;
 
+import java.io.IOException;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.MapContext;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.map.WrappedMapper;
 
 import stsc.common.BadSignalException;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -18,10 +24,12 @@ import stsc.general.testhelper.TestGeneticSimulatorSettings;
 
 class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable> {
 
-	final private StockStorage stockStorage;
-
 	public SimulatorMapper() {
-		this.stockStorage = StockStorageSingleton.getInstance();
+	}
+
+	@Override
+	protected void setup(Context context) throws IOException, InterruptedException {
+
 	}
 
 	@Override
@@ -41,6 +49,16 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Lo
 	private SimulatorSettings getSettings() throws BadAlgorithmException {
 		final SimulatorSettingsGeneticList list = TestGeneticSimulatorSettings.getGeneticList();
 		return list.generateRandom();
+	}
+
+}
+
+class SimuatorMapContext extends WrappedMapper<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable>.Context {
+
+	public SimuatorMapContext(WrappedMapper<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable> wrappedMapper,
+			MapContext<LongWritable, SimulatorSettingsWritable, LongWritable, TradingStrategyWritable> mapContext) {
+		wrappedMapper.super(mapContext);
+		// TODO Auto-generated constructor stub
 	}
 
 }
