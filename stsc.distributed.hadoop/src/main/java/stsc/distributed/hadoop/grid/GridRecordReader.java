@@ -1,4 +1,4 @@
-package stsc.distributed.hadoop;
+package stsc.distributed.hadoop.grid;
 
 import java.io.DataInput;
 import java.io.DataOutput;

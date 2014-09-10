@@ -1,4 +1,4 @@
-package stsc.distributed.hadoop;
+package stsc.distributed.hadoop.grid;
 
 import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
