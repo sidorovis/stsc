@@ -20,7 +20,14 @@ class SimulatorReducer extends Reducer<SimulatorSettingsWritable, StatisticsWrit
 
 	public SimulatorReducer() {
 		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
-		this.strategySelector = new StatisticsByCostSelector(100, new CostWeightedProductFunction());
+		final CostWeightedProductFunction cf = new CostWeightedProductFunction();
+		cf.addParameter("getWinProb", 2.5);
+		cf.addParameter("getAvLoss", -1.0);
+		cf.addParameter("getAvWin", 1.0);
+		cf.addParameter("getStartMonthAvGain", 1.2);
+		cf.addParameter("ddDurationAvGain", -1.2);
+		cf.addParameter("ddValueAvGain", -1.2);
+		this.strategySelector = new StatisticsByCostSelector(150, cf);
 	}
 
 	@Override

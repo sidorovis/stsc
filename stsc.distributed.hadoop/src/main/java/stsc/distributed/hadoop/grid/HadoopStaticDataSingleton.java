@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 
+import stsc.algorithms.In;
+import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
+import stsc.algorithms.eod.primitive.PositionNDayMStocks;
+import stsc.algorithms.stock.factors.primitive.Ema;
+import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.UnitedFormatStock;
@@ -67,33 +72,22 @@ class HadoopStaticDataSingleton {
 	}
 
 	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException, BadAlgorithmException {
-		settings.addStock("in", algoStockName("In"), "e", Arrays.asList(new String[] { "open" }));
-		settings.addStock("ema", algoStockName("Ema"),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.6)).add(new MpSubExecution("", "in")));
+		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
+		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.2))
+				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
-				algoStockName("Level"),
+				algoStockName(Level.class.getSimpleName()),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 16)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
-		// new MpSubExecution("", Arrays.asList(new String[] { "ema", "in"
-		// }))));
-		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side", Arrays.asList(new String[] { "long", "short" }));
-		// settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side",
-		// Arrays.asList(new String[] { "long", "short" }));
+		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
 
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
-		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" })));
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level" })));
-		// final AlgorithmSettingsIteratorFactory factoryPositionSide = new
-		// AlgorithmSettingsIteratorFactory(period);
-		// factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new
-		// String[] { "ema", "level", "in" })));
-		// factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new
-		// String[] { "level", "ema" })));
-		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
-		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, 10));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, 10));
 		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));
-		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
+		settings.addEod("pnm", algoEodName(PositionNDayMStocks.class.getSimpleName()), factoryPositionSide);
 	}
 
 	private static String algoStockName(String aname) throws BadAlgorithmException {

@@ -35,7 +35,7 @@ class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, Si
 			final Statistics statistics = simulator.getStatistics();
 			context.write(value, new StatisticsWritable(statistics));
 		} catch (BadAlgorithmException | BadSignalException e) {
-			throw new InterruptedException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
 	};
 }
