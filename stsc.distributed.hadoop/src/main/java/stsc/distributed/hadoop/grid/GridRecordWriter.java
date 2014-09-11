@@ -39,6 +39,7 @@ class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, Statistic
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter("output.txt"))) {
 			bw.append(String.valueOf(tradingStrategies.size()) + "\n");
 			for (TradingStrategy ts : tradingStrategies) {
+				bw.append(ts.getSettings().getId() + "\n");
 				bw.append(ts.getSettings().toString());
 				bw.append(ts.getStatistics().toString());
 			}

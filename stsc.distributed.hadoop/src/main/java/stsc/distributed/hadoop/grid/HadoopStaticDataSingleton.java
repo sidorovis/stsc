@@ -78,7 +78,7 @@ class HadoopStaticDataSingleton {
 		settings.addStock(
 				"level",
 				algoStockName(Level.class.getSimpleName()),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 16)).add(
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 1)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
 		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
 
@@ -86,7 +86,7 @@ class HadoopStaticDataSingleton {
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level" })));
 		factoryPositionSide.add(new MpInteger("n", 1, 32, 10));
 		factoryPositionSide.add(new MpInteger("m", 1, 32, 10));
-		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 30000.0));
 		settings.addEod("pnm", algoEodName(PositionNDayMStocks.class.getSimpleName()), factoryPositionSide);
 	}
 
