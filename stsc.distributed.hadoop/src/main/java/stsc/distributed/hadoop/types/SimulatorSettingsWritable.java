@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.hadoop.io.WritableComparable;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
@@ -16,7 +18,7 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
 
-public class SimulatorSettingsWritable extends MapEasyWritable {
+public class SimulatorSettingsWritable extends MapEasyWritable implements WritableComparable<SimulatorSettingsWritable> {
 
 	private static final String SIMULATOR_SETTINGS_ID = "_SimulatorSettingsId";
 
@@ -51,6 +53,7 @@ public class SimulatorSettingsWritable extends MapEasyWritable {
 	private static final String VALUE_POSTFIX = ".value";
 
 	// will be filled in the middle of generating
+	private long id;
 	private FromToPeriod period;
 
 	protected SimulatorSettingsWritable() {
@@ -59,6 +62,7 @@ public class SimulatorSettingsWritable extends MapEasyWritable {
 	// SimulatorSettings -> SimulatorSettingsWritable
 	public SimulatorSettingsWritable(final SimulatorSettings ss) {
 		this();
+		id = ss.getId();
 		longs.put(SIMULATOR_SETTINGS_ID, ss.getId());
 		saveTradeProcessorInit(ss.getInit());
 	}
@@ -157,6 +161,7 @@ public class SimulatorSettingsWritable extends MapEasyWritable {
 	public SimulatorSettings getSimulatorSettings(final StockStorage stockStorage) throws BadAlgorithmException {
 		final TradeProcessorInit init = loadTradeProcessor(stockStorage);
 		final long id = longs.get(SIMULATOR_SETTINGS_ID);
+		this.id = id;
 		return new SimulatorSettings(id, init);
 	}
 
@@ -276,4 +281,8 @@ public class SimulatorSettingsWritable extends MapEasyWritable {
 		return prefix + "." + executionName;
 	}
 
+	@Override
+	public int compareTo(SimulatorSettingsWritable o) {
+		return (int) (this.id - o.id);
+	}
 }

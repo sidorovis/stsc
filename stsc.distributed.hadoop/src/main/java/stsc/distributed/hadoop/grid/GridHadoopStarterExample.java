@@ -3,13 +3,13 @@ package stsc.distributed.hadoop.grid;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import stsc.distributed.hadoop.types.TradingStrategyWritable;
+import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
+import stsc.distributed.hadoop.types.StatisticsWritable;
 
 public class GridHadoopStarterExample extends Configured implements Tool {
 
@@ -22,11 +22,11 @@ public class GridHadoopStarterExample extends Configured implements Tool {
 		job.setInputFormatClass(GridInputFormat.class);
 		job.setOutputFormatClass(GridOutputFormat.class);
 
-		job.setMapOutputKeyClass(LongWritable.class);
-		job.setMapOutputValueClass(TradingStrategyWritable.class);
+		job.setMapOutputKeyClass(SimulatorSettingsWritable.class);
+		job.setMapOutputValueClass(StatisticsWritable.class);
 
-		job.setOutputKeyClass(LongWritable.class);
-		job.setOutputValueClass(TradingStrategyWritable.class);
+		job.setOutputKeyClass(SimulatorSettingsWritable.class);
+		job.setOutputValueClass(StatisticsWritable.class);
 
 		job.setMapperClass(SimulatorMapper.class);
 		job.setReducerClass(SimulatorReducer.class);

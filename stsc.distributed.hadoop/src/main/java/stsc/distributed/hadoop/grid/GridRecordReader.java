@@ -22,16 +22,17 @@ import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 
 class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWritable> {
 
-	private long id;
+	private long size;
+	private long id = 0;
 	private Iterator<SimulatorSettings> iterator;
 	private SimulatorSettings current;
-	private long size;
+	private boolean finished;
 
 	public GridRecordReader(final SimulatorSettingsGridList list) {
-		this.id = 0;
 		this.iterator = list.iterator();
-		this.current = iterator.next();
 		this.size = list.size();
+		this.finished = !iterator.hasNext();
+		this.current = iterator.next();
 	}
 
 	@Override
@@ -41,20 +42,25 @@ class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWrita
 
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		return iterator.hasNext();
+		return !finished;
 	}
 
 	@Override
 	public LongWritable getCurrentKey() throws IOException, InterruptedException {
-		id = current.getId();
-		return new LongWritable(id);
+		return new LongWritable(current.getId());
 	}
 
 	@Override
 	public SimulatorSettingsWritable getCurrentValue() throws IOException, InterruptedException {
-		final SimulatorSettingsWritable result = new SimulatorSettingsWritable(current);
-		current = iterator.next();
-		return result;
+		if (iterator.hasNext()) {
+			final SimulatorSettings result = current;
+			current = iterator.next();
+			id = current.getId();
+			return new SimulatorSettingsWritable(result);
+		} else {
+			finished = true;
+			return new SimulatorSettingsWritable(current);
+		}
 	}
 
 	@Override
@@ -76,15 +82,18 @@ class GridInputSplit extends InputSplit implements Writable {
 
 	@Override
 	public String[] getLocations() throws IOException, InterruptedException {
-		return new String[] {};
+		return new String[] { "this" };
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
+		out.writeUTF("this");
 	}
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
+		final String thisValue = in.readUTF();
+		Validate.isTrue(thisValue.equals("this"), "should be 'this'");
 	}
 
 }
@@ -100,10 +109,10 @@ class GridInputFormat extends InputFormat<LongWritable, SimulatorSettingsWritabl
 
 	@Override
 	public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-		final List<InputSplit> splits = new ArrayList<InputSplit>((int) list.size());
-		for (int i = 0; i < list.size(); i++) {
-			splits.add(new GridInputSplit());
-		}
+		final List<InputSplit> splits = new ArrayList<InputSplit>(0);
+		// for (int i = 0; i < list.size(); i++) {
+		splits.add(new GridInputSplit());
+		// }
 		return splits;
 	}
 
