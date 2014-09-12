@@ -13,6 +13,7 @@ target
 /test/*.uf
 */test_data/*.out/*
 /.*
+stsc.distributed.hadoop/output.txt
 .project
 .settings
 .classpath
