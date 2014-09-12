@@ -98,6 +98,4 @@ class HadoopStaticDataSingleton {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
-	//
-
 }

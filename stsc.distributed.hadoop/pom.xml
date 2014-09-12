@@ -47,7 +47,7 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.distributed.hadoop.MapReduceExample</mainClass>
+          			<mainClass>stsc.distributed.hadoop.grid.GridHadoopStarterExample</mainClass>
         		</manifest>
       		</archive>
         </configuration>
@@ -69,6 +69,21 @@
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.storage</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.signals</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.algorithms</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
