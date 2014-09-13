@@ -97,7 +97,7 @@
       <version>${project.version}</version>
     </dependency>
 <!-- Cascading Hadoop -->
-    <dependency>
+<!--    <dependency>
       <groupId>cascading</groupId>
       <artifactId>cascading-core</artifactId>
       <version>2.5.5</version>
@@ -127,7 +127,7 @@
       <artifactId>cascading-platform</artifactId>
       <version>2.5.5</version>
       <scope>test</scope>
-    </dependency>
+    </dependency> -->
 <!-- Hadoop -->
 	<dependency>
 	  <groupId>org.apache.hadoop</groupId>

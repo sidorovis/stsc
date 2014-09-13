@@ -14,12 +14,15 @@ import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.Statistics;
 
-class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, SimulatorSettingsWritable, StatisticsWritable> {
+public class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWritable, SimulatorSettingsWritable, StatisticsWritable> {
 
 	private final StockStorage stockStorage;
 
 	public SimulatorMapper() {
 		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
+		if (stockStorage == null) {
+			System.out.println("ERROR WITH MAPPER");
+		}
 	}
 
 	@Override

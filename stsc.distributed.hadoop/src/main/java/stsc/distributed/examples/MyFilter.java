@@ -12,6 +12,7 @@ class MyFilter extends Reducer<Text, LongWritable, Text, LongWritable> {
 	protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
 		LongWritable lw = values.iterator().next();
 		if (lw.get() > 2) {
+			System.out.println(" ---- " + key);
 			context.write(key, lw);
 		}
 	}

@@ -13,13 +13,16 @@ import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.CostWeightedProductFunction;
 import stsc.general.strategy.TradingStrategy;
 
-class SimulatorReducer extends Reducer<SimulatorSettingsWritable, StatisticsWritable, SimulatorSettingsWritable, StatisticsWritable> {
+public class SimulatorReducer extends Reducer<SimulatorSettingsWritable, StatisticsWritable, SimulatorSettingsWritable, StatisticsWritable> {
 
 	private final StockStorage stockStorage;
 	private final StrategySelector strategySelector;
 
 	public SimulatorReducer() {
 		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
+		if (stockStorage == null) {
+			System.out.println("ERROR WITH REDUCER");
+		}
 		final CostWeightedProductFunction cf = new CostWeightedProductFunction();
 		cf.addParameter("getWinProb", 2.5);
 		cf.addParameter("getAvLoss", -1.0);
