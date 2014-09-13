@@ -27,7 +27,7 @@ class StockNameToAlgorithms {
 	}
 
 	void simulate(String stockName, final Day newDay) throws BadSignalException {
-		StockAlgorithms e = stockToAlgorithm.get(stockName);
+		final StockAlgorithms e = stockToAlgorithm.get(stockName);
 		if (e != null)
 			e.simulate(newDay);
 	}
