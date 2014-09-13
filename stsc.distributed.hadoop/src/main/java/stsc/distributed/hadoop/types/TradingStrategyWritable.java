@@ -14,23 +14,18 @@ import stsc.general.strategy.TradingStrategy;
 
 public class TradingStrategyWritable implements Writable {
 
-	private StockStorage stockStorage;
 	private TradingStrategy tradingStrategy;
+
+	private SimulatorSettingsWritable ssw;
+	private StatisticsWritable sw;
+
+	// private StockStorage stockStorage;
 
 	public TradingStrategyWritable(TradingStrategy ts) {
 		this.tradingStrategy = ts;
 	}
 
 	protected TradingStrategyWritable() {
-	}
-
-	public void setStockStorage(StockStorage stockStorage) {
-		this.stockStorage = stockStorage;
-	}
-
-	public TradingStrategyWritable(StockStorage stockStorage) {
-		this.stockStorage = stockStorage;
-		this.tradingStrategy = null;
 	}
 
 	@Override
@@ -45,18 +40,13 @@ public class TradingStrategyWritable implements Writable {
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		final SimulatorSettingsWritable ssw = new SimulatorSettingsWritable();
+		ssw = new SimulatorSettingsWritable();
 		ssw.readFields(in);
-		final StatisticsWritable sw = new StatisticsWritable();
+		sw = new StatisticsWritable();
 		sw.readFields(in);
-		try {
-			tradingStrategy = new TradingStrategy(ssw.getSimulatorSettings(stockStorage), sw.getStatistics());
-		} catch (BadAlgorithmException e) {
-			throw new IOException(e.getMessage());
-		}
 	}
 
-	public TradingStrategy getTradingStrategy() {
-		return tradingStrategy;
+	public TradingStrategy getTradingStrategy(final StockStorage stockStorage) throws BadAlgorithmException {
+		return tradingStrategy = new TradingStrategy(ssw.getSimulatorSettings(stockStorage), sw.getStatistics());
 	}
 }

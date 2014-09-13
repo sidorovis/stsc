@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
@@ -38,7 +37,7 @@ public class MapReduceExample extends Configured implements Tool {
 			job.setMapOutputValueClass(TradingStrategyWritable.class);
 
 			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(LongWritable.class);
+			job.setOutputValueClass(Text.class);
 
 			job.setInputFormatClass(TextInputFormat.class);
 			job.setOutputFormatClass(TextOutputFormat.class);

@@ -62,42 +62,33 @@ public class HadoopStaticDataSingleton {
 			return simulatorSettingsGridList;
 		}
 		try {
-			FromToPeriod period = new FromToPeriod("01-01-2000", "01-01-2014");
+			final FromToPeriod period = new FromToPeriod("01-01-2000", "01-01-2014");
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(getStockStorage(), period);
 			fillFactory(period, factory);
 			simulatorSettingsGridList = factory.getList();
 			return simulatorSettingsGridList;
 		} catch (ParseException | BadParameterException | BadAlgorithmException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
 	}
 
 	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException, BadAlgorithmException {
-		try {
-			settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open" })); // ,
-																															// "close"
-																															// }));
-			settings.addStock("ema", algoStockName(Ema.class.getSimpleName()),
-					new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.6)).add(new MpSubExecution("", "in")));
-			settings.addStock(
-					"level",
-					algoStockName(Level.class.getSimpleName()),
-					new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 6)).add(
-							new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
-			settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
+		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
+		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.6))
+				.add(new MpSubExecution("", "in")));
+		settings.addStock(
+				"level",
+				algoStockName(Level.class.getSimpleName()),
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 6)).add(
+						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
+		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
 
-			final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
-			factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level" })));
-			factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
-			factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
-			factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));
-			settings.addEod("pnm", algoEodName(PositionNDayMStocks.class.getSimpleName()), factoryPositionSide);
-		} catch (NullPointerException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			throw e;
-		}
+		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
+		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level" })));
+		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
+		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
+		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));
+		settings.addEod("pnm", algoEodName(PositionNDayMStocks.class.getSimpleName()), factoryPositionSide);
 	}
 
 	private static String algoStockName(String aname) throws BadAlgorithmException {

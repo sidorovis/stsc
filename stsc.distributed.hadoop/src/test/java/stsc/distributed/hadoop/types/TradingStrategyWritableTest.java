@@ -43,10 +43,10 @@ public class TradingStrategyWritableTest extends TestCase {
 		tsw.write(output);
 		input.reset(output.getData());
 
-		final TradingStrategyWritable tswCopy = new TradingStrategyWritable(StockStorageMock.getStockStorage());
+		final TradingStrategyWritable tswCopy = new TradingStrategyWritable();
 		tswCopy.readFields(input);
 
-		final TradingStrategy tsCopy = tswCopy.getTradingStrategy();
+		final TradingStrategy tsCopy = tswCopy.getTradingStrategy(StockStorageMock.getStockStorage());
 		assertEquals(ts.getAvGain(), tsCopy.getAvGain(), Settings.doubleEpsilon);
 		assertEquals(ts.getSettings().stringHashCode(), tsCopy.getSettings().stringHashCode());
 		assertEquals(ts.getStatistics().getPeriod(), tsCopy.getStatistics().getPeriod());
