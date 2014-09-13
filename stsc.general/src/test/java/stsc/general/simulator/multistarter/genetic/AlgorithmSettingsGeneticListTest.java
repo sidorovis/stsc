@@ -14,13 +14,13 @@ import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class AlgorithmSettingsGeneticListTest extends TestCase {
 
 	private AlgorithmSettingsGeneticList getList() throws BadParameterException {
-		final FromToPeriod period = TestHelper.getPeriod();
+		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpInteger("q", -20, 100, 1));
 		factory.add(new MpInteger("w", -40, 15, 1));

@@ -17,6 +17,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import stsc.distributed.hadoop.types.TradingStrategyWritable;
+
 public class MapReduceExample extends Configured implements Tool {
 
 	@SuppressWarnings("deprecation")
@@ -29,8 +31,11 @@ public class MapReduceExample extends Configured implements Tool {
 			job.setJarByClass(MapReduceExample.class);
 
 			job.setMapperClass(MyMapper.class);
-			job.setCombinerClass(MyReducer.class);
-			job.setReducerClass(MyFilter.class);
+			job.setReducerClass(MyReducer.class);
+			// job.setReducerClass(MyFilter.class);
+
+			job.setMapOutputKeyClass(Text.class);
+			job.setMapOutputValueClass(TradingStrategyWritable.class);
 
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(LongWritable.class);

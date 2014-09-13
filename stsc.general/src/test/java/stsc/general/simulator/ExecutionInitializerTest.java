@@ -11,12 +11,12 @@ import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class ExecutionInitializerTest extends TestCase {
 	public void testExecutionInitializer() throws BadParameterException {
-		AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
+		AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpInteger("n", 1, 10, 2));
 		factory.add(new MpDouble("d", 0.1, 1.0, 0.2));
 		final AlgorithmSettingsGridIterator mas = factory.getGridIterator();
@@ -47,7 +47,7 @@ public class ExecutionInitializerTest extends TestCase {
 	}
 
 	public void testExecutionInitializerWithStrings() throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
+		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
 		factory.add(new MpString("d", Arrays.asList(new String[] { "asd", "dfg", "rty" })));
 		factory.add(new MpString("o", Arrays.asList(new String[] { "hello", "world", "my", "dear" })));
@@ -62,7 +62,7 @@ public class ExecutionInitializerTest extends TestCase {
 	}
 
 	public void testExecutionInitializerWithEverything() throws BadParameterException {
-		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
+		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
 		factory.add(new MpString("d", Arrays.asList(new String[] { "asd", "dfg", "rty" })));
 		factory.add(new MpString("o", Arrays.asList(new String[] { "hello", "world", "my", "dear" })));

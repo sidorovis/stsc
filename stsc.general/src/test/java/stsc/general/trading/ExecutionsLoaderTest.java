@@ -2,7 +2,7 @@ package stsc.general.trading;
 
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.ExecutionsLoader;
 import stsc.storage.ExecutionStarter;
@@ -14,7 +14,7 @@ public class ExecutionsLoaderTest extends TestCase {
 
 	private ExecutionsStorage helperForSuccessLoadTests(String filename) throws Exception {
 		final StockStorage ss = new StockStorageMock();
-		final ExecutionsLoader el = new ExecutionsLoader(filename, TestHelper.getPeriod());
+		final ExecutionsLoader el = new ExecutionsLoader(filename, TestStatisticsHelper.getPeriod());
 		assertNotNull(el.getExecutionsStorage());
 		final ExecutionsStorage executions = el.getExecutionsStorage();
 		executions.initialize(new BrokerImpl(ss));
@@ -38,7 +38,7 @@ public class ExecutionsLoaderTest extends TestCase {
 	private void throwTesthelper(String file, String message) throws Exception {
 		boolean throwed = false;
 		try {
-			ExecutionsLoader loader = new ExecutionsLoader(file, TestHelper.getPeriod());
+			ExecutionsLoader loader = new ExecutionsLoader(file, TestStatisticsHelper.getPeriod());
 			loader.getExecutionsStorage().initialize(new BrokerImpl(new StockStorageMock()));
 		} catch (BadAlgorithmException e) {
 			assertEquals(message, e.getMessage());

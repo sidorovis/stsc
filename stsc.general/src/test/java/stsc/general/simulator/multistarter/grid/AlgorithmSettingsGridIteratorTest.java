@@ -14,7 +14,7 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class AlgorithmSettingsGridIteratorTest extends TestCase {
@@ -26,7 +26,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 	}
 
 	public void testAlgorithmSettingsGridSearcher() throws ParseException, BadParameterException, BadAlgorithmException {
-		final FromToPeriod period = TestHelper.getPeriod();
+		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpInteger("n", 1, 3, 1));
 		factory.add(new MpInteger("m", -4, -1, 2));
@@ -50,7 +50,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 	}
 
 	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException, BadAlgorithmException {
-		final FromToPeriod period = TestHelper.getPeriod();
+		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpInteger("q", 0, 5, 1));
 		factory.add(new MpInteger("w", -4, 1, 1));
@@ -81,7 +81,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 	}
 
 	public void testGridSearcherStockWithStrings() throws BadParameterException {
-		final FromToPeriod period = TestHelper.getPeriod();
+		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final String[] arr = new String[] { "asd", "ibm" };
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
 		factory.add(new MpString("z", Arrays.asList(arr)));

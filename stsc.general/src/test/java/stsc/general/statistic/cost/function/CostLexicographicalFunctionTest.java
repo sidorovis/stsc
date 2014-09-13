@@ -2,12 +2,12 @@ package stsc.general.statistic.cost.function;
 
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class CostLexicographicalFunctionTest extends TestCase {
 	public void testLexicographicalCostFunction() {
-		final Statistics statistics = TestHelper.getStatistics();
+		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();
 		c10.addNextValue("getPeriod");
@@ -16,7 +16,7 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		assertEquals(20.246987, c10result, Settings.doubleEpsilon);
 	}
 	public void testLexicographicalCostFunction100() {
-		final Statistics statistics = TestHelper.getStatistics();
+		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c100 = new CostLexicographicalFunction(100);
 		c100.addNextValue("getPeriod");
@@ -27,7 +27,7 @@ public class CostLexicographicalFunctionTest extends TestCase {
 	}
 
 	public void testLexicographicalCostFunctionAnotherOrder() {
-		final Statistics statistics = TestHelper.getStatistics();
+		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();
 		c10.addNextValue("getAvGain");

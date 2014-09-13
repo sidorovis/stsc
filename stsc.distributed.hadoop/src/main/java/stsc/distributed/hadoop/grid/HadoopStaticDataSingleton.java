@@ -30,7 +30,7 @@ public class HadoopStaticDataSingleton {
 
 	private static StockStorage stockStorage = null;
 
-	static StockStorage getStockStorage(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException, IOException,
+	public static StockStorage getStockStorage(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException, IOException,
 			InterruptedException {
 		if (stockStorage == null) {
 			stockStorage = new YahooFileStockStorage(dataFolder, filteredDataFolder);
@@ -38,15 +38,16 @@ public class HadoopStaticDataSingleton {
 		return stockStorage;
 	}
 
-	static StockStorage getStockStorage() {
+	public static StockStorage getStockStorage() {
 		if (stockStorage == null) {
 			stockStorage = new ThreadSafeStockStorage();
 			try {
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/user/vagrant/test_data/aapl.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/user/vagrant/test_data/adm.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/user/vagrant/test_data/spy.uf"));
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/aapl.uf"));
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/adm.uf"));
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/spy.uf"));
 			} catch (IOException e) {
 				System.out.println("STOCK STORAGE ERROR: " + e.getMessage());
+				throw new NullPointerException("STOCK STORAGE ERROR");
 			}
 		}
 		return stockStorage;

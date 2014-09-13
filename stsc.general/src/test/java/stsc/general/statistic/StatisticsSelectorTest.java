@@ -9,7 +9,7 @@ import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestGridSimulatorSettings;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class StatisticsSelectorTest extends TestCase {
@@ -18,15 +18,15 @@ public class StatisticsSelectorTest extends TestCase {
 		final StrategySelector statisticsSelector = new StatisticsByCostSelector(2, compareMethod);
 
 		final List<Double> values = new ArrayList<>();
-		values.add(compareMethod.calculate(TestHelper.getStatistics(100, 200)));
-		values.add(compareMethod.calculate(TestHelper.getStatistics(200, 250)));
-		values.add(compareMethod.calculate(TestHelper.getStatistics(150, 210)));
+		values.add(compareMethod.calculate(TestStatisticsHelper.getStatistics(100, 200)));
+		values.add(compareMethod.calculate(TestStatisticsHelper.getStatistics(200, 250)));
+		values.add(compareMethod.calculate(TestStatisticsHelper.getStatistics(150, 210)));
 
 		Iterator<SimulatorSettings> testSettings = TestGridSimulatorSettings.getGridList().iterator();
 
-		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(100, 200)));
-		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(200, 250)));
-		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestHelper.getStatistics(150, 210)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestStatisticsHelper.getStatistics(100, 200)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestStatisticsHelper.getStatistics(200, 250)));
+		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestStatisticsHelper.getStatistics(150, 210)));
 
 		final List<TradingStrategy> strategies = statisticsSelector.getStrategies();
 		assertEquals(2, strategies.size());

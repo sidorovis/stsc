@@ -2,13 +2,13 @@ package stsc.general.statistic.cost.function;
 
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class CostBayesianProbabilityFunctionTest extends TestCase {
 
 	public void testBayesianProbabilityCostFunction() {
-		final Statistics statistics = TestHelper.getStatistics();
+		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostBayesianProbabilityFunction bayesian = new CostBayesianProbabilityFunction();
 		bayesian.addLayer().put("getPeriod", 10.0);

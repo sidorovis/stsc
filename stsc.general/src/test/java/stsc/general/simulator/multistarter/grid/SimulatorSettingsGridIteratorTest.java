@@ -17,7 +17,7 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.testhelper.TestHelper;
+import stsc.general.testhelper.TestStatisticsHelper;
 import stsc.general.testhelper.TestGridSimulatorSettings;
 import stsc.general.trading.BrokerImpl;
 import stsc.storage.ExecutionStarter;
@@ -29,7 +29,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 
 	public void testEmptySimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageMock();
-		final FromToPeriod period = TestHelper.getPeriod();
+		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 
 		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, period);
 
@@ -65,8 +65,8 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 
 	public void testSimulatorSettingsGridIteratorHashCode() throws BadParameterException, BadAlgorithmException {
 		final StockStorage stockStorage = new StockStorageMock();
-		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, TestHelper.getPeriod());
-		AlgorithmSettingsIteratorFactory f1 = new AlgorithmSettingsIteratorFactory(TestHelper.getPeriod());
+		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, TestStatisticsHelper.getPeriod());
+		AlgorithmSettingsIteratorFactory f1 = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		f1.add(new MpInteger("a", 1, 3, 1));
 		f1.add(new MpDouble("b", 0.1, 0.3, 0.1));
 		f1.add(new MpDouble("c", 0.1, 0.2, 0.1));

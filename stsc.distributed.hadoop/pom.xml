@@ -47,7 +47,7 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.distributed.hadoop.grid.GridHadoopStarterExample</mainClass>
+          			<mainClass>stsc.distributed.examples.MapReduceExample</mainClass>
         		</manifest>
       		</archive>
         </configuration>
@@ -66,6 +66,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.general</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.common</artifactId>
@@ -88,47 +93,10 @@
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.general</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>stsc</groupId>
       <artifactId>stsc.yahoo</artifactId>
       <version>${project.version}</version>
     </dependency>
-<!-- Cascading Hadoop -->
-<!--    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-core</artifactId>
-      <version>2.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-local</artifactId>
-      <version>2.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-hadoop</artifactId>
-      <version>2.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-xml</artifactId>
-      <version>2.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-hadoop2-mr1</artifactId>
-      <version>2.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-platform</artifactId>
-      <version>2.5.5</version>
-      <scope>test</scope>
-    </dependency> -->
-<!-- Hadoop -->
+
 	<dependency>
 	  <groupId>org.apache.hadoop</groupId>
 	  <artifactId>hadoop-mapreduce-client-core</artifactId>

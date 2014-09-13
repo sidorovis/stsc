@@ -48,6 +48,6 @@ public class TestAlgorithmsHelper {
 	}
 
 	public static AlgorithmSettingsImpl getSettings() {
-		return new AlgorithmSettingsImpl(TestHelper.getPeriod());
+		return new AlgorithmSettingsImpl(TestStatisticsHelper.getPeriod());
 	}
 }

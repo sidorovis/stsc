@@ -14,7 +14,7 @@ import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.TradingLog;
 import stsc.storage.mocks.StockStorageMock;
 
-public class TestHelper {
+public class TestStatisticsHelper {
 
 	public static FromToPeriod getPeriod() {
 		try {
