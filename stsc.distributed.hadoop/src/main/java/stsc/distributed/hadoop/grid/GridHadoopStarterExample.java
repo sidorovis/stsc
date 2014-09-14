@@ -57,6 +57,7 @@ public class GridHadoopStarterExample extends Configured implements Tool {
 
 		job.waitForCompletion(true);
 		System.out.println("Resolution time: " + TimeTracker.lengthInSeconds(tt.finish()));
+		copyAnswerToLocal();
 		return 0;
 	}
 
@@ -69,6 +70,14 @@ public class GridHadoopStarterExample extends Configured implements Tool {
 			for (File file : listOfFiles) {
 				hdfs.copyFromLocalFile(new Path(file.getPath()), new Path(hdfsPath + file.getName()));
 			}
+		}
+	}
+
+	private void copyAnswerToLocal() throws IllegalArgumentException, IOException {
+		final FileSystem hdfs = FileSystem.get(this.getConf());
+		final Path out = new Path(GridOutputFormat.OUT_PATH + GridRecordWriter.FILE_NAME);
+		if (hdfs.exists(out)) {
+			hdfs.copyToLocalFile(false, out, new Path(new File("." + GridRecordWriter.FILE_NAME).getPath()), true);
 		}
 	}
 

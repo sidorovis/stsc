@@ -16,12 +16,12 @@ import stsc.distributed.hadoop.types.StatisticsWritable;
 
 public class GridOutputFormat extends OutputFormat<SimulatorSettingsWritable, StatisticsWritable> {
 
-	private final Path outPath = new Path("./test_data/");
+	public static final Path OUT_PATH = new Path("./test_data/");
 
 	@Override
 	public RecordWriter<SimulatorSettingsWritable, StatisticsWritable> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
 		final FileSystem hdfs = FileSystem.get(context.getConfiguration());
-		return new GridRecordWriter(hdfs, outPath);
+		return new GridRecordWriter(hdfs, OUT_PATH);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class GridOutputFormat extends OutputFormat<SimulatorSettingsWritable, St
 
 	@Override
 	public OutputCommitter getOutputCommitter(TaskAttemptContext context) throws IOException, InterruptedException {
-		return new FileOutputCommitter(outPath, context);
+		return new FileOutputCommitter(OUT_PATH, context);
 	}
 
 }

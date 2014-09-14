@@ -23,6 +23,8 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 	private final List<TradingStrategy> tradingStrategies = Collections.synchronizedList(new ArrayList<TradingStrategy>());
 	private final Path path;
 
+	public final static String FILE_NAME = "/output.txt";
+
 	public GridRecordWriter(FileSystem hdfs, final Path path) throws IOException {
 		HadoopStaticDataSingleton.getStockStorage(hdfs, new Path(HadoopStaticDataSingleton.DATAFEED_HDFS_PATH));
 		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
@@ -40,7 +42,7 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 
 	@Override
 	public void close(TaskAttemptContext context) throws IOException, InterruptedException {
-		final Path file = new Path(path + "/output.txt");
+		final Path file = new Path(path + FILE_NAME);
 		final FileSystem fs = file.getFileSystem(context.getConfiguration());
 		if (fs.isDirectory(file)) {
 			fs.delete(file, true);
