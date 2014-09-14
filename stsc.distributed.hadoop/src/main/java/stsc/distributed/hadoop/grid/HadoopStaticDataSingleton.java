@@ -84,7 +84,7 @@ public class HadoopStaticDataSingleton {
 		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
 
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
-		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "level" })));
+		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
 		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
 		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
 		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));

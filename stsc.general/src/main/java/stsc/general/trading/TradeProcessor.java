@@ -3,6 +3,7 @@ package stsc.general.trading;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,10 @@ import stsc.storage.ExecutionStarter;
 
 public class TradeProcessor {
 
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
+
 	static Logger logger = LogManager.getLogger(TradeProcessor.class.getSimpleName());
 
 	private final BrokerImpl broker;
@@ -34,31 +39,23 @@ public class TradeProcessor {
 
 	public Statistics simulate(final FromToPeriod period) throws BadSignalException {
 		final StatisticsProcessor statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
-
 		LocalDate dayIterator = new LocalDate(period.getFrom());
-		LocalDate endDate = new LocalDate(period.getTo());
-
+		final LocalDate endDate = new LocalDate(period.getTo());
 		collectStocksFromStorage();
-
 		while (dayIterator.isBefore(endDate)) {
-			HashMap<String, Day> datafeed = new HashMap<String, Day>();
-
-			Date today = dayIterator.toDate();
-			Day currentDay = new Day(today);
+			final HashMap<String, Day> datafeed = new HashMap<String, Day>();
+			final Date today = dayIterator.toDate();
+			final Day currentDay = new Day(today);
 
 			broker.setToday(today);
-
 			for (Entry<String, DayIterator> stock : stocks) {
 				final DayIterator stockIterator = stock.getValue();
 				final Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
 				if (stockDay != null) {
-					String stockName = stock.getKey();
-
+					final String stockName = stock.getKey();
 					if (stockDay.compareTo(currentDay) == 0) {
 						statisticsProcessor.setStockDay(stockName, stockDay);
-
 						executionsStarter.runStockAlgorithms(stockName, stockDay);
-
 						datafeed.put(stockName, stockDay);
 					} else {
 						logger.error("Bad day returned for stock " + stockName + " for day " + today);

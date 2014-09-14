@@ -39,8 +39,8 @@ final class DayIterator {
 
 	Day getCurrentDayAndNext(Day currentDay) {
 		if (currentIterator < days.size()) {
-			Day day = days.get(currentIterator);
-			int dayCompare = day.compareTo(currentDay);
+			final Day day = days.get(currentIterator);
+			final int dayCompare = day.compareTo(currentDay);
 			if (dayCompare == 0) {
 				currentIterator++;
 				return day;
@@ -53,13 +53,10 @@ final class DayIterator {
 						currentIterator = days.size();
 					return null;
 				}
-				if (currentIterator >= 0)
+				if (currentIterator >= 0) {
 					return days.get(currentIterator);
-
-			} else {
-				return null;
+				}
 			}
-			return null;
 		}
 		return null;
 	}

@@ -4,15 +4,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 public final class FromToPeriod implements Externalizable {
-
-	private final DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
 	private final Date from;
 	private final Date to;
@@ -22,8 +18,8 @@ public final class FromToPeriod implements Externalizable {
 	}
 
 	public FromToPeriod(final String from, final String to) throws ParseException {
-		this.from = dateFormatter.parse(from);
-		this.to = dateFormatter.parse(to);
+		this.from = Day.createDate(from);
+		this.to = Day.createDate(to);
 	}
 
 	public FromToPeriod(final Date from, final Date to) {

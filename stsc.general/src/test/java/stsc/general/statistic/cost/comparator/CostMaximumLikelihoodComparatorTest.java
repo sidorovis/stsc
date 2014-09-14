@@ -1,9 +1,11 @@
 package stsc.general.statistic.cost.comparator;
 
+import java.text.ParseException;
 import java.util.Iterator;
 
 import org.joda.time.LocalDate;
 
+import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCompareSelector;
@@ -31,14 +33,14 @@ public class CostMaximumLikelihoodComparatorTest extends TestCase {
 		}
 	}
 
-	public void testCostStatisticsCompareSelectorWithLikelihood() {
+	public void testCostStatisticsCompareSelectorWithLikelihood() throws ParseException {
 		final CostMaximumLikelihoodComparator c = new CostMaximumLikelihoodComparator();
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
 
-		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 8))));
-		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 4))));
-		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16))));
-		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12))));
+		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("08-05-2013"))));
+		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("04-05-2013"))));
+		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("16-05-2013"))));
+		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("12-05-2013"))));
 
 		assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();

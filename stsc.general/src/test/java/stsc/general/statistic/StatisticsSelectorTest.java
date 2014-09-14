@@ -1,5 +1,6 @@
 package stsc.general.statistic;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,7 @@ import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class StatisticsSelectorTest extends TestCase {
-	public void testStatisticsSelector() {
+	public void testStatisticsSelector() throws ParseException {
 		final CostWeightedSumFunction compareMethod = new CostWeightedSumFunction();
 		final StrategySelector statisticsSelector = new StatisticsByCostSelector(2, compareMethod);
 

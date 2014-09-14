@@ -1,12 +1,14 @@
 package stsc.general.statistic.cost.function;
 
+import java.text.ParseException;
+
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class CostWeightedSumFunctionTest extends TestCase {
-	public void testCostWeightedSumFunction() {
+	public void testCostWeightedSumFunction() throws ParseException {
 		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostWeightedSumFunction function = new CostWeightedSumFunction();

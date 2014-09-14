@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 
+import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.Side;
 import stsc.common.stocks.Stock;
@@ -34,16 +35,16 @@ public class StatisticsProcessorTest extends TestCase {
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-		tradingLog.addBuyRecord(new Date(), "aapl", Side.LONG, 100);
-		tradingLog.addBuyRecord(new Date(), "adm", Side.SHORT, 200);
+		tradingLog.addBuyRecord(Day.createDate(), "aapl", Side.LONG, 100);
+		tradingLog.addBuyRecord(Day.createDate(), "adm", Side.SHORT, 200);
 
 		statistics.processEod();
 
 		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-		tradingLog.addSellRecord(new Date(), "aapl", Side.LONG, 100);
-		tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, 200);
+		tradingLog.addSellRecord(Day.createDate(), "aapl", Side.LONG, 100);
+		tradingLog.addSellRecord(Day.createDate(), "adm", Side.SHORT, 200);
 
 		statistics.processEod();
 

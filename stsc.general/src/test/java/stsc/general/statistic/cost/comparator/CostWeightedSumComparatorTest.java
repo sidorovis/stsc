@@ -1,5 +1,7 @@
 package stsc.general.statistic.cost.comparator;
 
+import java.text.ParseException;
+
 import org.joda.time.LocalDate;
 
 import stsc.general.statistic.Statistics;
@@ -7,7 +9,7 @@ import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class CostWeightedSumComparatorTest extends TestCase {
-	public void testCostWeightedSumComparator() {
+	public void testCostWeightedSumComparator() throws ParseException {
 		final Statistics stat = TestStatisticsHelper.getStatistics();
 
 		final CostWeightedSumComparator comparator = new CostWeightedSumComparator();

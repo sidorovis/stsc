@@ -21,7 +21,7 @@ public class SimulatorSettings implements Cloneable {
 	}
 
 	public String stringHashCode() {
-		return String.valueOf(id) + " " + tradeProcessorInit.stringHashCode();
+		return tradeProcessorInit.stringHashCode();
 	}
 
 	public long getId() {

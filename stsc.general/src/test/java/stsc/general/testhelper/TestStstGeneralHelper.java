@@ -10,7 +10,7 @@ import stsc.general.trading.BrokerImpl;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.ThreadSafeStockStorage;
 
-public class TestAlgorithmsHelper {
+public class TestStstGeneralHelper {
 	public static EodAlgorithmInit getEodAlgorithmInit() {
 		return getEodAlgorithmInit(new BrokerImpl(new ThreadSafeStockStorage()));
 	}

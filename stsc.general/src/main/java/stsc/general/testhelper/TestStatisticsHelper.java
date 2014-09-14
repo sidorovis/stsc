@@ -1,9 +1,11 @@
 package stsc.general.testhelper;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
 
+import stsc.common.Day;
 import stsc.common.FromToPeriod;
 import stsc.common.Side;
 import stsc.common.stocks.Stock;
@@ -24,22 +26,26 @@ public class TestStatisticsHelper {
 		return null;
 	}
 
-	public static Statistics getStatistics() {
+	public static Statistics getStatistics() throws ParseException {
 		return getStatistics(100, 200);
 	}
 
-	public static Statistics getStatistics(int applSize, int admSize) {
-		return getStatistics(applSize, admSize, new LocalDate(2013, 9, 4));
+	public static Statistics getStatistics(int applSize, int admSize) throws ParseException {
+		return getStatistics(applSize, admSize, Day.createDate("04-09-2013"));
 	}
 
-	public static Statistics getStatistics(int applSize, int admSize, LocalDate from) {
+	public static Statistics getStatistics(int applSize, int admSize, LocalDate date) {
+		return getStatistics(applSize, admSize, date.toDate());
+	}
+
+	public static Statistics getStatistics(int applSize, int admSize, Date date) {
 		Statistics statisticsData = null;
 		try {
 			Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 			Stock adm = UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf");
 
-			int aaplIndex = aapl.findDayIndex(from.toDate());
-			int admIndex = adm.findDayIndex(from.toDate());
+			int aaplIndex = aapl.findDayIndex(date);
+			int admIndex = adm.findDayIndex(date);
 
 			TradingLog tradingLog = new BrokerImpl(StockStorageMock.getStockStorage()).getTradingLog();
 
@@ -48,16 +54,16 @@ public class TestStatisticsHelper {
 			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-			tradingLog.addBuyRecord(new Date(), "aapl", Side.LONG, applSize);
-			tradingLog.addBuyRecord(new Date(), "adm", Side.SHORT, admSize);
+			tradingLog.addBuyRecord(Day.createDate(), "aapl", Side.LONG, applSize);
+			tradingLog.addBuyRecord(Day.createDate(), "adm", Side.SHORT, admSize);
 
 			statistics.processEod();
 
 			statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
 			statistics.setStockDay("adm", adm.getDays().get(admIndex++));
 
-			tradingLog.addSellRecord(new Date(), "aapl", Side.LONG, applSize);
-			tradingLog.addSellRecord(new Date(), "adm", Side.SHORT, admSize);
+			tradingLog.addSellRecord(Day.createDate(), "aapl", Side.LONG, applSize);
+			tradingLog.addSellRecord(Day.createDate(), "adm", Side.SHORT, admSize);
 
 			statistics.processEod();
 

@@ -1,12 +1,14 @@
 package stsc.general.statistic.cost.function;
 
+import java.text.ParseException;
+
 import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
 public class CostLexicographicalFunctionTest extends TestCase {
-	public void testLexicographicalCostFunction() {
+	public void testLexicographicalCostFunction() throws ParseException {
 		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();
@@ -15,7 +17,8 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		final Double c10result = c10.calculate(statistics);
 		assertEquals(20.246987, c10result, Settings.doubleEpsilon);
 	}
-	public void testLexicographicalCostFunction100() {
+
+	public void testLexicographicalCostFunction100() throws ParseException {
 		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c100 = new CostLexicographicalFunction(100);
@@ -26,7 +29,7 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		assertEquals(20024.9456978, c100result, Settings.doubleEpsilon);
 	}
 
-	public void testLexicographicalCostFunctionAnotherOrder() {
+	public void testLexicographicalCostFunctionAnotherOrder() throws ParseException {
 		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostLexicographicalFunction c10 = new CostLexicographicalFunction();

@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Queue;
+import java.util.TimeZone;
 
 import stsc.common.Day;
 
@@ -24,7 +25,15 @@ public final class UnitedFormatStock extends Stock {
 
 	private final static String extension = ".uf";
 
-	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final TimeZone timeZone;
+	private static final DateFormat dateFormat;
+
+	static {
+		timeZone = TimeZone.getTimeZone("UTC");
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setTimeZone(timeZone);
+	}
+
 	final String name;
 	ArrayList<Day> days = new ArrayList<Day>();
 
@@ -51,7 +60,7 @@ public final class UnitedFormatStock extends Stock {
 			s = new UnitedFormatStock(name);
 			int daysLength = is.readInt();
 			for (int i = 0; i < daysLength; ++i) {
-				Date dayTime = new Date(is.readLong());
+				Date dayTime = Day.nullableTime(new Date(is.readLong()));
 				double open = is.readDouble();
 				double high = is.readDouble();
 				double low = is.readDouble();
@@ -65,22 +74,11 @@ public final class UnitedFormatStock extends Stock {
 		return s;
 	}
 
-	static private Date nullableTime(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		Date result = cal.getTime();
-		return result;
-	}
-
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
 		Date date;
 		final String lineDate = line.substring(0, 10);
 		try {
-			date = nullableTime(dateFormat.parse(lineDate));
+			date = Day.nullableTime(dateFormat.parse(lineDate));
 			String[] tokens = line.split(",");
 			double volume = Double.parseDouble(tokens[5]);
 			double adj_close = Double.parseDouble(tokens[6]);
@@ -113,7 +111,7 @@ public final class UnitedFormatStock extends Stock {
 			os.writeUTF(name);
 			os.writeInt(days.size());
 			for (Day day : days) {
-				os.writeLong(nullableTime(day.date).getTime());
+				os.writeLong(Day.nullableTime(day.date).getTime());
 				os.writeDouble(day.prices.open);
 				os.writeDouble(day.prices.high);
 				os.writeDouble(day.prices.low);
