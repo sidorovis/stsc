@@ -23,7 +23,7 @@ import stsc.common.Day;
 
 public final class UnitedFormatStock extends Stock {
 
-	private final static String extension = ".uf";
+	public final static String EXTENSION = ".uf";
 
 	private static final TimeZone timeZone;
 	private static final DateFormat dateFormat;
@@ -54,22 +54,26 @@ public final class UnitedFormatStock extends Stock {
 	}
 
 	public static UnitedFormatStock readFromUniteFormatFile(String filePath) throws IOException {
-		UnitedFormatStock s = null;
 		try (DataInputStream is = new DataInputStream(new FileInputStream(filePath))) {
-			String name = is.readUTF();
-			s = new UnitedFormatStock(name);
-			int daysLength = is.readInt();
-			for (int i = 0; i < daysLength; ++i) {
-				Date dayTime = Day.nullableTime(new Date(is.readLong()));
-				double open = is.readDouble();
-				double high = is.readDouble();
-				double low = is.readDouble();
-				double close = is.readDouble();
-				double volume = is.readDouble();
-				double adjClose = is.readDouble();
-				Day newDay = new Day(dayTime, new Prices(open, high, low, close), volume, adjClose);
-				s.addDay(newDay);
-			}
+			return readFromUniteFormatFile(is);
+		}
+	}
+
+	public static UnitedFormatStock readFromUniteFormatFile(DataInputStream is) throws IOException {
+		UnitedFormatStock s = null;
+		String name = is.readUTF();
+		s = new UnitedFormatStock(name);
+		int daysLength = is.readInt();
+		for (int i = 0; i < daysLength; ++i) {
+			Date dayTime = Day.nullableTime(new Date(is.readLong()));
+			double open = is.readDouble();
+			double high = is.readDouble();
+			double low = is.readDouble();
+			double close = is.readDouble();
+			double volume = is.readDouble();
+			double adjClose = is.readDouble();
+			Day newDay = new Day(dayTime, new Prices(open, high, low, close), volume, adjClose);
+			s.addDay(newDay);
 		}
 		return s;
 	}
@@ -96,11 +100,6 @@ public final class UnitedFormatStock extends Stock {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see stsc.common.StockInterface#getName()
-	 */
 	@Override
 	public String getName() {
 		return name;
@@ -108,17 +107,21 @@ public final class UnitedFormatStock extends Stock {
 
 	public void storeUniteFormat(String filePath) throws IOException {
 		try (DataOutputStream os = new DataOutputStream(new FileOutputStream(filePath))) {
-			os.writeUTF(name);
-			os.writeInt(days.size());
-			for (Day day : days) {
-				os.writeLong(Day.nullableTime(day.date).getTime());
-				os.writeDouble(day.prices.open);
-				os.writeDouble(day.prices.high);
-				os.writeDouble(day.prices.low);
-				os.writeDouble(day.prices.close);
-				os.writeDouble(day.volume);
-				os.writeDouble(day.adj_close);
-			}
+			storeUniteFormat(os);
+		}
+	}
+
+	public void storeUniteFormat(DataOutputStream os) throws IOException {
+		os.writeUTF(name);
+		os.writeInt(days.size());
+		for (Day day : days) {
+			os.writeLong(Day.nullableTime(day.date).getTime());
+			os.writeDouble(day.prices.open);
+			os.writeDouble(day.prices.high);
+			os.writeDouble(day.prices.low);
+			os.writeDouble(day.prices.close);
+			os.writeDouble(day.volume);
+			os.writeDouble(day.adj_close);
 		}
 	}
 
@@ -161,13 +164,13 @@ public final class UnitedFormatStock extends Stock {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(extension))
-				fileNames.add(filename.substring(0, filename.length() - extension.length()));
+			if (file.isFile() && filename.endsWith(EXTENSION))
+				fileNames.add(filename.substring(0, filename.length() - EXTENSION.length()));
 		}
 	}
 
 	public static String generatePath(String dataFolder, String stockName) {
-		return dataFolder + stockName + extension;
+		return dataFolder + stockName + EXTENSION;
 	}
 
 }

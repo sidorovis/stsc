@@ -47,7 +47,7 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.distributed.examples.MapReduceExample</mainClass>
+          			<mainClass>stsc.distributed.hadoop.grid.GridHadoopStarterExample</mainClass>
         		</manifest>
       		</archive>
         </configuration>

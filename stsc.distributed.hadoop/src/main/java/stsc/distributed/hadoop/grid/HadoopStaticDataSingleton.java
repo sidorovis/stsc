@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 import stsc.algorithms.In;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
@@ -27,6 +31,8 @@ import stsc.yahoo.YahooFileStockStorage;
 public class HadoopStaticDataSingleton {
 
 	// StockStorage
+	
+	public static String DATAFEED_HDFS_PATH = "./yahoo_datafeed/";
 
 	private static StockStorage stockStorage = null;
 
@@ -38,17 +44,28 @@ public class HadoopStaticDataSingleton {
 		return stockStorage;
 	}
 
-	public static StockStorage getStockStorage() {
+	public static StockStorage getStockStorage(FileSystem hdfs, Path path) throws IOException {
 		if (stockStorage == null) {
 			stockStorage = new ThreadSafeStockStorage();
-			try {
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/aapl.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/adm.uf"));
-				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("/vagrant/package/test_data/spy.uf"));
-			} catch (IOException e) {
-				System.out.println("STOCK STORAGE ERROR: " + e.getMessage());
-				throw new NullPointerException("STOCK STORAGE ERROR");
+			try (final FSDataInputStream in = hdfs.open(new Path(path + "/aapl.uf"))) {
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile(in));
 			}
+			try (final FSDataInputStream in = hdfs.open(new Path(path + "/adm.uf"))) {
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile(in));
+			}
+			try (final FSDataInputStream in = hdfs.open(new Path(path + "/spy.uf"))) {
+				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile(in));
+			}
+		}
+		return stockStorage;
+	}
+
+	public static StockStorage getStockStorage() throws IOException {
+		if (stockStorage == null) {
+			stockStorage = new ThreadSafeStockStorage();
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/" + "aapl.uf"));
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/" + "adm.uf"));
+			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/" + "spy.uf"));
 		}
 		return stockStorage;
 	}
@@ -57,7 +74,7 @@ public class HadoopStaticDataSingleton {
 
 	private static SimulatorSettingsGridList simulatorSettingsGridList;
 
-	public static SimulatorSettingsGridList getGridList() {
+	public static SimulatorSettingsGridList getGridList() throws IOException {
 		if (simulatorSettingsGridList != null) {
 			return simulatorSettingsGridList;
 		}
@@ -68,23 +85,23 @@ public class HadoopStaticDataSingleton {
 			simulatorSettingsGridList = factory.getList();
 			return simulatorSettingsGridList;
 		} catch (ParseException | BadParameterException | BadAlgorithmException e) {
-			throw new RuntimeException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
 	}
 
 	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException, BadAlgorithmException {
 		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
-		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.6))
+		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.1))
 				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
 				algoStockName(Level.class.getSimpleName()),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 6)).add(
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 1)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
 		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
 
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
-		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in" })));
+		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "level" })));
 		factoryPositionSide.add(new MpInteger("n", 1, 32, 32));
 		factoryPositionSide.add(new MpInteger("m", 1, 32, 32));
 		factoryPositionSide.add(new MpDouble("ps", 50000.0, 200001.0, 160000.0));

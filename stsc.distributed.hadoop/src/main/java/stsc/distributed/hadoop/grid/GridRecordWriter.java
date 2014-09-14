@@ -19,8 +19,15 @@ import stsc.general.strategy.TradingStrategy;
 
 public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, StatisticsWritable> {
 
-	private final StockStorage stockStorage = HadoopStaticDataSingleton.getStockStorage();
+	private final StockStorage stockStorage;
 	private final List<TradingStrategy> tradingStrategies = Collections.synchronizedList(new ArrayList<TradingStrategy>());
+	private final Path path;
+
+	public GridRecordWriter(FileSystem hdfs, final Path path) throws IOException {
+		HadoopStaticDataSingleton.getStockStorage(hdfs, new Path(HadoopStaticDataSingleton.DATAFEED_HDFS_PATH));
+		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
+		this.path = path;
+	}
 
 	@Override
 	public void write(SimulatorSettingsWritable key, StatisticsWritable value) throws IOException, InterruptedException {
@@ -33,7 +40,7 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 
 	@Override
 	public void close(TaskAttemptContext context) throws IOException, InterruptedException {
-		final Path file = new Path("/user/vagrant/output.txt");
+		final Path file = new Path(path + "/output.txt");
 		final FileSystem fs = file.getFileSystem(context.getConfiguration());
 		if (fs.isDirectory(file)) {
 			fs.delete(file, true);
@@ -41,7 +48,7 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 		if (fs.isFile(file)) {
 			fs.delete(file, true);
 		}
-		final FSDataOutputStream fileOut = fs.create(file, false);
+		final FSDataOutputStream fileOut = fs.create(file, true);
 		fileOut.writeUTF(String.valueOf(tradingStrategies.size()) + "\n");
 		for (TradingStrategy ts : tradingStrategies) {
 			fileOut.writeUTF(ts.getSettings().getId() + "\n");

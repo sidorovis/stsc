@@ -3,6 +3,8 @@ package stsc.distributed.hadoop.grid;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -19,7 +21,9 @@ public class GridRecordReader extends RecordReader<LongWritable, SimulatorSettin
 	private SimulatorSettings current;
 	private boolean finished;
 
-	public GridRecordReader(final SimulatorSettingsGridList list) {
+	public GridRecordReader(final FileSystem hdfs, Path path) throws IOException {
+		HadoopStaticDataSingleton.getStockStorage(hdfs, path);
+		final SimulatorSettingsGridList list = HadoopStaticDataSingleton.getGridList();
 		this.iterator = list.iterator();
 		this.size = list.size();
 		this.finished = !iterator.hasNext();

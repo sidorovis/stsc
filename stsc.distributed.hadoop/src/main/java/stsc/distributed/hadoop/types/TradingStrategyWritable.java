@@ -19,8 +19,6 @@ public class TradingStrategyWritable implements Writable {
 	private SimulatorSettingsWritable ssw;
 	private StatisticsWritable sw;
 
-	// private StockStorage stockStorage;
-
 	public TradingStrategyWritable(TradingStrategy ts) {
 		this.tradingStrategy = ts;
 	}
@@ -47,6 +45,6 @@ public class TradingStrategyWritable implements Writable {
 	}
 
 	public TradingStrategy getTradingStrategy(final StockStorage stockStorage) throws BadAlgorithmException {
-		return tradingStrategy = new TradingStrategy(ssw.getSimulatorSettings(stockStorage), sw.getStatistics());
+		return new TradingStrategy(ssw.getSimulatorSettings(stockStorage), sw.getStatistics());
 	}
 }
