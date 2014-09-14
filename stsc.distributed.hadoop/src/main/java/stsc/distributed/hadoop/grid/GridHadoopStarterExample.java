@@ -18,6 +18,7 @@ import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
 public class GridHadoopStarterExample extends Configured implements Tool {
 
+	// TODO think to delete that or usage
 	// private static void addJarToDistributedCache(Class<?> classToAdd,
 	// Configuration conf) throws IOException {
 	// final String jar =
