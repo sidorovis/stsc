@@ -49,8 +49,8 @@ public class TradeProcessor {
 			broker.setToday(today);
 
 			for (Entry<String, DayIterator> stock : stocks) {
-				DayIterator stockIterator = stock.getValue();
-				Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
+				final DayIterator stockIterator = stock.getValue();
+				final Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
 				if (stockDay != null) {
 					String stockName = stock.getKey();
 
