@@ -77,7 +77,7 @@ public class GridHadoopStarterExample extends Configured implements Tool {
 		final FileSystem hdfs = FileSystem.get(this.getConf());
 		final Path out = new Path(GridOutputFormat.OUT_PATH + GridRecordWriter.FILE_NAME);
 		if (hdfs.exists(out)) {
-			hdfs.copyToLocalFile(false, out, new Path(new File("." + GridRecordWriter.FILE_NAME).getPath()), true);
+			hdfs.copyToLocalFile(true, out, new Path(new File("." + GridRecordWriter.FILE_NAME).getPath()), true);
 		}
 	}
 
