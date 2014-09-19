@@ -55,6 +55,16 @@
       <artifactId>stsc.storage</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.general</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.yahoo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   
     <dependency>
       <groupId>junit</groupId>
