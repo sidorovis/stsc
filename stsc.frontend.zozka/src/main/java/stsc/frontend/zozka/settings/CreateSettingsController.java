@@ -18,6 +18,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 public class CreateSettingsController implements Initializable {
 
 	private static final String DATE_VALIDATION_MESSAGE = "From date should be less or equal then To date";
+	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
 	private Stage createSettingsStage;
 	private Stage stage;
@@ -43,6 +46,12 @@ public class CreateSettingsController implements Initializable {
 	private DatePicker fromDate;
 	@FXML
 	private DatePicker toDate;
+
+	@FXML
+	private TabPane settingsPane;
+	@FXML
+	private TextArea stringRepresentation;
+
 	@FXML
 	private Button createSettingsButton;
 
@@ -57,8 +66,8 @@ public class CreateSettingsController implements Initializable {
 		createSettingsController.setStage(createSettingsStage, stage);
 		final Scene scene = new Scene(createSettingsParent);
 		createSettingsStage.setScene(scene);
-		createSettingsStage.setMinHeight(660);
-		createSettingsStage.setMinWidth(615);
+		createSettingsStage.setMinHeight(800);
+		createSettingsStage.setMinWidth(640);
 		createSettingsStage.setTitle("Simulator Settings");
 		createSettingsStage.centerOnScreen();
 		createSettingsStage.showAndWait();
@@ -74,9 +83,14 @@ public class CreateSettingsController implements Initializable {
 	public void initialize(final URL url, final ResourceBundle rb) {
 		assert chooseDatafeedButton != null : "fx:id=\"chooseDatafeedButton\" was not injected: check your FXML file.";
 		assert datafeedLabel != null : "fx:id=\"datafeedLabel\" was not injected: check your FXML file.";
+
 		assert fromDate != null : "fx:id=\"fromDate\" was not injected: check your FXML file.";
 		assert toDate != null : "fx:id=\"toDate\" was not injected: check your FXML file.";
-		assert createSettingsButton != null : "fx:id=\"toDate\" was not injected: check your FXML file.";
+
+		assert settingsPane != null : "fx:id=\"settingsPane\" was not injected: check your FXML file.";
+		assert stringRepresentation != null : "fx:id=\"stringRepresentation\" was not injected: check your FXML file.";
+
+		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
 
 		setDatafeed("D:\\dev\\java\\StscData");
 
@@ -84,6 +98,9 @@ public class CreateSettingsController implements Initializable {
 		toDateData = LocalDate.of(2010, 1, 1);
 		fromDate.setValue(fromDateData);
 		toDate.setValue(toDateData);
+
+		settingsPane.getSelectionModel().selectNext();
+		stringRepresentation.setText(DefaultSettingsControllerStringValue.VALUE);
 
 		chooseDatafeedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -105,12 +122,25 @@ public class CreateSettingsController implements Initializable {
 					Dialogs.create().owner(createSettingsStage).title("Validation Error")
 							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
 							.showError();
+				} else if (!checkDatafeed()) {
+					Dialogs.create().owner(createSettingsStage).title("Validation Error")
+							.masthead("Datafeed folder: " + datafeedPath + " is invalid.").message(DATAFEED_PATH_VALIDATION_MESSAGE)
+							.showError();
 				} else {
 					setValid();
 					createSettingsStage.close();
 				}
 			}
 		});
+	}
+
+	protected boolean checkDatafeed() {
+		final File datafeedFile = new File(datafeedPath);
+		if (!(new File(datafeedFile + "/data").isDirectory()))
+			return false;
+		if (!(new File(datafeedFile + "/filtered_data").isDirectory()))
+			return false;
+		return true;
 	}
 
 	protected void setValid() {

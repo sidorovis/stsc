@@ -35,9 +35,9 @@
       </BorderPane>
    </top>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="settingsPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Table Representation">
+          <Tab closable="false" text="Table Representation">
             <content>
                   <GridPane>
                      <columnConstraints>
@@ -52,7 +52,7 @@
                   </GridPane>
             </content>
           </Tab>
-          <Tab text="String Representation">
+          <Tab closable="false" text="String Representation">
             <content>
                   <GridPane>
                      <columnConstraints>
@@ -62,7 +62,7 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <TextArea prefHeight="200.0" prefWidth="200.0" />
+                        <TextArea fx:id="stringRepresentation" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </GridPane>
             </content>

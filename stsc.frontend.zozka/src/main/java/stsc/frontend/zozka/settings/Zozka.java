@@ -22,7 +22,6 @@ public class Zozka extends Application {
 
 	private void createMainWindow(Stage stage) {
 		stage.show();
-
 	}
 
 	public static void main(String[] args) {
