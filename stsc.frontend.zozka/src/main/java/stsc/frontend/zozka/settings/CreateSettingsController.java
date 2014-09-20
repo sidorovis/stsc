@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Queue;
 import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.storage.StockStorage;
+import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +26,8 @@ import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 
 public class CreateSettingsController implements Initializable {
 
@@ -33,6 +38,7 @@ public class CreateSettingsController implements Initializable {
 	private Stage stage;
 
 	private String datafeedPath = "./";
+	private StockStorage stockStorage;
 	private LocalDate fromDateData;
 	private LocalDate toDateData;
 
@@ -55,7 +61,7 @@ public class CreateSettingsController implements Initializable {
 	@FXML
 	private Button createSettingsButton;
 
-	public static boolean create(final Stage stage) throws IOException {
+	public static CreateSettingsController create(final Stage stage) throws IOException {
 		final Stage createSettingsStage = new Stage();
 		final URL location = Zozka.class.getResource("01_create_settings.fxml");
 		final FXMLLoader loader = new FXMLLoader();
@@ -68,10 +74,10 @@ public class CreateSettingsController implements Initializable {
 		createSettingsStage.setScene(scene);
 		createSettingsStage.setMinHeight(800);
 		createSettingsStage.setMinWidth(640);
-		createSettingsStage.setTitle("Simulator Settings");
+		createSettingsStage.setTitle("Create Simulator Settings");
 		createSettingsStage.centerOnScreen();
 		createSettingsStage.showAndWait();
-		return createSettingsController.isValid();
+		return createSettingsController;
 	}
 
 	public void setStage(Stage createSettingsStage, Stage stage) {
@@ -92,16 +98,24 @@ public class CreateSettingsController implements Initializable {
 
 		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
 
-		setDatafeed("D:\\dev\\java\\StscData");
+		setDefaultValues();
+		setOnChooseButton();
+		setOnCreateSettingsButton();
+	}
 
-		fromDateData = LocalDate.of(2010, 1, 2);
+	private void setDefaultValues() {
+		setDatafeed("./test_data");
+
+		fromDateData = LocalDate.of(1990, 1, 1);
 		toDateData = LocalDate.of(2010, 1, 1);
 		fromDate.setValue(fromDateData);
 		toDate.setValue(toDateData);
 
 		settingsPane.getSelectionModel().selectNext();
 		stringRepresentation.setText(DefaultSettingsControllerStringValue.VALUE);
+	}
 
+	private void setOnChooseButton() {
 		chooseDatafeedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -113,6 +127,9 @@ public class CreateSettingsController implements Initializable {
 				}
 			}
 		});
+	}
+
+	private void setOnCreateSettingsButton() {
 		createSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -122,29 +139,98 @@ public class CreateSettingsController implements Initializable {
 					Dialogs.create().owner(createSettingsStage).title("Validation Error")
 							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
 							.showError();
-				} else if (!checkDatafeed()) {
-					Dialogs.create().owner(createSettingsStage).title("Validation Error")
-							.masthead("Datafeed folder: " + datafeedPath + " is invalid.").message(DATAFEED_PATH_VALIDATION_MESSAGE)
-							.showError();
 				} else {
-					setValid();
-					createSettingsStage.close();
+					checkAndLoadDatafeed();
 				}
 			}
 		});
 	}
 
-	protected boolean checkDatafeed() {
+	private static class ProgressBarTask extends Task<Integer> {
+
+		private final Queue<String> queue;
+		private final int initialSize;
+
+		ProgressBarTask(YahooFileStockStorage stockStorage) {
+			queue = stockStorage.getTasks();
+			initialSize = queue.size();
+		}
+
+		@Override
+		protected Integer call() throws Exception {
+			int iterations = initialSize - queue.size();
+			while (!queue.isEmpty()) {
+				updateProgress(iterations, initialSize);
+				iterations = initialSize - queue.size();
+				Thread.sleep(300);
+			}
+			return iterations;
+		}
+	}
+
+	private static class OnSuccessEventHandler implements EventHandler<WorkerStateEvent> {
+
+		final CreateSettingsController controller;
+
+		OnSuccessEventHandler(CreateSettingsController controller) {
+			this.controller = controller;
+		}
+
+		@Override
+		public void handle(WorkerStateEvent event) {
+			controller.setValid();
+		}
+	}
+
+	private static class OnFailureEventHandler implements EventHandler<WorkerStateEvent> {
+
+		final CreateSettingsController controller;
+
+		OnFailureEventHandler(CreateSettingsController controller) {
+			this.controller = controller;
+		}
+
+		@Override
+		public void handle(WorkerStateEvent event) {
+			controller.setInvalid();
+		}
+	}
+
+	protected boolean checkAndLoadDatafeed() {
 		final File datafeedFile = new File(datafeedPath);
 		if (!(new File(datafeedFile + "/data").isDirectory()))
 			return false;
 		if (!(new File(datafeedFile + "/filtered_data").isDirectory()))
 			return false;
+		try {
+			loadDatafeed(datafeedFile);
+		} catch (ClassNotFoundException | IOException e) {
+			return false;
+		}
 		return true;
+	}
+
+	private void loadDatafeed(File datafeedFile) throws ClassNotFoundException, IOException {
+		final YahooFileStockStorage yfStockStorage = new YahooFileStockStorage(datafeedFile + "/data", datafeedFile + "/filtered_data");
+		final ProgressBarTask task = new ProgressBarTask(yfStockStorage);
+		Dialogs.create().owner(createSettingsStage).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
+		new Thread(task).start();
+		stockStorage = yfStockStorage;
+
+		task.setOnSucceeded(new OnSuccessEventHandler(this));
+		final OnFailureEventHandler failure = new OnFailureEventHandler(this);
+		task.setOnFailed(failure);
+		task.setOnCancelled(failure);
 	}
 
 	protected void setValid() {
 		valid = true;
+		createSettingsStage.close();
+	}
+
+	protected void setInvalid() {
+		Dialogs.create().owner(createSettingsStage).title("Validation Error").masthead("Datafeed folder: " + datafeedPath + " is invalid.")
+				.message(DATAFEED_PATH_VALIDATION_MESSAGE).showError();
 	}
 
 	private void setDatafeed(String datafeed) {
@@ -156,8 +242,8 @@ public class CreateSettingsController implements Initializable {
 		return valid;
 	}
 
-	public String getDatafeedPath() {
-		return datafeedPath;
+	public StockStorage getStockStorage() {
+		return stockStorage;
 	}
 
 	public LocalDate getFromDateData() {

@@ -31,15 +31,17 @@ import stsc.yahoo.YahooFileStockStorage;
 public class HadoopStaticDataSingleton {
 
 	// StockStorage
-	
+
 	public static String DATAFEED_HDFS_PATH = "./yahoo_datafeed/";
 
 	private static StockStorage stockStorage = null;
 
-	public static StockStorage getStockStorage(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException, IOException,
-			InterruptedException {
+	public static StockStorage getStockStorage(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException,
+			IOException, InterruptedException {
 		if (stockStorage == null) {
-			stockStorage = new YahooFileStockStorage(dataFolder, filteredDataFolder);
+			final YahooFileStockStorage yahooStockStorage = new YahooFileStockStorage(dataFolder, filteredDataFolder);
+			stockStorage = yahooStockStorage;
+			yahooStockStorage.waitForLoad();
 		}
 		return stockStorage;
 	}
@@ -89,16 +91,18 @@ public class HadoopStaticDataSingleton {
 		}
 	}
 
-	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException, BadAlgorithmException {
+	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException,
+			BadAlgorithmException {
 		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
-		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.1))
-				.add(new MpSubExecution("", "in")));
+		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()),
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.1)).add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
 				algoStockName(Level.class.getSimpleName()),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 1)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
-		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side", Arrays.asList(new String[] { "long", "short" }));
+		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side",
+				Arrays.asList(new String[] { "long", "short" }));
 
 		final AlgorithmSettingsIteratorFactory factoryPositionSide = new AlgorithmSettingsIteratorFactory(period);
 		factoryPositionSide.add(new MpSubExecution("", Arrays.asList(new String[] { "in", "level" })));

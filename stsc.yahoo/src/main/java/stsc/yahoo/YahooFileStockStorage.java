@@ -1,8 +1,10 @@
 package stsc.yahoo;
 
 import java.io.IOException;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,32 +25,33 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 
 	private YahooSettings settings;
 	private int readStockThreadSize = 4;
+	private List<Thread> threads = new ArrayList<Thread>();
 
-	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException, InterruptedException {
+	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException {
 		super();
 		this.settings = settings;
 		loadStocksFromFileSystem();
 	}
 
-	public YahooFileStockStorage() throws ClassNotFoundException, IOException, InterruptedException {
+	public YahooFileStockStorage() throws ClassNotFoundException, IOException {
 		this("./data/", "./filtered_data/");
 	}
 
-	public static YahooFileStockStorage forData(String dataFolder) throws ClassNotFoundException, IOException, InterruptedException {
+	public static YahooFileStockStorage forData(String dataFolder) throws ClassNotFoundException, IOException {
 		return new YahooFileStockStorage(dataFolder, "./filtered_data/");
 	}
 
-	public static YahooFileStockStorage forFilteredData(String dataFilterFolder) throws ClassNotFoundException, IOException, InterruptedException {
+	public static YahooFileStockStorage forFilteredData(String dataFilterFolder) throws ClassNotFoundException, IOException {
 		return new YahooFileStockStorage("./data/", dataFilterFolder);
 	}
 
-	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException, IOException, InterruptedException {
+	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException, IOException {
 		super();
 		this.settings = new YahooSettings(dataFolder, filteredDataFolder);
 		loadStocksFromFileSystem();
 	}
 
-	private void loadStocksFromFileSystem() throws ClassNotFoundException, IOException, InterruptedException {
+	private void loadStocksFromFileSystem() throws ClassNotFoundException, IOException {
 		logger.trace("created");
 		loadFilteredDatafeed();
 		logger.info("filtered datafeed header readed: {} stocks", settings.taskQueueSize());
@@ -60,9 +63,8 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 		UnitedFormatStock.loadStockList(settings.getFilteredDataFolder(), settings.getTaskQueue());
 	}
 
-	private void loadStocks() throws ClassNotFoundException, IOException, InterruptedException {
+	private void loadStocks() throws ClassNotFoundException, IOException {
 		StockReadThread stockReadThread = new StockReadThread(settings, this);
-		List<Thread> threads = new ArrayList<Thread>();
 
 		for (int i = 0; i < readStockThreadSize; ++i) {
 			final Thread newThread = new Thread(stockReadThread);
@@ -70,7 +72,9 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 			threads.add(newThread);
 			newThread.start();
 		}
+	}
 
+	public void waitForLoad() throws InterruptedException {
 		for (Thread thread : threads) {
 			thread.join();
 		}
@@ -79,5 +83,9 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 	@Override
 	public void newStock(Stock newStock) {
 		datafeed.put(newStock.getName(), new StockLock(newStock));
+	}
+
+	public Queue<String> getTasks() {
+		return settings.getTaskQueue();
 	}
 }

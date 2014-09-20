@@ -1,26 +1,38 @@
 package stsc.frontend.zozka.settings;
 
+import java.io.IOException;
+
+import stsc.common.storage.StockStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Zozka extends Application {
 
+	private StockStorage stockStorage;
+
 	@Override
 	public void start(final Stage stage) {
 		try {
-			if (CreateSettingsController.create(stage)) {
-				createMainWindow(stage);
-			} else {
-				Platform.exit();
-			}
+			mainWorkflow(stage);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Platform.exit();
 		}
 	}
 
-	private void createMainWindow(Stage stage) {
+	private void mainWorkflow(Stage stage) throws IOException {
+		final CreateSettingsController settingsController = CreateSettingsController.create(stage);
+		if (settingsController.isValid()) {
+			final ConfigureSettingsController configureSettings = ConfigureSettingsController.create(stage, settingsController);
+			createMainWindow(settingsController, stage);
+		} else {
+			Platform.exit();
+		}
+	}
+
+	private void createMainWindow(CreateSettingsController settingsController, Stage stage) {
+		stockStorage = settingsController.getStockStorage();
 		stage.show();
 	}
 
