@@ -1,6 +1,7 @@
 package stsc.frontend.zozka.settings;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -10,11 +11,15 @@ import org.controlsfx.dialog.Dialogs;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class CreateSettingsController implements Initializable {
@@ -40,6 +45,25 @@ public class CreateSettingsController implements Initializable {
 	private DatePicker toDate;
 	@FXML
 	private Button createSettingsButton;
+
+	public static boolean create(final Stage stage) throws IOException {
+		final Stage createSettingsStage = new Stage();
+		final URL location = Zozka.class.getResource("01_create_settings.fxml");
+		final FXMLLoader loader = new FXMLLoader();
+		final Parent createSettingsParent = loader.load(location.openStream());
+		createSettingsStage.initOwner(stage);
+		createSettingsStage.initModality(Modality.WINDOW_MODAL);
+		final CreateSettingsController createSettingsController = loader.getController();
+		createSettingsController.setStage(createSettingsStage, stage);
+		final Scene scene = new Scene(createSettingsParent);
+		createSettingsStage.setScene(scene);
+		createSettingsStage.setMinHeight(660);
+		createSettingsStage.setMinWidth(615);
+		createSettingsStage.setTitle("Simulator Settings");
+		createSettingsStage.centerOnScreen();
+		createSettingsStage.showAndWait();
+		return createSettingsController.isValid();
+	}
 
 	public void setStage(Stage createSettingsStage, Stage stage) {
 		this.createSettingsStage = createSettingsStage;
@@ -78,13 +102,13 @@ public class CreateSettingsController implements Initializable {
 				fromDateData = fromDate.getValue();
 				toDateData = toDate.getValue();
 				if (fromDateData.isAfter(toDateData)) {
-					Dialogs.create().owner(createSettingsStage).title("Error")
+					Dialogs.create().owner(createSettingsStage).title("Validation Error")
 							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
 							.showError();
 				} else {
 					setValid();
+					createSettingsStage.close();
 				}
-				createSettingsStage.close();
 			}
 		});
 	}
