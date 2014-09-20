@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.settings;
 
+import java.awt.Container;
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -13,12 +14,17 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.control.DatePicker;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -95,8 +101,10 @@ public class SimulatorSettingsBuilder extends Application {
 	}
 
 	private Date getDate(Stage stage) {
+		JDialog dialog = new JDialog();
+		Container c = new Container();
 		final DatePicker dp = new DatePicker();
-		dp.show();
+//		dialog.setRootPane(dp);
 		final Instant i = dp.getValue().atStartOfDay().atZone(ZoneOffset.UTC).toInstant();
 		return Date.from(i);
 	}
