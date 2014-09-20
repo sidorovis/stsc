@@ -5,6 +5,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,6 +18,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class CreateSettingsController implements Initializable {
+
+	private static final String DATE_VALIDATION_MESSAGE = "From date should be less or equal then To date";
 
 	private Stage createSettingsStage;
 	private Stage stage;
@@ -74,7 +78,9 @@ public class CreateSettingsController implements Initializable {
 				fromDateData = fromDate.getValue();
 				toDateData = toDate.getValue();
 				if (fromDateData.isAfter(toDateData)) {
-
+					Dialogs.create().owner(createSettingsStage).title("Error")
+							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
+							.showError();
 				} else {
 					setValid();
 				}
