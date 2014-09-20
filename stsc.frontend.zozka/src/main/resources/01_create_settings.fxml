@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="641.0" prefWidth="611.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <BorderPane prefHeight="41.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <center>
+            <Button mnemonicParsing="false" text="Create Settings" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </bottom>
+   <top>
+      <BorderPane prefHeight="113.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <center>
+            <Pane prefHeight="117.0" prefWidth="503.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="26.0" layoutY="10.0" prefHeight="21.0" prefWidth="420.0" text="Datafeed: ./" />
+                  <DatePicker layoutX="102.0" layoutY="39.0" prefHeight="31.0" prefWidth="150.0" />
+                  <Label layoutX="26.0" layoutY="44.0" prefHeight="21.0" prefWidth="52.0" text="From:" />
+                  <DatePicker layoutX="102.0" layoutY="73.0" prefHeight="31.0" prefWidth="150.0" />
+                  <Label layoutX="26.0" layoutY="76.0" prefHeight="21.0" prefWidth="52.0" text="To:  " />
+               </children>
+            </Pane>
+         </center>
+         <right>
+            <Pane prefHeight="113.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button layoutX="16.0" layoutY="7.0" mnemonicParsing="false" text="Choose datafeed" />
+               </children>
+            </Pane>
+         </right>
+      </BorderPane>
+   </top>
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Table Representation">
+            <content>
+                  <GridPane>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text=" Future is coming!!! And this Representation also." />
+                     </children>
+                  </GridPane>
+            </content>
+          </Tab>
+          <Tab text="String Representation">
+            <content>
+                  <GridPane>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <TextArea prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </GridPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
