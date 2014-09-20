@@ -4,11 +4,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="640.0" minWidth="610.0" prefHeight="640.0" prefWidth="610.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="640.0" minWidth="610.0" prefHeight="640.0" prefWidth="610.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stsc.frontend.zozka.settings.CreateSettingsController">
    <bottom>
       <BorderPane prefHeight="41.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <center>
-            <Button mnemonicParsing="false" text="Create Settings" BorderPane.alignment="CENTER" />
+            <Button id="createSettings" fx:id="createSettingsButton" mnemonicParsing="false" text="Create Settings" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </bottom>
@@ -17,10 +17,10 @@
          <center>
             <Pane prefHeight="117.0" prefWidth="503.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label layoutX="26.0" layoutY="10.0" prefHeight="21.0" prefWidth="420.0" text="Datafeed: ./" />
-                  <DatePicker layoutX="102.0" layoutY="39.0" prefHeight="31.0" prefWidth="150.0" />
+                  <Label id="datafeedLabel" fx:id="datafeedLabel" layoutX="26.0" layoutY="10.0" prefHeight="21.0" prefWidth="420.0" text="Datafeed: ./" />
+                  <DatePicker id="fromData" fx:id="fromDate" layoutX="102.0" layoutY="39.0" prefHeight="31.0" prefWidth="150.0" />
                   <Label layoutX="26.0" layoutY="44.0" prefHeight="21.0" prefWidth="52.0" text="From:" />
-                  <DatePicker layoutX="102.0" layoutY="73.0" prefHeight="31.0" prefWidth="150.0" />
+                  <DatePicker id="toData" fx:id="toDate" layoutX="102.0" layoutY="73.0" prefHeight="31.0" prefWidth="150.0" />
                   <Label layoutX="26.0" layoutY="76.0" prefHeight="21.0" prefWidth="52.0" text="To:  " />
                </children>
             </Pane>
@@ -28,7 +28,7 @@
          <right>
             <Pane prefHeight="113.0" prefWidth="160.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="16.0" layoutY="7.0" mnemonicParsing="false" text="Choose datafeed" />
+                  <Button fx:id="chooseDatafeedButton" layoutX="16.0" layoutY="7.0" mnemonicParsing="false" text="Choose datafeed" />
                </children>
             </Pane>
          </right>
