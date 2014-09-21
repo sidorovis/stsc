@@ -1,8 +1,11 @@
 package stsc.storage;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
@@ -14,6 +17,9 @@ import stsc.common.algorithms.StockAlgorithm;
 public final class AlgorithmsStorage {
 
 	private String containerPackageName = "stsc.algorithm";
+
+	private Set<String> stockLabels = new HashSet<>();
+	private Set<String> eodLabels = new HashSet<>();
 
 	private HashMap<String, Class<? extends StockAlgorithm>> stockNames = new HashMap<>();
 	private HashMap<String, Class<? extends EodAlgorithm>> eodNames = new HashMap<>();
@@ -51,9 +57,11 @@ public final class AlgorithmsStorage {
 					final Class<?> classType = Class.forName(e.getName());
 					if (classType.getSuperclass() == StockAlgorithm.class) {
 						final Class<? extends StockAlgorithm> stockAlgorithm = classType.asSubclass(StockAlgorithm.class);
+						stockLabels.add(e.getName());
 						addStockAlgorithm(stockAlgorithm);
 					} else if (classType.getSuperclass() == EodAlgorithm.class) {
 						final Class<? extends EodAlgorithm> eodAlgorithm = classType.asSubclass(EodAlgorithm.class);
+						eodLabels.add(e.getName());
 						addEodAlgorithm(eodAlgorithm);
 					}
 				}
@@ -95,4 +103,13 @@ public final class AlgorithmsStorage {
 		}
 		return null;
 	}
+
+	public final Set<String> getStockLabels() {
+		return Collections.unmodifiableSet(stockLabels);
+	}
+
+	public final Set<String> getEodLabels() {
+		return Collections.unmodifiableSet(eodLabels);
+	}
+
 }

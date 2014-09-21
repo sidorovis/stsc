@@ -29,45 +29,18 @@
             <Pane prefHeight="113.0" prefWidth="160.0" BorderPane.alignment="CENTER">
                <children>
                   <Button fx:id="chooseDatafeedButton" layoutX="16.0" layoutY="7.0" mnemonicParsing="false" text="Choose datafeed" />
+                  <Button fx:id="addExecutionButton" layoutX="22.0" layoutY="74.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="122.0" text="Add Execution" />
                </children>
             </Pane>
          </right>
       </BorderPane>
    </top>
    <center>
-      <TabPane fx:id="settingsPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab closable="false" text="Table Representation">
-            <content>
-                  <GridPane>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <Label text=" Future is coming!!! And this Representation also." />
-                     </children>
-                  </GridPane>
-            </content>
-          </Tab>
-          <Tab closable="false" text="String Representation">
-            <content>
-                  <GridPane>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <TextArea fx:id="stringRepresentation" prefHeight="200.0" prefWidth="200.0" />
-                     </children>
-                  </GridPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
+      <TableView fx:id="executionsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="executionNameColumn" prefWidth="189.0" text="Execution Name" />
+          <TableColumn fx:id="algorithmNameColumn" minWidth="0.0" prefWidth="406.0" text="Algorithm Name" />
+        </columns>
+      </TableView>
    </center>
 </BorderPane>

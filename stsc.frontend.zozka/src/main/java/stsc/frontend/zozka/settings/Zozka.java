@@ -24,7 +24,6 @@ public class Zozka extends Application {
 	private void mainWorkflow(Stage stage) throws IOException {
 		final CreateSettingsController settingsController = CreateSettingsController.create(stage);
 		if (settingsController.isValid()) {
-			final ConfigureSettingsController configureSettings = ConfigureSettingsController.create(stage, settingsController);
 			createMainWindow(settingsController, stage);
 		} else {
 			Platform.exit();

@@ -21,11 +21,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 
@@ -44,18 +46,25 @@ public class CreateSettingsController implements Initializable {
 	private boolean valid = false;
 
 	@FXML
-	private Button chooseDatafeedButton;
-	@FXML
 	private Label datafeedLabel;
+	@FXML
+	private Button chooseDatafeedButton;
+
 	@FXML
 	private DatePicker fromDate;
 	@FXML
 	private DatePicker toDate;
 
 	@FXML
-	private TabPane settingsPane;
+	private Button addExecutionButton;
+
+	private ObservableList<ExecutionDescription> model = FXCollections.observableArrayList();
 	@FXML
-	private TextArea stringRepresentation;
+	private TableView<ExecutionDescription> executionsTable;
+	@FXML
+	private TableColumn<ExecutionDescription.ExecutionName, TableView<ExecutionDescription>> executionNameColumn;
+	@FXML
+	private TableColumn<ExecutionDescription.AlgorithmName, TableView<ExecutionDescription>> algorithmNameColumn;
 
 	@FXML
 	private Button createSettingsButton;
@@ -91,8 +100,8 @@ public class CreateSettingsController implements Initializable {
 		assert fromDate != null : "fx:id=\"fromDate\" was not injected: check your FXML file.";
 		assert toDate != null : "fx:id=\"toDate\" was not injected: check your FXML file.";
 
-		assert settingsPane != null : "fx:id=\"settingsPane\" was not injected: check your FXML file.";
-		assert stringRepresentation != null : "fx:id=\"stringRepresentation\" was not injected: check your FXML file.";
+		assert executionsTable != null : "fx:id=\"executionsTable\" was not injected: check your FXML file.";
+		executionsTable.setItems(model);
 
 		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
 
@@ -108,9 +117,6 @@ public class CreateSettingsController implements Initializable {
 		toDateData = LocalDate.of(2010, 1, 1);
 		fromDate.setValue(fromDateData);
 		toDate.setValue(toDateData);
-
-		settingsPane.getSelectionModel().selectNext();
-		stringRepresentation.setText(DefaultSettingsControllerStringValue.VALUE);
 	}
 
 	private void setOnChooseButton() {
