@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -28,27 +32,29 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private TextField executionName;
 
+	private ObservableList<NumberAlgorithmParameter> numberModel = FXCollections.observableArrayList();
 	@FXML
-	private TableView<ParameterDescription> numberParameters;
+	private TableView<NumberAlgorithmParameter> numberTable;
 	@FXML
-	private TableColumn<ParameterDescription, String> numberParName;
+	private TableColumn<NumberAlgorithmParameter, String> numberParName;
 	@FXML
-	private TableColumn<ParameterDescription, String> numberParType;
+	private TableColumn<NumberAlgorithmParameter, String> numberParType;
 	@FXML
-	private TableColumn<ParameterDescription, String> numberParFrom;
+	private TableColumn<NumberAlgorithmParameter, String> numberParFrom;
 	@FXML
-	private TableColumn<ParameterDescription, String> numberParStep;
+	private TableColumn<NumberAlgorithmParameter, String> numberParStep;
 	@FXML
-	private TableColumn<ParameterDescription, String> numberParTo;
+	private TableColumn<NumberAlgorithmParameter, String> numberParTo;
 
+	private ObservableList<TextAlgorithmParameter> textModel = FXCollections.observableArrayList();
 	@FXML
-	private TableView<ParameterDescription> textParameters;
+	private TableView<TextAlgorithmParameter> textParameters;
 	@FXML
-	private TableColumn<ParameterDescription, String> textParName;
+	private TableColumn<TextAlgorithmParameter, String> textParName;
 	@FXML
-	private TableColumn<ParameterDescription, String> textParType;
+	private TableColumn<TextAlgorithmParameter, String> textParType;
 	@FXML
-	private TableColumn<ParameterDescription, String> textParDomen;
+	private TableColumn<TextAlgorithmParameter, String> textParDomen;
 
 	@FXML
 	private Button addParameter;
@@ -81,7 +87,8 @@ public class CreateAlgorithmController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
-
+		connectTableForNumber();
+		connectTableForText();
 	}
 
 	private void validateGui() {
@@ -89,7 +96,7 @@ public class CreateAlgorithmController implements Initializable {
 		assert algorithmClass != null : "fx:id=\"algorithmClass\" was not injected: check your FXML file.";
 		assert executionName != null : "fx:id=\"executionName\" was not injected: check your FXML file.";
 
-		assert numberParameters != null : "fx:id=\"numberParameters\" was not injected: check your FXML file.";
+		assert numberTable != null : "fx:id=\"numberParameters\" was not injected: check your FXML file.";
 		assert numberParName != null : "fx:id=\"numberParName\" was not injected: check your FXML file.";
 		assert numberParType != null : "fx:id=\"numberParType\" was not injected: check your FXML file.";
 		assert numberParFrom != null : "fx:id=\"numberParFrom\" was not injected: check your FXML file.";
@@ -105,4 +112,24 @@ public class CreateAlgorithmController implements Initializable {
 		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
 	}
 
+	private void connectTableForNumber() {
+		numberTable.setItems(numberModel);
+		numberParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
+
+		numberParType.setCellValueFactory(cellData -> cellData.getValue().getType());
+
+		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
+		numberParFrom.setCellValueFactory(cellData -> cellData.getValue().getFrom());
+		numberParFrom.setOnEditCommit(c -> c.getRowValue().setFrom(new SimpleStringProperty(c.getNewValue())));
+
+		numberParStep.setCellValueFactory(cellData -> cellData.getValue().getStep());
+		numberParTo.setCellValueFactory(cellData -> cellData.getValue().getTo());
+
+		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
+	}
+
+	private void connectTableForText() {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -45,7 +45,7 @@
         <items>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
-                  <TableView fx:id="integerParameters" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <TableView fx:id="numberTable" editable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <columns>
                       <TableColumn fx:id="numberParName" prefWidth="306.0" text="Parameter" />
                       <TableColumn fx:id="numberParType" minWidth="7.0" prefWidth="78.0" text="Type" />

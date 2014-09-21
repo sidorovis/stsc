@@ -96,10 +96,7 @@ public class CreateSettingsController implements Initializable {
 	@Override
 	public void initialize(final URL url, final ResourceBundle rb) {
 		validateGui();
-
-		executionsTable.setItems(model);
-		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
-		algorithmNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
+		connectTableForExecutions();
 
 		setDefaultValues();
 		setOnChooseDatafeedButton();
@@ -121,6 +118,12 @@ public class CreateSettingsController implements Initializable {
 		assert algorithmNameColumn != null : "fx:id=\"algorithmNameColumn\" was not injected: check your FXML file.";
 
 		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
+	}
+
+	private void connectTableForExecutions() {
+		executionsTable.setItems(model);
+		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
+		algorithmNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
 	}
 
 	private void setDefaultValues() {
@@ -154,6 +157,7 @@ public class CreateSettingsController implements Initializable {
 				try {
 					ed = CreateAlgorithmController.create(stage);
 				} catch (IOException e) {
+					e.printStackTrace();
 					// TODO add to logger
 				}
 				if (ed != null) {
