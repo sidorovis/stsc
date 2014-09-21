@@ -2,14 +2,11 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 
-import stsc.common.storage.StockStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Zozka extends Application {
-
-	private StockStorage stockStorage;
 
 	@Override
 	public void start(final Stage stage) {
@@ -31,7 +28,6 @@ public class Zozka extends Application {
 	}
 
 	private void createMainWindow(CreateSettingsController settingsController, Stage stage) {
-		stockStorage = settingsController.getStockStorage();
 		stage.show();
 	}
 
