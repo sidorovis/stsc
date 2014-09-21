@@ -26,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -36,7 +37,7 @@ public class CreateSettingsController implements Initializable {
 	private static final String DATE_VALIDATION_MESSAGE = "From date should be less or equal then To date";
 	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
-	private Stage createSettingsStage;
+	private Stage stage;
 
 	private String datafeedPath = "./";
 	private StockStorage stockStorage;
@@ -62,52 +63,64 @@ public class CreateSettingsController implements Initializable {
 	@FXML
 	private TableView<ExecutionDescription> executionsTable;
 	@FXML
-	private TableColumn<ExecutionDescription.ExecutionName, TableView<ExecutionDescription>> executionNameColumn;
+	private TableColumn<ExecutionDescription, String> executionNameColumn;
 	@FXML
-	private TableColumn<ExecutionDescription.AlgorithmName, TableView<ExecutionDescription>> algorithmNameColumn;
+	private TableColumn<ExecutionDescription, String> algorithmNameColumn;
 
 	@FXML
 	private Button createSettingsButton;
 
 	public static CreateSettingsController create(final Stage stage) throws IOException {
-		final Stage createSettingsStage = new Stage();
+		final Stage thisStage = new Stage();
 		final URL location = Zozka.class.getResource("01_create_settings.fxml");
 		final FXMLLoader loader = new FXMLLoader();
-		final Parent createSettingsParent = loader.load(location.openStream());
-		createSettingsStage.initOwner(stage);
-		createSettingsStage.initModality(Modality.WINDOW_MODAL);
-		final CreateSettingsController createSettingsController = loader.getController();
-		createSettingsController.setStage(createSettingsStage);
-		final Scene scene = new Scene(createSettingsParent);
-		createSettingsStage.setScene(scene);
-		createSettingsStage.setMinHeight(800);
-		createSettingsStage.setMinWidth(640);
-		createSettingsStage.setTitle("Create Simulator Settings");
-		createSettingsStage.centerOnScreen();
-		createSettingsStage.showAndWait();
-		return createSettingsController;
+		final Parent gui = loader.load(location.openStream());
+		thisStage.initOwner(stage);
+		thisStage.initModality(Modality.WINDOW_MODAL);
+		final CreateSettingsController controller = loader.getController();
+		controller.setStage(thisStage);
+		final Scene scene = new Scene(gui);
+		thisStage.setScene(scene);
+		thisStage.setMinHeight(800);
+		thisStage.setMinWidth(640);
+		thisStage.setTitle("Create Simulator Settings");
+		thisStage.centerOnScreen();
+		thisStage.showAndWait();
+		return controller;
 	}
 
 	public void setStage(Stage createSettingsStage) {
-		this.createSettingsStage = createSettingsStage;
+		this.stage = createSettingsStage;
 	}
 
 	@Override
 	public void initialize(final URL url, final ResourceBundle rb) {
+		validateGui();
+
+		executionsTable.setItems(model);
+		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
+		algorithmNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
+
+		setDefaultValues();
+		setOnChooseDatafeedButton();
+		setOnAddExecutionButton();
+		setOnCreateSettingsButton();
+	}
+
+	private void validateGui() {
 		assert chooseDatafeedButton != null : "fx:id=\"chooseDatafeedButton\" was not injected: check your FXML file.";
 		assert datafeedLabel != null : "fx:id=\"datafeedLabel\" was not injected: check your FXML file.";
 
 		assert fromDate != null : "fx:id=\"fromDate\" was not injected: check your FXML file.";
 		assert toDate != null : "fx:id=\"toDate\" was not injected: check your FXML file.";
 
+		assert addExecutionButton != null : "fx:id=\"addExecutionButton\" was not injected: check your FXML file.";
+
 		assert executionsTable != null : "fx:id=\"executionsTable\" was not injected: check your FXML file.";
-		executionsTable.setItems(model);
+		assert executionNameColumn != null : "fx:id=\"executionNameColumn\" was not injected: check your FXML file.";
+		assert algorithmNameColumn != null : "fx:id=\"algorithmNameColumn\" was not injected: check your FXML file.";
 
 		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
-
-		setDefaultValues();
-		setOnChooseButton();
-		setOnCreateSettingsButton();
 	}
 
 	private void setDefaultValues() {
@@ -119,18 +132,36 @@ public class CreateSettingsController implements Initializable {
 		toDate.setValue(toDateData);
 	}
 
-	private void setOnChooseButton() {
+	private void setOnChooseDatafeedButton() {
 		chooseDatafeedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				final DirectoryChooser dc = new DirectoryChooser();
 				dc.setTitle("Datafeed folder");
-				final File f = dc.showDialog(createSettingsStage);
+				final File f = dc.showDialog(stage);
 				if (f != null && f.isDirectory()) {
 					setDatafeed(f.getAbsolutePath());
 				}
 			}
 		});
+	}
+
+	private void setOnAddExecutionButton() {
+		addExecutionButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ExecutionDescription ed = null;
+				try {
+					ed = CreateAlgorithmController.create(stage);
+				} catch (IOException e) {
+					// TODO add to logger
+				}
+				if (ed != null) {
+
+				}
+			}
+		});
+
 	}
 
 	private void setOnCreateSettingsButton() {
@@ -140,7 +171,7 @@ public class CreateSettingsController implements Initializable {
 				fromDateData = fromDate.getValue();
 				toDateData = toDate.getValue();
 				if (fromDateData.isAfter(toDateData)) {
-					Dialogs.create().owner(createSettingsStage).title("Validation Error")
+					Dialogs.create().owner(stage).title("Validation Error")
 							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
 							.showError();
 				} else {
@@ -209,6 +240,7 @@ public class CreateSettingsController implements Initializable {
 		try {
 			loadDatafeed(datafeedFile);
 		} catch (ClassNotFoundException | IOException e) {
+			// TODO add to logs
 			return false;
 		}
 		return true;
@@ -217,7 +249,7 @@ public class CreateSettingsController implements Initializable {
 	private void loadDatafeed(File datafeedFile) throws ClassNotFoundException, IOException {
 		final YahooFileStockStorage yfStockStorage = new YahooFileStockStorage(datafeedFile + "/data", datafeedFile + "/filtered_data");
 		final ProgressBarTask task = new ProgressBarTask(yfStockStorage);
-		Dialogs.create().owner(createSettingsStage).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
+		Dialogs.create().owner(stage).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
 		new Thread(task).start();
 		stockStorage = yfStockStorage;
 
@@ -229,11 +261,11 @@ public class CreateSettingsController implements Initializable {
 
 	protected void setValid() {
 		valid = true;
-		createSettingsStage.close();
+		stage.close();
 	}
 
 	protected void setInvalid() {
-		Dialogs.create().owner(createSettingsStage).title("Validation Error").masthead("Datafeed folder: " + datafeedPath + " is invalid.")
+		Dialogs.create().owner(stage).title("Validation Error").masthead("Datafeed folder: " + datafeedPath + " is invalid.")
 				.message(DATAFEED_PATH_VALIDATION_MESSAGE).showError();
 	}
 
