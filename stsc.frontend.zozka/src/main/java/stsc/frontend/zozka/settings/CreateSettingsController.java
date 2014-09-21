@@ -35,7 +35,6 @@ public class CreateSettingsController implements Initializable {
 	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
 	private Stage createSettingsStage;
-	private Stage stage;
 
 	private String datafeedPath = "./";
 	private StockStorage stockStorage;
@@ -69,7 +68,7 @@ public class CreateSettingsController implements Initializable {
 		createSettingsStage.initOwner(stage);
 		createSettingsStage.initModality(Modality.WINDOW_MODAL);
 		final CreateSettingsController createSettingsController = loader.getController();
-		createSettingsController.setStage(createSettingsStage, stage);
+		createSettingsController.setStage(createSettingsStage);
 		final Scene scene = new Scene(createSettingsParent);
 		createSettingsStage.setScene(scene);
 		createSettingsStage.setMinHeight(800);
@@ -80,9 +79,8 @@ public class CreateSettingsController implements Initializable {
 		return createSettingsController;
 	}
 
-	public void setStage(Stage createSettingsStage, Stage stage) {
+	public void setStage(Stage createSettingsStage) {
 		this.createSettingsStage = createSettingsStage;
-		this.stage = stage;
 	}
 
 	@Override
@@ -121,7 +119,7 @@ public class CreateSettingsController implements Initializable {
 			public void handle(ActionEvent event) {
 				final DirectoryChooser dc = new DirectoryChooser();
 				dc.setTitle("Datafeed folder");
-				final File f = dc.showDialog(stage);
+				final File f = dc.showDialog(createSettingsStage);
 				if (f != null && f.isDirectory()) {
 					setDatafeed(f.getAbsolutePath());
 				}

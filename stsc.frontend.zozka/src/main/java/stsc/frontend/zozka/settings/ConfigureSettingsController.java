@@ -23,7 +23,6 @@ public class ConfigureSettingsController implements Initializable {
 
 	private CreateSettingsController createSettingsController;
 	private Stage configureSettingsStage;
-	private Stage stage;
 
 	@FXML
 	private TableView<MpIterator<?>> parameters;
@@ -40,7 +39,7 @@ public class ConfigureSettingsController implements Initializable {
 		configureSettingsStage.initOwner(stage);
 		configureSettingsStage.initModality(Modality.WINDOW_MODAL);
 		final ConfigureSettingsController configureSettingsController = loader.getController();
-		configureSettingsController.setStage(configureSettingsStage, stage);
+		configureSettingsController.setStage(configureSettingsStage);
 		configureSettingsController.setCreateSettingsController(settingsController);
 		final Scene scene = new Scene(configureSettingsParent);
 		configureSettingsStage.setScene(scene);
@@ -52,9 +51,8 @@ public class ConfigureSettingsController implements Initializable {
 		return configureSettingsController;
 	}
 
-	private void setStage(Stage configureSettingsStage, Stage stage) {
+	private void setStage(Stage configureSettingsStage) {
 		this.configureSettingsStage = configureSettingsStage;
-		this.stage = stage;
 	}
 
 	private void setCreateSettingsController(CreateSettingsController createSettingsController) {
