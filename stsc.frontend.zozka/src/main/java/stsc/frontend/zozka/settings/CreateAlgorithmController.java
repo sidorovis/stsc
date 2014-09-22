@@ -17,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -115,21 +116,17 @@ public class CreateAlgorithmController implements Initializable {
 	private void connectTableForNumber() {
 		numberTable.setItems(numberModel);
 		numberParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
-
 		numberParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
 		connectFromColumn();
-		
-		numberParStep.setCellValueFactory(cellData -> cellData.getValue().getStep());
-		numberParTo.setCellValueFactory(cellData -> cellData.getValue().getTo());
 
 		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
 	}
 
 	private void connectFromColumn() {
 		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
-		numberParFrom.setCellValueFactory(cellData -> cellData.getValue().getFrom());
-		numberParFrom.setOnEditCommit(c -> c.getRowValue().setFrom(new SimpleStringProperty(c.getNewValue())));
+		numberParFrom.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("From"));
+		numberParFrom.setOnEditCommit(c -> c.getRowValue().fromProperty().set(c.getNewValue()));
 	}
 
 	private void connectTableForText() {

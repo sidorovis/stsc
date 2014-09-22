@@ -3,7 +3,7 @@ package stsc.frontend.zozka.settings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-final class NumberAlgorithmParameter {
+public final class NumberAlgorithmParameter {
 	private final StringProperty parameterName;
 	private final StringProperty type;
 	private StringProperty from;
@@ -18,7 +18,7 @@ final class NumberAlgorithmParameter {
 	public NumberAlgorithmParameter(String parameterName, String type, Double from, Double step, Double to) {
 		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = new SimpleStringProperty(type);
-		this.setFrom(new SimpleStringProperty("0.0"));
+		this.from = new SimpleStringProperty("0.0");
 		this.setStep(new SimpleStringProperty("1.0"));
 		this.setTo(new SimpleStringProperty("15.0"));
 	}
@@ -31,12 +31,12 @@ final class NumberAlgorithmParameter {
 		return type;
 	}
 
-	public StringProperty getFrom() {
-		return from;
+	public String getFrom() {
+		return from.get();
 	}
 
-	public void setFrom(StringProperty from) {
-		this.from = from;
+	public StringProperty fromProperty() {
+		return from;
 	}
 
 	public StringProperty getStep() {
