@@ -118,14 +118,18 @@ public class CreateAlgorithmController implements Initializable {
 
 		numberParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
-		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
-		numberParFrom.setCellValueFactory(cellData -> cellData.getValue().getFrom());
-		numberParFrom.setOnEditCommit(c -> c.getRowValue().setFrom(new SimpleStringProperty(c.getNewValue())));
-
+		connectFromColumn();
+		
 		numberParStep.setCellValueFactory(cellData -> cellData.getValue().getStep());
 		numberParTo.setCellValueFactory(cellData -> cellData.getValue().getTo());
 
 		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
+	}
+
+	private void connectFromColumn() {
+		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
+		numberParFrom.setCellValueFactory(cellData -> cellData.getValue().getFrom());
+		numberParFrom.setOnEditCommit(c -> c.getRowValue().setFrom(new SimpleStringProperty(c.getNewValue())));
 	}
 
 	private void connectTableForText() {
