@@ -58,11 +58,11 @@
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
-                  <TableView fx:id="textParameters" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <TableView fx:id="textTable" editable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <columns>
-                      <TableColumn prefWidth="131.0" text="Parameter" />
-                      <TableColumn minWidth="0.0" prefWidth="111.0" text="Type" />
-                        <TableColumn prefWidth="343.0" text="Value Domen" />
+                      <TableColumn fx:id="textParName" prefWidth="131.0" text="Parameter" />
+                      <TableColumn fx:id="textParType" minWidth="0.0" prefWidth="111.0" text="Type" />
+                        <TableColumn fx:id="textParDomen" prefWidth="343.0" text="Value Domen" />
                     </columns>
                   </TableView>
                </center>

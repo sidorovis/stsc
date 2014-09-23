@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -49,7 +48,7 @@ public class CreateAlgorithmController implements Initializable {
 
 	private ObservableList<TextAlgorithmParameter> textModel = FXCollections.observableArrayList();
 	@FXML
-	private TableView<TextAlgorithmParameter> textParameters;
+	private TableView<TextAlgorithmParameter> textTable;
 	@FXML
 	private TableColumn<TextAlgorithmParameter, String> textParName;
 	@FXML
@@ -104,7 +103,7 @@ public class CreateAlgorithmController implements Initializable {
 		assert numberParStep != null : "fx:id=\"numberParStep\" was not injected: check your FXML file.";
 		assert numberParTo != null : "fx:id=\"numberParTo\" was not injected: check your FXML file.";
 
-		assert textParameters != null : "fx:id=\"textParameters\" was not injected: check your FXML file.";
+		assert textTable != null : "fx:id=\"textParameters\" was not injected: check your FXML file.";
 		assert textParName != null : "fx:id=\"textParName\" was not injected: check your FXML file.";
 		assert textParType != null : "fx:id=\"textParType\" was not injected: check your FXML file.";
 		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
@@ -118,18 +117,25 @@ public class CreateAlgorithmController implements Initializable {
 		numberParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
 		numberParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
-		connectFromColumn();
+		connectColumn(numberParFrom, "from");
+		connectColumn(numberParStep, "step");
+		connectColumn(numberParTo, "to");
 
 		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
 	}
 
-	private void connectFromColumn() {
-		numberParFrom.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("from"));
-		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
+	private <T> void connectColumn(TableColumn<T, String> column, String name) {
+		column.setCellValueFactory(new PropertyValueFactory<T, String>(name));
+		column.setCellFactory(TextFieldTableCell.forTableColumn());
 	}
 
 	private void connectTableForText() {
-		// TODO Auto-generated method stub
+		textTable.setItems(textModel);
+		textParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
+		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
+		connectColumn(textParDomen, "domen");
+
+		textModel.add(new TextAlgorithmParameter("asd", "sdf", "asd, fds, grtg"));
 	}
 }
