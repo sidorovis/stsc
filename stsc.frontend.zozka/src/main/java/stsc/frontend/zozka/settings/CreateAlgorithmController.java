@@ -124,9 +124,8 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectFromColumn() {
+		numberParFrom.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("from"));
 		numberParFrom.setCellFactory(TextFieldTableCell.forTableColumn());
-		numberParFrom.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("From"));
-		numberParFrom.setOnEditCommit(c -> c.getRowValue().fromProperty().set(c.getNewValue()));
 	}
 
 	private void connectTableForText() {

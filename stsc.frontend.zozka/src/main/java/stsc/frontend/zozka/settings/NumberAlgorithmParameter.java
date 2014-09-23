@@ -18,7 +18,7 @@ public final class NumberAlgorithmParameter {
 	public NumberAlgorithmParameter(String parameterName, String type, Double from, Double step, Double to) {
 		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = new SimpleStringProperty(type);
-		this.from = new SimpleStringProperty("0.0");
+		this.from = new SimpleStringProperty("3.0");
 		this.setStep(new SimpleStringProperty("1.0"));
 		this.setTo(new SimpleStringProperty("15.0"));
 	}
@@ -31,6 +31,11 @@ public final class NumberAlgorithmParameter {
 		return type;
 	}
 
+	public void setFrom(String v) {
+		v.toString();
+//		return from.get();
+	}
+	
 	public String getFrom() {
 		return from.get();
 	}
