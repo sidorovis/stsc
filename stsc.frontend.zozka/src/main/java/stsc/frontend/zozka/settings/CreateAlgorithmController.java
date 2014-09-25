@@ -71,6 +71,7 @@ public class CreateAlgorithmController implements Initializable {
 		final CreateAlgorithmController controller = loader.getController();
 		controller.setStage(thisStage);
 		final Scene scene = new Scene(gui);
+		scene.getStylesheets().add(Zozka.class.getResource("01_create_algorithm.css").toExternalForm());
 		thisStage.setScene(scene);
 		thisStage.setMinHeight(800);
 		thisStage.setMinWidth(640);
@@ -114,19 +115,39 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void connectTableForNumber() {
 		numberTable.setItems(numberModel);
-		numberParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
-		numberParType.setCellValueFactory(cellData -> cellData.getValue().getType());
+		// numberTable.setRowFactory(e -> {
+		// final TableRow<NumberAlgorithmParameter> answer = new TableRow<>();
+		// answer.getStyleClass().add("correct");
+		// return answer;
+		// });
+		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
+		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
 
-		connectColumn(numberParFrom, "from");
-		connectColumn(numberParStep, "step");
-		connectColumn(numberParTo, "to");
+		connectNumberColumn(numberParFrom, "from");
+		numberParFrom.setOnEditCommit(e -> e.getRowValue().setFrom(e.getNewValue()));
+		connectNumberColumn(numberParStep, "step");
+		numberParStep.setOnEditCommit(e -> e.getRowValue().setStep(e.getNewValue()));
+		connectNumberColumn(numberParTo, "to");
+		numberParTo.setOnEditCommit(e -> e.getRowValue().setTo(e.getNewValue()));
 
+		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
+		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
+		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
 		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
 	}
 
-	private <T> void connectColumn(TableColumn<T, String> column, String name) {
-		column.setCellValueFactory(new PropertyValueFactory<T, String>(name));
+	private void connectNumberColumn(TableColumn<NumberAlgorithmParameter, String> column, String name) {
+		column.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
+
+		// TODO validation think about
+		// if (!e.getRowValue().isValid()) {
+		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().add("error");
+		// } else {
+		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().clear();//
+		// add("correct");
+		// }
+
 	}
 
 	private void connectTableForText() {
@@ -134,8 +155,13 @@ public class CreateAlgorithmController implements Initializable {
 		textParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
 		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
-		connectColumn(textParDomen, "domen");
+		connectTextColumn(textParDomen, "domen");
 
 		textModel.add(new TextAlgorithmParameter("asd", "sdf", "asd, fds, grtg"));
+	}
+
+	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {
+		column.setCellValueFactory(new PropertyValueFactory<T, String>(name));
+		column.setCellFactory(TextFieldTableCell.forTableColumn());
 	}
 }

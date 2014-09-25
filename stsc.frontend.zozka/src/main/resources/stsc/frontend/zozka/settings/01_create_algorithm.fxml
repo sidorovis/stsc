@@ -49,7 +49,7 @@
                     <columns>
                       <TableColumn fx:id="numberParName" prefWidth="306.0" text="Parameter" />
                       <TableColumn fx:id="numberParType" minWidth="7.0" prefWidth="78.0" text="Type" />
-                        <TableColumn fx:id="numberParFrom" prefWidth="63.0" text="From" />
+                        <TableColumn fx:id="numberParFrom" prefWidth="63.0" sortable="false" text="From" />
                         <TableColumn fx:id="numberParStep" minWidth="0.0" prefWidth="77.0" text="Step" />
                         <TableColumn fx:id="numberParTo" prefWidth="63.0" text="To" />
                     </columns>

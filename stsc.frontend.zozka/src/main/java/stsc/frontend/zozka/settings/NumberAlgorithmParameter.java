@@ -5,37 +5,80 @@ import javafx.beans.property.StringProperty;
 
 public final class NumberAlgorithmParameter {
 
-	private final StringProperty parameterName;
-	private final StringProperty type;
+	private final String parameterName;
+	private final String type;
 	private final StringProperty from;
 	private final StringProperty step;
 	private final StringProperty to;
+	private boolean valid;
 
 	public NumberAlgorithmParameter(String parameterName, String type, Double from, Double step, Double to) {
-		this.parameterName = new SimpleStringProperty(parameterName);
-		this.type = new SimpleStringProperty(type);
-		this.from = new SimpleStringProperty("3.0");
+		this.parameterName = new String(parameterName);
+		this.type = new String(type);
+		this.from = new SimpleStringProperty("4.0");
 		this.step = new SimpleStringProperty("1.0");
 		this.to = new SimpleStringProperty("15.0");
+		this.valid = true;
 	}
 
-	public StringProperty getParameterName() {
+	public String getParameterName() {
 		return parameterName;
 	}
 
-	public StringProperty getType() {
+	public String getType() {
 		return type;
 	}
 
-	public StringProperty fromProperty() {
-		return from;
+	public String getFrom() {
+		return from.getValue();
 	}
 
-	public StringProperty stepProperty() {
-		return step;
+	public void setFrom(String value) {
+		from.setValue(value);
+		validate();
 	}
 
-	public StringProperty toProperty() {
-		return to;
+	public String getStep() {
+		return step.getValue();
+	}
+
+	public void setStep(String value) {
+		step.setValue(value);
+		validate();
+	}
+
+	public String getTo() {
+		return to.getValue();
+	}
+
+	public void setTo(String value) {
+		to.setValue(value);
+		validate();
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	private void validate() {
+		try {
+			valid = false;
+
+			double fromValue = Double.valueOf(from.getValue());
+			Double.valueOf(step.getValue());
+			double toValue = Double.valueOf(to.getValue());
+
+			if (fromValue > toValue) {
+				return;
+			}
+
+			valid = true;
+		} catch (NumberFormatException e) {
+			valid = false;
+		}
+		// if (from > to) {
+		// valid = false;
+		// return;
+		// }
 	}
 }
