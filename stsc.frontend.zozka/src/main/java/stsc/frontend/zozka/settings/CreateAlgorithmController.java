@@ -250,23 +250,30 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void connectAddParameter() {
 		addParameter.setOnAction(e -> {
-			Optional<String> parameterName;
-			parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
-					.showTextInput("Parameter Name");
+			final Optional<String> parameterName = getParameterName();
 			if (!parameterName.isPresent()) {
 				return;
-			} else {
-				if (!parameterNamePattern.matcher(parameterName.get()).matches()) {
-					Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
-							.message("Please enter correct parameter name").showError();
-					return;
-				}
 			}
-			Optional<String> response = Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null)
-					.message("Type define parameter domen: ").showChoices(typeVariants);
-			if (!response.isPresent()) {
+			final Optional<String> parameterType = getParameterType();
+			if (!parameterType.isPresent()) {
 				return;
 			}
 		});
+	}
+
+	private Optional<String> getParameterName() {
+		Optional<String> parameterName = Optional.empty();
+		parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
+				.showTextInput("ParameterName");
+		if (parameterName.isPresent() && !parameterNamePattern.matcher(parameterName.get()).matches()) {
+			Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
+					.message("Please enter correct parameter name").showError();
+		}
+		return parameterName;
+	}
+
+	private Optional<String> getParameterType() {
+		return Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null).message("Type define parameter domen: ")
+				.showChoices(typeVariants);
 	}
 }
