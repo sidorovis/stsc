@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
-import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
@@ -244,7 +243,7 @@ public class CreateSettingsController implements Initializable {
 		try {
 			loadDatafeed(datafeedFile);
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO add to logs
+			Dialogs.create().showException(e);
 			return false;
 		}
 		return true;

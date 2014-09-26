@@ -16,7 +16,7 @@
                <children>
                   <ComboBox fx:id="algorithmType" prefHeight="31.0" prefWidth="107.0" />
                   <ComboBox fx:id="algorithmClass" layoutX="109.0" prefHeight="31.0" prefWidth="227.0" />
-                  <Button layoutX="338.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="24.0" text="?" />
+                  <Button fx:id="questionButton" layoutX="338.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="24.0" text="?" />
                </children>
             </Pane>
          </left>

@@ -2,9 +2,12 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -14,8 +17,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -39,17 +40,24 @@ public class CreateAlgorithmController implements Initializable {
 	private static String EOD_VALUE = "Eod";
 
 	private static ObservableList<String> algorithmTypeModel = FXCollections.observableArrayList();
+	private static List<String> typeVariants = new ArrayList<>();
 	static {
 		algorithmTypeModel.add(STOCK_VALUE);
 		algorithmTypeModel.add(EOD_VALUE);
+
+		typeVariants.add("Integer");
+		typeVariants.add("Double");
+		typeVariants.add("String");
+		typeVariants.add("SubExecution");
 	}
+	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 
 	@FXML
 	private ComboBox<String> algorithmType;
 	@FXML
 	private ComboBox<String> algorithmClass;
 	@FXML
-	private Button question;
+	private Button questionButton;
 	@FXML
 	private TextField executionName;
 
@@ -117,15 +125,26 @@ public class CreateAlgorithmController implements Initializable {
 		connectAddParameter();
 	}
 
-	private void connectAddParameter() {
-		addParameter.setOnAction(e -> {
-			Optional<String> parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:")
-					.message("Enter: ").showTextInput("Parameter Name");
-			if (!parameterName.isPresent()) {
-				return;
-			}
-			
-		});
+	private void validateGui() {
+		assert algorithmType != null : "fx:id=\"algorithmType\" was not injected: check your FXML file.";
+		assert algorithmClass != null : "fx:id=\"algorithmClass\" was not injected: check your FXML file.";
+		assert questionButton != null : "fx:id=\"questionButton\" was not injected: check your FXML file.";
+		assert executionName != null : "fx:id=\"executionName\" was not injected: check your FXML file.";
+
+		assert numberTable != null : "fx:id=\"numberParameters\" was not injected: check your FXML file.";
+		assert numberParName != null : "fx:id=\"numberParName\" was not injected: check your FXML file.";
+		assert numberParType != null : "fx:id=\"numberParType\" was not injected: check your FXML file.";
+		assert numberParFrom != null : "fx:id=\"numberParFrom\" was not injected: check your FXML file.";
+		assert numberParStep != null : "fx:id=\"numberParStep\" was not injected: check your FXML file.";
+		assert numberParTo != null : "fx:id=\"numberParTo\" was not injected: check your FXML file.";
+
+		assert textTable != null : "fx:id=\"textParameters\" was not injected: check your FXML file.";
+		assert textParName != null : "fx:id=\"textParName\" was not injected: check your FXML file.";
+		assert textParType != null : "fx:id=\"textParType\" was not injected: check your FXML file.";
+		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
+
+		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
+		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
 	}
 
 	private void connectActionsForAlgorithmType() {
@@ -154,9 +173,9 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectQuestionButton() {
-		question.setOnAction(e -> {
+		questionButton.setOnAction(e -> {
 			Dialogs.create().owner(stage).title("Information").masthead(null)
-					.message("To understand what is happening here than please ask developer and then\nchange this text. Thanks!")
+					.message("To understand what is happening\nhere than please ask developer and then\nchange this text. Thanks!")
 					.showInformation();
 		});
 	}
@@ -176,28 +195,6 @@ public class CreateAlgorithmController implements Initializable {
 			}
 		}
 		algorithmClass.getSelectionModel().select(0);
-	}
-
-	private void validateGui() {
-		assert algorithmType != null : "fx:id=\"algorithmType\" was not injected: check your FXML file.";
-		assert algorithmClass != null : "fx:id=\"algorithmClass\" was not injected: check your FXML file.";
-		assert question != null : "fx:id=\"question\" was not injected: check your FXML file.";
-		assert executionName != null : "fx:id=\"executionName\" was not injected: check your FXML file.";
-
-		assert numberTable != null : "fx:id=\"numberParameters\" was not injected: check your FXML file.";
-		assert numberParName != null : "fx:id=\"numberParName\" was not injected: check your FXML file.";
-		assert numberParType != null : "fx:id=\"numberParType\" was not injected: check your FXML file.";
-		assert numberParFrom != null : "fx:id=\"numberParFrom\" was not injected: check your FXML file.";
-		assert numberParStep != null : "fx:id=\"numberParStep\" was not injected: check your FXML file.";
-		assert numberParTo != null : "fx:id=\"numberParTo\" was not injected: check your FXML file.";
-
-		assert textTable != null : "fx:id=\"textParameters\" was not injected: check your FXML file.";
-		assert textParName != null : "fx:id=\"textParName\" was not injected: check your FXML file.";
-		assert textParType != null : "fx:id=\"textParType\" was not injected: check your FXML file.";
-		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
-
-		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
-		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
 	}
 
 	private void connectTableForNumber() {
@@ -249,5 +246,27 @@ public class CreateAlgorithmController implements Initializable {
 	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {
 		column.setCellValueFactory(new PropertyValueFactory<T, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
+	}
+
+	private void connectAddParameter() {
+		addParameter.setOnAction(e -> {
+			Optional<String> parameterName;
+			parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
+					.showTextInput("Parameter Name");
+			if (!parameterName.isPresent()) {
+				return;
+			} else {
+				if (!parameterNamePattern.matcher(parameterName.get()).matches()) {
+					Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
+							.message("Please enter correct parameter name").showError();
+					return;
+				}
+			}
+			Optional<String> response = Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null)
+					.message("Type define parameter domen: ").showChoices(typeVariants);
+			if (!response.isPresent()) {
+				return;
+			}
+		});
 	}
 }
