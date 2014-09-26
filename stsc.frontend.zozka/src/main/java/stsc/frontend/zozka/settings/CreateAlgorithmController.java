@@ -39,16 +39,21 @@ public class CreateAlgorithmController implements Initializable {
 	private static String STOCK_VALUE = "Stock";
 	private static String EOD_VALUE = "Eod";
 
+	private static String INTEGER_TYPE = "Integer";
+	private static String DOUBLE_TYPE = "Double";
+	private static String STRING_TYPE = "String";
+	private static String SUB_EXECUTIONS_TYPE = "SubExecutions";
+
 	private static ObservableList<String> algorithmTypeModel = FXCollections.observableArrayList();
 	private static List<String> typeVariants = new ArrayList<>();
 	static {
 		algorithmTypeModel.add(STOCK_VALUE);
 		algorithmTypeModel.add(EOD_VALUE);
 
-		typeVariants.add("Integer");
-		typeVariants.add("Double");
-		typeVariants.add("String");
-		typeVariants.add("SubExecution");
+		typeVariants.add(INTEGER_TYPE);
+		typeVariants.add(DOUBLE_TYPE);
+		typeVariants.add(STRING_TYPE);
+		typeVariants.add(SUB_EXECUTIONS_TYPE);
 	}
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 
@@ -258,7 +263,36 @@ public class CreateAlgorithmController implements Initializable {
 			if (!parameterType.isPresent()) {
 				return;
 			}
+			if (parameterType.get().equals(INTEGER_TYPE)) {
+				addIntegerParameter(parameterName.get());
+			} else if (parameterType.get().equals(DOUBLE_TYPE)) {
+				addDoubleParameter(parameterName.get());
+			} else if (parameterType.get().equals(STRING_TYPE)) {
+				addStringParameter(parameterName.get());
+			} else if (parameterType.get().equals(SUB_EXECUTIONS_TYPE)) {
+				addSubExecutionParameter(parameterName.get());
+			}
 		});
+	}
+
+	private void addIntegerParameter(String string) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void addDoubleParameter(String string) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void addStringParameter(String string) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void addSubExecutionParameter(String string) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private Optional<String> getParameterName() {
