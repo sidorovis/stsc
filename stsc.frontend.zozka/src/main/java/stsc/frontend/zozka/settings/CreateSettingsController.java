@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
@@ -157,8 +158,7 @@ public class CreateSettingsController implements Initializable {
 				try {
 					ed = CreateAlgorithmController.create(stage);
 				} catch (IOException e) {
-					e.printStackTrace();
-					// TODO add to logger
+					Dialogs.create().showException(e);
 				}
 				if (ed != null) {
 

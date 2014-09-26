@@ -27,14 +27,14 @@
          <left>
             <Pane prefHeight="31.0" prefWidth="147.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="5.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="125.0" text="Add Parameter" />
+                  <Button fx:id="addParameter" layoutX="5.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="125.0" text="Add Parameter" />
                </children>
             </Pane>
          </left>
          <right>
             <Pane prefHeight="36.0" prefWidth="194.0">
                <children>
-                  <Button layoutX="29.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="163.0" text="Create Execution" BorderPane.alignment="CENTER" />
+                  <Button fx:id="createExecution" layoutX="29.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="163.0" text="Create Execution" BorderPane.alignment="CENTER" />
                </children>
             </Pane>
          </right>

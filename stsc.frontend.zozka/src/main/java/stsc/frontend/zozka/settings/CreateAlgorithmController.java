@@ -2,10 +2,20 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import org.controlsfx.dialog.Dialogs;
+
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.storage.AlgorithmsStorage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,10 +35,21 @@ public class CreateAlgorithmController implements Initializable {
 
 	private Stage stage;
 
+	private static String STOCK_VALUE = "Stock";
+	private static String EOD_VALUE = "Eod";
+
+	private static ObservableList<String> algorithmTypeModel = FXCollections.observableArrayList();
+	static {
+		algorithmTypeModel.add(STOCK_VALUE);
+		algorithmTypeModel.add(EOD_VALUE);
+	}
+
 	@FXML
 	private ComboBox<String> algorithmType;
 	@FXML
 	private ComboBox<String> algorithmClass;
+	@FXML
+	private Button question;
 	@FXML
 	private TextField executionName;
 
@@ -88,13 +109,79 @@ public class CreateAlgorithmController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
+		connectActionsForAlgorithmType();
+		connectActionsForAlgorithmClass();
+		connectQuestionButton();
 		connectTableForNumber();
 		connectTableForText();
+		connectAddParameter();
+	}
+
+	private void connectAddParameter() {
+		addParameter.setOnAction(e -> {
+			Optional<String> parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:")
+					.message("Enter: ").showTextInput("Parameter Name");
+			if (!parameterName.isPresent()) {
+				return;
+			}
+			
+		});
+	}
+
+	private void connectActionsForAlgorithmType() {
+		algorithmType.setItems(algorithmTypeModel);
+		algorithmType.getSelectionModel().select(0);
+		algorithmType.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				try {
+					populateAlgorithmClassWith(newValue);
+				} catch (BadAlgorithmException e) {
+					Dialogs.create().showException(e);
+					stage.close();
+				}
+			}
+		});
+	}
+
+	private void connectActionsForAlgorithmClass() {
+		try {
+			populateAlgorithmClassWith(algorithmType.getSelectionModel().getSelectedItem());
+		} catch (BadAlgorithmException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		algorithmClass.getSelectionModel().select(0);
+	}
+
+	private void connectQuestionButton() {
+		question.setOnAction(e -> {
+			Dialogs.create().owner(stage).title("Information").masthead(null)
+					.message("To understand what is happening here than please ask developer and then\nchange this text. Thanks!")
+					.showInformation();
+		});
+	}
+
+	protected void populateAlgorithmClassWith(String newValue) throws BadAlgorithmException {
+		final ObservableList<String> model = algorithmClass.getItems();
+		model.clear();
+		if (newValue.equals(STOCK_VALUE)) {
+			final Set<String> stockLabels = AlgorithmsStorage.getInstance().getStockLabels();
+			for (String label : stockLabels) {
+				model.add(label);
+			}
+		} else {
+			final Set<String> eodLabels = AlgorithmsStorage.getInstance().getEodLabels();
+			for (String label : eodLabels) {
+				model.add(label);
+			}
+		}
+		algorithmClass.getSelectionModel().select(0);
 	}
 
 	private void validateGui() {
 		assert algorithmType != null : "fx:id=\"algorithmType\" was not injected: check your FXML file.";
 		assert algorithmClass != null : "fx:id=\"algorithmClass\" was not injected: check your FXML file.";
+		assert question != null : "fx:id=\"question\" was not injected: check your FXML file.";
 		assert executionName != null : "fx:id=\"executionName\" was not injected: check your FXML file.";
 
 		assert numberTable != null : "fx:id=\"numberParameters\" was not injected: check your FXML file.";
@@ -147,7 +234,6 @@ public class CreateAlgorithmController implements Initializable {
 		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().clear();//
 		// add("correct");
 		// }
-
 	}
 
 	private void connectTableForText() {
