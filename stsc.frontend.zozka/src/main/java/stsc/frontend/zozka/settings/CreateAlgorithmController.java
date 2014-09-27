@@ -56,8 +56,8 @@ public class CreateAlgorithmController implements Initializable {
 		typeVariants.add(SUB_EXECUTIONS_TYPE);
 	}
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
-	public static final Pattern integerParPattern = Pattern.compile("^(-)?(\\d)+$");
-	public static final Pattern doubleParPattern = Pattern.compile("^(-)?(\\d)+(\\.(\\d)+)?$");
+	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
+	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
 
 	@FXML
 	private ComboBox<String> algorithmType;
