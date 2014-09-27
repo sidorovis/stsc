@@ -1,5 +1,7 @@
 package stsc.frontend.zozka.settings;
 
+import java.util.regex.Pattern;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -7,14 +9,16 @@ public final class NumberAlgorithmParameter {
 
 	private final StringProperty parameterName;
 	private final String type;
+	private final Pattern pattern;
 	private final StringProperty from;
 	private final StringProperty step;
 	private final StringProperty to;
 	private boolean valid;
 
-	public NumberAlgorithmParameter(String parameterName, String type, String from, String step, String to) {
+	public NumberAlgorithmParameter(String parameterName, String type, Pattern pattern, String from, String step, String to) {
 		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = new String(type);
+		this.pattern = pattern;
 		this.from = new SimpleStringProperty(from);
 		this.step = new SimpleStringProperty(step);
 		this.to = new SimpleStringProperty(to);
@@ -68,9 +72,14 @@ public final class NumberAlgorithmParameter {
 			Double.valueOf(step.getValue());
 			double toValue = Double.valueOf(to.getValue());
 
-			if (fromValue > toValue) {
+			if (fromValue > toValue)
 				return;
-			}
+			if (!pattern.matcher(from.getValue()).matches())
+				return;
+			if (!pattern.matcher(step.getValue()).matches())
+				return;
+			if (!pattern.matcher(to.getValue()).matches())
+				return;
 
 			valid = true;
 		} catch (NumberFormatException e) {

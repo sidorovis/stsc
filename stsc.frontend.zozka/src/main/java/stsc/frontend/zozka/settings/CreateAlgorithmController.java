@@ -302,7 +302,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		numberModel.add(new NumberAlgorithmParameter(parameterName, INTEGER_TYPE, from, step, to));
+		numberModel.add(new NumberAlgorithmParameter(parameterName, INTEGER_TYPE, integerParPattern, from, step, to));
 	}
 
 	private String readIntegerParameter(String defaultValue) {
