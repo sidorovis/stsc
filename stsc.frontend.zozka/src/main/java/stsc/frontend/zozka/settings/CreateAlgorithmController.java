@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.algorithms.BadAlgorithmException;
@@ -29,6 +31,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -214,6 +217,20 @@ public class CreateAlgorithmController implements Initializable {
 		// answer.getStyleClass().add("correct");
 		// return answer;
 		// });
+		numberTable.setOnKeyReleased(e -> {
+			if (e.getCode().equals(KeyCode.DELETE)) {
+				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
+						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
+						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
+				if (result == Dialog.Actions.OK) {
+					final NumberAlgorithmParameter elementToDelete = numberTable.getSelectionModel().getSelectedItem();
+					if (elementToDelete != null) {
+						numberModel.remove(elementToDelete);
+					}
+				}
+			}
+		});
+
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
@@ -241,6 +258,21 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void connectTableForText() {
 		textTable.setItems(textModel);
+
+		textTable.setOnKeyReleased(e -> {
+			if (e.getCode().equals(KeyCode.DELETE)) {
+				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
+						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
+						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
+				if (result == Dialog.Actions.OK) {
+					final TextAlgorithmParameter elementToDelete = textTable.getSelectionModel().getSelectedItem();
+					if (elementToDelete != null) {
+						textModel.remove(elementToDelete);
+					}
+				}
+			}
+		});
+
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
