@@ -56,6 +56,7 @@ public class CreateAlgorithmController implements Initializable {
 		typeVariants.add(SUB_EXECUTIONS_TYPE);
 	}
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
+	public static final Pattern integerParPattern = Pattern.compile("^(-)?(\\d)+$");
 
 	@FXML
 	private ComboBox<String> algorithmType;
@@ -210,6 +211,7 @@ public class CreateAlgorithmController implements Initializable {
 		// return answer;
 		// });
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
+		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
 
 		connectNumberColumn(numberParFrom, "from");
@@ -218,11 +220,6 @@ public class CreateAlgorithmController implements Initializable {
 		numberParStep.setOnEditCommit(e -> e.getRowValue().setStep(e.getNewValue()));
 		connectNumberColumn(numberParTo, "to");
 		numberParTo.setOnEditCommit(e -> e.getRowValue().setTo(e.getNewValue()));
-
-		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
-		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
-		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
-		numberModel.add(new NumberAlgorithmParameter("asd", "sdf", 1d, 1d, 15d));
 	}
 
 	private void connectNumberColumn(TableColumn<NumberAlgorithmParameter, String> column, String name) {
@@ -275,9 +272,48 @@ public class CreateAlgorithmController implements Initializable {
 		});
 	}
 
-	private void addIntegerParameter(String string) {
-		// TODO Auto-generated method stub
+	private Optional<String> getParameterName() {
+		Optional<String> parameterName = Optional.empty();
+		parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
+				.showTextInput("ParameterName");
+		if (parameterName.isPresent() && !parameterNamePattern.matcher(parameterName.get()).matches()) {
+			Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
+					.message("Parameter name should contain only letters, numbers and '_' symbol.").showError();
+			return Optional.empty();
+		}
+		return parameterName;
+	}
 
+	private Optional<String> getParameterType() {
+		return Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null).message("Type define parameter domen: ")
+				.showChoices(typeVariants);
+	}
+
+	private void addIntegerParameter(String parameterName) {
+		String from = readIntegerParameter("0");
+		if (from == null) {
+			return;
+		}
+		String step = readIntegerParameter("1");
+		if (step == null) {
+			return;
+		}
+		String to = readIntegerParameter("22");
+		if (to == null) {
+			return;
+		}
+		numberModel.add(new NumberAlgorithmParameter(parameterName, INTEGER_TYPE, from, step, to));
+	}
+
+	private String readIntegerParameter(String defaultValue) {
+		Optional<String> integerParametr = Dialogs.create().owner(stage).title("Integer Parameter").masthead("Enter From")
+				.message("From: ").showTextInput(defaultValue);
+		if (integerParametr.isPresent() && !integerParPattern.matcher(integerParametr.get()).matches()) {
+			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer")
+					.message("Integer is a number (-)?([0-9])+)").showError();
+			return null;
+		}
+		return integerParametr.get();
 	}
 
 	private void addDoubleParameter(String string) {
@@ -295,19 +331,4 @@ public class CreateAlgorithmController implements Initializable {
 
 	}
 
-	private Optional<String> getParameterName() {
-		Optional<String> parameterName = Optional.empty();
-		parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
-				.showTextInput("ParameterName");
-		if (parameterName.isPresent() && !parameterNamePattern.matcher(parameterName.get()).matches()) {
-			Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
-					.message("Please enter correct parameter name").showError();
-		}
-		return parameterName;
-	}
-
-	private Optional<String> getParameterType() {
-		return Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null).message("Type define parameter domen: ")
-				.showChoices(typeVariants);
-	}
 }

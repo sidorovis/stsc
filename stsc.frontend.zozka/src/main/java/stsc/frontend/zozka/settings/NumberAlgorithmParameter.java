@@ -5,23 +5,23 @@ import javafx.beans.property.StringProperty;
 
 public final class NumberAlgorithmParameter {
 
-	private final String parameterName;
+	private final StringProperty parameterName;
 	private final String type;
 	private final StringProperty from;
 	private final StringProperty step;
 	private final StringProperty to;
 	private boolean valid;
 
-	public NumberAlgorithmParameter(String parameterName, String type, Double from, Double step, Double to) {
-		this.parameterName = new String(parameterName);
+	public NumberAlgorithmParameter(String parameterName, String type, String from, String step, String to) {
+		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = new String(type);
-		this.from = new SimpleStringProperty("4.0");
-		this.step = new SimpleStringProperty("1.0");
-		this.to = new SimpleStringProperty("15.0");
+		this.from = new SimpleStringProperty(from);
+		this.step = new SimpleStringProperty(step);
+		this.to = new SimpleStringProperty(to);
 		this.valid = true;
 	}
 
-	public String getParameterName() {
+	public StringProperty parameterNameProperty() {
 		return parameterName;
 	}
 
