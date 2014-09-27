@@ -15,7 +15,7 @@ public final class TextAlgorithmParameter {
 		this.domen = new SimpleStringProperty(domen);
 	}
 
-	public StringProperty getParameterName() {
+	public StringProperty parameterNameProperty() {
 		return parameterName;
 	}
 

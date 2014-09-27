@@ -28,7 +28,6 @@ public class CreateAlgorithmControllerTest extends TestCase {
 		Assert.assertFalse(p.matcher("0.2").matches());
 		Assert.assertFalse(p.matcher("3345-").matches());
 		Assert.assertFalse(p.matcher("").matches());
-
 	}
 
 	public void testDoubleParPatternCreateAlgorithmController() {
@@ -43,6 +42,5 @@ public class CreateAlgorithmControllerTest extends TestCase {
 		Assert.assertFalse(p.matcher("3345-").matches());
 		Assert.assertFalse(p.matcher("45.546.12").matches());
 		Assert.assertFalse(p.matcher("").matches());
-
 	}
 }

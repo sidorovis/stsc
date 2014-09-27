@@ -238,12 +238,11 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void connectTableForText() {
 		textTable.setItems(textModel);
-		textParName.setCellValueFactory(cellData -> cellData.getValue().getParameterName());
+		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
+		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
 		connectTextColumn(textParDomen, "domen");
-
-		textModel.add(new TextAlgorithmParameter("asd", "sdf", "asd, fds, grtg"));
 	}
 
 	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {
@@ -344,14 +343,49 @@ public class CreateAlgorithmController implements Initializable {
 		return doubleParameter.get();
 	}
 
-	private void addStringParameter(String string) {
-		// TODO Auto-generated method stub
-
+	private void addStringParameter(String parameterName) {
+		ArrayList<String> values = new ArrayList<>();
+		while (true) {
+			final Optional<String> stringValue = Dialogs.create().owner(stage).title("String Parameter")
+					.masthead("Hack: add several divided by ','.\nPress 'Cancel' to finish enter.").message("Enter string value: ")
+					.showTextInput("");
+			if (stringValue.isPresent()) {
+				values.add(stringValue.get());
+			} else {
+				break;
+			}
+		}
+		String domen = "'";
+		for (int i = 0; i < values.size(); ++i) {
+			domen += values.get(i);
+			if (i < values.size() - 1) {
+				domen += "', '";
+			}
+		}
+		domen += "'";
+		textModel.add(new TextAlgorithmParameter(parameterName, STRING_TYPE, domen));
 	}
 
-	private void addSubExecutionParameter(String string) {
-		// TODO Auto-generated method stub
-
+	private void addSubExecutionParameter(String parameterName) {
+		ArrayList<String> values = new ArrayList<>();
+		while (true) {
+			final Optional<String> stringValue = Dialogs.create().owner(stage).title("String Parameter")
+					.masthead("Hack: add several divided by ','.\nPress 'Cancel' to finish enter.").message("Enter string value: ")
+					.showTextInput("");
+			if (stringValue.isPresent()) {
+				values.add(stringValue.get());
+			} else {
+				break;
+			}
+		}
+		String domen = "'";
+		for (int i = 0; i < values.size(); ++i) {
+			domen += values.get(i);
+			if (i < values.size() - 1) {
+				domen += "', '";
+			}
+		}
+		domen += "'";
+		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
-
 }
