@@ -14,5 +14,19 @@ public class CreateAlgorithmControllerTest extends TestCase {
 		Assert.assertFalse(p.matcher("asd.").matches());
 		Assert.assertFalse(p.matcher("asd(").matches());
 		Assert.assertFalse(p.matcher("asd%FE").matches());
+		Assert.assertFalse(p.matcher("").matches());
+	}
+
+	public void testIntegerParPatternCreateAlgorithmController() {
+		final Pattern p = CreateAlgorithmController.integerParPattern;
+		for (int i = -2000 ; i < 2000 ; ++ i) {
+			Assert.assertTrue(p.matcher(String.valueOf(i)).matches());
+		}
+		Assert.assertTrue(p.matcher("123187659365").matches());
+		Assert.assertTrue(p.matcher("-45643563461").matches());
+		Assert.assertFalse(p.matcher("0.2").matches());
+		Assert.assertFalse(p.matcher("3345-").matches());
+		Assert.assertFalse(p.matcher("").matches());
+
 	}
 }
