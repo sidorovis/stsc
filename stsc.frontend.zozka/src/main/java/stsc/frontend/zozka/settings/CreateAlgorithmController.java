@@ -35,6 +35,7 @@ import javafx.stage.Stage;
 public class CreateAlgorithmController implements Initializable {
 
 	private Stage stage;
+	private boolean valid;
 
 	private static String STOCK_VALUE = "Stock";
 	private static String EOD_VALUE = "Eod";
@@ -130,6 +131,7 @@ public class CreateAlgorithmController implements Initializable {
 		connectTableForNumber();
 		connectTableForText();
 		connectAddParameter();
+		connectCreateExecution();
 	}
 
 	private void validateGui() {
@@ -152,6 +154,7 @@ public class CreateAlgorithmController implements Initializable {
 
 		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
 		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
+		valid = false;
 	}
 
 	private void connectActionsForAlgorithmType() {
@@ -227,7 +230,7 @@ public class CreateAlgorithmController implements Initializable {
 		column.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
 
-		// TODO validation think about
+		// TODO add validation to Algorithm Controller Tables on edit
 		// if (!e.getRowValue().isValid()) {
 		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().add("error");
 		// } else {
@@ -276,12 +279,33 @@ public class CreateAlgorithmController implements Initializable {
 		Optional<String> parameterName = Optional.empty();
 		parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
 				.showTextInput("ParameterName");
-		if (parameterName.isPresent() && !parameterNamePattern.matcher(parameterName.get()).matches()) {
-			Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
-					.message("Parameter name should contain only letters, numbers and '_' symbol.").showError();
-			return Optional.empty();
+		if (parameterName.isPresent()) {
+			if (!parameterNamePattern.matcher(parameterName.get()).matches()) {
+				Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
+						.message("Parameter name should contain only letters, numbers and '_' symbol.").showError();
+				return Optional.empty();
+			}
+			if (parameterNameExists(parameterName.get())) {
+				Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name already exists.")
+						.message("You could add only one parameter (one for both for number or test tables).").showError();
+				return Optional.empty();
+			}
 		}
 		return parameterName;
+	}
+
+	private boolean parameterNameExists(String parameterName) {
+		for (NumberAlgorithmParameter p : numberModel) {
+			if (p.parameterNameProperty().get().equals(parameterName)) {
+				return true;
+			}
+		}
+		for (TextAlgorithmParameter p : textModel) {
+			if (p.parameterNameProperty().get().equals(parameterName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Optional<String> getParameterType() {
@@ -388,4 +412,16 @@ public class CreateAlgorithmController implements Initializable {
 		domen += "'";
 		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
+
+	private void connectCreateExecution() {
+		createExecution.setOnAction(e -> {
+			valid = true;
+			stage.close();
+		});
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
 }
