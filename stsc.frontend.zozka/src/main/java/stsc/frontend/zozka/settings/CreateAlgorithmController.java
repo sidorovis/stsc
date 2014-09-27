@@ -57,6 +57,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 	public static final Pattern integerParPattern = Pattern.compile("^(-)?(\\d)+$");
+	public static final Pattern doubleParPattern = Pattern.compile("^(-)?(\\d)+(\\.(\\d)+)?$");
 
 	@FXML
 	private ComboBox<String> algorithmType;
@@ -261,9 +262,9 @@ public class CreateAlgorithmController implements Initializable {
 				return;
 			}
 			if (parameterType.get().equals(INTEGER_TYPE)) {
-				addIntegerParameter(parameterName.get());
+				addIntegerParameter(parameterName.get(), "0", "1", "22");
 			} else if (parameterType.get().equals(DOUBLE_TYPE)) {
-				addDoubleParameter(parameterName.get());
+				addDoubleParameter(parameterName.get(), "0.0", "1.0", "22.0");
 			} else if (parameterType.get().equals(STRING_TYPE)) {
 				addStringParameter(parameterName.get());
 			} else if (parameterType.get().equals(SUB_EXECUTIONS_TYPE)) {
@@ -289,36 +290,58 @@ public class CreateAlgorithmController implements Initializable {
 				.showChoices(typeVariants);
 	}
 
-	private void addIntegerParameter(String parameterName) {
-		String from = readIntegerParameter("0");
+	private void addIntegerParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
+		final String from = readIntegerParameter(defaultFrom);
 		if (from == null) {
 			return;
 		}
-		String step = readIntegerParameter("1");
+		final String step = readIntegerParameter(defaultStep);
 		if (step == null) {
 			return;
 		}
-		String to = readIntegerParameter("22");
+		final String to = readIntegerParameter(defaultTo);
 		if (to == null) {
 			return;
 		}
 		numberModel.add(new NumberAlgorithmParameter(parameterName, INTEGER_TYPE, integerParPattern, from, step, to));
 	}
 
-	private String readIntegerParameter(String defaultValue) {
-		Optional<String> integerParametr = Dialogs.create().owner(stage).title("Integer Parameter").masthead("Enter From")
+	private String readIntegerParameter(final String defaultValue) {
+		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead("Enter From")
 				.message("From: ").showTextInput(defaultValue);
-		if (integerParametr.isPresent() && !integerParPattern.matcher(integerParametr.get()).matches()) {
+		if (integerParameter.isPresent() && !integerParPattern.matcher(integerParameter.get()).matches()) {
 			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer")
-					.message("Integer is a number (-)?([0-9])+)").showError();
+					.message("Integer is a number (-)?([0-9])+").showError();
 			return null;
 		}
-		return integerParametr.get();
+		return integerParameter.get();
 	}
 
-	private void addDoubleParameter(String string) {
-		// TODO Auto-generated method stub
+	private void addDoubleParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
+		final String from = readDoubleParameter(defaultFrom);
+		if (from == null) {
+			return;
+		}
+		final String step = readDoubleParameter(defaultStep);
+		if (step == null) {
+			return;
+		}
+		final String to = readDoubleParameter(defaultTo);
+		if (to == null) {
+			return;
+		}
+		numberModel.add(new NumberAlgorithmParameter(parameterName, DOUBLE_TYPE, doubleParPattern, from, step, to));
+	}
 
+	private String readDoubleParameter(final String defaultValue) {
+		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title("Double Parameter").masthead("Enter From")
+				.message("From: ").showTextInput(defaultValue);
+		if (doubleParameter.isPresent() && !doubleParPattern.matcher(doubleParameter.get()).matches()) {
+			Dialogs.create().owner(stage).title("Double Parameter").masthead("Please insert double")
+					.message("Double is a number (-)?([0-9])+(.[0-9]+)?").showError();
+			return null;
+		}
+		return doubleParameter.get();
 	}
 
 	private void addStringParameter(String string) {
