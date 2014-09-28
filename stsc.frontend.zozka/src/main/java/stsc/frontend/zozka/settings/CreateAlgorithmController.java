@@ -9,8 +9,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.algorithms.BadAlgorithmException;
@@ -36,7 +34,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -132,9 +129,8 @@ public class CreateAlgorithmController implements Initializable {
 	private static ExecutionDescription createExecutionDescription(CreateAlgorithmController controller) throws BadParameterException {
 		final String executionName = controller.executionName.getText();
 		final String algorithmName = controller.algorithmClass.getValue();
-		final String executionType = controller.algorithmType.getValue();
 
-		final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName, executionType);
+		final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName);
 		for (NumberAlgorithmParameter p : controller.numberModel) {
 			if (p.getType().equals(INTEGER_TYPE)) {
 				final String name = p.parameterNameProperty().get();
@@ -265,7 +261,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForNumber() {
-		createDeleteAction(textTable, textModel);
+		ControllerHelper.connectDeleteAction(stage, textTable, textModel);
 
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -293,30 +289,13 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForText() {
-		createDeleteAction(textTable, textModel);
+		ControllerHelper.connectDeleteAction(stage, textTable, textModel);
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
 		connectTextColumn(textParDomen, "domen");
-	}
-
-	private <T> void createDeleteAction(TableView<T> table, ObservableList<T> model) {
-		table.setItems(model);
-		table.setOnKeyReleased(e -> {
-			if (e.getCode().equals(KeyCode.DELETE)) {
-				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
-						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
-						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
-				if (result == Dialog.Actions.OK) {
-					final T elementToDelete = table.getSelectionModel().getSelectedItem();
-					if (elementToDelete != null) {
-						model.remove(elementToDelete);
-					}
-				}
-			}
-		});
 	}
 
 	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {

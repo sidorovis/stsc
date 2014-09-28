@@ -122,7 +122,8 @@ public class CreateSettingsController implements Initializable {
 	}
 
 	private void connectTableForExecutions() {
-		executionsTable.setItems(model);
+		ControllerHelper.connectDeleteAction(stage, executionsTable, model);
+
 		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
 		algorithmNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
 	}
@@ -161,7 +162,7 @@ public class CreateSettingsController implements Initializable {
 					Dialogs.create().showException(e);
 				}
 				if (ed != null) {
-
+					model.add(ed);
 				}
 			}
 		});
