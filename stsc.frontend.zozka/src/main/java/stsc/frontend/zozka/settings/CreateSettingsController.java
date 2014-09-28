@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.storage.StockStorage;
+import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -156,7 +157,7 @@ public class CreateSettingsController implements Initializable {
 				ExecutionDescription ed = null;
 				try {
 					ed = CreateAlgorithmController.create(stage);
-				} catch (IOException e) {
+				} catch (IOException | BadParameterException e) {
 					Dialogs.create().showException(e);
 				}
 				if (ed != null) {

@@ -43,4 +43,14 @@ public class CreateAlgorithmControllerTest extends TestCase {
 		Assert.assertFalse(p.matcher("45.546.12").matches());
 		Assert.assertFalse(p.matcher("").matches());
 	}
+
+	public void testCreateAlgorithmControllerParseDomen() {
+		Assert.assertEquals(3, CreateAlgorithmController.parseDomen("'','',''").size());
+		Assert.assertEquals("", CreateAlgorithmController.parseDomen("'','',''").get(0));
+		Assert.assertEquals("", CreateAlgorithmController.parseDomen("'','',''").get(1));
+		Assert.assertEquals("", CreateAlgorithmController.parseDomen("'','',''").get(2));
+
+		Assert.assertEquals("hello", CreateAlgorithmController.parseDomen("'','hello',''").get(1));
+		Assert.assertEquals("vikal", CreateAlgorithmController.parseDomen("'','hello','vikal'").get(2));
+	}
 }

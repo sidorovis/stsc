@@ -14,6 +14,11 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.algorithms.BadAlgorithmException;
+import stsc.general.simulator.multistarter.BadParameterException;
+import stsc.general.simulator.multistarter.MpDouble;
+import stsc.general.simulator.multistarter.MpInteger;
+import stsc.general.simulator.multistarter.MpString;
+import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.storage.AlgorithmsStorage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -101,7 +106,7 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private Button createExecution;
 
-	public static ExecutionDescription create(final Stage parentStage) throws IOException {
+	public static ExecutionDescription create(final Stage parentStage) throws IOException, BadParameterException {
 		final Stage thisStage = new Stage();
 		final URL location = Zozka.class.getResource("01_create_algorithm.fxml");
 		final FXMLLoader loader = new FXMLLoader();
@@ -119,14 +124,55 @@ public class CreateAlgorithmController implements Initializable {
 		thisStage.centerOnScreen();
 		thisStage.showAndWait();
 		if (controller.isValid()) {
-			final String executionName = controller.executionName.getText();
-			final String algorithmName = controller.algorithmClass.getValue();
-			final String executionType = controller.algorithmType.getValue();
-
-			final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName);
-			return ed;
+			return createExecutionDescription(controller);
 		}
 		return null;
+	}
+
+	private static ExecutionDescription createExecutionDescription(CreateAlgorithmController controller) throws BadParameterException {
+		final String executionName = controller.executionName.getText();
+		final String algorithmName = controller.algorithmClass.getValue();
+		final String executionType = controller.algorithmType.getValue();
+
+		final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName, executionType);
+		for (NumberAlgorithmParameter p : controller.numberModel) {
+			if (p.getType().equals(INTEGER_TYPE)) {
+				final String name = p.parameterNameProperty().get();
+				final Integer from = Integer.valueOf(p.getFrom());
+				final Integer to = Integer.valueOf(p.getTo());
+				final Integer step = Integer.valueOf(p.getStep());
+				ed.getParameters().getIntegers().add(new MpInteger(name, from, to, step));
+			} else if (p.getType().equals(DOUBLE_TYPE)) {
+				final String name = p.parameterNameProperty().get();
+				final Double from = Double.valueOf(p.getFrom());
+				final Double to = Double.valueOf(p.getTo());
+				final Double step = Double.valueOf(p.getStep());
+				ed.getParameters().getDoubles().add(new MpDouble(name, from, to, step));
+			}
+		}
+		for (TextAlgorithmParameter p : controller.textModel) {
+			if (p.getType().equals(STRING_TYPE)) {
+				final String name = p.parameterNameProperty().get();
+				final List<String> domen = parseDomen(p.domenProperty().get());
+				ed.getParameters().getStrings().add(new MpString(name, domen));
+			} else if (p.getType().equals(SUB_EXECUTIONS_TYPE)) {
+				final String name = p.parameterNameProperty().get();
+				final List<String> domen = parseDomen(p.domenProperty().get());
+				ed.getParameters().getSubExecutions().add(new MpSubExecution(name, domen));
+			}
+		}
+		return ed;
+	}
+
+	static List<String> parseDomen(String string) {
+		List<String> domen = new ArrayList<>();
+		for (String p : string.split(",")) {
+			final String trimmed = p.trim();
+			if (trimmed.length() >= 2 && trimmed.charAt(0) == '\'' && trimmed.charAt(trimmed.length() - 1) == '\'') {
+				domen.add(trimmed.substring(1, trimmed.length() - 1));
+			}
+		}
+		return domen;
 	}
 
 	private void setStage(Stage thisStage) {
@@ -219,25 +265,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForNumber() {
-		numberTable.setItems(numberModel);
-		// numberTable.setRowFactory(e -> {
-		// final TableRow<NumberAlgorithmParameter> answer = new TableRow<>();
-		// answer.getStyleClass().add("correct");
-		// return answer;
-		// });
-		numberTable.setOnKeyReleased(e -> {
-			if (e.getCode().equals(KeyCode.DELETE)) {
-				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
-						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
-						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
-				if (result == Dialog.Actions.OK) {
-					final NumberAlgorithmParameter elementToDelete = numberTable.getSelectionModel().getSelectedItem();
-					if (elementToDelete != null) {
-						numberModel.remove(elementToDelete);
-					}
-				}
-			}
-		});
+		createDeleteAction(textTable, textModel);
 
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -265,27 +293,30 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForText() {
-		textTable.setItems(textModel);
-
-		textTable.setOnKeyReleased(e -> {
-			if (e.getCode().equals(KeyCode.DELETE)) {
-				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
-						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
-						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
-				if (result == Dialog.Actions.OK) {
-					final TextAlgorithmParameter elementToDelete = textTable.getSelectionModel().getSelectedItem();
-					if (elementToDelete != null) {
-						textModel.remove(elementToDelete);
-					}
-				}
-			}
-		});
+		createDeleteAction(textTable, textModel);
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
 
 		connectTextColumn(textParDomen, "domen");
+	}
+
+	private <T> void createDeleteAction(TableView<T> table, ObservableList<T> model) {
+		table.setItems(model);
+		table.setOnKeyReleased(e -> {
+			if (e.getCode().equals(KeyCode.DELETE)) {
+				final Action result = Dialogs.create().owner(stage).title("Delete Algorithm Parameter")
+						.masthead("Deleting Algorithm Parameter Action").message("Are you sure to delete Algorithm Parameter?")
+						.actions(Dialog.Actions.OK, Dialog.Actions.CANCEL).showConfirm();
+				if (result == Dialog.Actions.OK) {
+					final T elementToDelete = table.getSelectionModel().getSelectedItem();
+					if (elementToDelete != null) {
+						model.remove(elementToDelete);
+					}
+				}
+			}
+		});
 	}
 
 	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {
@@ -460,8 +491,7 @@ public class CreateAlgorithmController implements Initializable {
 		});
 	}
 
-	public boolean isValid() {
+	private boolean isValid() {
 		return valid;
 	}
-
 }
