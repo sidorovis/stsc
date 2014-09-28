@@ -118,6 +118,14 @@ public class CreateAlgorithmController implements Initializable {
 		thisStage.setTitle("Create Algorithm Settings");
 		thisStage.centerOnScreen();
 		thisStage.showAndWait();
+		if (controller.isValid()) {
+			final String executionName = controller.executionName.getText();
+			final String algorithmName = controller.algorithmClass.getValue();
+			final String executionType = controller.algorithmType.getValue();
+
+			final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName);
+			return ed;
+		}
 		return null;
 	}
 

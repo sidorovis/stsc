@@ -1,4 +1,4 @@
-package stsc.general.simulator;
+package stsc.general.simulator.multistarter.grid;
 
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 import stsc.general.testhelper.TestStatisticsHelper;
 import junit.framework.TestCase;
 
-public class ExecutionInitializerTest extends TestCase {
+public class GridExecutionInitializerTest extends TestCase {
 	public void testExecutionInitializer() throws BadParameterException {
 		AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpInteger("n", 1, 10, 2));
