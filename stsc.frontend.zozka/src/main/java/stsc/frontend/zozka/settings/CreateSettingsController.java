@@ -42,8 +42,6 @@ public class CreateSettingsController implements Initializable {
 
 	private String datafeedPath = "./";
 	private StockStorage stockStorage;
-	private LocalDate fromDateData;
-	private LocalDate toDateData;
 
 	private boolean valid = false;
 
@@ -131,10 +129,8 @@ public class CreateSettingsController implements Initializable {
 	private void setDefaultValues() {
 		setDatafeed("./test_data");
 
-		fromDateData = LocalDate.of(1990, 1, 1);
-		toDateData = LocalDate.of(2010, 1, 1);
-		fromDate.setValue(fromDateData);
-		toDate.setValue(toDateData);
+		fromDate.setValue(LocalDate.of(1990, 1, 1));
+		toDate.setValue(LocalDate.of(2010, 1, 1));
 	}
 
 	private void setOnChooseDatafeedButton() {
@@ -173,8 +169,8 @@ public class CreateSettingsController implements Initializable {
 		createSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				fromDateData = fromDate.getValue();
-				toDateData = toDate.getValue();
+				final LocalDate fromDateData = fromDate.getValue();
+				final LocalDate toDateData = toDate.getValue();
 				if (fromDateData.isAfter(toDateData)) {
 					Dialogs.create().owner(stage).title("Validation Error")
 							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
@@ -285,14 +281,6 @@ public class CreateSettingsController implements Initializable {
 
 	public StockStorage getStockStorage() {
 		return stockStorage;
-	}
-
-	public LocalDate getFromDateData() {
-		return fromDateData;
-	}
-
-	public LocalDate getToDateData() {
-		return toDateData;
 	}
 
 }
