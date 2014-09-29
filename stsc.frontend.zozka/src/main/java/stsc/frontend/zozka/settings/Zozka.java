@@ -20,11 +20,12 @@ public class Zozka extends Application {
 
 	private void mainWorkflow(Stage stage) throws IOException {
 		final CreateSettingsController settingsController = CreateSettingsController.create(stage);
-		if (settingsController.isValid()) {
-			createMainWindow(settingsController, stage);
-		} else {
+		if (!settingsController.isValid()) {
 			Platform.exit();
 		}
+		final PresimulationCheckController presimulationCheckController = PresimulationCheckController.create(stage,
+				settingsController.getModel());
+		// createMainWindow(settingsController, stage);
 	}
 
 	private void createMainWindow(CreateSettingsController settingsController, Stage stage) {
