@@ -149,26 +149,15 @@ public class CreateAlgorithmController implements Initializable {
 		for (TextAlgorithmParameter p : controller.textModel) {
 			if (p.getType().equals(STRING_TYPE)) {
 				final String name = p.parameterNameProperty().get();
-				final List<String> domen = parseDomen(p.domenProperty().get());
+				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getStrings().add(new MpString(name, domen));
 			} else if (p.getType().equals(SUB_EXECUTIONS_TYPE)) {
 				final String name = p.parameterNameProperty().get();
-				final List<String> domen = parseDomen(p.domenProperty().get());
+				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getSubExecutions().add(new MpSubExecution(name, domen));
 			}
 		}
 		return ed;
-	}
-
-	static List<String> parseDomen(String string) {
-		List<String> domen = new ArrayList<>();
-		for (String p : string.split(",")) {
-			final String trimmed = p.trim();
-			if (trimmed.length() >= 2 && trimmed.charAt(0) == '\'' && trimmed.charAt(trimmed.length() - 1) == '\'') {
-				domen.add(trimmed.substring(1, trimmed.length() - 1));
-			}
-		}
-		return domen;
 	}
 
 	private void setStage(Stage thisStage) {
@@ -452,14 +441,7 @@ public class CreateAlgorithmController implements Initializable {
 				break;
 			}
 		}
-		String domen = "'";
-		for (int i = 0; i < values.size(); ++i) {
-			domen += values.get(i);
-			if (i < values.size() - 1) {
-				domen += "', '";
-			}
-		}
-		domen += "'";
+		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
 		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
 
