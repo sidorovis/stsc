@@ -28,6 +28,7 @@ public class Zozka extends Application {
 	}
 
 	private void createMainWindow(CreateSettingsController settingsController, Stage stage) {
+		System.out.println(settingsController.getType());
 		stage.show();
 	}
 

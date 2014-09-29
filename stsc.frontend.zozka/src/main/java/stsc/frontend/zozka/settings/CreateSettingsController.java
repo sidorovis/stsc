@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.Queue;
 import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
-import stsc.common.storage.StockStorage;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
@@ -28,22 +29,24 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 
 public class CreateSettingsController implements Initializable {
+
+	public static enum Type {
+		GRID, GENETIC
+	}
 
 	private static final String DATE_VALIDATION_MESSAGE = "From date should be less or equal then To date";
 	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
 	private Stage stage;
 
-	private String datafeedPath = "./";
-	private StockStorage stockStorage;
+	private SimulationsDescription model = new SimulationsDescription();
 
 	private boolean valid = false;
+	private Type type;
 
 	@FXML
 	private Label datafeedLabel;
@@ -58,7 +61,6 @@ public class CreateSettingsController implements Initializable {
 	@FXML
 	private Button addExecutionButton;
 
-	private ObservableList<ExecutionDescription> model = FXCollections.observableArrayList();
 	@FXML
 	private TableView<ExecutionDescription> executionsTable;
 	@FXML
@@ -67,7 +69,9 @@ public class CreateSettingsController implements Initializable {
 	private TableColumn<ExecutionDescription, String> algorithmNameColumn;
 
 	@FXML
-	private Button createSettingsButton;
+	private Button createGridSettingsButton;
+	@FXML
+	private Button createGeneticSettingsButton;
 
 	public static CreateSettingsController create(final Stage stage) throws IOException {
 		final Stage thisStage = new Stage();
@@ -100,7 +104,8 @@ public class CreateSettingsController implements Initializable {
 		setDefaultValues();
 		setOnChooseDatafeedButton();
 		setOnAddExecutionButton();
-		setOnCreateSettingsButton();
+		setOnCreateGeneticSettingsButton();
+		setOnCreateGridSettingsButton();
 	}
 
 	private void validateGui() {
@@ -116,11 +121,12 @@ public class CreateSettingsController implements Initializable {
 		assert executionNameColumn != null : "fx:id=\"executionNameColumn\" was not injected: check your FXML file.";
 		assert algorithmNameColumn != null : "fx:id=\"algorithmNameColumn\" was not injected: check your FXML file.";
 
-		assert createSettingsButton != null : "fx:id=\"createSettingsButton\" was not injected: check your FXML file.";
+		assert createGridSettingsButton != null : "fx:id=\"createGridSettingsButton\" was not injected: check your FXML file.";
+		assert createGeneticSettingsButton != null : "fx:id=\"createGeneticSettingsButton\" was not injected: check your FXML file.";
 	}
 
 	private void connectTableForExecutions() {
-		ControllerHelper.connectDeleteAction(stage, executionsTable, model);
+		ControllerHelper.connectDeleteAction(stage, executionsTable, model.getExecutionDescriptions());
 
 		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
 		algorithmNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
@@ -158,28 +164,42 @@ public class CreateSettingsController implements Initializable {
 					Dialogs.create().showException(e);
 				}
 				if (ed != null) {
-					model.add(ed);
+					model.getExecutionDescriptions().add(ed);
 				}
 			}
 		});
 
 	}
 
-	private void setOnCreateSettingsButton() {
-		createSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
+	private void setOnCreateGeneticSettingsButton() {
+		createGeneticSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				final LocalDate fromDateData = fromDate.getValue();
-				final LocalDate toDateData = toDate.getValue();
-				if (fromDateData.isAfter(toDateData)) {
-					Dialogs.create().owner(stage).title("Validation Error")
-							.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE)
-							.showError();
-				} else {
-					checkAndLoadDatafeed();
-				}
+				type = Type.GENETIC;
+				handleClose();
 			}
 		});
+	}
+
+	private void setOnCreateGridSettingsButton() {
+		createGridSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				type = Type.GRID;
+				handleClose();
+			}
+		});
+	}
+
+	protected void handleClose() {
+		final LocalDate fromDateData = fromDate.getValue();
+		final LocalDate toDateData = toDate.getValue();
+		if (fromDateData.isAfter(toDateData)) {
+			Dialogs.create().owner(stage).title("Validation Error")
+					.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE).showError();
+		} else {
+			startCheckAndLoadDatafeed();
+		}
 	}
 
 	private static class ProgressBarTask extends Task<Integer> {
@@ -232,8 +252,8 @@ public class CreateSettingsController implements Initializable {
 		}
 	}
 
-	protected boolean checkAndLoadDatafeed() {
-		final File datafeedFile = new File(datafeedPath);
+	protected boolean startCheckAndLoadDatafeed() {
+		final File datafeedFile = new File(model.getDatafeedPath());
 		if (!(new File(datafeedFile + "/data").isDirectory()))
 			return false;
 		if (!(new File(datafeedFile + "/filtered_data").isDirectory()))
@@ -252,7 +272,7 @@ public class CreateSettingsController implements Initializable {
 		final ProgressBarTask task = new ProgressBarTask(yfStockStorage);
 		Dialogs.create().owner(stage).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
 		new Thread(task).start();
-		stockStorage = yfStockStorage;
+		model.setStockStorage(yfStockStorage);
 
 		task.setOnSucceeded(new OnSuccessEventHandler(this));
 		final OnFailureEventHandler failure = new OnFailureEventHandler(this);
@@ -260,18 +280,23 @@ public class CreateSettingsController implements Initializable {
 		task.setOnCancelled(failure);
 	}
 
+	private Date createDate(LocalDate date) {
+		return new Date(date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
+	}
+
 	protected void setValid() {
 		valid = true;
+		model.setPeriod(createDate(fromDate.getValue()), createDate(toDate.getValue()));
 		stage.close();
 	}
 
 	protected void setInvalid() {
-		Dialogs.create().owner(stage).title("Validation Error").masthead("Datafeed folder: " + datafeedPath + " is invalid.")
+		Dialogs.create().owner(stage).title("Validation Error").masthead("Datafeed folder: " + model.getDatafeedPath() + " is invalid.")
 				.message(DATAFEED_PATH_VALIDATION_MESSAGE).showError();
 	}
 
 	private void setDatafeed(String datafeed) {
-		datafeedPath = datafeed;
+		model.setDatafeedPath(datafeed);
 		datafeedLabel.setText("Datafeed: " + datafeed);
 	}
 
@@ -279,8 +304,11 @@ public class CreateSettingsController implements Initializable {
 		return valid;
 	}
 
-	public StockStorage getStockStorage() {
-		return stockStorage;
+	public Type getType() {
+		return type;
 	}
 
+	public SimulationsDescription getModel() {
+		return model;
+	}
 }

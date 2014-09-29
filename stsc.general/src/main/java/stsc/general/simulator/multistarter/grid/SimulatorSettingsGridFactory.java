@@ -31,6 +31,13 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 		return this;
 	}
 
+	public SimulatorSettingsGridFactory addStock(GridExecutionInitializer execution) {
+		synchronized (stockInitializers) {
+			addInitializer(stockInitializers, execution);
+		}
+		return this;
+	}
+
 	@Override
 	public SimulatorSettingsGridFactory addStock(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addStock(eName, aName, factory.getGridIterator());
@@ -43,6 +50,13 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 		return this;
 	}
 
+	public SimulatorSettingsGridFactory addEod(GridExecutionInitializer execution) {
+		synchronized (eodInitializers) {
+			addInitializer(eodInitializers, execution);
+		}
+		return this;
+	}
+
 	@Override
 	public SimulatorSettingsGridFactory addEod(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addEod(eName, aName, factory.getGridIterator());
@@ -51,7 +65,8 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 	// add predefined algorithms
 
 	@Override
-	public SimulatorSettingsGridFactory addStock(String eName, String aName, String pName, List<String> values) throws BadParameterException {
+	public SimulatorSettingsGridFactory addStock(String eName, String aName, String pName, List<String> values)
+			throws BadParameterException {
 		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addStock(eName, aName, algoFactory.getGridIterator());
@@ -72,7 +87,8 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 
 	@Override
 	public SimulatorSettingsGridList getList() {
-		final SimulatorSettingsGridList result = new SimulatorSettingsGridList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers, finished);
+		final SimulatorSettingsGridList result = new SimulatorSettingsGridList(getStockStorage(), getPeriod(), stockInitializers,
+				eodInitializers, finished);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;
@@ -80,8 +96,8 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 
 	// TODO - method is experimental, see tests it is not finished
 	public SimulatorSettingsGridCopyList getCopyList() {
-		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers,
-				finished);
+		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(getStockStorage(), getPeriod(), stockInitializers,
+				eodInitializers, finished);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;

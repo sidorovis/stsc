@@ -42,8 +42,8 @@ public class CreateAlgorithmController implements Initializable {
 	private Stage stage;
 	private boolean valid;
 
-	private static String STOCK_VALUE = "Stock";
-	private static String EOD_VALUE = "Eod";
+	public static String STOCK_VALUE = "Stock";
+	public static String EOD_VALUE = "Eod";
 
 	private static String INTEGER_TYPE = "Integer";
 	private static String DOUBLE_TYPE = "Double";
@@ -101,7 +101,9 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private Button addParameter;
 	@FXML
-	private Button createExecution;
+	private Button createGridExecution;
+	@FXML
+	private Button createGeneticExecution;
 
 	public static ExecutionDescription create(final Stage parentStage) throws IOException, BadParameterException {
 		final Stage thisStage = new Stage();
@@ -130,7 +132,7 @@ public class CreateAlgorithmController implements Initializable {
 		final String executionName = controller.executionName.getText();
 		final String algorithmName = controller.algorithmClass.getValue();
 
-		final ExecutionDescription ed = new ExecutionDescription(executionName, algorithmName);
+		final ExecutionDescription ed = new ExecutionDescription(controller.algorithmType.getValue(), executionName, algorithmName);
 		for (NumberAlgorithmParameter p : controller.numberModel) {
 			if (p.getType().equals(INTEGER_TYPE)) {
 				final String name = p.parameterNameProperty().get();
@@ -173,7 +175,8 @@ public class CreateAlgorithmController implements Initializable {
 		connectTableForNumber();
 		connectTableForText();
 		connectAddParameter();
-		connectCreateExecution();
+		connectCreateGridExecution();
+		connectCreateGeneticExecution();
 	}
 
 	private void validateGui() {
@@ -195,7 +198,8 @@ public class CreateAlgorithmController implements Initializable {
 		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
 
 		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
-		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
+		assert createGridExecution != null : "fx:id=\"createGridExecution\" was not injected: check your FXML file.";
+		assert createGeneticExecution != null : "fx:id=\"createGeneticExecution\" was not injected: check your FXML file.";
 		valid = false;
 	}
 
@@ -445,8 +449,15 @@ public class CreateAlgorithmController implements Initializable {
 		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
 
-	private void connectCreateExecution() {
-		createExecution.setOnAction(e -> {
+	private void connectCreateGridExecution() {
+		createGridExecution.setOnAction(e -> {
+			valid = true;
+			stage.close();
+		});
+	}
+
+	private void connectCreateGeneticExecution() {
+		createGeneticExecution.setOnAction(e -> {
 			valid = true;
 			stage.close();
 		});
@@ -455,4 +466,5 @@ public class CreateAlgorithmController implements Initializable {
 	private boolean isValid() {
 		return valid;
 	}
+
 }

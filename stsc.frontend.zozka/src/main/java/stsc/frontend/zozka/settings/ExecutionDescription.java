@@ -9,12 +9,14 @@ import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 
 final class ExecutionDescription {
 
+	private final String algorithmType;
 	private final String executionName;
 	private final String algorithmName;
 
 	private final AlgorithmParameters parameters;
 
-	public ExecutionDescription(String executionName, String algorithmName) {
+	public ExecutionDescription(String algorithmType, String executionName, String algorithmName) {
+		this.algorithmType = algorithmType;
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
 		this.parameters = new AlgorithmParameters();
@@ -45,5 +47,9 @@ final class ExecutionDescription {
 	public GeneticExecutionInitializer createGeneticExecution(FromToPeriod period) {
 		final AlgorithmSettingsGeneticList settings = new AlgorithmSettingsGeneticList(period, parameters);
 		return new GeneticExecutionInitializer(executionName, algorithmName, settings);
+	}
+
+	public boolean isStockAlgorithm() {
+		return algorithmType.equals(CreateAlgorithmController.STOCK_VALUE);
 	}
 }

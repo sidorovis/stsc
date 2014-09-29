@@ -28,6 +28,13 @@ public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<Si
 		return this;
 	}
 
+	public SimulatorSettingsGeneticFactory addStock(GeneticExecutionInitializer execution) {
+		synchronized (stockInitializers) {
+			addInitializer(stockInitializers, execution);
+		}
+		return this;
+	}
+
 	@Override
 	public SimulatorSettingsGeneticFactory addStock(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addStock(eName, aName, factory.getGeneticList());
@@ -40,6 +47,13 @@ public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<Si
 		return this;
 	}
 
+	public SimulatorSettingsGeneticFactory addEod(GeneticExecutionInitializer execution) {
+		synchronized (eodInitializers) {
+			addInitializer(eodInitializers, execution);
+		}
+		return this;
+	}
+
 	@Override
 	public SimulatorSettingsGeneticFactory addEod(String eName, String aName, AlgorithmSettingsIteratorFactory factory) {
 		return addEod(eName, aName, factory.getGeneticList());
@@ -48,14 +62,16 @@ public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<Si
 	// add predefined algorithms
 
 	@Override
-	public SimulatorSettingsGeneticFactory addStock(String eName, String aName, String pName, List<String> values) throws BadParameterException {
+	public SimulatorSettingsGeneticFactory addStock(String eName, String aName, String pName, List<String> values)
+			throws BadParameterException {
 		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addStock(eName, aName, algoFactory.getGeneticList());
 	}
 
 	@Override
-	public SimulatorSettingsGeneticFactory addEod(String eName, String aName, String pName, List<String> values) throws BadParameterException {
+	public SimulatorSettingsGeneticFactory addEod(String eName, String aName, String pName, List<String> values)
+			throws BadParameterException {
 		final AlgorithmSettingsIteratorFactory algoFactory = createAlgorithmSettingsFactory();
 		algoFactory.add(new MpString(pName, values));
 		return addEod(eName, aName, algoFactory.getGeneticList());
@@ -67,7 +83,8 @@ public class SimulatorSettingsGeneticFactory extends SimulatorSettingsFactory<Si
 
 	@Override
 	public SimulatorSettingsGeneticList getList() {
-		final SimulatorSettingsGeneticList result = new SimulatorSettingsGeneticList(getStockStorage(), getPeriod(), stockInitializers, eodInitializers);
+		final SimulatorSettingsGeneticList result = new SimulatorSettingsGeneticList(getStockStorage(), getPeriod(), stockInitializers,
+				eodInitializers);
 		stockInitializers = new ArrayList<>();
 		eodInitializers = new ArrayList<>();
 		return result;
