@@ -1,5 +1,8 @@
 package stsc.frontend.zozka.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,5 +29,28 @@ public final class TextAlgorithmParameter {
 	public StringProperty domenProperty() {
 		return domen;
 	}
+
+	public static String createStringRepresentation(List<String> values) {
+		String domen = "'";
+		for (int i = 0; i < values.size(); ++i) {
+			domen += values.get(i);
+			if (i < values.size() - 1) {
+				domen += "', '";
+			}
+		}
+		domen += "'";
+		return domen;
+	}
+	
+	static List<String> createDomenRepresentation(String string) {
+		List<String> domen = new ArrayList<>();
+		for (String p : string.split(",")) {
+			final String trimmed = p.trim();
+			if (trimmed.length() >= 2 && trimmed.charAt(0) == '\'' && trimmed.charAt(trimmed.length() - 1) == '\'') {
+				domen.add(trimmed.substring(1, trimmed.length() - 1));
+			}
+		}
+		return domen;
+	}	
 
 }
