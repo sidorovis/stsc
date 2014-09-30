@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.settings;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -7,30 +8,28 @@ import java.util.ResourceBundle;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.DefaultHighLowDataset;
-import org.jfree.data.xy.OHLCDataset;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 
-import stsc.common.Day;
 import stsc.common.stocks.Stock;
-import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PresimulationCheckController implements Initializable {
 
-	private SwingNode sn = new SwingNode();
 	private Stage stage;
 	private SimulationsDescription simulationsDescription;
 
 	private DatasetForStock chartDataset;
+	private SwingNode sn = new SwingNode();
 
 	@FXML
 	private BorderPane centralPane;
@@ -56,12 +55,21 @@ public class PresimulationCheckController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		assert centralPane != null : "fx:id=\"centralPane\" was not injected: check your FXML file.";
-		// centralPane;
 		final Stock aapl = simulationsDescription.getStockStorage().getStock("aapl");
 		chartDataset = new DatasetForStock(aapl);
 
-		JFreeChart chart = ChartFactory.createCandlestickChart("Title", "", "", chartDataset, false);
+		final JFreeChart chart = ChartFactory.createCandlestickChart("aapl", "", "", chartDataset, false);
+		chart.getPlot().setBackgroundPaint(Color.white);
+		chart.getXYPlot().setDomainGridlinePaint(Color.black);
+		chart.getXYPlot().setRangeGridlinePaint(Color.black);
+		TimeSeriesCollection tsc = new TimeSeriesCollection();
+		TimeSeries ts = new TimeSeries("asd");
+		ts.a
+		tsc.addSeries(ts);
 		final ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setMouseWheelEnabled(true);
+		chartPanel.setFillZoomRectangle(false);
+		chartPanel.setPopupMenu(null);
 		sn.setContent(chartPanel);
 		centralPane.setCenter(sn);
 	}
