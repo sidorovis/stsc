@@ -71,6 +71,11 @@
     	<artifactId>controlsfx</artifactId>
    		<version>8.0.6_20</version>
 	</dependency>
+	<dependency>
+		<groupId>org.jfree</groupId>
+		<artifactId>jfreechart</artifactId>
+		<version>1.0.19</version>
+	</dependency>
 
     <dependency>
       <groupId>junit</groupId>

@@ -23,7 +23,7 @@ public class Zozka extends Application {
 		if (!settingsController.isValid()) {
 			Platform.exit();
 		}
-		final PresimulationCheckController presimulationCheckController = PresimulationCheckController.create(stage,
+		final PresimulationCheckController presimulationCheckController = new PresimulationCheckController(stage,
 				settingsController.getModel());
 		// createMainWindow(settingsController, stage);
 	}

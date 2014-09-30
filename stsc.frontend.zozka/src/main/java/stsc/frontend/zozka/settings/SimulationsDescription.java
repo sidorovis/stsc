@@ -40,6 +40,10 @@ public class SimulationsDescription {
 		this.stockStorage = stockStorage;
 	}
 
+	public StockStorage getStockStorage() {
+		return stockStorage;
+	}
+
 	public SimulatorSettingsGridList getGrid() {
 		final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
 		for (ExecutionDescription ed : executionDescriptions) {
