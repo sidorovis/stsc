@@ -35,10 +35,6 @@ import javafx.concurrent.WorkerStateEvent;
 
 public class CreateSettingsController implements Initializable {
 
-	public static enum Type {
-		GRID, GENETIC
-	}
-
 	private static final String DATE_VALIDATION_MESSAGE = "From date should be less or equal then To date";
 	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
@@ -47,7 +43,7 @@ public class CreateSettingsController implements Initializable {
 	private SimulationsDescription model = new SimulationsDescription();
 
 	private boolean valid = false;
-	private Type type;
+	private SimulationType simulationType;
 
 	@FXML
 	private Label datafeedLabel;
@@ -190,7 +186,7 @@ public class CreateSettingsController implements Initializable {
 		createGeneticSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				type = Type.GENETIC;
+				simulationType = SimulationType.GENETIC;
 				handleClose();
 			}
 		});
@@ -200,7 +196,7 @@ public class CreateSettingsController implements Initializable {
 		createGridSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				type = Type.GRID;
+				simulationType = SimulationType.GRID;
 				handleClose();
 			}
 		});
@@ -319,8 +315,8 @@ public class CreateSettingsController implements Initializable {
 		return valid;
 	}
 
-	public Type getType() {
-		return type;
+	public SimulationType getSimulationType() {
+		return simulationType;
 	}
 
 	public SimulationsDescription getModel() {

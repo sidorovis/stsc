@@ -23,15 +23,16 @@ public class Zozka extends Application {
 		if (!settingsController.isValid()) {
 			Platform.exit();
 		}
-		final PresimulationCheckController presimulationCheckController = new PresimulationCheckController(stage,
-				settingsController.getModel());
+		final PresimulationCheckController presimulationController = new PresimulationCheckController(stage, settingsController.getModel(),
+				settingsController.getSimulationType());
 		// createMainWindow(settingsController, stage);
 	}
 
-	private void createMainWindow(CreateSettingsController settingsController, Stage stage) {
-		System.out.println(settingsController.getType());
-		stage.show();
-	}
+	// private void createMainWindow(CreateSettingsController
+	// settingsController, Stage stage) {
+	// System.out.println(settingsController.getType());
+	// stage.show();
+	// }
 
 	public static void main(String[] args) {
 		Application.launch(Zozka.class, (java.lang.String[]) null);

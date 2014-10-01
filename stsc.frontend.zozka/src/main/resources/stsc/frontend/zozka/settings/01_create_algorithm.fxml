@@ -34,7 +34,7 @@
          <right>
             <Pane prefHeight="36.0" prefWidth="194.0">
                <children>
-                  <Button fx:id="createExecution" layoutX="29.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="163.0" text="Create Execution" BorderPane.alignment="CENTER" />
+                  <Button fx:id="saveExecution" layoutX="29.0" layoutY="3.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="163.0" text="Save Execution" BorderPane.alignment="CENTER" />
                </children>
             </Pane>
          </right>

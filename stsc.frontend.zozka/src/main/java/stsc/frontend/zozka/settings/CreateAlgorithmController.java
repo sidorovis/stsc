@@ -18,7 +18,6 @@ import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
-import stsc.general.simulator.multistarter.ParameterList;
 import stsc.storage.AlgorithmsStorage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -103,7 +102,7 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private Button addParameter;
 	@FXML
-	private Button createExecution;
+	private Button saveExecution;
 
 	public static ExecutionDescription create(final Stage parentStage, final ExecutionDescription ed) throws IOException,
 			BadParameterException {
@@ -179,7 +178,7 @@ public class CreateAlgorithmController implements Initializable {
 		connectTableForNumber();
 		connectTableForText();
 		connectAddParameter();
-		connectCreateExecution();
+		connectSaveExecution();
 	}
 
 	private void validateGui() {
@@ -201,7 +200,7 @@ public class CreateAlgorithmController implements Initializable {
 		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
 
 		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
-		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
+		assert saveExecution != null : "fx:id=\"saveExecution\" was not injected: check your FXML file.";
 		valid = false;
 	}
 
@@ -451,8 +450,8 @@ public class CreateAlgorithmController implements Initializable {
 		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
 
-	private void connectCreateExecution() {
-		createExecution.setOnAction(e -> {
+	private void connectSaveExecution() {
+		saveExecution.setOnAction(e -> {
 			valid = true;
 			stage.close();
 		});
