@@ -3,14 +3,21 @@ package stsc.frontend.zozka.settings;
 import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.Year;
 
 import stsc.common.stocks.Stock;
 import javafx.embed.swing.SwingNode;
@@ -62,10 +69,18 @@ public class PresimulationCheckController implements Initializable {
 		chart.getPlot().setBackgroundPaint(Color.white);
 		chart.getXYPlot().setDomainGridlinePaint(Color.black);
 		chart.getXYPlot().setRangeGridlinePaint(Color.black);
-		TimeSeriesCollection tsc = new TimeSeriesCollection();
-		TimeSeries ts = new TimeSeries("asd");
-		ts.a
-		tsc.addSeries(ts);
+
+		TimeSeriesCollection otherDataSet = new TimeSeriesCollection();
+		TimeSeries ts1 = new TimeSeries("Series 1");
+		ts1.add(new Year(2014), 150);
+		ts1.add(new Year(2013), 100);
+		otherDataSet.addSeries(ts1);
+		chart.getXYPlot().setDataset(1, otherDataSet);
+		chart.getXYPlot().mapDatasetToRangeAxis(1, 0);
+		XYItemRenderer renderer2 = new XYLineAndShapeRenderer();
+		chart.getXYPlot().setRenderer(1, renderer2);
+		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
 		chartPanel.setFillZoomRectangle(false);

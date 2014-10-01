@@ -15,8 +15,10 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
+import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
+import stsc.general.simulator.multistarter.ParameterList;
 import stsc.storage.AlgorithmsStorage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -101,11 +103,10 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private Button addParameter;
 	@FXML
-	private Button createGridExecution;
-	@FXML
-	private Button createGeneticExecution;
+	private Button createExecution;
 
-	public static ExecutionDescription create(final Stage parentStage) throws IOException, BadParameterException {
+	public static ExecutionDescription create(final Stage parentStage, final ExecutionDescription ed) throws IOException,
+			BadParameterException {
 		final Stage thisStage = new Stage();
 		final URL location = Zozka.class.getResource("01_create_algorithm.fxml");
 		final FXMLLoader loader = new FXMLLoader();
@@ -114,6 +115,9 @@ public class CreateAlgorithmController implements Initializable {
 		thisStage.initModality(Modality.WINDOW_MODAL);
 		final CreateAlgorithmController controller = loader.getController();
 		controller.setStage(thisStage);
+		if (ed != null) {
+			controller.setExecutionDescription(ed);
+		}
 		final Scene scene = new Scene(gui);
 		scene.getStylesheets().add(Zozka.class.getResource("01_create_algorithm.css").toExternalForm());
 		thisStage.setScene(scene);
@@ -149,11 +153,11 @@ public class CreateAlgorithmController implements Initializable {
 			}
 		}
 		for (TextAlgorithmParameter p : controller.textModel) {
-			if (p.getType().equals(STRING_TYPE)) {
+			if (p.getType().getValue().equals(STRING_TYPE)) {
 				final String name = p.parameterNameProperty().get();
 				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getStrings().add(new MpString(name, domen));
-			} else if (p.getType().equals(SUB_EXECUTIONS_TYPE)) {
+			} else if (p.getType().getValue().equals(SUB_EXECUTIONS_TYPE)) {
 				final String name = p.parameterNameProperty().get();
 				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getSubExecutions().add(new MpSubExecution(name, domen));
@@ -175,8 +179,7 @@ public class CreateAlgorithmController implements Initializable {
 		connectTableForNumber();
 		connectTableForText();
 		connectAddParameter();
-		connectCreateGridExecution();
-		connectCreateGeneticExecution();
+		connectCreateExecution();
 	}
 
 	private void validateGui() {
@@ -198,8 +201,7 @@ public class CreateAlgorithmController implements Initializable {
 		assert textParDomen != null : "fx:id=\"textParDomen\" was not injected: check your FXML file.";
 
 		assert addParameter != null : "fx:id=\"addParameter\" was not injected: check your FXML file.";
-		assert createGridExecution != null : "fx:id=\"createGridExecution\" was not injected: check your FXML file.";
-		assert createGeneticExecution != null : "fx:id=\"createGeneticExecution\" was not injected: check your FXML file.";
+		assert createExecution != null : "fx:id=\"createExecution\" was not injected: check your FXML file.";
 		valid = false;
 	}
 
@@ -254,7 +256,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForNumber() {
-		ControllerHelper.connectDeleteAction(stage, textTable, textModel);
+		ControllerHelper.connectDeleteAction(stage, numberTable, numberModel);
 
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -449,15 +451,8 @@ public class CreateAlgorithmController implements Initializable {
 		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
 	}
 
-	private void connectCreateGridExecution() {
-		createGridExecution.setOnAction(e -> {
-			valid = true;
-			stage.close();
-		});
-	}
-
-	private void connectCreateGeneticExecution() {
-		createGeneticExecution.setOnAction(e -> {
+	private void connectCreateExecution() {
+		createExecution.setOnAction(e -> {
 			valid = true;
 			stage.close();
 		});
@@ -467,4 +462,27 @@ public class CreateAlgorithmController implements Initializable {
 		return valid;
 	}
 
+	private void setExecutionDescription(ExecutionDescription ed) {
+		if (ed.isStockAlgorithm()) {
+			algorithmType.getSelectionModel().select(STOCK_VALUE);
+		} else {
+			algorithmType.getSelectionModel().select(EOD_VALUE);
+		}
+		algorithmClass.getSelectionModel().select(ed.getAlgorithmName());
+		executionName.setText(ed.getExecutionName());
+		for (MpIterator<Integer> i : ed.getParameters().getIntegers().getParams()) {
+			numberModel.add(new NumberAlgorithmParameter(i.getName(), INTEGER_TYPE, integerParPattern, String.valueOf(i.getFrom()), String
+					.valueOf(i.getStep()), String.valueOf(i.getTo())));
+		}
+		for (MpIterator<Double> i : ed.getParameters().getDoubles().getParams()) {
+			numberModel.add(new NumberAlgorithmParameter(i.getName(), DOUBLE_TYPE, doubleParPattern, String.valueOf(i.getFrom()), String
+					.valueOf(i.getStep()), String.valueOf(i.getTo())));
+		}
+		for (MpIterator<String> i : ed.getParameters().getStrings().getParams()) {
+			textModel.add(new TextAlgorithmParameter(i.getName(), STRING_TYPE, i.getDomen()));
+		}
+		for (MpIterator<String> i : ed.getParameters().getSubExecutions().getParams()) {
+			textModel.add(new TextAlgorithmParameter(i.getName(), SUB_EXECUTIONS_TYPE, i.getDomen()));
+		}
+	}
 }

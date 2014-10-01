@@ -25,6 +25,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -126,6 +127,20 @@ public class CreateSettingsController implements Initializable {
 	}
 
 	private void connectTableForExecutions() {
+		executionsTable.setOnMouseClicked(e -> {
+			if (e.getButton().equals(MouseButton.PRIMARY) && e.getClickCount() == 2) {
+				final int index = executionsTable.getSelectionModel().getSelectedIndex();
+				final ExecutionDescription ed = executionsTable.getSelectionModel().getSelectedItem();
+				try {
+					ExecutionDescription newEd = CreateAlgorithmController.create(stage, ed);
+					if (newEd != null) {
+						model.getExecutionDescriptions().set(index, newEd);
+					}
+				} catch (IOException | BadParameterException exception) {
+					Dialogs.create().showException(exception);
+				}
+			}
+		});
 		ControllerHelper.connectDeleteAction(stage, executionsTable, model.getExecutionDescriptions());
 
 		executionNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
@@ -159,7 +174,7 @@ public class CreateSettingsController implements Initializable {
 			public void handle(ActionEvent event) {
 				ExecutionDescription ed = null;
 				try {
-					ed = CreateAlgorithmController.create(stage);
+					ed = CreateAlgorithmController.create(stage, null);
 				} catch (IOException | BadParameterException e) {
 					Dialogs.create().showException(e);
 				}

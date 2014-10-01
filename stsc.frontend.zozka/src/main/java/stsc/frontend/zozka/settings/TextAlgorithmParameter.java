@@ -12,6 +12,12 @@ public final class TextAlgorithmParameter {
 	private final StringProperty type;
 	private final StringProperty domen;
 
+	public TextAlgorithmParameter(String parameterName, String type, List<String> domen) {
+		this.parameterName = new SimpleStringProperty(parameterName);
+		this.type = new SimpleStringProperty(type);
+		this.domen = new SimpleStringProperty(createStringRepresentation(domen));
+	}
+
 	public TextAlgorithmParameter(String parameterName, String type, String domen) {
 		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = new SimpleStringProperty(type);
@@ -41,7 +47,7 @@ public final class TextAlgorithmParameter {
 		domen += "'";
 		return domen;
 	}
-	
+
 	static List<String> createDomenRepresentation(String string) {
 		List<String> domen = new ArrayList<>();
 		for (String p : string.split(",")) {
@@ -51,6 +57,6 @@ public final class TextAlgorithmParameter {
 			}
 		}
 		return domen;
-	}	
+	}
 
 }
