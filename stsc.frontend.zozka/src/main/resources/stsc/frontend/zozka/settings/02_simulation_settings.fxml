@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <TextArea fx:id="simulationSettingsArea" prefHeight="200.0" prefWidth="200.0" text="# enter simulator settings here" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <BorderPane prefHeight="37.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <right>
+            <Button fx:id="createSettingsButton" mnemonicParsing="false" text="Create Settings" BorderPane.alignment="CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <BorderPane.margin>
+                  <Insets right="5.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
+         <left>
+            <Button fx:id="loadButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Load" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="5.0" />
+               </BorderPane.margin>
+            </Button>
+         </left>
+         <center>
+            <Button fx:id="saveButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Save" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </bottom>
+</BorderPane>

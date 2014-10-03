@@ -11,6 +11,8 @@ import java.util.Set;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.stocks.Stock;
+import stsc.general.simulator.Simulator;
+import stsc.general.simulator.SimulatorSettings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,6 +34,8 @@ public class PresimulationCheckController implements Initializable {
 
 	@FXML
 	private Button showPriceChartForStock;
+	@FXML
+	private Button showStockChartWithOnStock;
 
 	@FXML
 	private Label datafeedPath;
@@ -61,7 +65,7 @@ public class PresimulationCheckController implements Initializable {
 		validateGui();
 		setLabels();
 		connectShowPriceChartForStockButton();
-
+		connectShowPriceChartWithOnStockButton();
 	}
 
 	private void setLabels() {
@@ -77,6 +81,32 @@ public class PresimulationCheckController implements Initializable {
 				showStockDialog(choosedName.get());
 			}
 		});
+	}
+
+	private void connectShowPriceChartWithOnStockButton() {
+
+		showStockChartWithOnStock.setOnAction(e -> {
+			final Optional<String> choosedName = selectStockDialog();
+			if (!choosedName.isPresent()) {
+				return;
+			}
+			final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings(choosedName.get());
+			if (!simulationSettings.isPresent()) {
+				return;
+			}
+			try {
+				Simulator simulator = new Simulator(simulationSettings.get());
+				simulator.getStatistics();
+			} catch (Exception exception) {
+				Dialogs.create().showException(exception);
+			}
+		});
+
+	}
+
+	private Optional<SimulatorSettings> createSimulatorSettings(String string) {
+
+		return null;
 	}
 
 	private Optional<String> selectStockDialog() {
@@ -101,7 +131,10 @@ public class PresimulationCheckController implements Initializable {
 
 	private void validateGui() {
 		assert executionRepresentation != null : "fx:id=\"executionRepresentation\" was not injected: check your FXML file.";
+
 		assert showPriceChartForStock != null : "fx:id=\"showPriceChartForStock\" was not injected: check your FXML file.";
+		assert showStockChartWithOnStock != null : "fx:id=\"showStockChartWithOnStock\" was not injected: check your FXML file.";
+
 		assert datafeedPath != null : "fx:id=\"datafeedPath\" was not injected: check your FXML file.";
 	}
 }

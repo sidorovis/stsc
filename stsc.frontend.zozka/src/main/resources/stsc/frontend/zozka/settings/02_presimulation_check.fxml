@@ -10,6 +10,7 @@
       <VBox prefHeight="436.0" prefWidth="640.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="showPriceChartForStock" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="31.0" prefWidth="399.0" text="Show price chart for stock..." />
+            <Button fx:id="showStockChartWithOnStock" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Show Chart With On Stock Curves" />
          </children>
       </VBox>
    </center>
