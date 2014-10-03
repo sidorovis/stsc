@@ -18,6 +18,7 @@ public class SimulationsDescription {
 	private String datafeedPath = "./";
 	private StockStorage stockStorage;
 	private FromToPeriod period;
+
 	private ObservableList<ExecutionDescription> executionDescriptions = FXCollections.observableArrayList();
 
 	public ObservableList<ExecutionDescription> getExecutionDescriptions() {
@@ -34,6 +35,10 @@ public class SimulationsDescription {
 
 	public void setPeriod(Date from, Date to) {
 		period = new FromToPeriod(from, to);
+	}
+
+	public FromToPeriod getPeriod() {
+		return period;
 	}
 
 	public void setStockStorage(StockStorage stockStorage) {

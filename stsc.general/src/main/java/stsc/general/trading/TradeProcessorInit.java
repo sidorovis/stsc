@@ -32,6 +32,13 @@ public class TradeProcessorInit implements Cloneable {
 		this.executionsStorage = executionsStorage;
 	}
 
+	public TradeProcessorInit(final StockStorage stockStorage, final FromToPeriod period, final String config) throws BadAlgorithmException {
+		this.broker = new BrokerImpl(stockStorage);
+		this.period = period;
+		final ExecutionsLoader executionsLoader = new ExecutionsLoader(period, config);
+		this.executionsStorage = executionsLoader.getExecutionsStorage();
+	}
+
 	public TradeProcessorInit(final File configPath) throws BadAlgorithmException {
 		try {
 			Properties p = loadProperties(configPath.getAbsolutePath());
@@ -39,7 +46,7 @@ public class TradeProcessorInit implements Cloneable {
 			final String filterDataFolderPath = p.getProperty("Data.filter.folder");
 			final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet, filterDataFolderPath);
 
-			final String algsConfig = p.getProperty("Executions.path", "./algs.ini");
+			final File algsConfig = new File(p.getProperty("Executions.path", "./algs.ini"));
 			final FromToPeriod period = new FromToPeriod(p);
 			final ExecutionsLoader executionsLoader = new ExecutionsLoader(algsConfig, period);
 			final ExecutionsStorage executionsStorage = executionsLoader.getExecutionsStorage();

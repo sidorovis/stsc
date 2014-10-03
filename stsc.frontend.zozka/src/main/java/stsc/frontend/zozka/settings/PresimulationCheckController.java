@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.Stock;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
@@ -104,9 +105,10 @@ public class PresimulationCheckController implements Initializable {
 
 	}
 
-	private Optional<SimulatorSettings> createSimulatorSettings(String string) throws IOException {
-		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage);
-		return controller.getSettings();
+	private Optional<SimulatorSettings> createSimulatorSettings(String stockName) throws IOException, BadAlgorithmException {
+		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage,
+				simulationsDescription.getPeriod(), simulationsDescription.getStockStorage());
+		return controller.getSettings(stockName);
 	}
 
 	private Optional<String> selectStockDialog() {

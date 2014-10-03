@@ -12,7 +12,11 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.FromToPeriod;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.storage.StockStorage;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.trading.TradeProcessorInit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,7 +29,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class CreateSimulationSettingsController implements Initializable {
-	private Stage stage;
+
+	private final Stage stage;
+	private final FromToPeriod period;
+	private final StockStorage stockStorage;
 
 	@FXML
 	private TextArea simulationSettingsArea;
@@ -37,14 +44,16 @@ public class CreateSimulationSettingsController implements Initializable {
 	@FXML
 	private Button createSettingsButton;
 
-	public CreateSimulationSettingsController(final Stage stage) throws IOException {
+	public CreateSimulationSettingsController(final Stage stage, FromToPeriod period, StockStorage stockStorage) throws IOException {
+		this.period = period;
+		this.stockStorage = stockStorage;
 		this.stage = new Stage();
 		final URL location = Zozka.class.getResource("02_create_simulation_settings.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		final Parent gui = loader.load();
 		this.stage.initOwner(stage);
-		this.stage.initModality(Modality.WINDOW_MODAL);
+		this.stage.initModality(Modality.NONE);
 		final Scene scene = new Scene(gui);
 		this.stage.setScene(scene);
 		this.stage.setMinHeight(480);
@@ -105,8 +114,9 @@ public class CreateSimulationSettingsController implements Initializable {
 		});
 	}
 
-	public Optional<SimulatorSettings> getSettings() {
-		SimulatorSettings settings = null;
+	public Optional<SimulatorSettings> getSettings(String stockName) throws BadAlgorithmException {
+		SimulatorSettings settings = new SimulatorSettings(0,
+				new TradeProcessorInit(stockStorage, period, simulationSettingsArea.getText()));
 		return Optional.ofNullable(settings);
 	}
 }

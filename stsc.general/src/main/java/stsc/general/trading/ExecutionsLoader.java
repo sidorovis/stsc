@@ -50,7 +50,7 @@ final class ExecutionsLoader {
 	}
 	private static Logger logger = LogManager.getLogger("ExecutionsLoader");
 
-	public String configFilePath = "./config/algs.ini";
+	public File configPath = new File("./config/algs.ini");
 	private String configFileFolder;
 	final private AlgorithmSettingsImpl settings;
 	private AlgorithmsStorage algorithmsStorage;
@@ -63,15 +63,21 @@ final class ExecutionsLoader {
 
 	final private Set<String> eodExecutions = new HashSet<>();
 
-	ExecutionsLoader(String configPath, FromToPeriod period) throws BadAlgorithmException {
-		this.configFilePath = configPath;
+	ExecutionsLoader(FromToPeriod period, String config) throws BadAlgorithmException {
+		this.settings = new AlgorithmSettingsImpl(period);
+		this.algorithmsStorage = AlgorithmsStorage.getInstance();
+		loadAlgorithms(config);
+	}
+
+	ExecutionsLoader(File configPath, FromToPeriod period) throws BadAlgorithmException {
+		this.configPath = configPath;
 		this.settings = new AlgorithmSettingsImpl(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance();
 		loadAlgorithms();
 	}
 
-	ExecutionsLoader(String configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
-		this.configFilePath = configPath;
+	ExecutionsLoader(File configPath, FromToPeriod period, String algoPackageName) throws BadAlgorithmException {
+		this.configPath = configPath;
 		this.settings = new AlgorithmSettingsImpl(period);
 		this.algorithmsStorage = AlgorithmsStorage.getInstance(algoPackageName);
 		loadAlgorithms();
@@ -79,11 +85,10 @@ final class ExecutionsLoader {
 
 	private void loadAlgorithms() throws BadAlgorithmException {
 		logger.info("start executions loader");
-		final File configFile = new File(configFilePath);
-		configFileFolder = new File(configFile.getParent()).toString() + File.separatorChar;
+		configFileFolder = new File(configPath.getParent()).toString() + File.separatorChar;
 		logger.debug("configuration path: {}", configFileFolder);
-		openedPropertyFileNames.add(configFile.getName());
-		try (FileInputStream in = new FileInputStream(configFilePath)) {
+		openedPropertyFileNames.add(configPath.getName());
+		try (FileInputStream in = new FileInputStream(configPath)) {
 			final Properties p = new Properties();
 			logger.debug("main properties file '{}' opened", configFileFolder);
 			p.load(in);
@@ -92,6 +97,16 @@ final class ExecutionsLoader {
 			throw new BadAlgorithmException(e.getMessage());
 		}
 		logger.info("stop executions loader");
+	}
+
+	private void loadAlgorithms(String config) {
+		final Properties p = new Properties();
+		for (String line : config.split(System.lineSeparator())) {
+			String[] value = line.split("=");
+			if (value.length == 2) {
+				p.setProperty(value[0], value[1]);
+			}
+		}
 	}
 
 	private void processProperties(final Properties p) throws FileNotFoundException, IOException, BadAlgorithmException {
