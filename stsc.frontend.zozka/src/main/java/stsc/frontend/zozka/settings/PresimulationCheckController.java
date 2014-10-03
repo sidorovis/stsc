@@ -2,8 +2,13 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import org.controlsfx.dialog.Dialogs;
+
+import stsc.common.stocks.Stock;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,9 +24,6 @@ public class PresimulationCheckController implements Initializable {
 	private Stage stage;
 	private SimulationType simulationType;
 	private SimulationsDescription simulationsDescription;
-	//
-	// private DatasetForStock chartDataset;
-	// private SwingNode sn = new SwingNode();
 
 	@FXML
 	private Label executionRepresentation;
@@ -56,40 +58,33 @@ public class PresimulationCheckController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
 		setLabels();
+		connectShowPriceChartForStockButton();
 
-		// final Stock aapl =
-		// simulationsDescription.getStockStorage().getStock("aapl");
-		// chartDataset = new DatasetForStock(aapl);
-		//
-		// final JFreeChart chart = ChartFactory.createCandlestickChart("aapl",
-		// "", "", chartDataset, false);
-		// chart.getPlot().setBackgroundPaint(Color.white);
-		// chart.getXYPlot().setDomainGridlinePaint(Color.black);
-		// chart.getXYPlot().setRangeGridlinePaint(Color.black);
-		//
-		// TimeSeriesCollection otherDataSet = new TimeSeriesCollection();
-		// TimeSeries ts1 = new TimeSeries("Series 1");
-		// ts1.add(new Year(2014), 150);
-		// ts1.add(new Year(2013), 100);
-		// otherDataSet.addSeries(ts1);
-		// chart.getXYPlot().setDataset(1, otherDataSet);
-		// chart.getXYPlot().mapDatasetToRangeAxis(1, 0);
-		// XYItemRenderer renderer2 = new XYLineAndShapeRenderer();
-		// chart.getXYPlot().setRenderer(1, renderer2);
-		// chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-		//
-		// final ChartPanel chartPanel = new ChartPanel(chart);
-		// chartPanel.setMouseWheelEnabled(true);
-		// chartPanel.setFillZoomRectangle(false);
-		// chartPanel.setPopupMenu(null);
-		// sn.setContent(chartPanel);
-		// centralPane.setCenter(sn);
 	}
 
 	private void setLabels() {
 		final long listSize = getListSize();
 		executionRepresentation.setText(simulationType.toString() + " size: " + listSize);
 		datafeedPath.setText("Datafeed: " + simulationsDescription.getDatafeedPath());
+	}
+
+	private void connectShowPriceChartForStockButton() {
+		showPriceChartForStock.setOnAction(e -> {
+			final Optional<String> choosedName = selectStockDialog();
+			if (choosedName.isPresent()) {
+				showStockDialog(choosedName.get());
+			}
+		});
+	}
+
+	private Optional<String> selectStockDialog() {
+		final Set<String> stockNames = simulationsDescription.getStockStorage().getStockNames();
+		return Dialogs.create().title("Choose Stock Name").masthead("Choost stock name").message(null).showChoices(stockNames);
+	}
+
+	private void showStockDialog(String stockName) {
+		final Stock stock = simulationsDescription.getStockStorage().getStock(stockName);
+		new ShowStockView(stock);
 	}
 
 	private long getListSize() {
