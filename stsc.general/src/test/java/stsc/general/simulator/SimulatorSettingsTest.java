@@ -1,5 +1,6 @@
 package stsc.general.simulator;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,10 +11,10 @@ import junit.framework.TestCase;
 
 public class SimulatorSettingsTest extends TestCase {
 	public void testSimulatorSettings() throws BadAlgorithmException {
-		final TradeProcessorInit init = new TradeProcessorInit("./test_data/simulator_tests/ndays.ini");
+		final TradeProcessorInit init = new TradeProcessorInit(new File("./test_data/simulator_tests/ndays.ini"));
 		final SimulatorSettings ss = new SimulatorSettings(0, init);
 
-		final TradeProcessorInit initToEqual = new TradeProcessorInit("./test_data/simulator_tests/ndays.ini");
+		final TradeProcessorInit initToEqual = new TradeProcessorInit(new File("./test_data/simulator_tests/ndays.ini"));
 		final SimulatorSettings ssToEqual = new SimulatorSettings(0, initToEqual);
 
 		assertEquals(ss.stringHashCode().hashCode(), ssToEqual.stringHashCode().hashCode());
@@ -26,7 +27,7 @@ public class SimulatorSettingsTest extends TestCase {
 	}
 
 	public void testSimulatorSettingsToString() throws BadAlgorithmException {
-		final TradeProcessorInit init = new TradeProcessorInit("./test_data/simulator_tests/ndays.ini");
+		final TradeProcessorInit init = new TradeProcessorInit(new File("./test_data/simulator_tests/ndays.ini"));
 		final SimulatorSettings ss = new SimulatorSettings(0, init);
 		assertEquals(10, ss.toString().split("\n").length);
 	}

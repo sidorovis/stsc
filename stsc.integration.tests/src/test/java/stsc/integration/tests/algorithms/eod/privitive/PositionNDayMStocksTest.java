@@ -1,5 +1,6 @@
 package stsc.integration.tests.algorithms.eod.privitive;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -34,7 +35,7 @@ public class PositionNDayMStocksTest extends TestCase {
 	}
 
 	public void testPositionNDayMStocks() throws Exception {
-		Statistics s = Simulator.fromFile("./test_data/simulator_tests/ndays.ini").getStatistics();
+		Statistics s = Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics();
 		assertNotNull(s);
 		assertEquals(550.0, s.getPeriod());
 		assertEquals(42.866646, s.getAvGain(), Settings.doubleEpsilon);
@@ -55,7 +56,8 @@ public class PositionNDayMStocksTest extends TestCase {
 		positionNDayMStocks.setInteger("m", 2);
 		positionNDayMStocks.setString("side", side);
 		positionNDayMStocks.addSubExecutionName("in");
-		init.getExecutionsStorage().addEodExecution(new EodExecution("positionNDayMStocks", PositionNDayMStocks.class, positionNDayMStocks));
+		init.getExecutionsStorage()
+				.addEodExecution(new EodExecution("positionNDayMStocks", PositionNDayMStocks.class, positionNDayMStocks));
 
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
 		final Statistics s = simulator.getStatistics();

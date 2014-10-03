@@ -1,5 +1,7 @@
 package stsc.general.simulator;
 
+import java.io.File;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -27,7 +29,7 @@ public class Simulator {
 		logger.info("Simulated finished");
 	}
 
-	public static Simulator fromFile(final String filePath) throws BadAlgorithmException, BadSignalException, Exception {
+	public static Simulator fromFile(final File filePath) throws BadAlgorithmException, BadSignalException, Exception {
 		return new Simulator(new SimulatorSettings(0, new TradeProcessorInit(filePath)));
 	}
 

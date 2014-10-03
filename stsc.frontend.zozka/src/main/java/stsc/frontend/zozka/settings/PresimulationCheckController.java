@@ -86,15 +86,15 @@ public class PresimulationCheckController implements Initializable {
 	private void connectShowPriceChartWithOnStockButton() {
 
 		showStockChartWithOnStock.setOnAction(e -> {
-			final Optional<String> choosedName = selectStockDialog();
-			if (!choosedName.isPresent()) {
-				return;
-			}
-			final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings(choosedName.get());
-			if (!simulationSettings.isPresent()) {
-				return;
-			}
 			try {
+				final Optional<String> choosedName = selectStockDialog();
+				if (!choosedName.isPresent()) {
+					return;
+				}
+				final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings(choosedName.get());
+				if (!simulationSettings.isPresent()) {
+					return;
+				}
 				Simulator simulator = new Simulator(simulationSettings.get());
 				simulator.getStatistics();
 			} catch (Exception exception) {
@@ -104,9 +104,9 @@ public class PresimulationCheckController implements Initializable {
 
 	}
 
-	private Optional<SimulatorSettings> createSimulatorSettings(String string) {
-
-		return null;
+	private Optional<SimulatorSettings> createSimulatorSettings(String string) throws IOException {
+		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage);
+		return controller.getSettings();
 	}
 
 	private Optional<String> selectStockDialog() {

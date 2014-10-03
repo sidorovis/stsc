@@ -5,10 +5,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <TextArea fx:id="simulationSettingsArea" prefHeight="200.0" prefWidth="200.0" text="# enter simulator settings here" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="simulationSettingsArea" prefHeight="200.0" prefWidth="200.0" text="# enter simulator settings here&#10;" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <BorderPane prefHeight="37.0" prefWidth="600.0" BorderPane.alignment="CENTER">

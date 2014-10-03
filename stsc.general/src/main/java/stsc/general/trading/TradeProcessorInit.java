@@ -1,5 +1,6 @@
 package stsc.general.trading;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,9 +32,9 @@ public class TradeProcessorInit implements Cloneable {
 		this.executionsStorage = executionsStorage;
 	}
 
-	public TradeProcessorInit(final String configPath) throws BadAlgorithmException {
+	public TradeProcessorInit(final File configPath) throws BadAlgorithmException {
 		try {
-			Properties p = loadProperties(configPath);
+			Properties p = loadProperties(configPath.getAbsolutePath());
 			final Set<String> stockNamesSet = getStockSet(p);
 			final String filterDataFolderPath = p.getProperty("Data.filter.folder");
 			final StockStorage stockStorage = StockStorageFactory.createStockStorage(stockNamesSet, filterDataFolderPath);
