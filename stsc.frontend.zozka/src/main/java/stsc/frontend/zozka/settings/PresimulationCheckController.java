@@ -2,6 +2,8 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -79,7 +81,10 @@ public class PresimulationCheckController implements Initializable {
 
 	private Optional<String> selectStockDialog() {
 		final Set<String> stockNames = simulationsDescription.getStockStorage().getStockNames();
-		return Dialogs.create().title("Choose Stock Name").masthead("Choost stock name").message(null).showChoices(stockNames);
+		final ArrayList<String> stockNamesList = new ArrayList<>();
+		stockNamesList.addAll(stockNames);
+		Collections.sort(stockNamesList);
+		return Dialogs.create().title("Choose Stock Name").masthead("Choost stock name").message(null).showChoices(stockNamesList);
 	}
 
 	private void showStockDialog(String stockName) {

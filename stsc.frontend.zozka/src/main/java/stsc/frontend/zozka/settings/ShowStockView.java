@@ -23,8 +23,10 @@ public class ShowStockView {
 		this.stage = new Stage();
 		this.stage.initModality(Modality.WINDOW_MODAL);
 		this.setCenterWidget(stock);
-		this.stage.setMinHeight(480);
-		this.stage.setMinWidth(640);
+		this.stage.setMinHeight(380);
+		this.stage.setMinWidth(480);
+		this.stage.setHeight(380);
+		this.stage.setWidth(480);
 		this.stage.setTitle("Stock: " + stock.getName());
 		this.stage.centerOnScreen();
 		this.stage.showAndWait();
