@@ -55,9 +55,7 @@ public class PresimulationCheckController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
-		final long listSize = getListSize();
-		executionRepresentation.setText(simulationType.toString() + " size: " + listSize);
-		datafeedPath.setText("Datafeed: " + simulationsDescription.getDatafeedPath());
+		setLabels();
 
 		// final Stock aapl =
 		// simulationsDescription.getStockStorage().getStock("aapl");
@@ -86,6 +84,12 @@ public class PresimulationCheckController implements Initializable {
 		// chartPanel.setPopupMenu(null);
 		// sn.setContent(chartPanel);
 		// centralPane.setCenter(sn);
+	}
+
+	private void setLabels() {
+		final long listSize = getListSize();
+		executionRepresentation.setText(simulationType.toString() + " size: " + listSize);
+		datafeedPath.setText("Datafeed: " + simulationsDescription.getDatafeedPath());
 	}
 
 	private long getListSize() {
