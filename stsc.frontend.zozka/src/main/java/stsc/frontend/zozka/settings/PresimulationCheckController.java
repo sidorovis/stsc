@@ -99,8 +99,9 @@ public class PresimulationCheckController implements Initializable {
 					return;
 				}
 				final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { choosedName.get() }));
-				Simulator simulator = new Simulator(simulationSettings.get(), stockNames);
+				final Simulator simulator = new Simulator(simulationSettings.get(), stockNames);
 				simulator.getStatistics();
+				simulator.getSignalsStorage();
 			} catch (Exception exception) {
 				Dialogs.create().showException(exception);
 			}

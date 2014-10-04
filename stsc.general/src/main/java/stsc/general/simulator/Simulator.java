@@ -10,8 +10,10 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import com.google.common.base.Joiner;
 
 import stsc.common.BadSignalException;
+import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.SignalsStorage;
+import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
 import stsc.general.trading.TradeProcessor;
 import stsc.general.trading.TradeProcessorInit;
@@ -26,7 +28,7 @@ public class Simulator {
 
 	private final Statistics statistics;
 	private final SignalsStorage signalsStorage;
-	
+
 	public Simulator(final SimulatorSettings settings, Set<String> stockNames) throws BadAlgorithmException, BadSignalException {
 		logger.info("Simulator starting on " + Joiner.on(",").join(stockNames));
 		final TradeProcessor tradeProcessor = new TradeProcessor(settings.getInit());
@@ -41,6 +43,11 @@ public class Simulator {
 		statistics = tradeProcessor.simulate(settings.getInit().getPeriod());
 		signalsStorage = tradeProcessor.getExecutionStorage().getSignalsStorage();
 		logger.info("Simulated finished");
+	}
+
+	public static Simulator fromConfig(final StockStorage stockStorage, final FromToPeriod period, final String config)
+			throws BadAlgorithmException, BadSignalException, Exception {
+		return new Simulator(new SimulatorSettings(0, new TradeProcessorInit(stockStorage, period, config)));
 	}
 
 	public static Simulator fromFile(final File filePath) throws BadAlgorithmException, BadSignalException, Exception {

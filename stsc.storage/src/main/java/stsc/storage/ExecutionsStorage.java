@@ -3,6 +3,8 @@ package stsc.storage;
 import java.util.ArrayList;
 import java.util.List;
 
+import stsc.algorithms.AlgorithmSettingsImpl;
+import stsc.algorithms.Out;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
@@ -87,5 +89,22 @@ public class ExecutionsStorage implements Cloneable {
 			result += se.toString() + "\n";
 		}
 		return result;
+	}
+
+	public List<String> generateOutForStocks() {
+		final ArrayList<String> names = new ArrayList<>();
+		final ArrayList<StockExecution> initialList = new ArrayList<>(getStockExecutions());
+		for (StockExecution stockExecution : initialList) {
+			final AlgorithmSettingsImpl as = new AlgorithmSettingsImpl(stockExecution.getSettings().getPeriod());
+			final String executionName = stockExecution.getExecutionName();
+			as.addSubExecutionName(executionName);
+			names.add(executionName);
+			stockExecutions.add(new StockExecution(outNameFor(executionName), Out.class, as));
+		}
+		return names;
+	}
+
+	public static String outNameFor(String name) {
+		return name + "_out";
 	}
 }

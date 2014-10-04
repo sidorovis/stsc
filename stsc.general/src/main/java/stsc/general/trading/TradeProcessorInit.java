@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -95,16 +96,20 @@ public class TradeProcessorInit implements Cloneable {
 	}
 
 	public String stringHashCode() {
-		return executionsStorage.stringHashCode();
+		return getExecutionsStorage().stringHashCode();
 	}
 
 	@Override
 	public String toString() {
-		return executionsStorage.toString();
+		return getExecutionsStorage().toString();
 	}
 
 	@Override
 	public TradeProcessorInit clone() {
-		return new TradeProcessorInit(broker, period, executionsStorage.clone());
+		return new TradeProcessorInit(broker, period, getExecutionsStorage().clone());
+	}
+
+	public List<String> generateOutForStocks() {
+		return getExecutionsStorage().generateOutForStocks();
 	}
 }

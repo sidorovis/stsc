@@ -147,7 +147,7 @@ final class ExecutionsLoader {
 			if (loadLine == null)
 				throw new BadAlgorithmException("bad stock execution registration, no " + executionName + ".loadLine property");
 			checkNewStockExecution(executionName);
-			final String generatedName = processStockExecution(loadLine);
+			final String generatedName = processStockExecution(executionName, loadLine);
 			namedStockExecutions.put(executionName, generatedName);
 			registeredStockExecutions.add(generatedName);
 		}
@@ -166,19 +166,45 @@ final class ExecutionsLoader {
 			throw new BadAlgorithmException("bad algorithm load line: " + loadLine);
 	}
 
+	private String processStockExecution(String executionName, String loadLine) throws BadAlgorithmException {
+		final Matcher loadLineMatch = Regexps.loadLine.matcher(loadLine);
+		if (loadLineMatch.matches()) {
+			return processStockSubExecution(executionName, loadLineMatch);
+		} else
+			throw new BadAlgorithmException("bad algorithm load line: " + loadLine);
+	}
+
 	private String processStockSubExecution(Matcher match) throws BadAlgorithmException {
 		final List<String> params = parseParams(match.group(2).trim());
 		return processStockExecution(match.group(1).trim(), params);
+	}
+
+	private String processStockSubExecution(String executionName, Matcher match) throws BadAlgorithmException {
+		final List<String> params = parseParams(match.group(2).trim());
+		return processStockExecution(executionName, match.group(1).trim(), params);
+	}
+
+	private String processStockExecution(String executionName, String algorithmName, final List<String> params)
+			throws BadAlgorithmException {
+		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
+		if (stockAlgorithm == null)
+			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
+		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
+		if (registeredStockExecutions.contains(executionName))
+			return executionName;
+		final StockExecution execution = new StockExecution(executionName, stockAlgorithm, algorithmSettings);
+		executionsStorage.addStockExecution(execution);
+		return executionName;
 	}
 
 	private String processStockExecution(String algorithmName, final List<String> params) throws BadAlgorithmException {
 		final Class<? extends StockAlgorithm> stockAlgorithm = algorithmsStorage.getStock(algorithmName);
 		if (stockAlgorithm == null)
 			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
-
 		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
-
-		final String executionName = generateExecutionName(algorithmName, algorithmSettings);
+		final String executionName = algorithmName + "(" + algorithmSettings.toString() + ")";
+		// final String executionName = generateExecutionName
+		// (algorithmName, algorithmSettings);
 		if (registeredStockExecutions.contains(executionName))
 			return executionName;
 		final StockExecution execution = new StockExecution(executionName, stockAlgorithm, algorithmSettings);

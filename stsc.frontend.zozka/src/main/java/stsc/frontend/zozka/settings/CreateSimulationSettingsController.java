@@ -118,8 +118,9 @@ public class CreateSimulationSettingsController implements Initializable {
 
 	public Optional<SimulatorSettings> getSettings() throws BadAlgorithmException {
 		if (valid) {
-			final SimulatorSettings settings = new SimulatorSettings(0, new TradeProcessorInit(stockStorage, period,
-					simulationSettingsArea.getText()));
+			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, simulationSettingsArea.getText());
+			init.generateOutForStocks();
+			final SimulatorSettings settings = new SimulatorSettings(0, init);
 			return Optional.ofNullable(settings);
 		} else {
 			return Optional.empty();
