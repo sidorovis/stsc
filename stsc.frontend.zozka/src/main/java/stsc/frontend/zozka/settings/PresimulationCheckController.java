@@ -3,7 +3,9 @@ package stsc.frontend.zozka.settings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -92,11 +94,12 @@ public class PresimulationCheckController implements Initializable {
 				if (!choosedName.isPresent()) {
 					return;
 				}
-				final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings(choosedName.get());
+				final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings();
 				if (!simulationSettings.isPresent()) {
 					return;
 				}
-				Simulator simulator = new Simulator(simulationSettings.get());
+				final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { choosedName.get() }));
+				Simulator simulator = new Simulator(simulationSettings.get(), stockNames);
 				simulator.getStatistics();
 			} catch (Exception exception) {
 				Dialogs.create().showException(exception);
@@ -105,10 +108,10 @@ public class PresimulationCheckController implements Initializable {
 
 	}
 
-	private Optional<SimulatorSettings> createSimulatorSettings(String stockName) throws IOException, BadAlgorithmException {
+	private Optional<SimulatorSettings> createSimulatorSettings() throws IOException, BadAlgorithmException {
 		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage,
 				simulationsDescription.getPeriod(), simulationsDescription.getStockStorage());
-		return controller.getSettings(stockName);
+		return controller.getSettings();
 	}
 
 	private Optional<String> selectStockDialog() {

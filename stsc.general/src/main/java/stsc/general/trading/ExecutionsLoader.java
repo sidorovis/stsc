@@ -1,9 +1,11 @@
 package stsc.general.trading;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,13 +101,14 @@ final class ExecutionsLoader {
 		logger.info("stop executions loader");
 	}
 
-	private void loadAlgorithms(String config) {
+	private void loadAlgorithms(String config) throws BadAlgorithmException {
 		final Properties p = new Properties();
-		for (String line : config.split(System.lineSeparator())) {
-			String[] value = line.split("=");
-			if (value.length == 2) {
-				p.setProperty(value[0], value[1]);
-			}
+		final InputStream stream = new ByteArrayInputStream(config.getBytes());
+		try {
+			p.load(stream);
+			processProperties(p);
+		} catch (IOException e) {
+			throw new BadAlgorithmException(e.getMessage());
 		}
 	}
 

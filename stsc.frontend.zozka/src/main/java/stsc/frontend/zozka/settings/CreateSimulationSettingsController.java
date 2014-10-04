@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 
 public class CreateSimulationSettingsController implements Initializable {
 
+	private boolean valid = false;
 	private final Stage stage;
 	private final FromToPeriod period;
 	private final StockStorage stockStorage;
@@ -110,13 +111,19 @@ public class CreateSimulationSettingsController implements Initializable {
 			}
 		});
 		createSettingsButton.setOnAction(e -> {
+			valid = true;
 			stage.close();
 		});
 	}
 
-	public Optional<SimulatorSettings> getSettings(String stockName) throws BadAlgorithmException {
-		SimulatorSettings settings = new SimulatorSettings(0,
-				new TradeProcessorInit(stockStorage, period, simulationSettingsArea.getText()));
-		return Optional.ofNullable(settings);
+	public Optional<SimulatorSettings> getSettings() throws BadAlgorithmException {
+		if (valid) {
+			final SimulatorSettings settings = new SimulatorSettings(0, new TradeProcessorInit(stockStorage, period,
+					simulationSettingsArea.getText()));
+			return Optional.ofNullable(settings);
+		} else {
+			return Optional.empty();
+
+		}
 	}
 }

@@ -3,6 +3,7 @@ package stsc.general.trading;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,11 +38,20 @@ public class TradeProcessor {
 		this.executionsStarter = settings.getExecutionsStorage().initialize(broker);
 	}
 
+	public Statistics simulate(final FromToPeriod period, Set<String> stockNames) throws BadSignalException {
+		collectStocksFromStorage(stockNames);
+		return startSimulationProcess(period).calculate();
+	}
+
 	public Statistics simulate(final FromToPeriod period) throws BadSignalException {
+		collectStocksFromStorage();
+		return startSimulationProcess(period).calculate();
+	}
+
+	private StatisticsProcessor startSimulationProcess(final FromToPeriod period) throws BadSignalException {
 		final StatisticsProcessor statisticsProcessor = new StatisticsProcessor(broker.getTradingLog());
 		LocalDate dayIterator = new LocalDate(period.getFrom());
 		final LocalDate endDate = new LocalDate(period.getTo());
-		collectStocksFromStorage();
 		while (dayIterator.isBefore(endDate)) {
 			final HashMap<String, Day> datafeed = new HashMap<String, Day>();
 			final Date today = dayIterator.toDate();
@@ -68,7 +78,16 @@ public class TradeProcessor {
 			}
 			dayIterator = dayIterator.plusDays(1);
 		}
-		return statisticsProcessor.calculate();
+		return statisticsProcessor;
+	}
+
+	private void collectStocksFromStorage(Set<String> stockNames) {
+		final StockStorage stockStorage = broker.getStockStorage();
+		for (String i : stockStorage.getStockNames()) {
+			if (stockNames.contains(i)) {
+				stocks.add(stockStorage.getStock(i));
+			}
+		}
 	}
 
 	private void collectStocksFromStorage() {
