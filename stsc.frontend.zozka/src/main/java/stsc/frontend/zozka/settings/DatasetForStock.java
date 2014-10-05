@@ -29,7 +29,9 @@ public class DatasetForStock extends AbstractXYDataset implements OHLCDataset {
 
 	@Override
 	public int getItemCount(int series) {
-		return toIndex - fromIndex;
+		if (toIndex - fromIndex - 1 <= 0)
+			return 0;
+		return toIndex - fromIndex - 1;
 	}
 
 	@Override

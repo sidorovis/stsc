@@ -7,7 +7,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <TextArea fx:id="simulationSettingsArea" prefHeight="200.0" prefWidth="200.0" text="StockExecutions = Alg1&#10;Alg1.loadLine = Sma(n = 5, In(e=close))&#10;" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="simulationSettingsArea" prefHeight="200.0" prefWidth="200.0" text="StockExecutions = Alg1, Alg2&#10;Alg1.loadLine = Sma(n = 5i, In(e=close))&#10;Alg2.loadLine = Sma(n = 50i, In(e=close))&#10;&#10;" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <BorderPane prefHeight="37.0" prefWidth="600.0" BorderPane.alignment="CENTER">
