@@ -1,9 +1,12 @@
 package stsc.frontend.zozka.settings;
 
+import java.util.Collections;
+
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.OHLCDataset;
 
 import stsc.common.Day;
+import stsc.common.FromToPeriod;
 import stsc.common.stocks.Stock;
 
 public class DatasetForStock extends AbstractXYDataset implements OHLCDataset {
@@ -11,18 +14,22 @@ public class DatasetForStock extends AbstractXYDataset implements OHLCDataset {
 	private static final long serialVersionUID = -190317966728843101L;
 
 	private final Stock stock;
+	private final int fromIndex;
+	private final int toIndex;
 
-	public DatasetForStock(Stock stock) {
+	public DatasetForStock(Stock stock, FromToPeriod period) {
 		this.stock = stock;
+		this.fromIndex = Math.abs(Collections.binarySearch(stock.getDays(), new Day(period.getFrom())));
+		this.toIndex = Math.abs(Collections.binarySearch(stock.getDays(), new Day(period.getTo())));
 	}
 
 	private Day get(int index) {
-		return stock.getDays().get(index);
+		return stock.getDays().get(fromIndex + index);
 	}
 
 	@Override
 	public int getItemCount(int series) {
-		return stock.getDays().size();
+		return toIndex - fromIndex;
 	}
 
 	@Override

@@ -6,16 +6,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.BadSignalException;
+import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.Stock;
+import stsc.common.storage.SignalsStorage;
+import stsc.common.storage.StockStorage;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.trading.TradeProcessorInit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -87,21 +93,14 @@ public class PresimulationCheckController implements Initializable {
 	}
 
 	private void connectShowPriceChartWithOnStockButton() {
-
 		showStockChartWithOnStock.setOnAction(e -> {
 			try {
 				final Optional<String> choosedName = selectStockDialog();
 				if (!choosedName.isPresent()) {
 					return;
 				}
-				final Optional<SimulatorSettings> simulationSettings = createSimulatorSettings();
-				if (!simulationSettings.isPresent()) {
-					return;
-				}
-				final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { choosedName.get() }));
-				final Simulator simulator = new Simulator(simulationSettings.get(), stockNames);
-				simulator.getStatistics();
-				simulator.getSignalsStorage();
+				final String stockName = choosedName.get();
+				createSimulatorSettings(stockName);
 			} catch (Exception exception) {
 				Dialogs.create().showException(exception);
 			}
@@ -109,10 +108,22 @@ public class PresimulationCheckController implements Initializable {
 
 	}
 
-	private Optional<SimulatorSettings> createSimulatorSettings() throws IOException, BadAlgorithmException {
-		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage,
-				simulationsDescription.getPeriod(), simulationsDescription.getStockStorage());
-		return controller.getSettings();
+	private void createSimulatorSettings(String stockName) throws IOException, BadAlgorithmException, BadSignalException {
+		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage);
+		if (!controller.isValid()) {
+			return;
+		}
+		final StockStorage stockStorage = simulationsDescription.getStockStorage();
+		final FromToPeriod period = simulationsDescription.getPeriod();
+
+		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, controller.getSettingsRepresentation());
+		final List<String> executionsName = init.generateOutForStocks();
+		final SimulatorSettings settings = new SimulatorSettings(0, init);
+
+		final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { stockName }));
+		final Simulator simulator = new Simulator(settings, stockNames);
+		final SignalsStorage signalsStorage = simulator.getSignalsStorage();
+		showStockDialog(stockName, executionsName, signalsStorage);
 	}
 
 	private Optional<String> selectStockDialog() {
@@ -125,7 +136,12 @@ public class PresimulationCheckController implements Initializable {
 
 	private void showStockDialog(String stockName) {
 		final Stock stock = simulationsDescription.getStockStorage().getStock(stockName);
-		new ShowStockView(stock);
+		new ShowStockView(stock, simulationsDescription.getPeriod());
+	}
+
+	private void showStockDialog(String stockName, List<String> executionsName, SignalsStorage signalsStorage) {
+		final Stock stock = simulationsDescription.getStockStorage().getStock(stockName);
+		new ShowStockView(stock, simulationsDescription.getPeriod(), executionsName, signalsStorage);
 	}
 
 	private long getListSize() {

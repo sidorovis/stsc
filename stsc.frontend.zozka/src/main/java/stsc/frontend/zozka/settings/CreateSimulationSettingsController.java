@@ -7,16 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
-import stsc.common.FromToPeriod;
-import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.storage.StockStorage;
-import stsc.general.simulator.SimulatorSettings;
-import stsc.general.trading.TradeProcessorInit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,9 +25,8 @@ import javafx.stage.Stage;
 public class CreateSimulationSettingsController implements Initializable {
 
 	private boolean valid = false;
+
 	private final Stage stage;
-	private final FromToPeriod period;
-	private final StockStorage stockStorage;
 
 	@FXML
 	private TextArea simulationSettingsArea;
@@ -45,9 +38,7 @@ public class CreateSimulationSettingsController implements Initializable {
 	@FXML
 	private Button createSettingsButton;
 
-	public CreateSimulationSettingsController(final Stage stage, FromToPeriod period, StockStorage stockStorage) throws IOException {
-		this.period = period;
-		this.stockStorage = stockStorage;
+	public CreateSimulationSettingsController(final Stage stage) throws IOException {
 		this.stage = new Stage();
 		final URL location = Zozka.class.getResource("02_create_simulation_settings.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
@@ -116,15 +107,12 @@ public class CreateSimulationSettingsController implements Initializable {
 		});
 	}
 
-	public Optional<SimulatorSettings> getSettings() throws BadAlgorithmException {
-		if (valid) {
-			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, simulationSettingsArea.getText());
-			init.generateOutForStocks();
-			final SimulatorSettings settings = new SimulatorSettings(0, init);
-			return Optional.ofNullable(settings);
-		} else {
-			return Optional.empty();
-
-		}
+	public boolean isValid() {
+		return valid;
 	}
+
+	public String getSettingsRepresentation() {
+		return simulationSettingsArea.getText();
+	}
+
 }
