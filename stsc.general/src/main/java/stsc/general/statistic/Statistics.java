@@ -361,6 +361,10 @@ public class Statistics {
 		return ddValueMax;
 	}
 
+	public EquityCurve getEquityCurveInMoney() {
+		return equityCurveInMoney;
+	}
+
 	//
 
 	private void setAvGain(Double value) {

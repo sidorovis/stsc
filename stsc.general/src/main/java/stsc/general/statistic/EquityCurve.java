@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-class EquityCurve implements Cloneable {
+public class EquityCurve implements Cloneable {
 
 	static public class Element implements Cloneable {
 

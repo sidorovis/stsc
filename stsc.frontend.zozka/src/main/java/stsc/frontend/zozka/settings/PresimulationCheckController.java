@@ -45,6 +45,8 @@ public class PresimulationCheckController implements Initializable {
 	private Button showPriceChartForStock;
 	@FXML
 	private Button showStockChartWithOnStock;
+	@FXML
+	private Button showStatisticsEquityChart;
 
 	@FXML
 	private Label datafeedPath;
@@ -75,6 +77,7 @@ public class PresimulationCheckController implements Initializable {
 		setLabels();
 		connectShowPriceChartForStockButton();
 		connectShowPriceChartWithOnStockButton();
+		connectShowStatisticsEquityChartButton();
 	}
 
 	private void setLabels() {
@@ -100,15 +103,30 @@ public class PresimulationCheckController implements Initializable {
 					return;
 				}
 				final String stockName = choosedName.get();
-				createSimulatorSettings(stockName);
+				showEquityWithOnStockAlgorithms(stockName);
 			} catch (Exception exception) {
 				Dialogs.create().showException(exception);
 			}
 		});
+	}
+
+	private void connectShowStatisticsEquityChartButton() {
+		showStatisticsEquityChart.setOnAction(e -> {
+			try {
+				final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage);
+				if (!controller.isValid()) {
+					return;
+				}
+				showEquityCurveForStatistics(controller.getSettingsRepresentation());
+			} catch (Exception exception) {
+				Dialogs.create().showException(exception);
+			}
+
+		});
 
 	}
 
-	private void createSimulatorSettings(String stockName) throws IOException, BadAlgorithmException, BadSignalException {
+	private void showEquityWithOnStockAlgorithms(String stockName) throws IOException, BadAlgorithmException, BadSignalException {
 		final CreateSimulationSettingsController controller = new CreateSimulationSettingsController(stage);
 		if (!controller.isValid()) {
 			return;
@@ -124,6 +142,17 @@ public class PresimulationCheckController implements Initializable {
 		final Simulator simulator = new Simulator(settings, stockNames);
 		final SignalsStorage signalsStorage = simulator.getSignalsStorage();
 		showStockDialog(stockName, executionsName, signalsStorage);
+	}
+
+	private void showEquityCurveForStatistics(String config) throws BadAlgorithmException, BadSignalException {
+		final StockStorage stockStorage = simulationsDescription.getStockStorage();
+		final FromToPeriod period = simulationsDescription.getPeriod();
+
+		final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, config);
+		final SimulatorSettings settings = new SimulatorSettings(0, init);
+
+		final Simulator simulator = new Simulator(settings);
+		new ShowEquityView(simulator.getStatistics(), period);
 	}
 
 	private Optional<String> selectStockDialog() {
