@@ -34,7 +34,7 @@ public class SimulatorTest extends TestCase {
 	public void testOneSideSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/one_side.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(544, new File("./test/statistics.csv").length());
+		assertEquals(480 + 33 * System.lineSeparator().length(), new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
@@ -97,23 +97,28 @@ public class SimulatorTest extends TestCase {
 	// deleteFileIfExists("./test/statistics.csv");
 	// }
 
-//	TODO: works just uncomment me
-//	public void testFromConfigOutAlgos() throws Exception {
-//		deleteFileIfExists("./test/statistics.csv");
-//		final StockStorage stoskStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
-//		final FromToPeriod period = TestStatisticsHelper.getPeriod();
-//		final String config = "StockExecutions = Alg1\n" + "Alg1.loadLine = Sma(n = 5, In(e=close))";
-//
-//		final TradeProcessorInit init = new TradeProcessorInit(stoskStorage, period, config);
-//		final List<String> stockExecutions = init.generateOutForStocks();
-//		assertEquals(2, stockExecutions.size());
-//		assertEquals("Alg1", stockExecutions.get(1));
-//		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
-//		assertEquals(0.0, simulator.getStatistics().getAvGain(), Settings.doubleEpsilon);
-//		final SignalsStorage ss = simulator.getSignalsStorage();
-//		final String en = ExecutionsStorage.outNameFor("Alg1");
-//		final int size = ss.getIndexSize("aapl", en);
-//		assertEquals(2515, size);
-//	}
+	// TODO: works just uncomment me
+	// public void testFromConfigOutAlgos() throws Exception {
+	// deleteFileIfExists("./test/statistics.csv");
+	// final StockStorage stoskStorage =
+	// StockStorageFactory.createStockStorage("aapl", "./test_data/");
+	// final FromToPeriod period = TestStatisticsHelper.getPeriod();
+	// final String config = "StockExecutions = Alg1\n" +
+	// "Alg1.loadLine = Sma(n = 5, In(e=close))";
+	//
+	// final TradeProcessorInit init = new TradeProcessorInit(stoskStorage,
+	// period, config);
+	// final List<String> stockExecutions = init.generateOutForStocks();
+	// assertEquals(2, stockExecutions.size());
+	// assertEquals("Alg1", stockExecutions.get(1));
+	// final Simulator simulator = new Simulator(new SimulatorSettings(0,
+	// init));
+	// assertEquals(0.0, simulator.getStatistics().getAvGain(),
+	// Settings.doubleEpsilon);
+	// final SignalsStorage ss = simulator.getSignalsStorage();
+	// final String en = ExecutionsStorage.outNameFor("Alg1");
+	// final int size = ss.getIndexSize("aapl", en);
+	// assertEquals(2515, size);
+	// }
 
 }
