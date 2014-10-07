@@ -20,8 +20,8 @@ public class CostWeightedSumComparatorTest extends TestCase {
 		final Statistics newStat = TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 1));
 		assertEquals(0, comparator.compare(newStat, newStat));
 
-		assertEquals(-1, comparator.compare(stat, newStat));
-		assertEquals(1, comparator.compare(newStat, stat));
+		assertEquals(1, comparator.compare(stat, newStat));
+		assertEquals(-1, comparator.compare(newStat, stat));
 	}
 
 	public void testCostWeightedSumComparatorOnSeveralStatistics() {
