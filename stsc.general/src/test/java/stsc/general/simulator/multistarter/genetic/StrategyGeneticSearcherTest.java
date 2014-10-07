@@ -29,6 +29,6 @@ public class StrategyGeneticSearcherTest extends TestCase {
 				0.86);
 		sgs.getSelector();
 		assertEquals(100, selector.getStrategies().size());
-		assertEquals(32.979967, selector.getStrategies().get(0).getStatistics().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(34.911532, selector.getStrategies().get(0).getStatistics().getAvGain(), Settings.doubleEpsilon);
 	}
 }
