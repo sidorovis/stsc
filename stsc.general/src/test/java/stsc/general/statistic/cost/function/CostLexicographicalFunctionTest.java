@@ -15,7 +15,7 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		c10.addNextValue("getPeriod");
 		c10.addNextValue("getAvGain");
 		final Double c10result = c10.calculate(statistics);
-		assertEquals(20.246987, c10result, Settings.doubleEpsilon);
+		assertEquals(19.757116, c10result, Settings.doubleEpsilon);
 	}
 
 	public void testLexicographicalCostFunction100() throws ParseException {
@@ -26,7 +26,7 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		c100.addNextValue("getAvGain");
 		c100.addNextValue("getAvGain");
 		final Double c100result = c100.calculate(statistics);
-		assertEquals(20024.9456978, c100result, Settings.doubleEpsilon);
+		assertEquals(19975.468730, c100result, Settings.doubleEpsilon);
 	}
 
 	public void testLexicographicalCostFunctionAnotherOrder() throws ParseException {
@@ -36,6 +36,6 @@ public class CostLexicographicalFunctionTest extends TestCase {
 		c10.addNextValue("getAvGain");
 		c10.addNextValue("getPeriod");
 		final Double c10result = c10.calculate(statistics);
-		assertEquals(4.469871, c10result, Settings.doubleEpsilon);
+		assertEquals(-0.4288385, c10result, Settings.doubleEpsilon);
 	}
 }
