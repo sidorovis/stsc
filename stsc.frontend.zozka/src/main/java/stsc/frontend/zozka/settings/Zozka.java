@@ -22,9 +22,11 @@ public class Zozka extends Application {
 		final CreateSettingsController settingsController = CreateSettingsController.create(stage);
 		if (!settingsController.isValid()) {
 			Platform.exit();
+			return;
 		}
 		final PresimulationCheckController presimulationController = new PresimulationCheckController(stage, settingsController.getModel(),
 				settingsController.getSimulationType());
+		
 		// createMainWindow(settingsController, stage);
 	}
 

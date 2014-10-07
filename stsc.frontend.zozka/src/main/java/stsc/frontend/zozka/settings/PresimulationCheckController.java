@@ -174,6 +174,9 @@ public class PresimulationCheckController implements Initializable {
 	}
 
 	private long getListSize() {
+		if (simulationType == null) {
+			return 0;
+		}
 		if (simulationType.equals(SimulationType.GENETIC)) {
 			return simulationsDescription.getGenetic().size();
 		} else
