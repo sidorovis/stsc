@@ -26,7 +26,7 @@ public class CostBayesianProbabilityFunction implements CostFunction {
 	public Double calculate(Statistics statistics) {
 		Double min = Double.MAX_VALUE;
 		for (Map<String, Double> layer : parameters) {
-			Double max = Double.MIN_VALUE;
+			Double max = -Double.MAX_VALUE;
 			for (Entry<String, Double> e : layer.entrySet()) {
 				final Double sValue = Statistics.invokeMethod(statistics, e.getKey());
 				final Double pValue = sValue * e.getValue();

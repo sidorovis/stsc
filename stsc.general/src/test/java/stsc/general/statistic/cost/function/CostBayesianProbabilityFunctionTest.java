@@ -13,9 +13,9 @@ public class CostBayesianProbabilityFunctionTest extends TestCase {
 		final Statistics statistics = TestStatisticsHelper.getStatistics();
 
 		final CostBayesianProbabilityFunction bayesian = new CostBayesianProbabilityFunction();
-		bayesian.addLayer().put("getPeriod", 10.0);
-		bayesian.addLayer().put("getAvGain", 12.0);
+		bayesian.addLayer().put("getPeriod", 6.0);
+		bayesian.addLayer().put("getAvGain", 11.0);
 		final Double bayesianResult = bayesian.calculate(statistics);
-		assertEquals(2.963845, bayesianResult, Settings.doubleEpsilon);
+		assertEquals(-2.671722, bayesianResult, Settings.doubleEpsilon);
 	}
 }
