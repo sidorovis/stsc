@@ -23,8 +23,8 @@ public class StatisticsCompareSelectorTest extends TestCase {
 
 		assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		assertEquals(2.900946, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(0.195823, si.next().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(0.254668, si.next().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-0.902797, si.next().getAvGain(), Settings.doubleEpsilon);
 		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 
