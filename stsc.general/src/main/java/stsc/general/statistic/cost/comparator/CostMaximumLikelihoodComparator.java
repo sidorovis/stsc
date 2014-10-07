@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 
 public class CostMaximumLikelihoodComparator implements CostStatisticsComparator {
@@ -32,6 +33,6 @@ public class CostMaximumLikelihoodComparator implements CostStatisticsComparator
 			if (Double.compare(v2, 0.0) != 0)
 				result2 += Math.log(v2);
 		}
-		return (int) Math.signum(result1 - result2);
+		return Double.compare(result1, result2);
 	}
 }
