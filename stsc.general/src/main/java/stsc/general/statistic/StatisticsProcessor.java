@@ -134,11 +134,6 @@ public final class StatisticsProcessor {
 				final double price = lastPrice.get(stockName);
 				final int shares = record.getAmount();
 				final double sharesPrice = shares * price;
-				
-				if (debug) {
-					System.out.println("LAST PRICE: " + lastPrice);
-					System.out.println("!" + sharesPrice);
-				}
 
 				if (record.isPurchase()) {
 					if (record.isLong()) {
