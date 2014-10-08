@@ -1,3 +1,5 @@
+<img src="https://travis-ci.org/sidorovis/stsc.svg?branch=master" />
+
 Simulated Trading Strategies Creator
 ====================================
 
