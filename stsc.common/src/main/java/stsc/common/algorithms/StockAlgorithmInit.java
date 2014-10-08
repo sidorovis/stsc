@@ -52,7 +52,7 @@ public class StockAlgorithmInit {
 
 	@Override
 	public String toString() {
-		return stockName + ": " + executionName + "\n" + settings;
+		return stockName + ": " + executionName;
 	}
 
 	public AlgorithmSettings getSettings() {

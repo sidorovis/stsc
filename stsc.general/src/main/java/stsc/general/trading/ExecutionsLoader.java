@@ -270,7 +270,7 @@ final class ExecutionsLoader {
 				final String subExecutionName = subExecutionMatch.group(1).trim();
 				final String executionCode = namedStockExecutions.get(subExecutionName);
 				if (executionCode != null)
-					algorithmSettings.addSubExecutionName(executionCode);
+					algorithmSettings.addSubExecutionName(subExecutionName);
 				else
 					throw new BadAlgorithmException("unknown sub execution name: " + parameter);
 			} else
