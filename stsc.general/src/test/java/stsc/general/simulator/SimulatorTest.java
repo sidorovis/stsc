@@ -30,7 +30,7 @@ public class SimulatorTest extends TestCase {
 	public void testOneSideSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/one_side.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(480 + 33 * System.lineSeparator().length(), new File("./test/statistics.csv").length());
+		assertEquals(480 + 33 * 2, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
@@ -80,21 +80,21 @@ public class SimulatorTest extends TestCase {
 	public void testSimpleSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(574 * System.lineSeparator().length() + 10719, new File("./test/statistics.csv").length());
+		assertEquals(574 * 2 + 10719, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
 	public void testPositiveNDaysSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(575 * System.lineSeparator().length() + 10618, new File("./test/statistics.csv").length());
+		assertEquals(575 * 2 + 10618, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
 	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/open_while_signal.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(32 * System.lineSeparator().length() + 468, new File("./test/statistics.csv").length());
+		assertEquals(32 * 2 + 468, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
