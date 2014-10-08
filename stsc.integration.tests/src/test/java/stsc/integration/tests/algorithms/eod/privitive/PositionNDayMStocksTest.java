@@ -38,7 +38,7 @@ public class PositionNDayMStocksTest extends TestCase {
 		Statistics s = Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics();
 		assertNotNull(s);
 		assertEquals(550.0, s.getPeriod());
-		assertEquals(42.866646, s.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(44.243754, s.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	private void testHelper(String side) throws BadAlgorithmException, BadSignalException, ParseException, IOException {
@@ -61,7 +61,7 @@ public class PositionNDayMStocksTest extends TestCase {
 
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
 		final Statistics s = simulator.getStatistics();
-		assertEquals(0.247727, s.getFreq(), Settings.doubleEpsilon);
+		assertEquals(0.247656, s.getFreq(), Settings.doubleEpsilon);
 	}
 
 	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, BadSignalException, IOException {
