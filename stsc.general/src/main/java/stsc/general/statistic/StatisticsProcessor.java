@@ -116,16 +116,16 @@ public final class StatisticsProcessor {
 
 		StatisticsInit statisticsInit = Statistics.createInit();
 
-		public EquityProcessor(TradingLog tradingLog) {
+		EquityProcessor(TradingLog tradingLog) {
 			this.tradingRecords = tradingLog.getRecords();
 		}
 
-		public void setStockDay(String stockName, Day stockDay) {
+		void setStockDay(String stockName, Day stockDay) {
 			lastDate = stockDay.date;
 			lastPrice.put(stockName, stockDay.getPrices().getOpen());
 		}
 
-		public void processEod() {
+		double processEod(boolean debug) {
 			final int tradingRecordSize = tradingRecords.size();
 			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
 				final TradingRecord record = tradingRecords.get(i);
@@ -134,6 +134,11 @@ public final class StatisticsProcessor {
 				final double price = lastPrice.get(stockName);
 				final int shares = record.getAmount();
 				final double sharesPrice = shares * price;
+				
+				if (debug) {
+					System.out.println("LAST PRICE: " + lastPrice);
+					System.out.println("!" + sharesPrice);
+				}
 
 				if (record.isPurchase()) {
 					if (record.isLong()) {
@@ -156,6 +161,7 @@ public final class StatisticsProcessor {
 			calculateMaximumSpentMoney();
 			final double dayResult = calculateDayCash();
 			statisticsInit.equityCurve.add(lastDate, dayResult);
+			return dayResult;
 		}
 
 		private void processLong(String stockName, int shares, double price, double sharesPrice) {
@@ -291,7 +297,8 @@ public final class StatisticsProcessor {
 				} else {
 					if (currentElement.value > lastValue) {
 						if (currentElement.value >= ddStart.value) {
-							final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(currentElement.date)).getDays();
+							final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(currentElement.date))
+									.getDays();
 
 							ddCount += 1;
 							ddDurationSum += ddLength;
@@ -312,7 +319,8 @@ public final class StatisticsProcessor {
 				lastValue = currentElement.value;
 			}
 			if (inDrawdown) {
-				final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(init.equityCurve.getLastElement().date)).getDays();
+				final int ddLength = Days.daysBetween(new LocalDate(ddStart.date), new LocalDate(init.equityCurve.getLastElement().date))
+						.getDays();
 				ddCount += 1;
 				ddValueSum += ddSize;
 				ddDurationSum += ddLength;
@@ -460,8 +468,12 @@ public final class StatisticsProcessor {
 		equityProcessor.setStockDay(stockName, stockDay);
 	}
 
-	public void processEod() {
-		equityProcessor.processEod();
+	public double processEod(boolean debug) {
+		return equityProcessor.processEod(debug);
+	}
+
+	public double processEod() {
+		return processEod(false);
 	}
 
 	public Statistics calculate() {

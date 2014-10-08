@@ -26,9 +26,9 @@ public class StockStorageMock implements StockStorage {
 		return Sets.newHashSet(new String[] { "aapl", "adm", "spy" });
 	}
 
-	static StockStorage stockStorage = null;
+	private static StockStorage stockStorage = null;
 
-	public static StockStorage getStockStorage() {
+	public synchronized static StockStorage getStockStorage() {
 		if (stockStorage == null) {
 			stockStorage = new ThreadSafeStockStorage();
 			try {
@@ -36,6 +36,7 @@ public class StockStorageMock implements StockStorage {
 				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/adm.uf"));
 				stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf"));
 			} catch (IOException e) {
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 		return stockStorage;
