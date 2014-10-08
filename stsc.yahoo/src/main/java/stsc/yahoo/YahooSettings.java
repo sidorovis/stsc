@@ -48,7 +48,7 @@ public class YahooSettings {
 		UnitedFormatStock s = null;
 		try {
 			s = UnitedFormatStock.readFromUniteFormatFile(generateUniteFormatPath(stockName));
-		} catch (IOException e) {
+		} catch (Exception e) {
 		}
 		return s;
 	}

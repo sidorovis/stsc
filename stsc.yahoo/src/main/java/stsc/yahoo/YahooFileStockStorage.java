@@ -73,10 +73,11 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 		}
 	}
 
-	public void waitForLoad() throws InterruptedException {
+	public YahooFileStockStorage waitForLoad() throws InterruptedException {
 		for (Thread thread : threads) {
 			thread.join();
 		}
+		return this;
 	}
 
 	@Override

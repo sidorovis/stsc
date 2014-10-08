@@ -1,13 +1,26 @@
 package stsc.yahoo;
 
+import java.io.IOException;
+
 import stsc.common.storage.StockStorage;
 import stsc.yahoo.YahooFileStockStorage;
 import junit.framework.TestCase;
 
 public class YahooFileStockStorageTest extends TestCase {
 
+	private static StockStorage stockStorage = null;
+
+	private static synchronized StockStorage getStockStorage() throws ClassNotFoundException, IOException, InterruptedException {
+		if (stockStorage == null) {
+			YahooFileStockStorage ss = new YahooFileStockStorage("./test_data/", "./test_data/");
+			ss.waitForLoad();
+			stockStorage = ss;
+		}
+		return stockStorage;
+	}
+
 	public void testStockStorage() throws Exception {
-		StockStorage stockStorage = new YahooFileStockStorage("./test_data/", "./test_data/");
+		final StockStorage stockStorage = getStockStorage();
 		assertNotNull(stockStorage);
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
@@ -16,7 +29,8 @@ public class YahooFileStockStorageTest extends TestCase {
 	}
 
 	public void testLiqudityStorageReader() throws Exception {
-		StockStorage stockStorage = new YahooFileStockStorage("./test_data/", "./test_data/");
+		final StockStorage stockStorage = getStockStorage();
+		assertNotNull(stockStorage);
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
 		assertNull(stockStorage.getStock("noexistsstock"));

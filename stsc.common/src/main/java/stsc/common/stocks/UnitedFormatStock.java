@@ -164,8 +164,9 @@ public final class UnitedFormatStock extends Stock {
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(EXTENSION))
+			if (file.isFile() && filename.endsWith(EXTENSION)) {
 				fileNames.add(filename.substring(0, filename.length() - EXTENSION.length()));
+			}
 		}
 	}
 
