@@ -1,6 +1,10 @@
 package stsc.general.simulator;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
@@ -81,6 +85,12 @@ public class SimulatorTest extends TestCase {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics().print("./test/statistics.csv");
 		assertEquals(574 * 2 + 10719, new File("./test/statistics.csv").length());
+		List<String> content = Files.readAllLines(FileSystems.getDefault().getPath("./test/statistics.csv"));
+		String r = "";
+		for (String s : content) {
+			r += s + "\n";
+		}
+		assertEquals(r, "");
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
