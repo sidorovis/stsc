@@ -2,6 +2,7 @@ package stsc.general.simulator;
 
 import java.io.File;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,7 @@ import stsc.general.trading.TradeProcessorInit;
 public class Simulator {
 
 	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/simulator.log4j2.xml");
 	}
 
