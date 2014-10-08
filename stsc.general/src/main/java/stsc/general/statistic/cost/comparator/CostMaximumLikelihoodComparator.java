@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import stsc.common.Settings;
 import stsc.general.statistic.Statistics;
 
 public class CostMaximumLikelihoodComparator implements CostStatisticsComparator {

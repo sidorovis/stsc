@@ -32,11 +32,6 @@ public class CostWeightedSumComparator implements CostStatisticsComparator {
 			final Double w = i.getValue() / sum;
 			result += Math.signum(v1 - v2) * Math.pow(Math.abs(v1 - v2), w);
 		}
-		if (result > 0.0)
-			return -1;
-		else if (result < 0.0)
-			return 1;
-		else
-			return 0;
+		return Double.compare(result, 0.0);
 	}
 }

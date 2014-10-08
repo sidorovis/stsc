@@ -57,13 +57,13 @@ public class ExecutionsLoaderTest extends TestCase {
 		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_load_line2.ini"), "bad algorithm load line: IN)");
 		throwTesthelper(
 				new File("./test_data/executions_loader_tests/algs_bad_load_line3.ini"),
-				"Exception while loading algo: stsc.algorithms.stock.factors.primitive.Sma( 35337210 ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
+				"Exception while loading algo: stsc.algorithms.stock.factors.primitive.Sma( AlgDefine ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
 	}
 
 	public void testAlgorithmLoaderWithEod() throws Exception {
 		final ExecutionsStorage executions = helperForSuccessLoadTests(new File("./test_data/executions_loader_tests/trade_algs.ini"));
 		final ExecutionStarter starter = executions.initialize(new BrokerImpl(StockStorageMock.getStockStorage()));
-		assertEquals(2, starter.getStockAlgorithmsSize());
+		assertEquals(4, starter.getStockAlgorithmsSize());
 		assertNotNull(starter.getEodAlgorithm("a1"));
 	}
 
