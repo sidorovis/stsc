@@ -212,7 +212,7 @@ public class StatisticsProcessorTest extends TestCase {
 		assertEquals(2.705918, stats.getDdValueMax(), Settings.doubleEpsilon);
 		final File file = new File("./test/out.csv");
 		assertTrue(file.exists());
-		assertEquals(407 + 28 * System.lineSeparator().length(), file.length(), 0.1);
+		assertEquals(407 + 28 * 2, file.length(), 0.1);
 		file.delete();
 	}
 
