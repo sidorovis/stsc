@@ -31,7 +31,6 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
 		if (openedPositions.isEmpty()) {
-			System.out.println("BUY DAY: " + date + "    |   " + new DateTime(date, DateTimeZone.UTC));
 			buy(datafeed);
 		} else {
 			checkStatus(date, datafeed);
@@ -58,8 +57,6 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 	private void checkStatus(Date date, HashMap<String, Day> datafeed) {
 		Days daysDiff = Days.daysBetween(new DateTime(boughtDate, DateTimeZone.UTC), new DateTime(date, DateTimeZone.UTC));
 		if (daysDiff.getDays() > 15) {
-			System.out.println("BOUGHT DAY: " + boughtDate + "   |   " + new DateTime(boughtDate, DateTimeZone.UTC));
-			System.out.println("SELL DAY: " + date + "   |   " + new DateTime(date, DateTimeZone.UTC));
 			sell(datafeed);
 		}
 	}
