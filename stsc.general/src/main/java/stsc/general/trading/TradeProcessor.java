@@ -69,6 +69,7 @@ public class TradeProcessor {
 						datafeed.put(stockName, stockDay);
 					} else {
 						logger.error("Bad day returned for stock " + stockName + " for day " + today);
+						throw new RuntimeException("Test exception"); // TODO delete me i'm for testing
 					}
 				}
 			}
