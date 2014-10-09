@@ -1,5 +1,6 @@
 package stsc.yahoo;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -13,7 +14,7 @@ public class YahooFilesystemDatafeedSettingsTest extends TestCase {
 		assertEquals(settings.getTask(), "a");
 		assertEquals(settings.getTask(), null);
 
-		assertEquals(".\\test\\asd.uf", settings.generateUniteFormatPath("asd"));
+		assertEquals(new File("./test/asd.uf"), new File(settings.generateUniteFormatPath("asd")));
 
 	}
 
