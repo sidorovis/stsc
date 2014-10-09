@@ -9,9 +9,11 @@ import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
+import stsc.common.Day;
 import stsc.common.FromToPeriod;
 import stsc.common.Settings;
 import stsc.common.algorithms.EodExecution;
+import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
 import stsc.general.simulator.Simulator;
@@ -93,19 +95,27 @@ public class SimulatorTest extends TestCase {
 
 	public void testSimpleSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
-		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
-		statistics.print("./test/statistics.csv");
-		// assertEquals(51, statistics.getEquityCurveInMoney().size());
-		// assertEquals(574 * 2 + 10719, new
-		// File("./test/statistics.csv").length());
-		List<String> content = Files.readAllLines(FileSystems.getDefault().getPath("./test/statistics.csv"));
-		String r = "";
-		for (String s : content) {
-			r += s + "\n";
+		Stock stock = StockStorageFactory.createStockStorage("aapl", "./test_data/").getStock("aapl");
+		int f = stock.findDayIndex(Day.createDate("02-09-2004"));
+		int e = stock.findDayIndex(Day.createDate("15-11-2004"));
+		for (int i = f; i < e; ++i) {
+			System.out.println(stock.getDays().get(i).getDate());
 		}
-		System.out.println(r);
-		assertEquals(r, "");
-		deleteFileIfExists("./test/statistics.csv");
+		// final Statistics statistics = Simulator.fromFile(new
+		// File("./test_data/simulator_tests/simple.ini")).getStatistics();
+		// statistics.print("./test/statistics.csv");
+		// // assertEquals(51, statistics.getEquityCurveInMoney().size());
+		// // assertEquals(574 * 2 + 10719, new
+		// // File("./test/statistics.csv").length());
+		// List<String> content =
+		// Files.readAllLines(FileSystems.getDefault().getPath("./test/statistics.csv"));
+		// String r = "";
+		// for (String s : content) {
+		// r += s + "\n";
+		// }
+		// System.out.println(r);
+		// assertEquals(r, "");
+		// deleteFileIfExists("./test/statistics.csv");
 	}
 	//
 	// public void testPositiveNDaysSimulator() throws Exception {
