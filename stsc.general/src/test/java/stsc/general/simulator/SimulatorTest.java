@@ -114,8 +114,7 @@ public class SimulatorTest extends TestCase {
 		assertEquals(0.0, simulator.getStatistics().getAvGain(), Settings.doubleEpsilon);
 		final SignalsStorage ss = simulator.getSignalsStorage();
 		final String en = ExecutionsStorage.outNameFor("Alg1");
-		final int size = ss.getIndexSize("aapl", en);
-		assertEquals(2515, size);
+		assertEquals(2515, ss.getIndexSize("aapl", en));
 	}
 
 }
