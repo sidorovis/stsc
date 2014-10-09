@@ -95,14 +95,7 @@ public class SimulatorTest extends TestCase {
 
 	public void testSimpleSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
-		Stock stock = StockStorageFactory.createStockStorage("aapl", "./test_data/").getStock("aapl");
-		int f = stock.findDayIndex(Day.createDate("02-09-2004"));
-		int e = stock.findDayIndex(Day.createDate("15-11-2004"));
-		for (int i = f; i < e; ++i) {
-			System.out.println(stock.getDays().get(i).getPrices());
-		}
-		// final Statistics statistics = Simulator.fromFile(new
-		// File("./test_data/simulator_tests/simple.ini")).getStatistics();
+		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		// statistics.print("./test/statistics.csv");
 		// // assertEquals(51, statistics.getEquityCurveInMoney().size());
 		// // assertEquals(574 * 2 + 10719, new
