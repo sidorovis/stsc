@@ -99,7 +99,7 @@ public class SimulatorTest extends TestCase {
 		int f = stock.findDayIndex(Day.createDate("02-09-2004"));
 		int e = stock.findDayIndex(Day.createDate("15-11-2004"));
 		for (int i = f; i < e; ++i) {
-			System.out.println(stock.getDays().get(i).getDate());
+			System.out.println(stock.getDays().get(i).getPrices());
 		}
 		// final Statistics statistics = Simulator.fromFile(new
 		// File("./test_data/simulator_tests/simple.ini")).getStatistics();
