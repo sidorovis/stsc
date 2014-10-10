@@ -82,7 +82,7 @@ public class SimulatorTest extends TestCase {
 		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		statistics.print("./test/statistics.csv");
 		assertEquals(2096, statistics.getEquityCurveInMoney().size());
-		assertEquals(2121 * 2 + 40815, new File("./test/statistics.csv").length());
+		assertEquals(2121 * 2 + 42045, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
