@@ -31,9 +31,9 @@ public class StatisticsCompareSelectorTest extends TestCase {
 
 		assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		assertEquals(0.254668, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-0.582769, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-0.929453, si.next().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 
 }

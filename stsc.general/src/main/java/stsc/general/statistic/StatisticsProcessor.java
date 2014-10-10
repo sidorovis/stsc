@@ -171,7 +171,7 @@ public final class StatisticsProcessor {
 			final double oldPrice = shortPositions.sharePrice(stockName);
 			final double priceDiff = shares * (oldPrice - price);
 			addPositionClose(priceDiff);
-			spentShortCash -= (sharesPrice + 2 * priceDiff);
+			spentShortCash -= sharesPrice; // (sharesPrice + 2 * priceDiff);
 			shortPositions.decrement(stockName, shares, sharesPrice);
 		}
 
@@ -247,11 +247,10 @@ public final class StatisticsProcessor {
 
 					processShort(stockName, shares, price, sharesPrice);
 				}
-				final double cashSum = spentLongCash + spentShortCash;
-				final double dayCache = -(spentLongCash + spentShortCash);
+				final double cashSum = spentShortCash - spentLongCash;
 				if (maximumSpentMoney < cashSum)
 					maximumSpentMoney = cashSum;
-				statisticsInit.equityCurve.setLast(dayCache);
+				statisticsInit.equityCurve.setLast(cashSum);
 			}
 		}
 
@@ -323,9 +322,10 @@ public final class StatisticsProcessor {
 				checkDdLengthSizeOnMax(ddSize, ddLength);
 			}
 
-			init.ddDurationAvGain = ddDurationSum / ddCount;
-			init.ddValueAvGain = ddValueSum / ddCount;
-
+			if (ddCount != 0) {
+				init.ddDurationAvGain = ddDurationSum / ddCount;
+				init.ddValueAvGain = ddValueSum / ddCount;
+			}
 		}
 
 		private void checkDdLengthSizeOnMax(double ddSize, int ddLength) {

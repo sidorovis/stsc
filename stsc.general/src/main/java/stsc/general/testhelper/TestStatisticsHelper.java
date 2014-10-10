@@ -2,6 +2,7 @@ package stsc.general.testhelper;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.joda.time.LocalDate;
 
@@ -16,6 +17,10 @@ import stsc.general.trading.TradingLog;
 import stsc.storage.mocks.StockStorageMock;
 
 public class TestStatisticsHelper {
+
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	public static FromToPeriod getPeriod() {
 		try {

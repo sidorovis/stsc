@@ -51,7 +51,7 @@ public class StatisticsProcessorTest extends TestCase {
 		final Statistics statisticsData = statistics.calculate();
 
 		assertEquals(2.0, statisticsData.getPeriod());
-		assertEquals(-0.242883, statisticsData.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-0.389662, statisticsData.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	public void testReverseStatistics() throws Exception {
@@ -85,7 +85,7 @@ public class StatisticsProcessorTest extends TestCase {
 		Statistics statisticsData = statistics.calculate();
 
 		assertEquals(2.0, statisticsData.getPeriod());
-		assertEquals(-0.242883, statisticsData.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(0.389662, statisticsData.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	public void testProbabilityStatistics() throws IOException {
@@ -136,7 +136,7 @@ public class StatisticsProcessorTest extends TestCase {
 		final Statistics statisticsData = statistics.calculate();
 
 		assertEquals(4.0, statisticsData.getPeriod());
-		assertEquals(0.694511, statisticsData.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-1.043303, statisticsData.getAvGain(), Settings.doubleEpsilon);
 
 		assertEquals(0.75, statisticsData.getFreq());
 		assertEquals(0.333333, statisticsData.getWinProb(), Settings.doubleEpsilon);
@@ -154,55 +154,55 @@ public class StatisticsProcessorTest extends TestCase {
 	public void testEquityCurveOn518DaysStatistics() throws IOException {
 		final Statistics stats = testTradingHelper(518, true);
 
-		assertEquals(22.790175, stats.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-17.607052, stats.getAvGain(), Settings.doubleEpsilon);
 		assertEquals(0.301158, stats.getFreq(), Settings.doubleEpsilon);
 
 		assertEquals(400.236111, stats.getAvWin(), Settings.doubleEpsilon);
 		assertEquals(-0.123148, stats.getKelly(), Settings.doubleEpsilon);
 
-		assertEquals(0.304066, stats.getSharpeRatio(), Settings.doubleEpsilon);
+		assertEquals(-0.898340, stats.getSharpeRatio(), Settings.doubleEpsilon);
 
-		assertEquals(0.911607, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
-		assertEquals(5.798013, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
-		assertEquals(10.605582, stats.getStartMonthMax(), Settings.doubleEpsilon);
-		assertEquals(-14.952294, stats.getStartMonthMin(), Settings.doubleEpsilon);
+		assertEquals(-0.704282, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
+		assertEquals(4.455640, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
+		assertEquals(10.842683, stats.getStartMonthMax(), Settings.doubleEpsilon);
+		assertEquals(-9.596977, stats.getStartMonthMin(), Settings.doubleEpsilon);
 
-		assertEquals(21.483345, stats.getMonth12AvGain(), Settings.doubleEpsilon);
-		assertEquals(14.807455, stats.getMonth12StdDevGain(), Settings.doubleEpsilon);
-		assertEquals(35.501103, stats.getMonth12Max(), Settings.doubleEpsilon);
-		assertEquals(-16.570730, stats.getMonth12Min(), Settings.doubleEpsilon);
+		assertEquals(-17.347803, stats.getMonth12AvGain(), Settings.doubleEpsilon);
+		assertEquals(12.565023, stats.getMonth12StdDevGain(), Settings.doubleEpsilon);
+		assertEquals(15.117929, stats.getMonth12Max(), Settings.doubleEpsilon);
+		assertEquals(-29.917563, stats.getMonth12Min(), Settings.doubleEpsilon);
 
-		assertEquals(79.0, stats.getDdDurationAvGain(), Settings.doubleEpsilon);
-		assertEquals(597.0, stats.getDdDurationMax(), Settings.doubleEpsilon);
-		assertEquals(7.429383, stats.getDdValueAvGain(), Settings.doubleEpsilon);
-		assertEquals(37.210219, stats.getDdValueMax(), Settings.doubleEpsilon);
+		assertEquals(58.25, stats.getDdDurationAvGain(), Settings.doubleEpsilon);
+		assertEquals(556.0, stats.getDdDurationMax(), Settings.doubleEpsilon);
+		assertEquals(4.789138, stats.getDdValueAvGain(), Settings.doubleEpsilon);
+		assertEquals(44.733226, stats.getDdValueMax(), Settings.doubleEpsilon);
 	}
 
 	public void testEquityCurveOn251DaysStatistics() throws IOException {
 		Statistics stats = testTradingHelper(251, true);
 
-		assertEquals(-25.643685, stats.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(15.901919, stats.getAvGain(), Settings.doubleEpsilon);
 		assertEquals(0.310756, stats.getFreq(), Settings.doubleEpsilon);
 
 		assertEquals(475.761904, stats.getAvWin(), Settings.doubleEpsilon);
 		assertEquals(0.177906, stats.getKelly(), Settings.doubleEpsilon);
 
-		assertEquals(-1.003661, stats.getSharpeRatio(), Settings.doubleEpsilon);
+		assertEquals(0.697385, stats.getSharpeRatio(), Settings.doubleEpsilon);
 
-		assertEquals(-2.136973, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
-		assertEquals(8.727526, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
-		assertEquals(7.641854, stats.getStartMonthMax(), Settings.doubleEpsilon);
-		assertEquals(-23.139109, stats.getStartMonthMin(), Settings.doubleEpsilon);
+		assertEquals(1.325159, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
+		assertEquals(4.788987, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
+		assertEquals(11.404966, stats.getStartMonthMax(), Settings.doubleEpsilon);
+		assertEquals(-3.343208, stats.getStartMonthMin(), Settings.doubleEpsilon);
 
-		assertEquals(-25.643685, stats.getMonth12AvGain(), Settings.doubleEpsilon);
+		assertEquals(15.901919, stats.getMonth12AvGain(), Settings.doubleEpsilon);
 		assertEquals(0.0, stats.getMonth12StdDevGain(), Settings.doubleEpsilon);
-		assertEquals(0.0, stats.getMonth12Max(), Settings.doubleEpsilon);
-		assertEquals(-25.643685, stats.getMonth12Min(), Settings.doubleEpsilon);
+		assertEquals(15.901919, stats.getMonth12Max(), Settings.doubleEpsilon);
+		assertEquals(0.0, stats.getMonth12Min(), Settings.doubleEpsilon);
 
-		assertEquals(120.0, stats.getDdDurationAvGain(), Settings.doubleEpsilon);
-		assertEquals(343.0, stats.getDdDurationMax(), Settings.doubleEpsilon);
-		assertEquals(21.857840, stats.getDdValueAvGain(), Settings.doubleEpsilon);
-		assertEquals(57.583892, stats.getDdValueMax(), Settings.doubleEpsilon);
+		assertEquals(26.0, stats.getDdDurationAvGain(), Settings.doubleEpsilon);
+		assertEquals(169.0, stats.getDdDurationMax(), Settings.doubleEpsilon);
+		assertEquals(2.147513, stats.getDdValueAvGain(), Settings.doubleEpsilon);
+		assertEquals(12.373244, stats.getDdValueMax(), Settings.doubleEpsilon);
 	}
 
 	public void testStatisticsOnLastClose() throws IOException, IllegalArgumentException, IllegalAccessException {

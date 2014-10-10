@@ -32,6 +32,6 @@ public class StatisticsSelectorTest extends TestCase {
 		final List<TradingStrategy> strategies = statisticsSelector.getStrategies();
 		assertEquals(2, strategies.size());
 		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[0]).getStatistics()), values.get(2));
-		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[1]).getStatistics()), values.get(0));
+		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[1]).getStatistics()), values.get(1));
 	}
 }

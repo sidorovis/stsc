@@ -14,6 +14,6 @@ public class CostWeightedProductFunctionTest extends TestCase {
 		CostWeightedProductFunction function = new CostWeightedProductFunction();
 		function.addParameter("getKelly", 0.8);
 		final Double result = function.calculate(statistics);
-		assertEquals(-0.455569, result, Settings.doubleEpsilon);
+		assertEquals(-0.592386, result, Settings.doubleEpsilon);
 	}
 }
