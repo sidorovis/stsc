@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.controllers;
 
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;
@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class CreateAlgorithmControllerTest extends TestCase {
+public class TestCreateAlgorithmController extends TestCase {
+
 	public void testParameterNamePatternCreateAlgorithmController() {
 		final Pattern p = CreateAlgorithmController.parameterNamePattern;
 		Assert.assertTrue(p.matcher("asd_gre_htr34_her_y5hdg_ge57_gerg").matches());
@@ -43,5 +44,4 @@ public class CreateAlgorithmControllerTest extends TestCase {
 		Assert.assertFalse(p.matcher("45.546.12").matches());
 		Assert.assertFalse(p.matcher("").matches());
 	}
-
 }

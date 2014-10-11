@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.frontend.zozka.controllers.CreateAlgorithmController;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
@@ -129,7 +130,8 @@ public class CreateSettingsController implements Initializable {
 				final int index = executionsTable.getSelectionModel().getSelectedIndex();
 				final ExecutionDescription ed = executionsTable.getSelectionModel().getSelectedItem();
 				try {
-					ExecutionDescription newEd = CreateAlgorithmController.create(stage, ed);
+					final CreateAlgorithmController controller = new CreateAlgorithmController(stage, ed);
+					final ExecutionDescription newEd = controller.getExecutionDescription();
 					if (newEd != null) {
 						model.getExecutionDescriptions().set(index, newEd);
 					}
@@ -171,7 +173,8 @@ public class CreateSettingsController implements Initializable {
 			public void handle(ActionEvent event) {
 				ExecutionDescription ed = null;
 				try {
-					ed = CreateAlgorithmController.create(stage, null);
+					final CreateAlgorithmController controller = new CreateAlgorithmController(stage);
+					ed = controller.getExecutionDescription();
 				} catch (IOException | BadParameterException e) {
 					Dialogs.create().showException(e);
 				}

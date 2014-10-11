@@ -2,22 +2,23 @@ package stsc.frontend.zozka.settings;
 
 import java.util.regex.Pattern;
 
+import stsc.frontend.zozka.gui.models.ParameterType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public final class NumberAlgorithmParameter {
 
 	private final StringProperty parameterName;
-	private final String type;
+	private final ParameterType type;
 	private final Pattern pattern;
 	private final StringProperty from;
 	private final StringProperty step;
 	private final StringProperty to;
 	private boolean valid;
 
-	public NumberAlgorithmParameter(String parameterName, String type, Pattern pattern, String from, String step, String to) {
+	public NumberAlgorithmParameter(String parameterName, ParameterType type, Pattern pattern, String from, String step, String to) {
 		this.parameterName = new SimpleStringProperty(parameterName);
-		this.type = new String(type);
+		this.type = type;
 		this.pattern = pattern;
 		this.from = new SimpleStringProperty(from);
 		this.step = new SimpleStringProperty(step);
@@ -29,7 +30,7 @@ public final class NumberAlgorithmParameter {
 		return parameterName;
 	}
 
-	public String getType() {
+	public ParameterType getType() {
 		return type;
 	}
 

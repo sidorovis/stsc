@@ -24,4 +24,9 @@ public enum AlgorithmType {
 	public boolean isStock() {
 		return this.equals(STOCK_VALUE);
 	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
 }

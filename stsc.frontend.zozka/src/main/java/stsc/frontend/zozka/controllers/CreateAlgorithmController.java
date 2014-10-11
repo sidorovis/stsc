@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.controllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +14,10 @@ import org.controlsfx.dialog.Dialogs;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.frontend.zozka.gui.models.AlgorithmType;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
+import stsc.frontend.zozka.gui.models.ParameterType;
+import stsc.frontend.zozka.settings.ControllerHelper;
+import stsc.frontend.zozka.settings.NumberAlgorithmParameter;
+import stsc.frontend.zozka.settings.TextAlgorithmParameter;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
@@ -21,6 +25,7 @@ import stsc.general.simulator.multistarter.MpIterator;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.storage.AlgorithmsStorage;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -42,22 +47,9 @@ import javafx.stage.Stage;
 
 public class CreateAlgorithmController implements Initializable {
 
-	private Stage stage;
+	private final Stage stage;
 	private boolean valid;
 
-	private static String INTEGER_TYPE = "Integer";
-	private static String DOUBLE_TYPE = "Double";
-	private static String STRING_TYPE = "String";
-	private static String SUB_EXECUTIONS_TYPE = "SubExecutions";
-
-	private static List<String> typeVariants = new ArrayList<>();
-	static {
-
-		typeVariants.add(INTEGER_TYPE);
-		typeVariants.add(DOUBLE_TYPE);
-		typeVariants.add(STRING_TYPE);
-		typeVariants.add(SUB_EXECUTIONS_TYPE);
-	}
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
 	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
@@ -100,46 +92,49 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private Button saveExecution;
 
-	public static ExecutionDescription create(final Stage parentStage, final ExecutionDescription ed) throws IOException,
-			BadParameterException {
-		final Stage thisStage = new Stage();
-		final URL location = Zozka.class.getResource("01_create_algorithm.fxml");
-		final FXMLLoader loader = new FXMLLoader();
-		final Parent gui = loader.load(location.openStream());
-		thisStage.initOwner(parentStage);
-		thisStage.initModality(Modality.WINDOW_MODAL);
-		final CreateAlgorithmController controller = loader.getController();
-		controller.setStage(thisStage);
-		if (ed != null) {
-			controller.setExecutionDescription(ed);
-		}
+	public CreateAlgorithmController(final Stage owner) throws IOException {
+		stage = new Stage();
+		valid = false;
+		final URL location = CreateAlgorithmController.class.getResource("01_create_algorithm.fxml");
+		final FXMLLoader loader = new FXMLLoader(location);
+		loader.setController(this);
+		final Parent gui = loader.load();
+		stage.initOwner(owner);
+		stage.initModality(Modality.WINDOW_MODAL);
 		final Scene scene = new Scene(gui);
-		scene.getStylesheets().add(Zozka.class.getResource("01_create_algorithm.css").toExternalForm());
-		thisStage.setScene(scene);
-		thisStage.setMinHeight(800);
-		thisStage.setMinWidth(640);
-		thisStage.setTitle("Create Algorithm Settings");
-		thisStage.centerOnScreen();
-		thisStage.showAndWait();
-		if (controller.isValid()) {
-			return createExecutionDescription(controller);
+		stage.setScene(scene);
+		stage.setMinHeight(480);
+		stage.setMinWidth(640);
+		stage.setTitle("Create Algorithm Settings");
+		stage.centerOnScreen();
+	}
+
+	public CreateAlgorithmController(final Stage owner, final ExecutionDescription executionDescription) throws IOException {
+		this(owner);
+		setExecutionDescription(executionDescription);
+	}
+
+	public ExecutionDescription getExecutionDescription() throws BadParameterException {
+		this.stage.showAndWait();
+		if (isValid()) {
+			return createExecutionDescription();
 		}
 		return null;
 	}
 
-	private static ExecutionDescription createExecutionDescription(CreateAlgorithmController controller) throws BadParameterException {
-		final String executionName = controller.executionName.getText();
-		final String algorithmName = controller.algorithmClass.getValue();
+	private ExecutionDescription createExecutionDescription() throws BadParameterException {
+		final String executionName = this.executionName.getText();
+		final String algorithmName = algorithmClass.getValue();
 
-		final ExecutionDescription ed = new ExecutionDescription(controller.algorithmType.getValue(), executionName, algorithmName);
-		for (NumberAlgorithmParameter p : controller.numberModel) {
-			if (p.getType().equals(INTEGER_TYPE)) {
+		final ExecutionDescription ed = new ExecutionDescription(algorithmType.getValue(), executionName, algorithmName);
+		for (NumberAlgorithmParameter p : numberModel) {
+			if (p.getType().equals(ParameterType.INTEGER)) {
 				final String name = p.parameterNameProperty().get();
 				final Integer from = Integer.valueOf(p.getFrom());
 				final Integer to = Integer.valueOf(p.getTo());
 				final Integer step = Integer.valueOf(p.getStep());
 				ed.getParameters().getIntegers().add(new MpInteger(name, from, to, step));
-			} else if (p.getType().equals(DOUBLE_TYPE)) {
+			} else if (p.getType().equals(ParameterType.DOUBLE)) {
 				final String name = p.parameterNameProperty().get();
 				final Double from = Double.valueOf(p.getFrom());
 				final Double to = Double.valueOf(p.getTo());
@@ -147,22 +142,18 @@ public class CreateAlgorithmController implements Initializable {
 				ed.getParameters().getDoubles().add(new MpDouble(name, from, to, step));
 			}
 		}
-		for (TextAlgorithmParameter p : controller.textModel) {
-			if (p.getType().getValue().equals(STRING_TYPE)) {
+		for (TextAlgorithmParameter p : textModel) {
+			if (p.getType().equals(ParameterType.STRING)) {
 				final String name = p.parameterNameProperty().get();
 				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getStrings().add(new MpString(name, domen));
-			} else if (p.getType().getValue().equals(SUB_EXECUTIONS_TYPE)) {
+			} else if (p.getType().equals(ParameterType.SUB_EXECUTION)) {
 				final String name = p.parameterNameProperty().get();
 				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
 				ed.getParameters().getSubExecutions().add(new MpSubExecution(name, domen));
 			}
 		}
 		return ed;
-	}
-
-	private void setStage(Stage thisStage) {
-		this.stage = thisStage;
 	}
 
 	@Override
@@ -283,7 +274,7 @@ public class CreateAlgorithmController implements Initializable {
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
-		textParType.setCellValueFactory(cellData -> cellData.getValue().getType());
+		textParType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
 
 		connectTextColumn(textParDomen, "domen");
 	}
@@ -299,18 +290,25 @@ public class CreateAlgorithmController implements Initializable {
 			if (!parameterName.isPresent()) {
 				return;
 			}
-			final Optional<String> parameterType = getParameterType();
+			final Optional<ParameterType> parameterType = getParameterType();
 			if (!parameterType.isPresent()) {
 				return;
 			}
-			if (parameterType.get().equals(INTEGER_TYPE)) {
-				addIntegerParameter(parameterName.get(), "0", "1", "22");
-			} else if (parameterType.get().equals(DOUBLE_TYPE)) {
+			switch (parameterType.get()) {
+			case DOUBLE:
 				addDoubleParameter(parameterName.get(), "0.0", "1.0", "22.0");
-			} else if (parameterType.get().equals(STRING_TYPE)) {
+				break;
+			case INTEGER:
+				addIntegerParameter(parameterName.get(), "0", "1", "22");
+				break;
+			case STRING:
 				addStringParameter(parameterName.get());
-			} else if (parameterType.get().equals(SUB_EXECUTIONS_TYPE)) {
+				break;
+			case SUB_EXECUTION:
 				addSubExecutionParameter(parameterName.get());
+				break;
+			default:
+				break;
 			}
 		});
 	}
@@ -348,9 +346,9 @@ public class CreateAlgorithmController implements Initializable {
 		return false;
 	}
 
-	private Optional<String> getParameterType() {
+	private Optional<ParameterType> getParameterType() {
 		return Dialogs.create().owner(stage).title("Choose type for parameter").masthead(null).message("Type define parameter domen: ")
-				.showChoices(typeVariants);
+				.showChoices(ParameterType.values());
 	}
 
 	private void addIntegerParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
@@ -366,7 +364,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		numberModel.add(new NumberAlgorithmParameter(parameterName, INTEGER_TYPE, integerParPattern, from, step, to));
+		numberModel.add(new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, integerParPattern, from, step, to));
 	}
 
 	private String readIntegerParameter(final String defaultValue) {
@@ -393,7 +391,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		numberModel.add(new NumberAlgorithmParameter(parameterName, DOUBLE_TYPE, doubleParPattern, from, step, to));
+		numberModel.add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, doubleParPattern, from, step, to));
 	}
 
 	private String readDoubleParameter(final String defaultValue) {
@@ -408,33 +406,22 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void addStringParameter(String parameterName) {
-		ArrayList<String> values = new ArrayList<>();
-		while (true) {
-			final Optional<String> stringValue = Dialogs.create().owner(stage).title("String Parameter")
-					.masthead("Hack: add several divided by ','.\nPress 'Cancel' to finish enter.").message("Enter string value: ")
-					.showTextInput("");
-			if (stringValue.isPresent()) {
-				values.add(stringValue.get());
-			} else {
-				break;
-			}
-		}
-		String domen = "'";
-		for (int i = 0; i < values.size(); ++i) {
-			domen += values.get(i);
-			if (i < values.size() - 1) {
-				domen += "', '";
-			}
-		}
-		domen += "'";
-		textModel.add(new TextAlgorithmParameter(parameterName, STRING_TYPE, domen));
+		final List<String> values = getStringDomen("String Parameter");
+		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
+		textModel.add(new TextAlgorithmParameter(parameterName, ParameterType.STRING, domen));
 	}
 
 	private void addSubExecutionParameter(String parameterName) {
-		ArrayList<String> values = new ArrayList<>();
+		final List<String> values = getStringDomen("SubExecution Parameter");
+		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
+		textModel.add(new TextAlgorithmParameter(parameterName, ParameterType.SUB_EXECUTION, domen));
+	}
+
+	private List<String> getStringDomen(String title) {
+		final ArrayList<String> values = new ArrayList<>();
 		while (true) {
-			final Optional<String> stringValue = Dialogs.create().owner(stage).title("String Parameter")
-					.masthead("Hack: add several divided by ','.\nPress 'Cancel' to finish enter.").message("Enter string value: ")
+			final Optional<String> stringValue = Dialogs.create().owner(stage).title(title)
+					.masthead("Hack: add several divided by ','.\nPress 'Cancel' to finish enter.").message("Enter domen value: ")
 					.showTextInput("");
 			if (stringValue.isPresent()) {
 				values.add(stringValue.get());
@@ -442,8 +429,7 @@ public class CreateAlgorithmController implements Initializable {
 				break;
 			}
 		}
-		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
-		textModel.add(new TextAlgorithmParameter(parameterName, SUB_EXECUTIONS_TYPE, domen));
+		return values;
 	}
 
 	private void connectSaveExecution() {
@@ -459,22 +445,21 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void setExecutionDescription(ExecutionDescription ed) {
 		algorithmType.getSelectionModel().select(ed.getAlgorithmType());
-
 		algorithmClass.getSelectionModel().select(ed.getAlgorithmName());
 		executionName.setText(ed.getExecutionName());
 		for (MpIterator<Integer> i : ed.getParameters().getIntegers().getParams()) {
-			numberModel.add(new NumberAlgorithmParameter(i.getName(), INTEGER_TYPE, integerParPattern, String.valueOf(i.getFrom()), String
-					.valueOf(i.getStep()), String.valueOf(i.getTo())));
+			numberModel.add(new NumberAlgorithmParameter(i.getName(), ParameterType.INTEGER, integerParPattern,
+					String.valueOf(i.getFrom()), String.valueOf(i.getStep()), String.valueOf(i.getTo())));
 		}
 		for (MpIterator<Double> i : ed.getParameters().getDoubles().getParams()) {
-			numberModel.add(new NumberAlgorithmParameter(i.getName(), DOUBLE_TYPE, doubleParPattern, String.valueOf(i.getFrom()), String
-					.valueOf(i.getStep()), String.valueOf(i.getTo())));
+			numberModel.add(new NumberAlgorithmParameter(i.getName(), ParameterType.DOUBLE, doubleParPattern, String.valueOf(i.getFrom()),
+					String.valueOf(i.getStep()), String.valueOf(i.getTo())));
 		}
 		for (MpIterator<String> i : ed.getParameters().getStrings().getParams()) {
-			textModel.add(new TextAlgorithmParameter(i.getName(), STRING_TYPE, i.getDomen()));
+			textModel.add(new TextAlgorithmParameter(i.getName(), ParameterType.STRING, i.getDomen()));
 		}
 		for (MpIterator<String> i : ed.getParameters().getSubExecutions().getParams()) {
-			textModel.add(new TextAlgorithmParameter(i.getName(), SUB_EXECUTIONS_TYPE, i.getDomen()));
+			textModel.add(new TextAlgorithmParameter(i.getName(), ParameterType.SUB_EXECUTION, i.getDomen()));
 		}
 	}
 }

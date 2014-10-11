@@ -3,24 +3,25 @@ package stsc.frontend.zozka.settings;
 import java.util.ArrayList;
 import java.util.List;
 
+import stsc.frontend.zozka.gui.models.ParameterType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public final class TextAlgorithmParameter {
 
 	private final StringProperty parameterName;
-	private final StringProperty type;
+	private final ParameterType type;
 	private final StringProperty domen;
 
-	public TextAlgorithmParameter(String parameterName, String type, List<String> domen) {
+	public TextAlgorithmParameter(String parameterName, ParameterType type, List<String> domen) {
 		this.parameterName = new SimpleStringProperty(parameterName);
-		this.type = new SimpleStringProperty(type);
+		this.type = type;
 		this.domen = new SimpleStringProperty(createStringRepresentation(domen));
 	}
 
-	public TextAlgorithmParameter(String parameterName, String type, String domen) {
+	public TextAlgorithmParameter(String parameterName, ParameterType type, String domen) {
 		this.parameterName = new SimpleStringProperty(parameterName);
-		this.type = new SimpleStringProperty(type);
+		this.type = type;
 		this.domen = new SimpleStringProperty(domen);
 	}
 
@@ -28,8 +29,8 @@ public final class TextAlgorithmParameter {
 		return parameterName;
 	}
 
-	public StringProperty getType() {
-		return type;
+	public String getType() {
+		return type.getName();
 	}
 
 	public StringProperty domenProperty() {
@@ -48,7 +49,7 @@ public final class TextAlgorithmParameter {
 		return domen;
 	}
 
-	static List<String> createDomenRepresentation(String string) {
+	public static List<String> createDomenRepresentation(String string) {
 		List<String> domen = new ArrayList<>();
 		for (String p : string.split(",")) {
 			final String trimmed = p.trim();
