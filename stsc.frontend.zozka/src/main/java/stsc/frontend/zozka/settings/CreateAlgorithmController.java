@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.algorithms.BadAlgorithmException;
+import stsc.frontend.zozka.gui.models.AlgorithmType;
+import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
@@ -43,19 +45,13 @@ public class CreateAlgorithmController implements Initializable {
 	private Stage stage;
 	private boolean valid;
 
-	public static String STOCK_VALUE = "Stock";
-	public static String EOD_VALUE = "Eod";
-
 	private static String INTEGER_TYPE = "Integer";
 	private static String DOUBLE_TYPE = "Double";
 	private static String STRING_TYPE = "String";
 	private static String SUB_EXECUTIONS_TYPE = "SubExecutions";
 
-	private static ObservableList<String> algorithmTypeModel = FXCollections.observableArrayList();
 	private static List<String> typeVariants = new ArrayList<>();
 	static {
-		algorithmTypeModel.add(STOCK_VALUE);
-		algorithmTypeModel.add(EOD_VALUE);
 
 		typeVariants.add(INTEGER_TYPE);
 		typeVariants.add(DOUBLE_TYPE);
@@ -67,7 +63,7 @@ public class CreateAlgorithmController implements Initializable {
 	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
 
 	@FXML
-	private ComboBox<String> algorithmType;
+	private ComboBox<AlgorithmType> algorithmType;
 	@FXML
 	private ComboBox<String> algorithmClass;
 	@FXML
@@ -205,11 +201,11 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectActionsForAlgorithmType() {
-		algorithmType.setItems(algorithmTypeModel);
+		algorithmType.setItems(AlgorithmType.getObservableList());
 		algorithmType.getSelectionModel().select(0);
-		algorithmType.valueProperty().addListener(new ChangeListener<String>() {
+		algorithmType.valueProperty().addListener(new ChangeListener<AlgorithmType>() {
 			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			public void changed(ObservableValue<? extends AlgorithmType> observable, AlgorithmType oldValue, AlgorithmType newValue) {
 				try {
 					populateAlgorithmClassWith(newValue);
 				} catch (BadAlgorithmException e) {
@@ -237,10 +233,10 @@ public class CreateAlgorithmController implements Initializable {
 		});
 	}
 
-	protected void populateAlgorithmClassWith(String newValue) throws BadAlgorithmException {
+	protected void populateAlgorithmClassWith(AlgorithmType newValue) throws BadAlgorithmException {
 		final ObservableList<String> model = algorithmClass.getItems();
 		model.clear();
-		if (newValue.equals(STOCK_VALUE)) {
+		if (newValue.isStock()) {
 			final Set<String> stockLabels = AlgorithmsStorage.getInstance().getStockLabels();
 			for (String label : stockLabels) {
 				model.add(label);
@@ -462,11 +458,8 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void setExecutionDescription(ExecutionDescription ed) {
-		if (ed.isStockAlgorithm()) {
-			algorithmType.getSelectionModel().select(STOCK_VALUE);
-		} else {
-			algorithmType.getSelectionModel().select(EOD_VALUE);
-		}
+		algorithmType.getSelectionModel().select(ed.getAlgorithmType());
+
 		algorithmClass.getSelectionModel().select(ed.getAlgorithmName());
 		executionName.setText(ed.getExecutionName());
 		for (MpIterator<Integer> i : ed.getParameters().getIntegers().getParams()) {

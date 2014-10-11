@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.gui.models;
 
 import stsc.common.FromToPeriod;
 import stsc.general.simulator.multistarter.AlgorithmParameters;
@@ -7,15 +7,15 @@ import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 
-final class ExecutionDescription {
+public final class ExecutionDescription {
 
-	private final String algorithmType;
+	private final AlgorithmType algorithmType;
 	private final String executionName;
 	private final String algorithmName;
 
 	private final AlgorithmParameters parameters;
 
-	public ExecutionDescription(String algorithmType, String executionName, String algorithmName) {
+	public ExecutionDescription(AlgorithmType algorithmType, String executionName, String algorithmName) {
 		this.algorithmType = algorithmType;
 		this.executionName = executionName;
 		this.algorithmName = algorithmName;
@@ -49,7 +49,7 @@ final class ExecutionDescription {
 		return new GeneticExecutionInitializer(executionName, algorithmName, settings);
 	}
 
-	public boolean isStockAlgorithm() {
-		return algorithmType.equals(CreateAlgorithmController.STOCK_VALUE);
+	public AlgorithmType getAlgorithmType() {
+		return algorithmType;
 	}
 }

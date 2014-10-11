@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
@@ -53,7 +54,7 @@ public class SimulationsDescription {
 		final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
 		for (ExecutionDescription ed : executionDescriptions) {
 			GridExecutionInitializer ei = ed.createGridExecution(period);
-			if (ed.isStockAlgorithm()) {
+			if (ed.getAlgorithmType().isStock()) {
 				factory.addStock(ei);
 			} else {
 				factory.addEod(ei);
@@ -66,7 +67,7 @@ public class SimulationsDescription {
 		final SimulatorSettingsGeneticFactory factory = new SimulatorSettingsGeneticFactory(stockStorage, period);
 		for (ExecutionDescription ed : executionDescriptions) {
 			GeneticExecutionInitializer ei = ed.createGeneticExecution(period);
-			if (ed.isStockAlgorithm()) {
+			if (ed.getAlgorithmType().isStock()) {
 				factory.addStock(ei);
 			} else {
 				factory.addEod(ei);
