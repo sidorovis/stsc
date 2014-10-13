@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.gui.models;
 
 import java.util.Collections;
 

@@ -1,8 +1,7 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.gui.models;
 
 import java.util.regex.Pattern;
 
-import stsc.frontend.zozka.gui.models.ParameterType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 

@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.settings;
 
+import stsc.frontend.zozka.gui.models.TextAlgorithmParameter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

@@ -21,6 +21,7 @@ import stsc.common.signals.Signal;
 import stsc.common.signals.StockSignal;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
+import stsc.frontend.zozka.gui.models.DatasetForStock;
 import stsc.signals.DoubleSignal;
 import stsc.storage.ExecutionsStorage;
 import javafx.embed.swing.SwingNode;

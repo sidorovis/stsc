@@ -13,6 +13,7 @@ import org.controlsfx.dialog.Dialogs;
 
 import stsc.frontend.zozka.controllers.CreateAlgorithmController;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
+import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
