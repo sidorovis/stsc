@@ -19,7 +19,7 @@ public class ShowEquityView {
 
 	private final Stage stage;
 
-	ShowEquityView(Statistics statistics, FromToPeriod period) {
+	public ShowEquityView(Statistics statistics, FromToPeriod period) {
 		this.stage = new Stage();
 		this.stage.initModality(Modality.WINDOW_MODAL);
 		setCenterWidget(statistics.getEquityCurveInMoney());

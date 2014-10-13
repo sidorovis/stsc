@@ -51,7 +51,7 @@ public class ShowStockView {
 	private DatasetForStock chartDataset;
 	private SwingNode sn = new SwingNode();
 
-	ShowStockView(Stock stock, FromToPeriod period) {
+	public ShowStockView(Stock stock, FromToPeriod period) {
 		this.stage = new Stage();
 		this.stage.initModality(Modality.WINDOW_MODAL);
 		setCenterWidget(stock, period, Collections.emptyList(), null);

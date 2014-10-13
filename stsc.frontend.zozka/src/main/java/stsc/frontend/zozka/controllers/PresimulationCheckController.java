@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.controllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +20,10 @@ import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.gui.models.SimulationType;
+import stsc.frontend.zozka.gui.models.SimulationsDescription;
+import stsc.frontend.zozka.settings.ShowEquityView;
+import stsc.frontend.zozka.settings.ShowStockView;
+import stsc.frontend.zozka.settings.ZozkaFirstExample;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
@@ -52,12 +56,12 @@ public class PresimulationCheckController implements Initializable {
 	@FXML
 	private Label datafeedPath;
 
-	PresimulationCheckController(final Stage stage, SimulationsDescription simulationsDescription, SimulationType simulationType)
+	public PresimulationCheckController(final Stage stage, SimulationsDescription simulationsDescription, SimulationType simulationType)
 			throws IOException {
 		this.stage = new Stage();
 		this.simulationsDescription = simulationsDescription;
 		this.simulationType = simulationType;
-		final URL location = Zozka.class.getResource("02_presimulation_check.fxml");
+		final URL location = ZozkaFirstExample.class.getResource("02_presimulation_check.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		final Parent gui = loader.load();

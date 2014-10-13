@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.gui.models;
 
 import java.util.Date;
 
@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
-import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;

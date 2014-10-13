@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.controllers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.frontend.zozka.settings.ZozkaFirstExample;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,7 +41,7 @@ public class CreateSimulationSettingsController implements Initializable {
 
 	public CreateSimulationSettingsController(final Stage stage) throws IOException {
 		this.stage = new Stage();
-		final URL location = Zozka.class.getResource("02_create_simulation_settings.fxml");
+		final URL location = ZozkaFirstExample.class.getResource("02_create_simulation_settings.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		final Parent gui = loader.load();

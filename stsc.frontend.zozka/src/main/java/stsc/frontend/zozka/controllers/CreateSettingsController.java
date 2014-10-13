@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.controllers;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +11,10 @@ import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
-import stsc.frontend.zozka.controllers.CreateAlgorithmController;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.frontend.zozka.gui.models.SimulationType;
+import stsc.frontend.zozka.gui.models.SimulationsDescription;
+import stsc.frontend.zozka.settings.ControllerHelper;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
@@ -42,10 +43,10 @@ public class CreateSettingsController implements Initializable {
 	private static final String DATAFEED_PATH_VALIDATION_MESSAGE = "Datafeed path is incorrect";
 
 	private Stage stage;
+	private boolean valid;
 
 	private SimulationsDescription model = new SimulationsDescription();
 
-	private boolean valid = false;
 	private SimulationType simulationType;
 
 	@FXML
@@ -73,27 +74,21 @@ public class CreateSettingsController implements Initializable {
 	@FXML
 	private Button createGeneticSettingsButton;
 
-	public static CreateSettingsController create(final Stage stage) throws IOException {
-		final Stage thisStage = new Stage();
-		final URL location = Zozka.class.getResource("01_create_settings.fxml");
-		final FXMLLoader loader = new FXMLLoader();
-		final Parent gui = loader.load(location.openStream());
-		thisStage.initOwner(stage);
-		thisStage.initModality(Modality.WINDOW_MODAL);
-		final CreateSettingsController controller = loader.getController();
-		controller.setStage(thisStage);
+	public CreateSettingsController(final Stage owner) throws IOException {
+		stage = new Stage();
+		valid = false;
+		final URL location = CreateSettingsController.class.getResource("01_create_settings.fxml");
+		final FXMLLoader loader = new FXMLLoader(location);
+		loader.setController(this);
+		final Parent gui = loader.load();
+		stage.initOwner(owner);
+		stage.initModality(Modality.WINDOW_MODAL);
 		final Scene scene = new Scene(gui);
-		thisStage.setScene(scene);
-		thisStage.setMinHeight(800);
-		thisStage.setMinWidth(640);
-		thisStage.setTitle("Create Simulator Settings");
-		thisStage.centerOnScreen();
-		thisStage.showAndWait();
-		return controller;
-	}
-
-	public void setStage(Stage createSettingsStage) {
-		this.stage = createSettingsStage;
+		stage.setScene(scene);
+		stage.setMinHeight(480);
+		stage.setMinWidth(640);
+		stage.setTitle("Create Simulator Settings");
+		stage.centerOnScreen();
 	}
 
 	@Override
