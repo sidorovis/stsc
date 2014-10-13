@@ -30,6 +30,6 @@ public class ZozkaFirstExample extends Application {
 	}
 
 	public static void main(String[] args) {
-		Application.launch(ZozkaFirstExample.class, (java.lang.String[]) null);
+		Application.launch(ZozkaFirstExample.class, args);
 	}
 }

@@ -312,6 +312,7 @@ public class CreateSettingsController implements Initializable {
 	}
 
 	public boolean isValid() {
+		stage.showAndWait();
 		return valid;
 	}
 
