@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import stsc.common.FromToPeriod;
 import stsc.common.storage.StockStorage;
+import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticFactory;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
@@ -49,7 +50,7 @@ public class SimulationsDescription {
 		return stockStorage;
 	}
 
-	public SimulatorSettingsGridList getGrid() {
+	public SimulatorSettingsGridList getGrid() throws BadParameterException {
 		final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
 		for (ExecutionDescription ed : executionDescriptions) {
 			GridExecutionInitializer ei = ed.createGridExecution(period);
@@ -62,7 +63,7 @@ public class SimulationsDescription {
 		return factory.getList();
 	}
 
-	public SimulatorSettingsGeneticList getGenetic() {
+	public SimulatorSettingsGeneticList getGenetic() throws BadParameterException {
 		final SimulatorSettingsGeneticFactory factory = new SimulatorSettingsGeneticFactory(stockStorage, period);
 		for (ExecutionDescription ed : executionDescriptions) {
 			GeneticExecutionInitializer ei = ed.createGeneticExecution(period);

@@ -15,7 +15,6 @@ import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.gui.models.SimulationsDescription;
 import stsc.frontend.zozka.settings.ControllerHelper;
-import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -131,7 +130,7 @@ public class CreateSettingsController implements Initializable {
 					if (newEd != null) {
 						model.getExecutionDescriptions().set(index, newEd);
 					}
-				} catch (IOException | BadParameterException exception) {
+				} catch (IOException exception) {
 					Dialogs.create().showException(exception);
 				}
 			}
@@ -171,7 +170,7 @@ public class CreateSettingsController implements Initializable {
 				try {
 					final CreateAlgorithmController controller = new CreateAlgorithmController(stage);
 					ed = controller.getExecutionDescription();
-				} catch (IOException | BadParameterException e) {
+				} catch (IOException e) {
 					Dialogs.create().showException(e);
 				}
 				if (ed != null) {

@@ -18,17 +18,10 @@ import stsc.frontend.zozka.gui.models.NumberAlgorithmParameter;
 import stsc.frontend.zozka.gui.models.ParameterType;
 import stsc.frontend.zozka.gui.models.TextAlgorithmParameter;
 import stsc.frontend.zozka.settings.ControllerHelper;
-import stsc.general.simulator.multistarter.BadParameterException;
-import stsc.general.simulator.multistarter.MpDouble;
-import stsc.general.simulator.multistarter.MpInteger;
-import stsc.general.simulator.multistarter.MpIterator;
-import stsc.general.simulator.multistarter.MpString;
-import stsc.general.simulator.multistarter.MpSubExecution;
 import stsc.storage.AlgorithmsStorage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,6 +42,7 @@ public class CreateAlgorithmController implements Initializable {
 
 	private final Stage stage;
 	private boolean valid;
+	private ExecutionDescription executionDescriptionModel;
 
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
@@ -63,7 +57,6 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private TextField executionName;
 
-	private ObservableList<NumberAlgorithmParameter> numberModel = FXCollections.observableArrayList();
 	@FXML
 	private TableView<NumberAlgorithmParameter> numberTable;
 	@FXML
@@ -77,7 +70,6 @@ public class CreateAlgorithmController implements Initializable {
 	@FXML
 	private TableColumn<NumberAlgorithmParameter, String> numberParTo;
 
-	private ObservableList<TextAlgorithmParameter> textModel = FXCollections.observableArrayList();
 	@FXML
 	private TableView<TextAlgorithmParameter> textTable;
 	@FXML
@@ -114,51 +106,18 @@ public class CreateAlgorithmController implements Initializable {
 		setExecutionDescription(executionDescription);
 	}
 
-	public ExecutionDescription getExecutionDescription() throws BadParameterException {
+	public ExecutionDescription getExecutionDescription() {
 		this.stage.showAndWait();
 		if (isValid()) {
-			return createExecutionDescription();
+			return executionDescriptionModel;
 		}
 		return null;
-	}
-
-	private ExecutionDescription createExecutionDescription() throws BadParameterException {
-		final String executionName = this.executionName.getText();
-		final String algorithmName = algorithmClass.getValue();
-
-		final ExecutionDescription ed = new ExecutionDescription(algorithmType.getValue(), executionName, algorithmName);
-		for (NumberAlgorithmParameter p : numberModel) {
-			if (p.getType().equals(ParameterType.INTEGER)) {
-				final String name = p.parameterNameProperty().get();
-				final Integer from = Integer.valueOf(p.getFrom());
-				final Integer to = Integer.valueOf(p.getTo());
-				final Integer step = Integer.valueOf(p.getStep());
-				ed.getParameters().getIntegers().add(new MpInteger(name, from, to, step));
-			} else if (p.getType().equals(ParameterType.DOUBLE)) {
-				final String name = p.parameterNameProperty().get();
-				final Double from = Double.valueOf(p.getFrom());
-				final Double to = Double.valueOf(p.getTo());
-				final Double step = Double.valueOf(p.getStep());
-				ed.getParameters().getDoubles().add(new MpDouble(name, from, to, step));
-			}
-		}
-		for (TextAlgorithmParameter p : textModel) {
-			if (p.getType().equals(ParameterType.STRING)) {
-				final String name = p.parameterNameProperty().get();
-				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
-				ed.getParameters().getStrings().add(new MpString(name, domen));
-			} else if (p.getType().equals(ParameterType.SUB_EXECUTION)) {
-				final String name = p.parameterNameProperty().get();
-				final List<String> domen = TextAlgorithmParameter.createDomenRepresentation(p.domenProperty().get());
-				ed.getParameters().getSubExecutions().add(new MpSubExecution(name, domen));
-			}
-		}
-		return ed;
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
+		executionDescriptionModel = new ExecutionDescription(algorithmType.getValue(), executionName.getText(), algorithmClass.getValue());
 		connectActionsForAlgorithmType();
 		connectActionsForAlgorithmClass();
 		connectQuestionButton();
@@ -242,7 +201,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForNumber() {
-		ControllerHelper.connectDeleteAction(stage, numberTable, numberModel);
+		ControllerHelper.connectDeleteAction(stage, numberTable, executionDescriptionModel.getNumberAlgorithms());
 
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -270,7 +229,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForText() {
-		ControllerHelper.connectDeleteAction(stage, textTable, textModel);
+		ControllerHelper.connectDeleteAction(stage, textTable, executionDescriptionModel.getTextAlgorithms());
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -333,12 +292,12 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private boolean parameterNameExists(String parameterName) {
-		for (NumberAlgorithmParameter p : numberModel) {
+		for (NumberAlgorithmParameter p : executionDescriptionModel.getNumberAlgorithms()) {
 			if (p.parameterNameProperty().get().equals(parameterName)) {
 				return true;
 			}
 		}
-		for (TextAlgorithmParameter p : textModel) {
+		for (TextAlgorithmParameter p : executionDescriptionModel.getTextAlgorithms()) {
 			if (p.parameterNameProperty().get().equals(parameterName)) {
 				return true;
 			}
@@ -364,7 +323,8 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		numberModel.add(new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, integerParPattern, from, step, to));
+		executionDescriptionModel.getNumberAlgorithms().add(
+				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, integerParPattern, from, step, to));
 	}
 
 	private String readIntegerParameter(final String defaultValue) {
@@ -391,7 +351,8 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		numberModel.add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, doubleParPattern, from, step, to));
+		executionDescriptionModel.getNumberAlgorithms().add(
+				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, doubleParPattern, from, step, to));
 	}
 
 	private String readDoubleParameter(final String defaultValue) {
@@ -408,13 +369,13 @@ public class CreateAlgorithmController implements Initializable {
 	private void addStringParameter(String parameterName) {
 		final List<String> values = getStringDomen("String Parameter");
 		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
-		textModel.add(new TextAlgorithmParameter(parameterName, ParameterType.STRING, domen));
+		executionDescriptionModel.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.STRING, domen));
 	}
 
 	private void addSubExecutionParameter(String parameterName) {
 		final List<String> values = getStringDomen("SubExecution Parameter");
 		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
-		textModel.add(new TextAlgorithmParameter(parameterName, ParameterType.SUB_EXECUTION, domen));
+		executionDescriptionModel.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.SUB_EXECUTION, domen));
 	}
 
 	private List<String> getStringDomen(String title) {
@@ -440,26 +401,13 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private boolean isValid() {
+		executionDescriptionModel.setAlgorithmName(this.algorithmClass.getValue());
+		executionDescriptionModel.setExecutionName(this.executionName.getText());
+		executionDescriptionModel.setAlgorithmType(this.algorithmType.getValue());
 		return valid;
 	}
 
 	private void setExecutionDescription(ExecutionDescription ed) {
-		algorithmType.getSelectionModel().select(ed.getAlgorithmType());
-		algorithmClass.getSelectionModel().select(ed.getAlgorithmName());
-		executionName.setText(ed.getExecutionName());
-		for (MpIterator<Integer> i : ed.getParameters().getIntegers().getParams()) {
-			numberModel.add(new NumberAlgorithmParameter(i.getName(), ParameterType.INTEGER, integerParPattern,
-					String.valueOf(i.getFrom()), String.valueOf(i.getStep()), String.valueOf(i.getTo())));
-		}
-		for (MpIterator<Double> i : ed.getParameters().getDoubles().getParams()) {
-			numberModel.add(new NumberAlgorithmParameter(i.getName(), ParameterType.DOUBLE, doubleParPattern, String.valueOf(i.getFrom()),
-					String.valueOf(i.getStep()), String.valueOf(i.getTo())));
-		}
-		for (MpIterator<String> i : ed.getParameters().getStrings().getParams()) {
-			textModel.add(new TextAlgorithmParameter(i.getName(), ParameterType.STRING, i.getDomen()));
-		}
-		for (MpIterator<String> i : ed.getParameters().getSubExecutions().getParams()) {
-			textModel.add(new TextAlgorithmParameter(i.getName(), ParameterType.SUB_EXECUTION, i.getDomen()));
-		}
+		executionDescriptionModel = ed;
 	}
 }

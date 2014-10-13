@@ -7,28 +7,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <BorderPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <Button mnemonicParsing="false" onAction="#loadFromFile" text="Load From File" />
             <Button mnemonicParsing="false" onAction="#saveToFile" text="Save To File" />
+            <Button mnemonicParsing="false" onAction="#addNewExecution" text="Add New Execution" />
         </items>
       </ToolBar>
    </top>
-   <bottom>
-      <Button defaultButton="true" mnemonicParsing="false" onAction="#save" prefHeight="31.0" prefWidth="142.0" text="Save" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="3.0" top="3.0" />
-         </BorderPane.margin>
-      </Button>
-   </bottom>
    <center>
-      <TableView fx:id="executionsTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="executionsTable" onMouseClicked="#mouseClicked" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="executionsNameColumn" prefWidth="152.0" text="Execution Name" />
-          <TableColumn fx:id="algorithmsNameColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="434.0" text="Algorithm Name" />
+          <TableColumn fx:id="executionsNameColumn" prefWidth="152.0" sortable="false" text="Execution Name" />
+          <TableColumn fx:id="algorithmsNameColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="434.0" sortable="false" text="Algorithm Name" />
         </columns>
       </TableView>
    </center>

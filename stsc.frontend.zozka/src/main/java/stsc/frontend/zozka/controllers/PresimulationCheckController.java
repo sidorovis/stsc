@@ -26,6 +26,7 @@ import stsc.frontend.zozka.settings.ShowStockView;
 import stsc.frontend.zozka.settings.ZozkaFirstExample;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.trading.TradeProcessorInit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -79,13 +80,17 @@ public class PresimulationCheckController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
-		setLabels();
+		try {
+			setLabels();
+		} catch (BadParameterException e) {
+			Dialogs.create().showException(e);
+		}
 		connectShowPriceChartForStockButton();
 		connectShowPriceChartWithOnStockButton();
 		connectShowStatisticsEquityChartButton();
 	}
 
-	private void setLabels() {
+	private void setLabels() throws BadParameterException {
 		final long listSize = getListSize();
 		executionRepresentation.setText(simulationType.toString() + " size: " + listSize);
 		datafeedPath.setText("Datafeed: " + simulationsDescription.getDatafeedPath());
@@ -178,7 +183,7 @@ public class PresimulationCheckController implements Initializable {
 		new ShowStockView(stock, simulationsDescription.getPeriod(), executionsName, signalsStorage);
 	}
 
-	private long getListSize() {
+	private long getListSize() throws BadParameterException {
 		if (simulationType == null) {
 			return 0;
 		}
