@@ -324,15 +324,16 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void addIntegerParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
-		final String from = readIntegerParameter(defaultFrom);
+		final String errorMessage = "Integer is a number (-)?([0-9])+";
+		final String from = readIntegerParameter(defaultFrom, "Enter From", "From: ", errorMessage);
 		if (from == null) {
 			return;
 		}
-		final String step = readIntegerParameter(defaultStep);
+		final String step = readIntegerParameter(defaultStep, "Enter Step", "Step: ", errorMessage);
 		if (step == null) {
 			return;
 		}
-		final String to = readIntegerParameter(defaultTo);
+		final String to = readIntegerParameter(defaultTo, "Enter To", "To: ", errorMessage);
 		if (to == null) {
 			return;
 		}
@@ -340,43 +341,42 @@ public class CreateAlgorithmController implements Initializable {
 				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, integerParPattern, from, step, to));
 	}
 
-	private String readIntegerParameter(final String defaultValue) {
-		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead("Enter From")
-				.message("From: ").showTextInput(defaultValue);
+	private String readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
+		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead(masthead)
+				.message(message).showTextInput(defaultValue);
 		if (integerParameter.isPresent() && !integerParPattern.matcher(integerParameter.get()).matches()) {
-			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer")
-					.message("Integer is a number (-)?([0-9])+").showError();
+			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer").message(errorMessage).showError();
 			return null;
 		}
 		return integerParameter.get();
 	}
 
+	private String readDoubleParameter(final String defaultValue, String masthead, String message, String errorMessage) {
+		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title("Double Parameter").masthead(masthead)
+				.message(message).showTextInput(defaultValue);
+		if (doubleParameter.isPresent() && !doubleParPattern.matcher(doubleParameter.get()).matches()) {
+			Dialogs.create().owner(stage).title("Double Parameter").masthead("Please insert double").message(errorMessage).showError();
+			return null;
+		}
+		return doubleParameter.get();
+	}
+
 	private void addDoubleParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
-		final String from = readDoubleParameter(defaultFrom);
+		final String errorMessage = "Double is a number (-)?([0-9])+(.[0-9]+)?";
+		final String from = readDoubleParameter(defaultFrom, "Enter From", "From: ", errorMessage);
 		if (from == null) {
 			return;
 		}
-		final String step = readDoubleParameter(defaultStep);
+		final String step = readDoubleParameter(defaultStep, "Enter Step", "Step: ", errorMessage);
 		if (step == null) {
 			return;
 		}
-		final String to = readDoubleParameter(defaultTo);
+		final String to = readDoubleParameter(defaultTo, "Enter To", "To: ", errorMessage);
 		if (to == null) {
 			return;
 		}
 		executionDescriptionModel.getNumberAlgorithms().add(
 				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, doubleParPattern, from, step, to));
-	}
-
-	private String readDoubleParameter(final String defaultValue) {
-		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title("Double Parameter").masthead("Enter From")
-				.message("From: ").showTextInput(defaultValue);
-		if (doubleParameter.isPresent() && !doubleParPattern.matcher(doubleParameter.get()).matches()) {
-			Dialogs.create().owner(stage).title("Double Parameter").masthead("Please insert double")
-					.message("Double is a number (-)?([0-9])+(.[0-9]+)?").showError();
-			return null;
-		}
-		return doubleParameter.get();
 	}
 
 	private void addStringParameter(String parameterName) {
