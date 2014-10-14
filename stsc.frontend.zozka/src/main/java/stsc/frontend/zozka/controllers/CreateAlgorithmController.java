@@ -87,6 +87,17 @@ public class CreateAlgorithmController implements Initializable {
 	public CreateAlgorithmController(final Stage owner) throws IOException {
 		stage = new Stage();
 		valid = false;
+		initialize(owner);
+	}
+
+	public CreateAlgorithmController(final Stage owner, final ExecutionDescription executionDescription) throws IOException {
+		stage = new Stage();
+		valid = false;
+		setExecutionDescription(executionDescription);
+		initialize(owner);
+	}
+
+	private void initialize(Stage owner) throws IOException {
 		final URL location = CreateAlgorithmController.class.getResource("01_create_algorithm.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
@@ -101,11 +112,6 @@ public class CreateAlgorithmController implements Initializable {
 		stage.centerOnScreen();
 	}
 
-	public CreateAlgorithmController(final Stage owner, final ExecutionDescription executionDescription) throws IOException {
-		this(owner);
-		setExecutionDescription(executionDescription);
-	}
-
 	public ExecutionDescription getExecutionDescription() {
 		this.stage.showAndWait();
 		if (isValid()) {
@@ -117,10 +123,17 @@ public class CreateAlgorithmController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		validateGui();
-		executionDescriptionModel = new ExecutionDescription(algorithmType.getValue(), executionName.getText(), algorithmClass.getValue());
 		connectActionsForAlgorithmType();
 		connectActionsForAlgorithmClass();
 		connectQuestionButton();
+		if (executionDescriptionModel == null) {
+			executionDescriptionModel = new ExecutionDescription(this.algorithmType.getValue(), this.executionName.getText(),
+					this.algorithmClass.getValue());
+		} else {
+			algorithmType.getSelectionModel().select(executionDescriptionModel.getAlgorithmType());
+			executionName.setText(executionDescriptionModel.getExecutionName());
+			algorithmClass.getSelectionModel().select(executionDescriptionModel.getAlgorithmName());
+		}
 		connectTableForNumber();
 		connectTableForText();
 		connectAddParameter();
