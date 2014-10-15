@@ -1,16 +1,15 @@
 package stsc.frontend.zozka.controllers;
 
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
@@ -26,7 +25,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -77,7 +75,38 @@ public class SimulatorSettingsController {
 
 	@FXML
 	private void loadFromFile() {
-		System.out.println("load");
+		if (!model.isEmpty()) {
+			final Action response = Dialogs.create().owner(owner).title("Are you sure?")
+					.masthead("Model have " + model.size() + " execution descriptions")
+					.message("Do you want to erase them and load from file?").showConfirm();
+			if (response != Dialog.Actions.YES) {
+				return;
+			}
+		}
+		final FileChooser dc = new FileChooser();
+		dc.setTitle("File To Load");
+		final File f = dc.showOpenDialog(owner);
+		try {
+			if (f != null) {
+				if (!(f.exists() && f.isFile())) {
+					Dialogs.create().owner(owner).title("Simulator Settings Load Error")
+							.masthead("File can't be loaded (" + f.getAbsolutePath() + ")").message("Please choose another one")
+							.showError();
+
+				}
+				try (ObjectInputStream is = new ObjectInputStream(new FileInputStream(f))) {
+					final int size = is.readInt();
+					model.clear();
+					for (int i = 0; i < size; ++i) {
+						final ExecutionDescription ed = ExecutionDescription.createForLoadFromFile();
+						ed.readExternal(is);
+						model.add(ed);
+					}
+				}
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			Dialogs.create().owner(owner).showException(e);
+		}
 	}
 
 	@FXML
@@ -86,7 +115,13 @@ public class SimulatorSettingsController {
 		dc.setTitle("File To Save");
 		final File f = dc.showSaveDialog(owner);
 		try {
-			if (f != null && f.createNewFile()) {
+			if (f != null) {
+				if (!f.canWrite()) {
+					Dialogs.create().owner(owner).title("Simulator Settings Save Error")
+							.masthead("File can't be writen (" + f.getAbsolutePath() + ")").message("Please choose another one")
+							.showError();
+					return;
+				}
 				try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f))) {
 					os.writeInt(model.size());
 					for (ExecutionDescription executionDescription : model) {
@@ -95,7 +130,7 @@ public class SimulatorSettingsController {
 				}
 			}
 		} catch (IOException e) {
-			Dialogs.create().showException(e);
+			Dialogs.create().owner(owner).showException(e);
 		}
 	}
 

@@ -31,6 +31,18 @@ public final class ExecutionDescription implements Externalizable {
 	private final ObservableList<NumberAlgorithmParameter> numberAlgorithms;
 	private final ObservableList<TextAlgorithmParameter> textAlgorithms;
 
+	public static ExecutionDescription createForLoadFromFile() {
+		return new ExecutionDescription();
+	}
+
+	private ExecutionDescription() {
+		this.algorithmType = AlgorithmType.STOCK_VALUE;
+		this.executionName = "";
+		this.algorithmName = "";
+		this.numberAlgorithms = FXCollections.observableArrayList();
+		this.textAlgorithms = FXCollections.observableArrayList();
+	}
+
 	public ExecutionDescription(AlgorithmType algorithmType, String executionName, String algorithmName) {
 		this.algorithmType = algorithmType;
 		this.executionName = executionName;
