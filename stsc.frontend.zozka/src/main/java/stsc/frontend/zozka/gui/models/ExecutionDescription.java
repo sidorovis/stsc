@@ -1,5 +1,9 @@
 package stsc.frontend.zozka.gui.models;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -16,7 +20,9 @@ import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 
-public final class ExecutionDescription {
+public final class ExecutionDescription implements Externalizable {
+
+	private static final long serialVersionUID = 1312747786515253819L;
 
 	private AlgorithmType algorithmType;
 	private String executionName;
@@ -117,6 +123,55 @@ public final class ExecutionDescription {
 	@Override
 	public String toString() {
 		return String.valueOf(executionName) + " (" + String.valueOf(algorithmName) + ")";
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		algorithmType = AlgorithmType.valueOf(in.readUTF());
+		executionName = in.readUTF();
+		algorithmName = in.readUTF();
+		int sizeOfNumbers = in.readInt();
+		numberAlgorithms.clear();
+		for (int i = 0; i < sizeOfNumbers; ++i) {
+			String parameterName = in.readUTF();
+			String type = in.readUTF();
+			String from = in.readUTF();
+			String step = in.readUTF();
+			String to = in.readUTF();
+			boolean valid = in.readBoolean();
+			numberAlgorithms.add(new NumberAlgorithmParameter(parameterName, ParameterType.valueOf(type), from, step, to, valid));
+		}
+		int sizeOfText = in.readInt();
+		textAlgorithms.clear();
+		for (int i = 0; i < sizeOfText; ++i) {
+			String parameterName = in.readUTF();
+			String type = in.readUTF();
+			String domen = in.readUTF();
+			textAlgorithms.add(new TextAlgorithmParameter(parameterName, ParameterType.valueOf(type), TextAlgorithmParameter
+					.createDomenRepresentation(domen)));
+		}
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeUTF(algorithmType.name());
+		out.writeUTF(executionName);
+		out.writeUTF(algorithmName);
+		out.writeInt(numberAlgorithms.size());
+		for (NumberAlgorithmParameter numberAlgorithmParameter : numberAlgorithms) {
+			out.writeUTF(numberAlgorithmParameter.parameterNameProperty().getValue());
+			out.writeUTF(numberAlgorithmParameter.getType().name());
+			out.writeUTF(numberAlgorithmParameter.getFrom());
+			out.writeUTF(numberAlgorithmParameter.getStep());
+			out.writeUTF(numberAlgorithmParameter.getTo());
+			out.writeBoolean(numberAlgorithmParameter.isValid());
+		}
+		out.writeInt(textAlgorithms.size());
+		for (TextAlgorithmParameter textAlgorithmParameter : textAlgorithms) {
+			out.writeUTF(textAlgorithmParameter.parameterNameProperty().getValue());
+			out.writeUTF(textAlgorithmParameter.getType());
+			out.writeUTF(textAlgorithmParameter.domenProperty().getValue());
+		}
 	}
 
 }

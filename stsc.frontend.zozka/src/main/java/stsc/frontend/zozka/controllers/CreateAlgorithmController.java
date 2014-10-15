@@ -45,8 +45,6 @@ public class CreateAlgorithmController implements Initializable {
 	private ExecutionDescription executionDescriptionModel;
 
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
-	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
-	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
 
 	@FXML
 	private ComboBox<AlgorithmType> algorithmType;
@@ -338,13 +336,13 @@ public class CreateAlgorithmController implements Initializable {
 			return;
 		}
 		executionDescriptionModel.getNumberAlgorithms().add(
-				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, integerParPattern, from, step, to));
+				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
 	}
 
 	private String readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
 		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead(masthead)
 				.message(message).showTextInput(defaultValue);
-		if (integerParameter.isPresent() && !integerParPattern.matcher(integerParameter.get()).matches()) {
+		if (integerParameter.isPresent() && !NumberAlgorithmParameter.integerParPattern.matcher(integerParameter.get()).matches()) {
 			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer").message(errorMessage).showError();
 			return null;
 		}
@@ -354,7 +352,7 @@ public class CreateAlgorithmController implements Initializable {
 	private String readDoubleParameter(final String defaultValue, String masthead, String message, String errorMessage) {
 		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title("Double Parameter").masthead(masthead)
 				.message(message).showTextInput(defaultValue);
-		if (doubleParameter.isPresent() && !doubleParPattern.matcher(doubleParameter.get()).matches()) {
+		if (doubleParameter.isPresent() && !NumberAlgorithmParameter.doubleParPattern.matcher(doubleParameter.get()).matches()) {
 			Dialogs.create().owner(stage).title("Double Parameter").masthead("Please insert double").message(errorMessage).showError();
 			return null;
 		}
@@ -376,7 +374,7 @@ public class CreateAlgorithmController implements Initializable {
 			return;
 		}
 		executionDescriptionModel.getNumberAlgorithms().add(
-				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, doubleParPattern, from, step, to));
+				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
 	}
 
 	private void addStringParameter(String parameterName) {

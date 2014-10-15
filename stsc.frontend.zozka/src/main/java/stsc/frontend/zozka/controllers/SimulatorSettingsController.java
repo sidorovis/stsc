@@ -1,7 +1,16 @@
 package stsc.frontend.zozka.controllers;
 
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
@@ -17,6 +26,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class SimulatorSettingsController {
@@ -37,11 +48,11 @@ public class SimulatorSettingsController {
 
 	public SimulatorSettingsController(Stage owner) throws IOException {
 		this.owner = owner;
+		this.model = FXCollections.observableArrayList();
 		final URL location = SimulatorSettingsController.class.getResource("03_simulation_settings_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		this.gui = loader.load();
-		this.model = FXCollections.observableArrayList();
 		initialize();
 	}
 
@@ -71,7 +82,21 @@ public class SimulatorSettingsController {
 
 	@FXML
 	private void saveToFile() {
-		System.out.println("save2");
+		final FileChooser dc = new FileChooser();
+		dc.setTitle("File To Save");
+		final File f = dc.showSaveDialog(owner);
+		try {
+			if (f != null && f.createNewFile()) {
+				try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f))) {
+					os.writeInt(model.size());
+					for (ExecutionDescription executionDescription : model) {
+						executionDescription.writeExternal(os);
+					}
+				}
+			}
+		} catch (IOException e) {
+			Dialogs.create().showException(e);
+		}
 	}
 
 	@FXML

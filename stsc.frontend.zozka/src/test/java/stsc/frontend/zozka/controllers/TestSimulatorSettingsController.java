@@ -10,7 +10,7 @@ public class TestSimulatorSettingsController extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		SimulatorSettingsController controller = new SimulatorSettingsController(stage);
+		final SimulatorSettingsController controller = new SimulatorSettingsController(stage);
 		BorderPane pane = new BorderPane();
 		pane.setCenter(controller.getGui());
 		pane.setBottom(new Button("Test Save"));

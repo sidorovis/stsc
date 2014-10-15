@@ -7,6 +7,9 @@ import javafx.beans.property.StringProperty;
 
 public final class NumberAlgorithmParameter {
 
+	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
+	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
+
 	private final StringProperty parameterName;
 	private final ParameterType type;
 	private final Pattern pattern;
@@ -15,14 +18,22 @@ public final class NumberAlgorithmParameter {
 	private final StringProperty to;
 	private boolean valid;
 
-	public NumberAlgorithmParameter(String parameterName, ParameterType type, Pattern pattern, String from, String step, String to) {
+	public NumberAlgorithmParameter(String parameterName, ParameterType type, String from, String step, String to) {
+		this(parameterName, type, from, step, to, true);
+	}
+
+	public NumberAlgorithmParameter(String parameterName, ParameterType type, String from, String step, String to, boolean valid) {
 		this.parameterName = new SimpleStringProperty(parameterName);
 		this.type = type;
-		this.pattern = pattern;
+		if (type.equals(ParameterType.INTEGER)) {
+			this.pattern = integerParPattern;
+		} else {
+			this.pattern = doubleParPattern;
+		}
 		this.from = new SimpleStringProperty(from);
 		this.step = new SimpleStringProperty(step);
 		this.to = new SimpleStringProperty(to);
-		this.valid = true;
+		this.valid = valid;
 	}
 
 	public StringProperty parameterNameProperty() {
@@ -90,4 +101,5 @@ public final class NumberAlgorithmParameter {
 		// return;
 		// }
 	}
+
 }
