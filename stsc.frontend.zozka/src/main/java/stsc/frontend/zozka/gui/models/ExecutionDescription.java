@@ -151,7 +151,7 @@ public final class ExecutionDescription implements Externalizable {
 			String step = in.readUTF();
 			String to = in.readUTF();
 			boolean valid = in.readBoolean();
-			numberAlgorithms.add(new NumberAlgorithmParameter(parameterName, ParameterType.valueOf(type), from, step, to, valid));
+			numberAlgorithms.add(new NumberAlgorithmParameter(parameterName, ParameterType.findByName(type), from, step, to, valid));
 		}
 		int sizeOfText = in.readInt();
 		textAlgorithms.clear();
@@ -159,7 +159,7 @@ public final class ExecutionDescription implements Externalizable {
 			String parameterName = in.readUTF();
 			String type = in.readUTF();
 			String domen = in.readUTF();
-			textAlgorithms.add(new TextAlgorithmParameter(parameterName, ParameterType.valueOf(type), TextAlgorithmParameter
+			textAlgorithms.add(new TextAlgorithmParameter(parameterName, ParameterType.findByName(type), TextAlgorithmParameter
 					.createDomenRepresentation(domen)));
 		}
 	}

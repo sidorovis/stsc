@@ -1,5 +1,8 @@
 package stsc.frontend.zozka.gui.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpIterator;
@@ -11,6 +14,10 @@ public enum ParameterType {
 	INTEGER("Integer", Integer.class, MpInteger.class), DOUBLE("Double", Double.class, MpDouble.class), STRING("String", String.class,
 			MpString.class), SUB_EXECUTION("Sub Execution", String.class, MpSubExecution.class);
 
+	private static class NameToParameterType {
+		public static final Map<String, ParameterType> values = new HashMap<>();
+	}
+
 	private final String name;
 	private final Class<?> classType;
 	private final Class<? extends MpIterator<?>> iteratorType;
@@ -19,6 +26,7 @@ public enum ParameterType {
 		this.name = name;
 		this.classType = classType;
 		this.iteratorType = iteratorType;
+		NameToParameterType.values.put(name, this);
 	}
 
 	public String getName() {
@@ -47,5 +55,9 @@ public enum ParameterType {
 
 	public boolean isSubString() {
 		return this.equals(SUB_EXECUTION);
+	}
+
+	public static ParameterType findByName(String name) {
+		return NameToParameterType.values.get(name);
 	}
 }

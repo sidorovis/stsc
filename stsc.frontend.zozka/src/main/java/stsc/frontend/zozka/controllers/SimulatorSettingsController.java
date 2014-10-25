@@ -2,6 +2,7 @@ package stsc.frontend.zozka.controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -94,18 +95,22 @@ public class SimulatorSettingsController {
 							.showError();
 
 				}
-				try (ObjectInputStream is = new ObjectInputStream(new FileInputStream(f))) {
-					final int size = is.readInt();
-					model.clear();
-					for (int i = 0; i < size; ++i) {
-						final ExecutionDescription ed = ExecutionDescription.createForLoadFromFile();
-						ed.readExternal(is);
-						model.add(ed);
-					}
-				}
+				loadModelFromFile(f);
 			}
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			Dialogs.create().owner(owner).showException(e);
+		}
+	}
+
+	private void loadModelFromFile(File f) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try (ObjectInputStream is = new ObjectInputStream(new FileInputStream(f))) {
+			final int size = is.readInt();
+			model.clear();
+			for (int i = 0; i < size; ++i) {
+				final ExecutionDescription ed = ExecutionDescription.createForLoadFromFile();
+				ed.readExternal(is);
+				model.add(ed);
+			}
 		}
 	}
 
@@ -122,15 +127,19 @@ public class SimulatorSettingsController {
 							.showError();
 					return;
 				}
-				try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f))) {
-					os.writeInt(model.size());
-					for (ExecutionDescription executionDescription : model) {
-						executionDescription.writeExternal(os);
-					}
-				}
+				saveModelToFile(f);
 			}
 		} catch (IOException e) {
 			Dialogs.create().owner(owner).showException(e);
+		}
+	}
+
+	private void saveModelToFile(File f) throws FileNotFoundException, IOException {
+		try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f))) {
+			os.writeInt(model.size());
+			for (ExecutionDescription executionDescription : model) {
+				executionDescription.writeExternal(os);
+			}
 		}
 	}
 
