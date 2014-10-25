@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class TestSimulatorSettingsController extends Application {
+public class VisualTestSimulatorSettingsController extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -20,6 +20,6 @@ public class TestSimulatorSettingsController extends Application {
 	}
 
 	public static void main(String[] args) {
-		Application.launch(TestSimulatorSettingsController.class, args);
+		Application.launch(VisualTestSimulatorSettingsController.class, args);
 	}
 }

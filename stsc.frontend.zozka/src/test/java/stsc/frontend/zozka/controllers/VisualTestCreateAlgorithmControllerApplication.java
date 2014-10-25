@@ -4,9 +4,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
 
-public class TestCreateAlgorithmControllerApplication extends Application {
+public class VisualTestCreateAlgorithmControllerApplication extends Application {
 
-	public TestCreateAlgorithmControllerApplication() {
+	public VisualTestCreateAlgorithmControllerApplication() {
 
 	}
 
@@ -22,7 +22,7 @@ public class TestCreateAlgorithmControllerApplication extends Application {
 	}
 
 	public static void main(String[] args) {
-		Application.launch(TestCreateAlgorithmControllerApplication.class, (java.lang.String[]) null);
+		Application.launch(VisualTestCreateAlgorithmControllerApplication.class, (java.lang.String[]) null);
 
 	}
 }

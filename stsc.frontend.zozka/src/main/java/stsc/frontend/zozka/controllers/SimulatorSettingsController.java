@@ -1,12 +1,7 @@
 package stsc.frontend.zozka.controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 
 import org.controlsfx.control.action.Action;
@@ -14,10 +9,9 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
+import stsc.frontend.zozka.models.SimulatorSettingsModel;
 import stsc.frontend.zozka.settings.ControllerHelper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,7 +28,7 @@ public class SimulatorSettingsController {
 	private final Stage owner;
 	private final Parent gui;
 
-	private final ObservableList<ExecutionDescription> model;
+	private final SimulatorSettingsModel model;
 
 	@FXML
 	private BorderPane mainPane;
@@ -47,7 +41,7 @@ public class SimulatorSettingsController {
 
 	public SimulatorSettingsController(Stage owner) throws IOException {
 		this.owner = owner;
-		this.model = FXCollections.observableArrayList();
+		this.model = new SimulatorSettingsModel();
 		final URL location = SimulatorSettingsController.class.getResource("03_simulation_settings_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
@@ -57,8 +51,8 @@ public class SimulatorSettingsController {
 
 	private void initialize() {
 		validateGui();
-		executionsTable.setItems(model);
-		ControllerHelper.connectDeleteAction(owner, executionsTable, model);
+		executionsTable.setItems(model.getModel());
+		ControllerHelper.connectDeleteAction(owner, executionsTable, model.getModel());
 		executionsNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExecutionName()));
 		algorithmsNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAlgorithmName()));
 	}
@@ -95,22 +89,10 @@ public class SimulatorSettingsController {
 							.showError();
 
 				}
-				loadModelFromFile(f);
+				model.loadFromFile(f);
 			}
 		} catch (Exception e) {
 			Dialogs.create().owner(owner).showException(e);
-		}
-	}
-
-	private void loadModelFromFile(File f) throws FileNotFoundException, IOException, ClassNotFoundException {
-		try (ObjectInputStream is = new ObjectInputStream(new FileInputStream(f))) {
-			final int size = is.readInt();
-			model.clear();
-			for (int i = 0; i < size; ++i) {
-				final ExecutionDescription ed = ExecutionDescription.createForLoadFromFile();
-				ed.readExternal(is);
-				model.add(ed);
-			}
 		}
 	}
 
@@ -127,19 +109,10 @@ public class SimulatorSettingsController {
 							.showError();
 					return;
 				}
-				saveModelToFile(f);
+				model.saveToFile(f);
 			}
 		} catch (IOException e) {
 			Dialogs.create().owner(owner).showException(e);
-		}
-	}
-
-	private void saveModelToFile(File f) throws FileNotFoundException, IOException {
-		try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f))) {
-			os.writeInt(model.size());
-			for (ExecutionDescription executionDescription : model) {
-				executionDescription.writeExternal(os);
-			}
 		}
 	}
 

@@ -172,7 +172,7 @@ public final class ExecutionDescription implements Externalizable {
 		out.writeInt(numberAlgorithms.size());
 		for (NumberAlgorithmParameter numberAlgorithmParameter : numberAlgorithms) {
 			out.writeUTF(numberAlgorithmParameter.parameterNameProperty().getValue());
-			out.writeUTF(numberAlgorithmParameter.getType().name());
+			out.writeUTF(numberAlgorithmParameter.getType().getName());
 			out.writeUTF(numberAlgorithmParameter.getFrom());
 			out.writeUTF(numberAlgorithmParameter.getStep());
 			out.writeUTF(numberAlgorithmParameter.getTo());
