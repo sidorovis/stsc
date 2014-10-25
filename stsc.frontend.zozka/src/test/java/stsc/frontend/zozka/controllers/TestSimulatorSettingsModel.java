@@ -89,6 +89,12 @@ public class TestSimulatorSettingsModel {
 			assertEquals("2.54", nap1.get(0).getFrom());
 			assertEquals("4.12", nap1.get(0).getStep());
 			assertEquals("26.12", nap1.get(0).getTo());
+
+			assertEquals(4, TextAlgorithmParameter.createDomenRepresentation(tap0.get(0).domenProperty().getValue()).size());
+			assertEquals(6, TextAlgorithmParameter.createDomenRepresentation(tap0.get(1).domenProperty().getValue()).size());
+
+			assertEquals(6, TextAlgorithmParameter.createDomenRepresentation(tap1.get(0).domenProperty().getValue()).size());
+			assertEquals(4, TextAlgorithmParameter.createDomenRepresentation(tap1.get(1).domenProperty().getValue()).size());
 		}
 		assertEquals(true, f.delete());
 	}
