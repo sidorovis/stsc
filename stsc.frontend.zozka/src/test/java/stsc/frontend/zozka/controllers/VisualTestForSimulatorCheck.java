@@ -10,16 +10,15 @@ import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class VisualTestForSimulatorCheck extends Application {
@@ -28,31 +27,26 @@ public class VisualTestForSimulatorCheck extends Application {
 	private final TabPane tabPane = new TabPane();
 
 	private PeriodAndDatafeedController periodAndDatafeedController;
-	private SimulatorSettingsController simulatorSettingsController;
+	private TextArea textArea = new TextArea();
 
 	private void fillTopPane(Stage stage) throws IOException {
-		BorderPane pane = new BorderPane();
+		final BorderPane pane = new BorderPane();
 		periodAndDatafeedController = new PeriodAndDatafeedController(stage);
-		simulatorSettingsController = new SimulatorSettingsController(stage);
 		pane.setTop(periodAndDatafeedController.getGui());
-		pane.setCenter(simulatorSettingsController.getGui());
+		pane.setCenter(textArea);
+
+		final Button createSettingsButton = new Button("Create Settings");
+		createSettingsButton.setOnAction(e -> {
+			createSettings();
+		});
+
+		pane.setBottom(createSettingsButton);
+		BorderPane.setAlignment(createSettingsButton, Pos.CENTER);
 		splitPane.getItems().add(pane);
 	}
 
 	private void fillCenterPane(Stage stage) {
-		addCreateSettings();
-	}
-
-	private void addCreateSettings() {
-		final VBox vbox = new VBox();
-		vbox.setCenterShape(true);
-		final Button button = new Button("Create Settings");
-		button.setOnAction(e -> {
-			createSettings();
-		});
-		vbox.getChildren().add(button);
-		vbox.getChildren().add(tabPane);
-		splitPane.getItems().add(vbox);
+		splitPane.getItems().add(tabPane);
 	}
 
 	private void createSettings() {
@@ -70,6 +64,7 @@ public class VisualTestForSimulatorCheck extends Application {
 
 		tab.setContent(sn);
 		tabPane.getTabs().add(tab);
+		tabPane.getSelectionModel().select(tab);
 	}
 
 	@Override
