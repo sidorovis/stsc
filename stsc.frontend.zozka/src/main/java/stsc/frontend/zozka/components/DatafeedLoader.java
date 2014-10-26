@@ -27,14 +27,16 @@ public class DatafeedLoader {
 	}
 
 	public void startLoad(EventHandler<WorkerStateEvent> successHandler, EventHandler<WorkerStateEvent> exitHandler)
-			throws ClassNotFoundException, IOException {
+			throws ClassNotFoundException, IOException, InterruptedException {
 		final ProgressBarTask task = new ProgressBarTask(yfStockStorage);
 		Dialogs.create().owner(owner).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
-		new Thread(task).start();
+		final Thread thread = new Thread(task);
+		thread.start();
 		task.setOnSucceeded(successHandler);
 		task.setOnFailed(exitHandler);
 		task.setOnCancelled(exitHandler);
 		yfStockStorage.startLoadStocks();
+		thread.join();
 	}
 
 	public StockStorage getStockStorage() {

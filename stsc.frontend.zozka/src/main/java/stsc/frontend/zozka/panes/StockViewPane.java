@@ -1,12 +1,10 @@
-package stsc.frontend.zozka.settings;
+package stsc.frontend.zozka.panes;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
@@ -14,7 +12,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
 
 import stsc.common.FromToPeriod;
 import stsc.common.signals.Signal;
@@ -26,49 +23,18 @@ import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.signals.DoubleSignal;
 import stsc.storage.ExecutionsStorage;
 import javafx.embed.swing.SwingNode;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ShowStockView {
+public class StockViewPane extends BorderPane {
 
-	private final Stage stage;
+	private final Stage owner;
 	private DatasetForStock chartDataset;
 	private SwingNode sn = new SwingNode();
 
-	public ShowStockView(Stock stock, FromToPeriod period) {
-		this.stage = new Stage();
-		this.stage.initModality(Modality.WINDOW_MODAL);
-		setCenterWidget(stock, period, Collections.emptyList(), null);
-		this.stage.setMinHeight(380);
-		this.stage.setMinWidth(480);
-		this.stage.setHeight(380);
-		this.stage.setWidth(480);
-		this.stage.setTitle("Stock: " + stock.getName());
-		this.stage.centerOnScreen();
-		this.stage.showAndWait();
-	}
-
-	public ShowStockView(Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
-		this.stage = new Stage();
-		this.stage.initModality(Modality.WINDOW_MODAL);
-		setCenterWidget(stock, period, executionsName, signalsStorage);
-		this.stage.setMinHeight(380);
-		this.stage.setMinWidth(480);
-		this.stage.setHeight(380);
-		this.stage.setWidth(480);
-		this.stage.setTitle("Stock: " + stock.getName());
-		this.stage.centerOnScreen();
-		this.stage.showAndWait();
-	}
-
-	private void setCenterWidget(final Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
-		final BorderPane root = new BorderPane();
-		final Scene scene = new Scene(root);
-		this.stage.setScene(scene);
+	public StockViewPane(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
+		this.owner = owner;
 		this.chartDataset = new DatasetForStock(stock, period);
-
 		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset, true);
 		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(3));
 		int index = 1;
@@ -97,6 +63,6 @@ public class ShowStockView {
 		chartPanel.setFillZoomRectangle(false);
 		chartPanel.setPopupMenu(null);
 		sn.setContent(chartPanel);
-		root.setCenter(sn);
+		this.setCenter(sn);
 	}
 }

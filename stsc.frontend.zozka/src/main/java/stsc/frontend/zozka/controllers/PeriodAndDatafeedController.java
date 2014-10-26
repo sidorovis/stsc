@@ -23,10 +23,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-public class PeriodAndDatafeedController {
+public class PeriodAndDatafeedController extends Pane {
 
 	private Stage owner;
 	private final Parent gui;
@@ -99,6 +100,8 @@ public class PeriodAndDatafeedController {
 		try {
 			if (datafeed == null || !datafeed.equals(datafeedPath.getText())) {
 				startLoadStockStorage(hander);
+			} else {
+				hander.handle(new WorkerStateEvent(null, WorkerStateEvent.WORKER_STATE_SUCCEEDED));
 			}
 		} catch (Exception e) {
 			Dialogs.create().showException(e);
