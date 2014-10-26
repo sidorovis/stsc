@@ -3,6 +3,7 @@ package stsc.frontend.zozka.components;
 import java.io.File;
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Window;
@@ -15,6 +16,7 @@ import stsc.yahoo.YahooFileStockStorage;
 public class DatafeedLoader {
 
 	private final Window owner;
+	private Thread loadThread;
 	private final YahooFileStockStorage yfStockStorage;
 
 	public DatafeedLoader(final Window owner, final File datafeed) throws Exception {
@@ -29,17 +31,23 @@ public class DatafeedLoader {
 	public void startLoad(EventHandler<WorkerStateEvent> successHandler, EventHandler<WorkerStateEvent> exitHandler)
 			throws ClassNotFoundException, IOException, InterruptedException {
 		final ProgressBarTask task = new ProgressBarTask(yfStockStorage);
+		this.loadThread = new Thread(task);
+		this.loadThread.start();
 		Dialogs.create().owner(owner).title("Stock Storage loading").message("Loading...").showWorkerProgress(task);
-		final Thread thread = new Thread(task);
-		thread.start();
-		task.setOnSucceeded(successHandler);
+		task.setOnSucceeded(eh -> Platform.runLater(() -> {
+			try {
+				yfStockStorage.waitForLoad();
+			} catch (Exception e) {
+				Dialogs.create().showException(e);
+			}
+			successHandler.handle(eh);
+		}));
 		task.setOnFailed(exitHandler);
 		task.setOnCancelled(exitHandler);
 		yfStockStorage.startLoadStocks();
-		thread.join();
 	}
 
-	public StockStorage getStockStorage() {
+	public StockStorage getStockStorage() throws InterruptedException {
 		return yfStockStorage;
 	}
 

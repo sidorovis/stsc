@@ -70,7 +70,7 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 
 	private void loadStocks() throws ClassNotFoundException, IOException {
 		logger.info("stocks load was initiated");
-		StockReadThread stockReadThread = new StockReadThread(settings, this);
+		final StockReadThread stockReadThread = new StockReadThread(settings, this);
 
 		for (int i = 0; i < readStockThreadSize; ++i) {
 			final Thread newThread = new Thread(stockReadThread);

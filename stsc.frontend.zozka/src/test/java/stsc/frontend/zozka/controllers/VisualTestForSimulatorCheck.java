@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.controlsfx.dialog.Dialogs;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -57,7 +56,11 @@ public class VisualTestForSimulatorCheck extends Application {
 
 		final Button calculateSeries = new Button("Calculate Series");
 		calculateSeries.setOnAction(e -> {
-			calculateSeries();
+			try {
+				calculateSeries();
+			} catch (Exception exc) {
+				Dialogs.create().showException(exc);
+			}
 		});
 
 		final Button calculateEquityButton = new Button("Calculate Equity");
@@ -78,7 +81,7 @@ public class VisualTestForSimulatorCheck extends Application {
 		splitPane.getItems().add(tabPane);
 	}
 
-	private void calculateSeries() {
+	private void calculateSeries() throws InterruptedException {
 		periodAndDatafeedController.loadStockStorage(h -> {
 			calculateSeries(periodAndDatafeedController.getStockStorage());
 		});

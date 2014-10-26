@@ -115,8 +115,12 @@ public class PeriodAndDatafeedController extends Pane {
 			datafeed = datafeedPath.getText();
 			final DatafeedLoader loader = new DatafeedLoader(getGui().getScene().getWindow(), new File(datafeed));
 			loader.startLoad(sh -> {
-				stockStorage = loader.getStockStorage();
-				hander.handle(sh);
+				try {
+					stockStorage = loader.getStockStorage();
+					hander.handle(sh);
+				} catch (Exception e) {
+					Dialogs.create().showException(e);
+				}
 			}, eh -> {
 				stockStorage = null;
 				Dialogs.create().title("Datafeed load failed").masthead(null).message("Error: " + eh.toString()).showError();
