@@ -4,11 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.FromToPeriod;
+import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.components.DatafeedLoader;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,6 +31,8 @@ public class PeriodAndDatafeedController {
 	private Stage owner;
 	private final Parent gui;
 
+	private String datafeed;
+	private StockStorage stockStorage;
 	@FXML
 	private Label datafeedPath;
 	@FXML
@@ -76,5 +85,46 @@ public class PeriodAndDatafeedController {
 				datafeedPath.setText(result.getAbsolutePath());
 			}
 		}
+	}
+
+	private Date createDate(LocalDate date) {
+		return new Date(date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
+	}
+
+	public StockStorage getStockStorage() {
+		return stockStorage;
+	}
+
+	public boolean loadStockStorage(EventHandler<WorkerStateEvent> hander) {
+		try {
+			if (datafeed == null || !datafeed.equals(datafeedPath.getText())) {
+				startLoadStockStorage(hander);
+			}
+		} catch (Exception e) {
+			Dialogs.create().showException(e);
+			return false;
+		}
+		return true;
+	}
+
+	private void startLoadStockStorage(EventHandler<WorkerStateEvent> hander) {
+		try {
+			datafeed = datafeedPath.getText();
+			final DatafeedLoader loader = new DatafeedLoader(getGui().getScene().getWindow(), new File(datafeed));
+			loader.startLoad(sh -> {
+				stockStorage = loader.getStockStorage();
+				hander.handle(sh);
+			}, eh -> {
+				stockStorage = null;
+				Dialogs.create().title("Datafeed load failed").masthead(null).message("Error: " + eh.toString()).showError();
+				hander.handle(eh);
+			});
+		} catch (Exception e) {
+			Dialogs.create().showException(e);
+		}
+	}
+
+	public FromToPeriod getPeriod() {
+		return new FromToPeriod(createDate(fromPeriod.getValue()), createDate(toPeriod.getValue()));
 	}
 }

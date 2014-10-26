@@ -6,7 +6,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import stsc.common.FromToPeriod;
 import stsc.general.statistic.EquityCurve;
 import stsc.general.statistic.Statistics;
 import javafx.embed.swing.SwingNode;
@@ -19,7 +18,7 @@ public class ShowEquityView {
 
 	private final Stage stage;
 
-	public ShowEquityView(Statistics statistics, FromToPeriod period) {
+	public ShowEquityView(Statistics statistics) {
 		this.stage = new Stage();
 		this.stage.initModality(Modality.WINDOW_MODAL);
 		setCenterWidget(statistics.getEquityCurveInMoney());

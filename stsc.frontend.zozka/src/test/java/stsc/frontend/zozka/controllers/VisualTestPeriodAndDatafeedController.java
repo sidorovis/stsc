@@ -12,10 +12,19 @@ public class VisualTestPeriodAndDatafeedController extends Application {
 		final PeriodAndDatafeedController controller = new PeriodAndDatafeedController(stage);
 		BorderPane pane = new BorderPane();
 		pane.setCenter(controller.getGui());
-		pane.setBottom(new Button("Test Save"));
+		final Button save = new Button("Test Save");
+		pane.setBottom(save);
 		final Scene scene = new Scene(pane);
 		stage.setScene(scene);
 		stage.show();
+		save.setOnAction(eh -> {
+			System.out.println(controller.getPeriod());
+			controller.loadStockStorage(hs -> {
+				System.out.println(hs);
+				System.out.println(controller.getStockStorage());
+			});
+		});
+
 	}
 
 	public static void main(String[] args) {

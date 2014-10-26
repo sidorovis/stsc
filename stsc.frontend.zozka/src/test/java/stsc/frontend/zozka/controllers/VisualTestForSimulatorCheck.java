@@ -19,6 +19,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class VisualTestForSimulatorCheck extends Application {
@@ -29,27 +30,42 @@ public class VisualTestForSimulatorCheck extends Application {
 	private PeriodAndDatafeedController periodAndDatafeedController;
 	private TextArea textArea = new TextArea();
 
-	private void fillTopPane(Stage stage) throws IOException {
+	private void fillTopPart(Stage stage) throws IOException {
 		final BorderPane pane = new BorderPane();
 		periodAndDatafeedController = new PeriodAndDatafeedController(stage);
 		pane.setTop(periodAndDatafeedController.getGui());
 		pane.setCenter(textArea);
 
-		final Button createSettingsButton = new Button("Create Settings");
-		createSettingsButton.setOnAction(e -> {
-			createSettings();
+		final HBox hbox = new HBox();
+
+		final Button calculateSeries = new Button("Calculate Series");
+		calculateSeries.setOnAction(e -> {
+			calculateSeries();
 		});
 
-		pane.setBottom(createSettingsButton);
-		BorderPane.setAlignment(createSettingsButton, Pos.CENTER);
+		final Button calculateEquityButton = new Button("Calculate Equity");
+		calculateEquityButton.setOnAction(e -> {
+			calculateEquity();
+		});
+
+		hbox.getChildren().add(calculateSeries);
+		hbox.getChildren().add(calculateEquityButton);
+
+		hbox.setAlignment(Pos.CENTER);
+		pane.setBottom(hbox);
+		BorderPane.setAlignment(hbox, Pos.CENTER);
 		splitPane.getItems().add(pane);
 	}
 
-	private void fillCenterPane(Stage stage) {
+	private void fillBottomPart(Stage stage) {
 		splitPane.getItems().add(tabPane);
 	}
 
-	private void createSettings() {
+	private void calculateSeries() {
+		
+	}
+
+	private void calculateEquity() {
 		final Tab tab = new Tab();
 		final SwingNode sn = new SwingNode();
 		final OHLCSeriesCollection timeSeries = new OHLCSeriesCollection();
@@ -72,8 +88,8 @@ public class VisualTestForSimulatorCheck extends Application {
 		splitPane.setOrientation(Orientation.VERTICAL);
 		stage.setMinWidth(800);
 		stage.setMinHeight(800);
-		fillTopPane(stage);
-		fillCenterPane(stage);
+		fillTopPart(stage);
+		fillBottomPart(stage);
 
 		final Scene scene = new Scene(splitPane);
 		stage.setScene(scene);

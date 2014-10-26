@@ -162,7 +162,7 @@ public class PresimulationCheckController implements Initializable {
 		final SimulatorSettings settings = new SimulatorSettings(0, init);
 
 		final Simulator simulator = new Simulator(settings);
-		new ShowEquityView(simulator.getStatistics(), period);
+		new ShowEquityView(simulator.getStatistics());
 	}
 
 	private Optional<String> selectStockDialog() {

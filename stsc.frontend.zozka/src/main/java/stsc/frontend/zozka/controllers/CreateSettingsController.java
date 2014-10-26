@@ -6,11 +6,11 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.Queue;
 import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.frontend.zozka.components.ProgressBarTask;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
 import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.gui.models.SimulationsDescription;
@@ -33,7 +33,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 
 public class CreateSettingsController implements Initializable {
@@ -209,28 +208,6 @@ public class CreateSettingsController implements Initializable {
 					.masthead(fromDateData.toString() + " is after " + toDateData.toString()).message(DATE_VALIDATION_MESSAGE).showError();
 		} else {
 			startCheckAndLoadDatafeed();
-		}
-	}
-
-	private static class ProgressBarTask extends Task<Integer> {
-
-		private final Queue<String> queue;
-		private final int initialSize;
-
-		ProgressBarTask(YahooFileStockStorage stockStorage) {
-			queue = stockStorage.getTasks();
-			initialSize = queue.size();
-		}
-
-		@Override
-		protected Integer call() throws Exception {
-			int iterations = initialSize - queue.size();
-			while (!queue.isEmpty()) {
-				updateProgress(iterations, initialSize);
-				iterations = initialSize - queue.size();
-				Thread.sleep(300);
-			}
-			return iterations;
 		}
 	}
 

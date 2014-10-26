@@ -29,7 +29,7 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException {
 		super();
 		this.settings = settings;
-		loadStocksFromFileSystem();
+		loadStocksFromFileSystem(true);
 	}
 
 	public YahooFileStockStorage() throws ClassNotFoundException, IOException {
@@ -45,17 +45,23 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 	}
 
 	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException, IOException {
-		super();
-		this.settings = new YahooSettings(dataFolder, filteredDataFolder);
-		loadStocksFromFileSystem();
+		this(dataFolder, filteredDataFolder, true);
 	}
 
-	private void loadStocksFromFileSystem() throws ClassNotFoundException, IOException {
+	public YahooFileStockStorage(String dataFolder, String filteredDataFolder, boolean autoStart) throws ClassNotFoundException,
+			IOException {
+		super();
+		this.settings = new YahooSettings(dataFolder, filteredDataFolder);
+		loadStocksFromFileSystem(autoStart);
+	}
+
+	private void loadStocksFromFileSystem(final boolean autoStart) throws ClassNotFoundException, IOException {
 		logger.trace("created");
 		loadFilteredDatafeed();
 		logger.info("filtered datafeed header readed: {} stocks", settings.taskQueueSize());
-		loadStocks();
-		logger.info("stocks were loaded");
+		if (autoStart) {
+			loadStocks();
+		}
 	}
 
 	private void loadFilteredDatafeed() {
@@ -63,6 +69,7 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 	}
 
 	private void loadStocks() throws ClassNotFoundException, IOException {
+		logger.info("stocks load was initiated");
 		StockReadThread stockReadThread = new StockReadThread(settings, this);
 
 		for (int i = 0; i < readStockThreadSize; ++i) {
@@ -71,6 +78,10 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 			threads.add(newThread);
 			newThread.start();
 		}
+	}
+
+	public void startLoadStocks() throws ClassNotFoundException, IOException {
+		loadStocks();
 	}
 
 	public YahooFileStockStorage waitForLoad() throws InterruptedException {

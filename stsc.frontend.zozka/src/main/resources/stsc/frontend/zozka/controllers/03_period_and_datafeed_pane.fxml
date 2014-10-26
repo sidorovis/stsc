@@ -18,7 +18,7 @@
             </Label>
          </left>
          <center>
-            <Label fx:id="datafeedPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#datafeedEdit" prefHeight="21.0" prefWidth="531.0" text="./datafeed/path" BorderPane.alignment="CENTER" />
+            <Label fx:id="datafeedPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#datafeedEdit" prefHeight="21.0" prefWidth="531.0" text="./test_data" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
       <HBox prefHeight="0.0" prefWidth="544.0">
