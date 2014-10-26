@@ -28,12 +28,10 @@ import javafx.stage.Stage;
 
 public class StockViewPane extends BorderPane {
 
-	private final Stage owner;
 	private DatasetForStock chartDataset;
 	private SwingNode sn = new SwingNode();
 
 	public StockViewPane(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
-		this.owner = owner;
 		this.chartDataset = new DatasetForStock(stock, period);
 		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset, true);
 		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(3));
