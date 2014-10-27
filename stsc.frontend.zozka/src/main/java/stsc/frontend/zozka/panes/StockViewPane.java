@@ -34,7 +34,7 @@ public class StockViewPane extends BorderPane {
 	public StockViewPane(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
 		this.chartDataset = new DatasetForStock(stock, period);
 		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset, true);
-		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(3));
+		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(2));
 		int index = 1;
 		for (String executionName : executionsName) {
 			final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();

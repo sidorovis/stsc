@@ -1,4 +1,4 @@
-package stsc.frontend.zozka.controllers;
+package stsc.frontend.zozka.applications;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import org.controlsfx.dialog.Dialogs;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -19,6 +20,7 @@ import stsc.common.FromToPeriod;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
 import stsc.frontend.zozka.panes.StockViewPane;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
@@ -37,7 +39,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class VisualTestForSimulatorCheck extends Application {
+public class StrategyVisualiser extends Application {
 
 	private Stage owner;
 	private final SplitPane splitPane = new SplitPane();
@@ -164,7 +166,7 @@ public class VisualTestForSimulatorCheck extends Application {
 	}
 
 	public static void main(String[] args) {
-		Application.launch(VisualTestForSimulatorCheck.class, args);
+		Application.launch(StrategyVisualiser.class, args);
 	}
 
 }
