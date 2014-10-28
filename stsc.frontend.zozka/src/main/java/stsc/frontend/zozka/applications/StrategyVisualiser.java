@@ -16,11 +16,14 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 
+import stsc.common.BadSignalException;
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
+import stsc.frontend.zozka.panes.EquityPane;
 import stsc.frontend.zozka.panes.StockViewPane;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
@@ -134,19 +137,33 @@ public class StrategyVisualiser extends Application {
 	}
 
 	private void calculateEquity() {
+		periodAndDatafeedController.loadStockStorage(h -> {
+			calculateEquity(periodAndDatafeedController.getStockStorage());
+		});
+	}
+
+	private void calculateEquity(StockStorage stockStorage) {
+		if (stockStorage == null) {
+			return;
+		}
+		try {
+			final FromToPeriod period = periodAndDatafeedController.getPeriod();
+
+			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, textArea.getText());
+			final SimulatorSettings settings = new SimulatorSettings(0, init);
+
+			final Simulator simulator = new Simulator(settings);
+			addEquityTab(simulator, period);
+		} catch (BadAlgorithmException | BadSignalException e) {
+			Dialogs.create().showException(e);
+		}
+	}
+
+	private void addEquityTab(Simulator simulator, FromToPeriod period) {
+		final EquityPane equityPane = new EquityPane(simulator.getStatistics(), period);
 		final Tab tab = new Tab();
-		final SwingNode sn = new SwingNode();
-		final OHLCSeriesCollection timeSeries = new OHLCSeriesCollection();
-		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", timeSeries, true);
-		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(3));
-
-		final ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setMouseWheelEnabled(true);
-		chartPanel.setFillZoomRectangle(false);
-		chartPanel.setPopupMenu(null);
-		sn.setContent(chartPanel);
-
-		tab.setContent(sn);
+		tab.setText("S:" + simulator.getStatistics().getAvGain());
+		tab.setContent(equityPane);
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 	}
