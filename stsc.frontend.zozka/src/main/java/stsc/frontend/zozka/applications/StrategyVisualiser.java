@@ -147,16 +147,16 @@ public class StrategyVisualiser extends Application {
 
 			final Simulator simulator = new Simulator(settings);
 			addEquityTab(simulator, period);
-		} catch (BadAlgorithmException | BadSignalException e) {
+		} catch (BadAlgorithmException | BadSignalException | IOException e) {
 			Dialogs.create().showException(e);
 		}
 	}
 
-	private void addEquityTab(Simulator simulator, FromToPeriod period) {
-		final EquityPane equityPane = new EquityPane(simulator.getStatistics(), period);
+	private void addEquityTab(Simulator simulator, FromToPeriod period) throws IOException {
+		final EquityPane equityPane = new EquityPane(owner, simulator.getStatistics(), period);
 		final Tab tab = new Tab();
 		tab.setText("S:" + simulator.getStatistics().getAvGain());
-		tab.setContent(equityPane);
+		tab.setContent(equityPane.getMainPane());
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 	}
