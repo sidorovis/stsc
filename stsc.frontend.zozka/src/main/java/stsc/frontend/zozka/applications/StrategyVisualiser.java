@@ -10,12 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.controlsfx.dialog.Dialogs;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.renderer.xy.CandlestickRenderer;
-import org.jfree.data.time.ohlc.OHLCSeriesCollection;
-
 import stsc.common.BadSignalException;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -29,7 +23,6 @@ import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.trading.TradeProcessorInit;
 import javafx.application.Application;
-import javafx.embed.swing.SwingNode;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
