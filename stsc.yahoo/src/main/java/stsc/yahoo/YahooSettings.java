@@ -9,7 +9,7 @@ import stsc.common.stocks.UnitedFormatStock;
 
 public class YahooSettings {
 
-	ConcurrentLinkedQueue<String> taskQueue = new ConcurrentLinkedQueue<String>();
+	private final ConcurrentLinkedQueue<String> taskQueue = new ConcurrentLinkedQueue<String>();
 	private String dataFolder = "./data/";
 	private String filteredDataFolder = "./filtered_data/";
 
