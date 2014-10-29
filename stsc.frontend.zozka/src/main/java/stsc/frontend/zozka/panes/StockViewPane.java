@@ -80,11 +80,12 @@ public class StockViewPane {
 	public static class ChartDataset extends StockViewSetting {
 
 		private final DatasetForStock chartDataset;
-		private final CandlestickRenderer renderer = new CandlestickRenderer(2);
+		private final CandlestickRenderer renderer;
 
 		protected ChartDataset(DatasetForStock chartDataset) {
-			super(true, "Candlestick");
+			super(true, "Candlesticks");
 			this.chartDataset = chartDataset;
+			this.renderer = new CandlestickRenderer(2);
 			addListenerToShowAlgorithm(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -104,7 +105,7 @@ public class StockViewPane {
 		}
 
 		@Override
-		public AbstractXYDataset getTimeSeriesCollection() {
+		public DatasetForStock getTimeSeriesCollection() {
 			return chartDataset;
 		}
 
@@ -151,7 +152,7 @@ public class StockViewPane {
 		}
 	}
 
-	private DatasetForStock chartDataset;
+	private final ChartDataset chartDataset;
 	private final Parent gui;
 
 	private final ObservableList<StockViewSetting> tableModel = FXCollections.observableArrayList();
@@ -166,13 +167,11 @@ public class StockViewPane {
 
 	public StockViewPane(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage)
 			throws IOException {
-		this.chartDataset = new DatasetForStock(stock, period);
-
+		this.chartDataset = new ChartDataset(new DatasetForStock(stock, period));
 		final URL location = EquityPane.class.getResource("04_stock_view_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		this.gui = loader.load();
-
 		initialize();
 		loadTableModel(stock.getName(), executionsName, signalsStorage);
 		addChart(stock, period, executionsName, signalsStorage);
@@ -184,7 +183,6 @@ public class StockViewPane {
 		showAlgorithmColumn.setCellValueFactory(cellData -> cellData.getValue().showAlgorithmProperty());
 		showAlgorithmColumn.setCellFactory(CheckBoxTableCell.forTableColumn(showAlgorithmColumn));
 		showAlgorithmColumn.setOnEditCommit(e -> e.getRowValue().setShowAlgorithm(e.getNewValue()));
-
 		showAlgorithmColumn.setEditable(true);
 		configurationTable.setEditable(true);
 		titleColumn.setCellValueFactory(cellData -> cellData.getValue().propertyTitle());
@@ -198,7 +196,7 @@ public class StockViewPane {
 	}
 
 	private void loadTableModel(final String stockName, final List<String> executionsName, SignalsStorage signalsStorage) {
-		// tableModel.add(new ChartDataset(chartDataset));
+		tableModel.add(chartDataset);
 		int index = 1;
 		for (String executionName : executionsName) {
 			tableModel.add(new TimeSerieSetting(true, executionName, stockName, index, signalsStorage));
@@ -207,18 +205,14 @@ public class StockViewPane {
 	}
 
 	private void addChart(Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
-		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset, true);
-
-		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(2));
+		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset.getTimeSeriesCollection(), true);
+		chart.getXYPlot().setRenderer(0, chartDataset.getRenderer());
 		for (StockViewSetting serie : tableModel) {
 			final int index = serie.getIndex();
 			chart.getXYPlot().setDataset(index, serie.getTimeSeriesCollection());
-			chart.getXYPlot().mapDatasetToRangeAxis(index, 0);
-			final XYItemRenderer seriesRenderer = serie.getRenderer();
-			chart.getXYPlot().setRenderer(index, seriesRenderer);
+			chart.getXYPlot().setRenderer(index, serie.getRenderer());
 			chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 		}
-
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
 		chartPanel.setFillZoomRectangle(false);
