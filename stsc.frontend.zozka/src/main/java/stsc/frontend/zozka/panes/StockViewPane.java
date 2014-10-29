@@ -14,6 +14,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.AbstractXYDataset;
 
 import stsc.common.FromToPeriod;
 import stsc.common.signals.Signal;
@@ -44,34 +45,13 @@ import javafx.stage.Stage;
 
 public class StockViewPane {
 
-	public static class StockViewSetting {
+	public abstract static class StockViewSetting {
 		private final BooleanProperty showAlgorithm;
 		private final StringProperty title;
 
-		private final int index;
-		private final TimeSeriesCollection timeSeriesCollection;
-		private final XYItemRenderer seriesRenderer;
-
-		public StockViewSetting(boolean showAlgo, String title, String stockName, int index, SignalsStorage signalsStorage) {
+		protected StockViewSetting(boolean showAlgo, String title) {
 			this.showAlgorithm = new SimpleBooleanProperty(showAlgo);
 			this.title = new SimpleStringProperty(title);
-			this.index = index;
-			this.timeSeriesCollection = new TimeSeriesCollection();
-			final TimeSeries timeSeries = new TimeSeries(title);
-			final String outName = ExecutionsStorage.outNameFor(title);
-			final int size = signalsStorage.getIndexSize(stockName, outName);
-			for (int i = 0; i < size; ++i) {
-				final Signal<? extends StockSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
-				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).value);
-			}
-			timeSeriesCollection.addSeries(timeSeries);
-			this.seriesRenderer = new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(title));
-			showAlgorithm.addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					seriesRenderer.setSeriesVisible(0, newValue);
-				}
-			});
 		}
 
 		public BooleanProperty showAlgorithmProperty() {
@@ -86,6 +66,77 @@ public class StockViewPane {
 			return title;
 		}
 
+		protected void addListenerToShowAlgorithm(ChangeListener<Boolean> listener) {
+			showAlgorithm.addListener(listener);
+		}
+
+		public abstract XYItemRenderer getRenderer();
+
+		public abstract int getIndex();
+
+		public abstract AbstractXYDataset getTimeSeriesCollection();
+	}
+
+	public static class ChartDataset extends StockViewSetting {
+
+		private final DatasetForStock chartDataset;
+		private final CandlestickRenderer renderer = new CandlestickRenderer(2);
+
+		protected ChartDataset(DatasetForStock chartDataset) {
+			super(true, "Candlestick");
+			this.chartDataset = chartDataset;
+			addListenerToShowAlgorithm(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					renderer.setSeriesVisible(0, newValue);
+				}
+			});
+		}
+
+		@Override
+		public XYItemRenderer getRenderer() {
+			return renderer;
+		}
+
+		@Override
+		public int getIndex() {
+			return 0;
+		}
+
+		@Override
+		public AbstractXYDataset getTimeSeriesCollection() {
+			return chartDataset;
+		}
+
+	}
+
+	public static class TimeSerieSetting extends StockViewSetting {
+
+		private final int index;
+		private final TimeSeriesCollection timeSeriesCollection;
+		private final XYItemRenderer seriesRenderer;
+
+		public TimeSerieSetting(boolean showAlgo, String title, String stockName, int index, SignalsStorage signalsStorage) {
+			super(showAlgo, title);
+			this.index = index;
+			this.timeSeriesCollection = new TimeSeriesCollection();
+			final TimeSeries timeSeries = new TimeSeries(title);
+			final String outName = ExecutionsStorage.outNameFor(title);
+			final int size = signalsStorage.getIndexSize(stockName, outName);
+			for (int i = 0; i < size; ++i) {
+				final Signal<? extends StockSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
+				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).value);
+			}
+			timeSeriesCollection.addSeries(timeSeries);
+			this.seriesRenderer = new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(title));
+			addListenerToShowAlgorithm(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					seriesRenderer.setSeriesVisible(0, newValue);
+				}
+			});
+		}
+
 		public TimeSeriesCollection getTimeSeriesCollection() {
 			return timeSeriesCollection;
 		}
@@ -94,6 +145,7 @@ public class StockViewPane {
 			return index;
 		}
 
+		@Override
 		public XYItemRenderer getRenderer() {
 			return seriesRenderer;
 		}
@@ -146,20 +198,21 @@ public class StockViewPane {
 	}
 
 	private void loadTableModel(final String stockName, final List<String> executionsName, SignalsStorage signalsStorage) {
+		// tableModel.add(new ChartDataset(chartDataset));
 		int index = 1;
 		for (String executionName : executionsName) {
-			tableModel.add(new StockViewSetting(true, executionName, stockName, index, signalsStorage));
+			tableModel.add(new TimeSerieSetting(true, executionName, stockName, index, signalsStorage));
 			index += 1;
 		}
 	}
 
 	private void addChart(Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
 		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset, true);
+
 		chart.getXYPlot().setRenderer(0, new CandlestickRenderer(2));
 		for (StockViewSetting serie : tableModel) {
 			final int index = serie.getIndex();
-			final TimeSeriesCollection timeSeriesCollection = serie.getTimeSeriesCollection();
-			chart.getXYPlot().setDataset(index, timeSeriesCollection);
+			chart.getXYPlot().setDataset(index, serie.getTimeSeriesCollection());
 			chart.getXYPlot().mapDatasetToRangeAxis(index, 0);
 			final XYItemRenderer seriesRenderer = serie.getRenderer();
 			chart.getXYPlot().setRenderer(index, seriesRenderer);
