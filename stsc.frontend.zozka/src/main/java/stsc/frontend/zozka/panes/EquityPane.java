@@ -20,7 +20,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -113,7 +112,7 @@ public class EquityPane {
 		chartPane.setCenter(sn);
 	}
 
-	public Node getMainPane() {
+	public Parent getMainPane() {
 		return gui;
 	}
 }
