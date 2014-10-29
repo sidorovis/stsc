@@ -36,7 +36,7 @@ public class VisualTestStockViewPane extends Application {
 
 		final StockViewPane stockViewPane = new StockViewPane(parent, aapl, period, executionsName, signalsStorage);
 
-		final Scene scene = new Scene(stockViewPane);
+		final Scene scene = new Scene(stockViewPane.getMainPane());
 		parent.setScene(scene);
 		parent.show();
 	}

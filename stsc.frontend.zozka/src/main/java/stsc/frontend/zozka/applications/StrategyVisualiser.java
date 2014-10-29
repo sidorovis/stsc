@@ -120,7 +120,7 @@ public class StrategyVisualiser extends Application {
 			final StockViewPane stockViewPane = new StockViewPane(owner, stock, period, executionsName, signalsStorage);
 			final Tab tab = new Tab();
 			tab.setText(stock.getName());
-			tab.setContent(stockViewPane);
+			tab.setContent(stockViewPane.getMainPane());
 			tabPane.getTabs().add(tab);
 			tabPane.getSelectionModel().select(tab);
 
