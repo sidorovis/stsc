@@ -12,7 +12,7 @@ public abstract class StrategySelector {
 		this.selectLastElements = selectLastElements;
 	}
 
-	public abstract boolean addStrategy(final TradingStrategy strategy);
+	public abstract TradingStrategy addStrategy(final TradingStrategy strategy);
 
 	public abstract List<TradingStrategy> getStrategies();
 

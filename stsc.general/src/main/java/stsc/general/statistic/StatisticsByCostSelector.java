@@ -20,17 +20,14 @@ public class StatisticsByCostSelector extends StrategySelector {
 	}
 
 	@Override
-	public synchronized boolean addStrategy(final TradingStrategy strategy) {
+	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
 		final Statistics statistics = strategy.getStatistics();
 		final Double compareValue = evaluationFunction.calculate(statistics);
 		select.add(compareValue, strategy);
 		if (select.size() > size()) {
-			final TradingStrategy deletedElement = select.deleteLast();
-			if (deletedElement == strategy) {
-				return false;
-			}
+			return select.deleteLast();
 		}
-		return true;
+		return null;
 	}
 
 	@Override

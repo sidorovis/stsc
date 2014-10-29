@@ -151,4 +151,8 @@ public class SimulatorSettingsController {
 			Dialogs.create().showException(exception);
 		}
 	}
+
+	public SimulatorSettingsModel getModel() {
+		return model;
+	}
 }

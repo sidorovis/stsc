@@ -26,9 +26,9 @@ final class SimulatorCalulatingTask implements Callable<Boolean> {
 			final Statistics statistics = simulate();
 			if (statistics != null) {
 				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
-				final boolean addedToStatistics = searcher.selector.addStrategy(strategy);
+				final TradingStrategy addedToStatistics = searcher.selector.addStrategy(strategy);
 				searcher.population.add(strategy);
-				searcher.sortedPopulation.put(strategy, addedToStatistics);
+				searcher.sortedPopulation.put(strategy, addedToStatistics != null);
 				result = true;
 			}
 		} finally {

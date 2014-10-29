@@ -20,11 +20,11 @@ public class StatisticsWithDistanceSelector extends StatisticsByCostSelector {
 	}
 
 	@Override
-	public synchronized boolean addStrategy(final TradingStrategy strategy) {
+	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
 		final SimpleSortedStrategies strategies = getSortedStrategies();
 		// strategies
 		// TODO
-		return false;
+		return null;
 	}
 
 	@Override

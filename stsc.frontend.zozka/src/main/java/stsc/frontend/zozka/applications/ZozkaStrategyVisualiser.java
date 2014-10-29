@@ -35,7 +35,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class StrategyVisualiser extends Application {
+public class ZozkaStrategyVisualiser extends Application {
 
 	private Stage owner;
 	private final SplitPane splitPane = new SplitPane();
@@ -165,8 +165,9 @@ public class StrategyVisualiser extends Application {
 	public void start(Stage stage) throws Exception {
 		this.owner = stage;
 		splitPane.setOrientation(Orientation.VERTICAL);
-		stage.setMinWidth(800);
-		stage.setMinHeight(480);
+		splitPane.setDividerPosition(0, 0.1f);
+		stage.setMinWidth(1200);
+		stage.setMinHeight(800);
 		fillTopPart();
 		fillBottomPart();
 
@@ -176,7 +177,7 @@ public class StrategyVisualiser extends Application {
 	}
 
 	public static void main(String[] args) {
-		Application.launch(StrategyVisualiser.class, args);
+		Application.launch(ZozkaStrategyVisualiser.class, args);
 	}
 
 }

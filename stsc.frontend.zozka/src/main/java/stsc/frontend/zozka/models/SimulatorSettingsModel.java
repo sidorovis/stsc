@@ -7,10 +7,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import stsc.common.FromToPeriod;
+import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.gui.models.ExecutionDescription;
+import stsc.general.simulator.multistarter.BadParameterException;
+import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
+import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
+import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 
 public class SimulatorSettingsModel {
 
@@ -65,4 +74,30 @@ public class SimulatorSettingsModel {
 		}
 	}
 
+	public SimulatorSettingsGridList generateGridSettings(StockStorage stockStorage, FromToPeriod period) throws BadParameterException {
+		final List<GridExecutionInitializer> stocks = new ArrayList<>();
+		final List<GridExecutionInitializer> eods = new ArrayList<>();
+		for (ExecutionDescription executionDescription : model) {
+			if (executionDescription.getAlgorithmType().isStock()) {
+				stocks.add(executionDescription.createGridExecution(period));
+			} else {
+				eods.add(executionDescription.createGridExecution(period));
+			}
+		}
+		return new SimulatorSettingsGridList(stockStorage, period, stocks, eods, false);
+	}
+
+	public SimulatorSettingsGeneticList generateGeneticSettings(StockStorage stockStorage, FromToPeriod period)
+			throws BadParameterException {
+		final List<GeneticExecutionInitializer> stocks = new ArrayList<>();
+		final List<GeneticExecutionInitializer> eods = new ArrayList<>();
+		for (ExecutionDescription executionDescription : model) {
+			if (executionDescription.getAlgorithmType().isStock()) {
+				stocks.add(executionDescription.createGeneticExecution(period));
+			} else {
+				eods.add(executionDescription.createGeneticExecution(period));
+			}
+		}
+		return new SimulatorSettingsGeneticList(stockStorage, period, stocks, eods);
+	}
 }

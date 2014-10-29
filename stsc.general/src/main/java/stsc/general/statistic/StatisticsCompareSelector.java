@@ -33,15 +33,12 @@ public class StatisticsCompareSelector extends StrategySelector {
 	}
 
 	@Override
-	public synchronized boolean addStrategy(final TradingStrategy strategy) {
+	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
 		select.add(strategy);
 		if (select.size() > size()) {
-			final TradingStrategy deleted = select.pollLast();
-			if (deleted == strategy) {
-				return false;
-			}
+			return select.pollLast();
 		}
-		return true;
+		return null;
 	}
 
 	@Override
