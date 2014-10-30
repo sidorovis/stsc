@@ -1,12 +1,18 @@
 package stsc.frontend.zozka.applications;
 
 import java.io.IOException;
+import java.util.Date;
+
+import org.controlsfx.dialog.Dialogs;
+
 import stsc.common.FromToPeriod;
+import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
 import stsc.frontend.zozka.controllers.SimulatorSettingsController;
 import stsc.frontend.zozka.panes.StrategiesPane;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -60,19 +66,24 @@ public class ZozkaStrategySelector extends Application {
 	}
 
 	private void runGridSearch() {
-		periodAndDatafeedController.loadStockStorage(eh -> {
+		periodAndDatafeedController.loadStockStorage(eh -> Platform.runLater(() -> {
 			gridSearch(periodAndDatafeedController.getStockStorage());
-		});
+		}));
 	}
 
 	private void gridSearch(StockStorage stockStorage) {
 		if (stockStorage == null)
 			return;
 		final FromToPeriod period = periodAndDatafeedController.getPeriod();
-		final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage);
-		final Tab tab = new Tab("Grid");
-		tab.setContent(pane);
-		tabPane.getTabs().add(tab);
+		try {
+			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage);
+			final Tab tab = new Tab("Grid(" + (new Date()) + ")");
+			tab.setContent(pane);
+			tabPane.getTabs().add(tab);
+			tabPane.getSelectionModel().select(tab);
+		} catch (BadAlgorithmException e) {
+			Dialogs.create().owner(owner).showException(e);
+		}
 	}
 
 	private void fillBottomPart() {

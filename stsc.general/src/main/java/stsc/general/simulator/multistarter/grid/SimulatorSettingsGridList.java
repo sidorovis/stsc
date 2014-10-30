@@ -51,6 +51,8 @@ public class SimulatorSettingsGridList implements Iterable<SimulatorSettings> {
 	}
 
 	public long size() {
+		if (stockInitializers.isEmpty() && eodInitializers.isEmpty())
+			return 0;
 		long result = 1;
 		for (GridExecutionInitializer ei : stockInitializers) {
 			result *= ei.size();

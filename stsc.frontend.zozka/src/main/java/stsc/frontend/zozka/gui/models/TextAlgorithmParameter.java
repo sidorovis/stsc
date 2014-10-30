@@ -28,8 +28,8 @@ public final class TextAlgorithmParameter {
 		return parameterName;
 	}
 
-	public String getType() {
-		return type.getName();
+	public ParameterType getType() {
+		return type;
 	}
 
 	public StringProperty domenProperty() {

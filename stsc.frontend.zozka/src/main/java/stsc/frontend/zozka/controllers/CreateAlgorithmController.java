@@ -244,7 +244,7 @@ public class CreateAlgorithmController implements Initializable {
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
-		textParType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
+		textParType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType().getName()));
 
 		connectTextColumn(textParDomen, "domen");
 	}
