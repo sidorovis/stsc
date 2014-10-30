@@ -46,10 +46,12 @@ public class StrategiesPane extends BorderPane {
 				System.out.println(strategyList);
 				System.out.println(strategy);
 			}
-			strategyList.add(strategy);
 			final TradingStrategy deleted = selector.addStrategy(strategy);
 			if (deleted != null) {
-				strategyList.remove(deleted);
+				if (!deleted.equals(strategy))
+					strategyList.remove(deleted);
+			} else {
+				strategyList.add(strategy);
 			}
 			return deleted;
 		}
@@ -84,9 +86,11 @@ public class StrategiesPane extends BorderPane {
 
 	private final ObservableList<StatisticsDescription> model = FXCollections.observableArrayList();
 	private final TableView<StatisticsDescription> table = new TableView<>();
+	private final BorderPane chartPane;
 
-	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage)
+	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, BorderPane chartPane)
 			throws BadAlgorithmException {
+		this.chartPane = chartPane;
 		createEmptyTable();
 		startCalculation(owner, period, model, stockStorage);
 	}
@@ -113,7 +117,7 @@ public class StrategiesPane extends BorderPane {
 	private void startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
 			throws BadAlgorithmException {
 
-		final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(4,
+		final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
 				new CostWeightedSumFunction()));
 		try {
 			selector.getStrategyList().addListener(new ListChangeListener<TradingStrategy>() {

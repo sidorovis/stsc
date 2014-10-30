@@ -3,7 +3,9 @@ package stsc.frontend.zozka.applications;
 import java.io.IOException;
 import java.util.Date;
 
+
 import org.controlsfx.dialog.Dialogs;
+
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -46,18 +48,29 @@ public class ZozkaStrategySelector extends Application {
 
 		final HBox hbox = new HBox();
 
-		final Button gridSearchButton = new Button("Grid Search");
-		gridSearchButton.setOnAction(e -> {
-			runGridSearch();
+		final Button localGridSearchButton = new Button("Local Grid Search");
+		localGridSearchButton.setOnAction(e -> {
+			runLocalGridSearch();
 		});
 
-		final Button geneticSearchButton = new Button("Genetic Search");
-		geneticSearchButton.setOnAction(e -> {
-
+		final Button localGeneticSearchButton = new Button("Local Genetic Search");
+		localGeneticSearchButton.setOnAction(e -> {
+			Dialogs.create().owner(owner).showException(new Exception("Local Genetic Search Not Implemented Yet"));
 		});
 
-		hbox.getChildren().add(gridSearchButton);
-		hbox.getChildren().add(geneticSearchButton);
+		final Button distributedGridSearchButton = new Button("Distributed Grid Search");
+		distributedGridSearchButton.setOnAction(e -> {
+			Dialogs.create().owner(owner).showException(new Exception("Distributed Grid Search Not Implemented Yet"));
+		});
+		final Button distributedGeneticSearchButton = new Button("Distributed Genetic Search");
+		distributedGeneticSearchButton.setOnAction(e -> {
+			Dialogs.create().owner(owner).showException(new Exception("Distributed Genetic Search Not Implemented Yet"));
+		});
+
+		hbox.getChildren().add(localGridSearchButton);
+		hbox.getChildren().add(localGeneticSearchButton);
+		hbox.getChildren().add(distributedGridSearchButton);
+		hbox.getChildren().add(distributedGeneticSearchButton);
 
 		hbox.setAlignment(Pos.CENTER);
 		pane.setBottom(hbox);
@@ -65,18 +78,18 @@ public class ZozkaStrategySelector extends Application {
 		splitPane.getItems().add(pane);
 	}
 
-	private void runGridSearch() {
+	private void runLocalGridSearch() {
 		periodAndDatafeedController.loadStockStorage(eh -> Platform.runLater(() -> {
-			gridSearch(periodAndDatafeedController.getStockStorage());
+			localGridSearch(periodAndDatafeedController.getStockStorage());
 		}));
 	}
 
-	private void gridSearch(StockStorage stockStorage) {
+	private void localGridSearch(StockStorage stockStorage) {
 		if (stockStorage == null)
 			return;
 		final FromToPeriod period = periodAndDatafeedController.getPeriod();
 		try {
-			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage);
+			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage, chartPane);
 			final Tab tab = new Tab("Grid(" + (new Date()) + ")");
 			tab.setContent(pane);
 			tabPane.getTabs().add(tab);
