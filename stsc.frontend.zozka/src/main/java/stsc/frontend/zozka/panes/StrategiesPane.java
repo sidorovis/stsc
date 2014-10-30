@@ -4,14 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.controlsfx.dialog.Dialogs;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.DatasetRenderingOrder;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.frontend.zozka.models.SimulatorSettingsModel;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
+import stsc.general.statistic.EquityCurve;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
@@ -22,8 +30,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -86,11 +96,11 @@ public class StrategiesPane extends BorderPane {
 
 	private final ObservableList<StatisticsDescription> model = FXCollections.observableArrayList();
 	private final TableView<StatisticsDescription> table = new TableView<>();
-	private final BorderPane chartPane;
+	private final JFreeChart chart;
 
-	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, BorderPane chartPane)
+	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, JFreeChart chart)
 			throws BadAlgorithmException {
-		this.chartPane = chartPane;
+		this.chart = chart;
 		createEmptyTable();
 		startCalculation(owner, period, model, stockStorage);
 	}
@@ -112,6 +122,33 @@ public class StrategiesPane extends BorderPane {
 		}
 		setCenter(table);
 		table.setItems(model);
+		table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		table.getSelectionModel().setCellSelectionEnabled(false);
+		table.setOnMouseClicked(e -> {
+			if (e.getButton().equals(MouseButton.PRIMARY)) {
+				final int selected = table.getSelectionModel().getSelectedIndex();
+				final StatisticsDescription sd = model.get(selected);
+				drawStatistics(sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getStatistics());
+			}
+		});
+	}
+
+	private void drawStatistics(long id, Statistics statistics) {
+		final TimeSeriesCollection dataset = new TimeSeriesCollection();
+		final TimeSeries ts = new TimeSeries("Equity Curve");
+
+		final EquityCurve equityCurveInMoney = statistics.getEquityCurveInMoney();
+
+		for (int i = 0; i < equityCurveInMoney.size(); ++i) {
+			final EquityCurve.Element e = equityCurveInMoney.get(i);
+			ts.add(new Day(e.date), e.value);
+		}
+		dataset.addSeries(ts);
+
+		chart.getXYPlot().setDataset(dataset);
+		chart.getXYPlot().setRenderer(
+				new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(String.valueOf(id))));
+		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 	}
 
 	private void startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)

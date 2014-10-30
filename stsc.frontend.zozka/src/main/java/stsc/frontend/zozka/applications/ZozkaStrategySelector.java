@@ -3,9 +3,11 @@ package stsc.frontend.zozka.applications;
 import java.io.IOException;
 import java.util.Date;
 
-
 import org.controlsfx.dialog.Dialogs;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -15,6 +17,7 @@ import stsc.frontend.zozka.controllers.SimulatorSettingsController;
 import stsc.frontend.zozka.panes.StrategiesPane;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingNode;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -32,6 +35,7 @@ public class ZozkaStrategySelector extends Application {
 	private final SplitPane splitPane = new SplitPane();
 	private final TabPane tabPane = new TabPane();
 	private final BorderPane chartPane = new BorderPane();
+	private JFreeChart chart;
 
 	private PeriodAndDatafeedController periodAndDatafeedController;
 	private SimulatorSettingsController simulatorSettingsController;
@@ -44,6 +48,7 @@ public class ZozkaStrategySelector extends Application {
 		final SplitPane centerSplitPane = new SplitPane();
 		centerSplitPane.getItems().add(simulatorSettingsController.getGui());
 		centerSplitPane.getItems().add(chartPane);
+		addChartPane();
 		pane.setCenter(centerSplitPane);
 
 		final HBox hbox = new HBox();
@@ -78,6 +83,17 @@ public class ZozkaStrategySelector extends Application {
 		splitPane.getItems().add(pane);
 	}
 
+	private void addChartPane() {
+		this.chart = ChartFactory.createTimeSeriesChart("", "Time", "Value", null, false, false, false);
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setMouseWheelEnabled(true);
+		chartPanel.setFillZoomRectangle(false);
+		chartPanel.setPopupMenu(null);
+		SwingNode sn = new SwingNode();
+		sn.setContent(chartPanel);
+		chartPane.setCenter(sn);
+	}
+
 	private void runLocalGridSearch() {
 		periodAndDatafeedController.loadStockStorage(eh -> Platform.runLater(() -> {
 			localGridSearch(periodAndDatafeedController.getStockStorage());
@@ -89,7 +105,7 @@ public class ZozkaStrategySelector extends Application {
 			return;
 		final FromToPeriod period = periodAndDatafeedController.getPeriod();
 		try {
-			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage, chartPane);
+			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage, chart);
 			final Tab tab = new Tab("Grid(" + (new Date()) + ")");
 			tab.setContent(pane);
 			tabPane.getTabs().add(tab);
