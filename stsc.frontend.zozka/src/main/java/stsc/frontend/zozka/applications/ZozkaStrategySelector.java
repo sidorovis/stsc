@@ -52,7 +52,14 @@ public class ZozkaStrategySelector extends Application {
 		pane.setCenter(centerSplitPane);
 
 		final HBox hbox = new HBox();
+		addButtons(hbox);
+		hbox.setAlignment(Pos.CENTER);
+		pane.setBottom(hbox);
+		BorderPane.setAlignment(hbox, Pos.CENTER);
+		splitPane.getItems().add(pane);
+	}
 
+	private void addButtons(HBox hbox) {
 		final Button localGridSearchButton = new Button("Local Grid Search");
 		localGridSearchButton.setOnAction(e -> {
 			runLocalGridSearch();
@@ -76,15 +83,10 @@ public class ZozkaStrategySelector extends Application {
 		hbox.getChildren().add(localGeneticSearchButton);
 		hbox.getChildren().add(distributedGridSearchButton);
 		hbox.getChildren().add(distributedGeneticSearchButton);
-
-		hbox.setAlignment(Pos.CENTER);
-		pane.setBottom(hbox);
-		BorderPane.setAlignment(hbox, Pos.CENTER);
-		splitPane.getItems().add(pane);
 	}
 
 	private void addChartPane() {
-		this.chart = ChartFactory.createTimeSeriesChart("", "Time", "Value", null, false, false, false);
+		this.chart = ChartFactory.createTimeSeriesChart("", "Time", "Value", null, true, false, false);
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
 		chartPanel.setFillZoomRectangle(false);

@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.panes;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.controlsfx.dialog.Dialogs;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -33,7 +35,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -124,8 +125,9 @@ public class StrategiesPane extends BorderPane {
 		table.setItems(model);
 		table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		table.getSelectionModel().setCellSelectionEnabled(false);
-		table.setOnMouseClicked(e -> {
-			if (e.getButton().equals(MouseButton.PRIMARY)) {
+		table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener<Integer>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Integer> c) {
 				final int selected = table.getSelectionModel().getSelectedIndex();
 				final StatisticsDescription sd = model.get(selected);
 				drawStatistics(sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getStatistics());
@@ -135,7 +137,7 @@ public class StrategiesPane extends BorderPane {
 
 	private void drawStatistics(long id, Statistics statistics) {
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
-		final TimeSeries ts = new TimeSeries("Equity Curve");
+		final TimeSeries ts = new TimeSeries("Equity Curve:" + String.valueOf(id));
 
 		final EquityCurve equityCurveInMoney = statistics.getEquityCurveInMoney();
 
@@ -146,8 +148,10 @@ public class StrategiesPane extends BorderPane {
 		dataset.addSeries(ts);
 
 		chart.getXYPlot().setDataset(dataset);
-		chart.getXYPlot().setRenderer(
-				new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(String.valueOf(id))));
+		final XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(
+				String.valueOf(id)));
+		renderer.setSeriesPaint(0, Color.RED);
+		chart.getXYPlot().setRenderer(renderer);
 		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 	}
 
