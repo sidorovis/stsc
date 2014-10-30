@@ -68,11 +68,11 @@ public class TestSimulatorSettingsModel {
 			assertEquals(ParameterType.INTEGER, nap1.get(1).getType());
 			assertEquals(ParameterType.DOUBLE, nap1.get(0).getType());
 
-			assertEquals(ParameterType.SUB_EXECUTION.getName(), tap0.get(0).getType());
-			assertEquals(ParameterType.STRING.getName(), tap0.get(1).getType());
+			assertEquals(ParameterType.SUB_EXECUTION, tap0.get(0).getType());
+			assertEquals(ParameterType.STRING, tap0.get(1).getType());
 
-			assertEquals(ParameterType.SUB_EXECUTION.getName(), tap1.get(1).getType());
-			assertEquals(ParameterType.STRING.getName(), tap1.get(0).getType());
+			assertEquals(ParameterType.SUB_EXECUTION, tap1.get(1).getType());
+			assertEquals(ParameterType.STRING, tap1.get(0).getType());
 
 			assertEquals("1", nap0.get(0).getFrom());
 			assertEquals("2", nap0.get(0).getStep());
