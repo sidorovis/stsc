@@ -205,7 +205,7 @@ public class StockViewPane {
 	}
 
 	private void addChart(Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
-		final JFreeChart chart = ChartFactory.createCandlestickChart("", "", "", chartDataset.getTimeSeriesCollection(), true);
+		final JFreeChart chart = ChartFactory.createCandlestickChart("Price", "", "", chartDataset.getTimeSeriesCollection(), true);
 		chart.getXYPlot().setRenderer(0, chartDataset.getRenderer());
 		for (StockViewSetting serie : tableModel) {
 			final int index = serie.getIndex();

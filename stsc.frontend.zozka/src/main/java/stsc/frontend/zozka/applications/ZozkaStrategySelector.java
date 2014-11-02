@@ -1,6 +1,7 @@
 package stsc.frontend.zozka.applications;
 
 import java.io.IOException;
+import java.rmi.UnexpectedException;
 import java.util.Date;
 
 import org.controlsfx.dialog.Dialogs;
@@ -111,7 +112,7 @@ public class ZozkaStrategySelector extends Application {
 			tab.setContent(pane);
 			tabPane.getTabs().add(tab);
 			tabPane.getSelectionModel().select(tab);
-		} catch (BadAlgorithmException e) {
+		} catch (BadAlgorithmException | UnexpectedException e) {
 			Dialogs.create().owner(owner).showException(e);
 		}
 	}
