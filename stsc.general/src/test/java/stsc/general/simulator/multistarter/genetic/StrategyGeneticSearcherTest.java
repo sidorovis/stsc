@@ -11,6 +11,20 @@ import junit.framework.TestCase;
 public class StrategyGeneticSearcherTest extends TestCase {
 
 	public void testStrategyGeneticSearcher() throws InterruptedException, StrategySearcherException {
+		final StrategyGeneticSearcher sgs = createSearcher();
+		final StrategySelector selector = sgs.getSelector();
+		assertEquals(100, selector.getStrategies().size());
+		assertEquals(34.911532, selector.getStrategies().get(0).getStatistics().getAvGain(), Settings.doubleEpsilon);
+	}
+
+	public void testStrategyGeneticSearchStop() throws InterruptedException, StrategySearcherException {
+		final StrategyGeneticSearcher sgs = createSearcher();
+		sgs.stopSearch();
+		final StrategySelector selector = sgs.getSelector();
+		assertTrue(100 > selector.getStrategies().size());
+	}
+
+	private StrategyGeneticSearcher createSearcher() throws InterruptedException {
 		final CostWeightedSumFunction costFunction = new CostWeightedSumFunction();
 		costFunction.addParameter("getWinProb", 1.2);
 		costFunction.addParameter("getKelly", 0.6);
@@ -25,10 +39,6 @@ public class StrategyGeneticSearcherTest extends TestCase {
 		final SimulatorSettingsGeneticList geneticList = TestGeneticSimulatorSettings.getBigGeneticList();
 		final int maxGeneticStepsAmount = 100;
 		final int populationSize = 100;
-		final StrategyGeneticSearcher sgs = new StrategyGeneticSearcher(geneticList, selector, 4, costFunction, maxGeneticStepsAmount, populationSize, 0.94,
-				0.86);
-		sgs.getSelector();
-		assertEquals(100, selector.getStrategies().size());
-		assertEquals(34.911532, selector.getStrategies().get(0).getStatistics().getAvGain(), Settings.doubleEpsilon);
+		return new StrategyGeneticSearcher(geneticList, selector, 4, costFunction, maxGeneticStepsAmount, populationSize, 0.94, 0.86);
 	}
 }

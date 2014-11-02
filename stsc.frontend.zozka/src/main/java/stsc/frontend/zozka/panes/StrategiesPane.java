@@ -124,6 +124,7 @@ public class StrategiesPane extends BorderPane {
 			throws BadAlgorithmException {
 		this.chart = chart;
 		this.indicator = new ProgressIndicator();
+		this.indicator.setPrefSize(40, 40);
 		createTopElements();
 		createEmptyTable();
 		startCalculation(owner, period, model, stockStorage);

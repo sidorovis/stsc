@@ -64,21 +64,24 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	CountDownLatch countDownLatch;
 	final GeneticSearchSettings settings;
 	// Boolean mean that Strategy was added as part of best strategies
-	Map<TradingStrategy, Boolean> sortedPopulation;
+	final Map<TradingStrategy, Boolean> sortedPopulation;
+
+	private boolean stoppedByRequest = false;
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount)
 			throws InterruptedException {
 		this(algorithmSettings, selector, threadAmount, selector.size(), POPULATION_DEFAULT_SIZE);
 	}
 
-	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount, int maxSelectionIndex,
-			int populationSize) throws InterruptedException {
-		this(algorithmSettings, selector, threadAmount, new CostWeightedSumFunction(), maxSelectionIndex, populationSize, BEST_DEFAULT_PART,
-				CROSSOVER_DEFAULT_PART);
+	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount,
+			int maxSelectionIndex, int populationSize) throws InterruptedException {
+		this(algorithmSettings, selector, threadAmount, new CostWeightedSumFunction(), maxSelectionIndex, populationSize,
+				BEST_DEFAULT_PART, CROSSOVER_DEFAULT_PART);
 	}
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount,
-			CostFunction costFunction, int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart) throws InterruptedException {
+			CostFunction costFunction, int maxSelectionIndex, int populationSize, double bestPart, double crossoverPart)
+			throws InterruptedException {
 		this.selector = selector;
 		this.settingsGeneticList = algorithmSettings;
 		this.population = Collections.synchronizedList(new ArrayList<TradingStrategy>());
@@ -116,7 +119,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	private void waitResults() throws InterruptedException {
 		double lastCostSum = maxCostSum;
-		while (currentSelectionIndex < settings.maxSelectionIndex) {
+		while (!stoppedByRequest && currentSelectionIndex < settings.maxSelectionIndex) {
 			countDownLatch.await();
 			countDownLatch = new CountDownLatch(settings.getTasksSize());
 			lastCostSum = geneticAlgorithmIteration(lastCostSum);
@@ -226,6 +229,11 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 
 	public int getLastSelectionIndex() {
 		return lastSelectionIndex;
+	}
+
+	@Override
+	public void stopSearch() {
+		this.stoppedByRequest = true;
 	}
 
 }

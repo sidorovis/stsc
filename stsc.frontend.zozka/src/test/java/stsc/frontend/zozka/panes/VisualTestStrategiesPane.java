@@ -42,7 +42,7 @@ public class VisualTestStrategiesPane extends Application {
 		final YahooFileStockStorage yfss = new YahooFileStockStorage("./test_data/data", "./test_data/filtered_data");
 		yfss.waitForLoad();
 
-		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-2010");
+		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-1990");
 		SimulatorSettingsModel model = new SimulatorSettingsModel();
 		model.loadFromFile(new File("./test_data/strategy_selector/size_2280"));
 

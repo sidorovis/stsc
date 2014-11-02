@@ -38,12 +38,14 @@ public class StrategyGridSearcher implements StrategySearcher {
 
 	private class StatisticsCalculationThread extends Thread {
 
-		final Iterator<SimulatorSettings> iterator;
-		final StrategySelector selector;
+		private final Iterator<SimulatorSettings> iterator;
+		private final StrategySelector selector;
+		private boolean stoppedByRequest;
 
 		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator, final StrategySelector selector) {
 			this.iterator = iterator;
 			this.selector = selector;
+			this.stoppedByRequest = false;
 		}
 
 		@Override
@@ -65,7 +67,7 @@ public class StrategyGridSearcher implements StrategySearcher {
 
 		private SimulatorSettings getNextSimulatorSettings() {
 			synchronized (iterator) {
-				while (iterator.hasNext()) {
+				while (!stoppedByRequest && iterator.hasNext()) {
 					final SimulatorSettings nextValue = iterator.next();
 					if (nextValue == null)
 						return null;
@@ -80,6 +82,10 @@ public class StrategyGridSearcher implements StrategySearcher {
 				}
 			}
 			return null;
+		}
+
+		public void stopSearch() {
+			this.stoppedByRequest = true;
 		}
 	}
 
@@ -97,6 +103,13 @@ public class StrategyGridSearcher implements StrategySearcher {
 			t.start();
 		}
 		logger.debug("Finishing");
+	}
+
+	@Override
+	public void stopSearch() {
+		for (StatisticsCalculationThread t : threads) {
+			t.stopSearch();
+		}
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package stsc.general.simulator.multistarter.grid;
 
 import java.util.Arrays;
 
+import stsc.general.simulator.multistarter.StrategySearcherException;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.general.statistic.StatisticsByCostSelector;
@@ -18,5 +19,14 @@ public class StrategyGridSearcherTest extends TestCase {
 		final StrategySelector selector = new StatisticsByCostSelector(6500, new CostWeightedSumFunction());
 		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, 20);
 		assertEquals(6144, searcher.getSelector().getStrategies().size());
+	}
+
+	public void testStrategyGridSearcherStop() throws StrategySearcherException {
+		final SimulatorSettingsGridList list = TestGridSimulatorSettings.getGridList(StockStorageMock.getStockStorage(),
+				Arrays.asList(new String[] { "open" }), "31-01-2000");
+		final StrategySelector selector = new StatisticsByCostSelector(6500, new CostWeightedSumFunction());
+		final StrategyGridSearcher searcher = new StrategyGridSearcher(list, selector, 20);
+		searcher.stopSearch();
+		assertTrue(6144 > searcher.getSelector().getStrategies().size());
 	}
 }
