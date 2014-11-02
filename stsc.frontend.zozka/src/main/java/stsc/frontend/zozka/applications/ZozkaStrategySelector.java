@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.controlsfx.dialog.Dialogs;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,6 +21,8 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -91,7 +92,7 @@ public class ZozkaStrategySelector extends Application {
 		chartPanel.setMouseWheelEnabled(true);
 		chartPanel.setFillZoomRectangle(false);
 		chartPanel.setPopupMenu(null);
-		SwingNode sn = new SwingNode();
+		final SwingNode sn = new SwingNode();
 		sn.setContent(chartPanel);
 		chartPane.setCenter(sn);
 	}

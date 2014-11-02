@@ -27,11 +27,13 @@ import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.StrategySelector;
 import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,23 +42,41 @@ import javafx.stage.Stage;
 
 public class StrategiesPane extends BorderPane {
 
+	private static class IndicatorUpdater {
+
+		private final ProgressIndicator indicator;
+		private final long expectedSize;
+
+		public IndicatorUpdater(ProgressIndicator indicator, long expectedSize) {
+			this.indicator = indicator;
+			this.expectedSize = expectedSize;
+		}
+
+		void processedAmount(long processed) {
+			double res = ((double) processed / expectedSize);
+			Platform.runLater(() -> {
+				indicator.setProgress(res);
+			});
+		}
+	}
+
 	private static class ObservableStrategySelector extends StrategySelector {
 
+		private long processedAmount = 0;
+		final private IndicatorUpdater updater;
 		final private StrategySelector selector;
 		final private ObservableList<TradingStrategy> strategyList = FXCollections.synchronizedObservableList(FXCollections
 				.observableArrayList());
 
-		protected ObservableStrategySelector(StrategySelector selector) {
+		protected ObservableStrategySelector(StrategySelector selector, IndicatorUpdater updater) {
 			super(selector.size());
 			this.selector = selector;
+			this.updater = updater;
 		}
 
 		@Override
 		public synchronized TradingStrategy addStrategy(TradingStrategy strategy) {
-			if (strategyList == null || strategy == null) {
-				System.out.println(strategyList);
-				System.out.println(strategy);
-			}
+			processedAmount += 1;
 			final TradingStrategy deleted = selector.addStrategy(strategy);
 			if (deleted != null) {
 				if (!deleted.equals(strategy))
@@ -64,6 +84,7 @@ public class StrategiesPane extends BorderPane {
 			} else {
 				strategyList.add(strategy);
 			}
+			updater.processedAmount(processedAmount);
 			return deleted;
 		}
 
@@ -75,7 +96,6 @@ public class StrategiesPane extends BorderPane {
 		public ObservableList<TradingStrategy> getStrategyList() {
 			return strategyList;
 		}
-
 	}
 
 	public static class StatisticsDescription {
@@ -96,14 +116,22 @@ public class StrategiesPane extends BorderPane {
 	}
 
 	private final ObservableList<StatisticsDescription> model = FXCollections.observableArrayList();
+	private final ProgressIndicator indicator;
 	private final TableView<StatisticsDescription> table = new TableView<>();
 	private final JFreeChart chart;
 
 	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, JFreeChart chart)
 			throws BadAlgorithmException {
 		this.chart = chart;
+		this.indicator = new ProgressIndicator();
+		createTopElements();
 		createEmptyTable();
 		startCalculation(owner, period, model, stockStorage);
+	}
+
+	private void createTopElements() {
+		this.setTop(indicator);
+		indicator.setProgress(0.0);
 	}
 
 	private void createEmptyTable() {
@@ -157,10 +185,16 @@ public class StrategiesPane extends BorderPane {
 
 	private void startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
 			throws BadAlgorithmException {
-
-		final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
-				new CostWeightedSumFunction()));
 		try {
+			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
+
+			if (list.size() == 0) {
+				throw new BadAlgorithmException("Simulation Settings Grid size equal to Zero.");
+			}
+
+			final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
+					new CostWeightedSumFunction()), new IndicatorUpdater(indicator, list.size()));
+
 			selector.getStrategyList().addListener(new ListChangeListener<TradingStrategy>() {
 				@Override
 				public void onChanged(ListChangeListener.Change<? extends TradingStrategy> c) {
@@ -179,21 +213,10 @@ public class StrategiesPane extends BorderPane {
 								return idsToDelete.contains(p.getId());
 							});
 						}
-						if (c.wasReplaced())
-							System.out.println(c.wasReplaced());
-						if (c.wasUpdated())
-							System.out.println(c.wasUpdated());
-						if (c.wasPermutated())
-							System.out.println(c.wasPermutated());
 					}
 				}
 			});
-			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
-			if (list.size() == 0) {
-				throw new BadAlgorithmException("Simulation Settings Grid size equal to Zero.");
-			} else {
-				new StrategyGridSearcher(list, selector, 4);
-			}
+			new StrategyGridSearcher(list, selector, 4);
 		} catch (BadParameterException e1) {
 			Dialogs.create().owner(owner).showException(e1);
 		}
