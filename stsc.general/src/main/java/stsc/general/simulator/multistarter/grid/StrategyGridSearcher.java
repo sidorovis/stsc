@@ -35,14 +35,18 @@ public class StrategyGridSearcher implements StrategySearcher {
 
 	private final Set<String> processedSettings = new HashSet<>();
 	private final StrategySelector selector;
+	private final double fullSize;
 
 	private class StatisticsCalculationThread extends Thread {
 
+		private IndicatorProgressListener progressListener = null;
+		private final double fullSize;
 		private final Iterator<SimulatorSettings> iterator;
 		private final StrategySelector selector;
 		private boolean stoppedByRequest;
 
-		public StatisticsCalculationThread(final Iterator<SimulatorSettings> iterator, final StrategySelector selector) {
+		public StatisticsCalculationThread(double fullSize, final Iterator<SimulatorSettings> iterator, final StrategySelector selector) {
+			this.fullSize = fullSize;
 			this.iterator = iterator;
 			this.selector = selector;
 			this.stoppedByRequest = false;
@@ -66,6 +70,7 @@ public class StrategyGridSearcher implements StrategySearcher {
 		}
 
 		private SimulatorSettings getNextSimulatorSettings() {
+			long processedSize = 0;
 			synchronized (iterator) {
 				while (!stoppedByRequest && iterator.hasNext()) {
 					final SimulatorSettings nextValue = iterator.next();
@@ -78,6 +83,11 @@ public class StrategyGridSearcher implements StrategySearcher {
 					} else {
 						processedSettings.add(hashCode);
 					}
+					processedSize += 1;
+					if (progressListener != null) {
+						System.out.println(processedSize + " " + fullSize);
+						progressListener.processed(processedSize / fullSize);
+					}
 					return nextValue;
 				}
 			}
@@ -87,17 +97,22 @@ public class StrategyGridSearcher implements StrategySearcher {
 		public void stopSearch() {
 			this.stoppedByRequest = true;
 		}
+
+		public void addIndicatorProgress(IndicatorProgressListener listener) {
+			progressListener = listener;
+		}
 	}
 
 	final List<StatisticsCalculationThread> threads = new ArrayList<>();
 
-	public StrategyGridSearcher(final Iterable<SimulatorSettings> iterable, final StrategySelector selector, int threadAmount) {
+	public StrategyGridSearcher(final SimulatorSettingsGridList iterable, final StrategySelector selector, int threadAmount) {
 		this.selector = selector;
+		this.fullSize = (double) iterable.size();
 		final Iterator<SimulatorSettings> iterator = iterable.iterator();
 		logger.debug("Starting");
 
 		for (int i = 0; i < threadAmount; ++i) {
-			threads.add(new StatisticsCalculationThread(iterator, selector));
+			threads.add(new StatisticsCalculationThread(fullSize, iterator, selector));
 		}
 		for (Thread t : threads) {
 			t.start();
@@ -122,5 +137,12 @@ public class StrategyGridSearcher implements StrategySearcher {
 			throw new StrategySearcherException(e.getMessage());
 		}
 		return selector;
+	}
+
+	@Override
+	public synchronized void addIndicatorProgress(IndicatorProgressListener listener) {
+		for (StatisticsCalculationThread t : threads) {
+			t.addIndicatorProgress(listener);
+		}
 	}
 }

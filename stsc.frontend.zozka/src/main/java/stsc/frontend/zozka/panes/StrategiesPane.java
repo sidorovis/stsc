@@ -19,10 +19,14 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.gui.models.ObservableStrategySelector;
 import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
+import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.models.SimulatorSettingsModel;
 import stsc.frontend.zozka.panes.internal.StrategySearchControlPane;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.StrategySearcher;
+import stsc.general.simulator.multistarter.StrategySearcher.IndicatorProgressListener;
+import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
+import stsc.general.simulator.multistarter.genetic.StrategyGeneticSearcher;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.general.statistic.EquityCurve;
@@ -30,6 +34,7 @@ import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -65,23 +70,35 @@ public class StrategiesPane extends BorderPane {
 	private final TableView<StatisticsDescription> table = new TableView<>();
 	private final JFreeChart chart;
 
-	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, JFreeChart chart)
-			throws BadAlgorithmException, UnexpectedException {
+	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, JFreeChart chart,
+			SimulationType simulationType) throws BadAlgorithmException, UnexpectedException, InterruptedException {
 		this.chart = chart;
 		this.controlPane = new StrategySearchControlPane();
 		createTopElements();
 		createEmptyTable();
-		final StrategySearcher ss = startCalculation(owner, period, model, stockStorage);
-		setOnStopButtonAction(ss);
+		final StrategySearcher ss = startCalculation(owner, period, model, stockStorage, simulationType);
+		setupControlPane(ss);
 	}
 
-	private void setOnStopButtonAction(StrategySearcher ss) throws UnexpectedException {
+	private void setupControlPane(StrategySearcher ss) throws UnexpectedException {
 		if (ss == null) {
 			throw new UnexpectedException("Calculations are not started, problem on StrategySearch creation phaze.");
 		}
 		controlPane.setOnStopButtonAction(() -> {
 			if (ss != null) {
 				ss.stopSearch();
+			}
+		});
+		ss.addIndicatorProgress(new IndicatorProgressListener() {
+			@Override
+			public void processed(double percent) {
+				Platform.runLater(() -> {
+					if (Double.compare(1.0, percent) <= 0) {
+						controlPane.hide();
+					} else {
+						controlPane.setIndicatorProgress(percent);
+					}
+				});
 			}
 		});
 	}
@@ -141,19 +158,54 @@ public class StrategiesPane extends BorderPane {
 		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 	}
 
-	private StrategyGridSearcher startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
+	private StrategySearcher startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
+			StockStorage stockStorage, SimulationType simulationType) throws BadAlgorithmException, InterruptedException {
+		if (simulationType.equals(SimulationType.GRID)) {
+			return startGridCalculation(owner, period, settingsModel, stockStorage);
+		} else {
+			return startGeneticCalculation(owner, period, settingsModel, stockStorage);
+		}
+	}
+
+	private StrategySearcher startGridCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
 			StockStorage stockStorage) throws BadAlgorithmException {
 		try {
 			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
-			checkCorrectSize(list);
+			checkCorrectSize(list.size());
 
 			final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
-					new CostWeightedSumFunction()), controlPane, list.size());
+					new CostWeightedSumFunction()));
 
 			addListenerOnChanged(selector.getStrategyList());
 			return new StrategyGridSearcher(list, selector, 4);
 		} catch (BadParameterException e1) {
 			Dialogs.create().owner(owner).showException(e1);
+		}
+		return null;
+	}
+
+	private StrategySearcher startGeneticCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
+			StockStorage stockStorage) throws BadAlgorithmException, InterruptedException {
+		try {
+			final SimulatorSettingsGeneticList list = settingsModel.generateGeneticSettings(stockStorage, period);
+
+			final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
+					new CostWeightedSumFunction()));
+
+			checkCorrectSize(selector.size());
+
+			addListenerOnChanged(selector.getStrategyList());
+			StrategyGeneticSearcher sgs = new StrategyGeneticSearcher(list, selector, 4);
+			new Thread(() -> {
+				try {
+					sgs.getSelector();
+				} catch (Exception e) {
+					Dialogs.create().owner(owner).showException(e);
+				}
+			}).start();
+			return sgs;
+		} catch (BadParameterException badParameterException) {
+			Dialogs.create().owner(owner).showException(badParameterException);
 		}
 		return null;
 	}
@@ -167,8 +219,8 @@ public class StrategiesPane extends BorderPane {
 		});
 	}
 
-	private void checkCorrectSize(final SimulatorSettingsGridList list) throws BadAlgorithmException {
-		if (list.size() == 0) {
+	private void checkCorrectSize(long size) throws BadAlgorithmException {
+		if (size == 0) {
 			throw new BadAlgorithmException("Simulation Settings Grid size equal to Zero.");
 		}
 	}

@@ -7,6 +7,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 import stsc.common.FromToPeriod;
+import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.models.SimulatorSettingsModel;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.application.Application;
@@ -46,11 +47,12 @@ public class VisualTestStrategiesPane extends Application {
 		SimulatorSettingsModel model = new SimulatorSettingsModel();
 		model.loadFromFile(new File("./test_data/strategy_selector/size_2280"));
 
-		final StrategiesPane sp = new StrategiesPane(parent, period, model, yfss, chart);
+		final StrategiesPane sp = new StrategiesPane(parent, period, model, yfss, chart, SimulationType.GENETIC);
 		chartPane.getItems().add(sp);
 		parent.setScene(scene);
 		parent.setMinHeight(800);
-		parent.setMinWidth(600);
+		parent.setMinWidth(800);
+		parent.setWidth(800);
 		parent.show();
 	}
 

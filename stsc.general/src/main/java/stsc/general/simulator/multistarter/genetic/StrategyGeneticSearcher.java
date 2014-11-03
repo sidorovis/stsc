@@ -67,6 +67,7 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	final Map<TradingStrategy, Boolean> sortedPopulation;
 
 	private boolean stoppedByRequest = false;
+	private volatile IndicatorProgressListener progressIndicator = null;
 
 	public StrategyGeneticSearcher(SimulatorSettingsGeneticList algorithmSettings, final StrategySelector selector, int threadAmount)
 			throws InterruptedException {
@@ -153,6 +154,9 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 			maxCostSum = lastCostSum;
 		}
 		currentSelectionIndex += 1;
+		if (progressIndicator != null) {
+			progressIndicator.processed((double) currentSelectionIndex / settings.maxSelectionIndex);
+		}
 	}
 
 	private void createNewPopulation(List<TradingStrategy> currentPopulation) {
@@ -234,6 +238,11 @@ public class StrategyGeneticSearcher implements StrategySearcher {
 	@Override
 	public void stopSearch() {
 		this.stoppedByRequest = true;
+	}
+
+	@Override
+	public void addIndicatorProgress(IndicatorProgressListener r) {
+		progressIndicator = r;
 	}
 
 }

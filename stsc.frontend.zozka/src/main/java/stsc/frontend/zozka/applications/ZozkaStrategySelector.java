@@ -14,6 +14,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
 import stsc.frontend.zozka.controllers.SimulatorSettingsController;
+import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.panes.StrategiesPane;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -67,7 +68,7 @@ public class ZozkaStrategySelector extends Application {
 
 		final Button localGeneticSearchButton = new Button("Local Genetic Search");
 		localGeneticSearchButton.setOnAction(e -> {
-			Dialogs.create().owner(owner).showException(new Exception("Local Genetic Search Not Implemented Yet"));
+			runLocalGeneticSearch();
 		});
 
 		final Button distributedGridSearchButton = new Button("Distributed Grid Search");
@@ -98,21 +99,28 @@ public class ZozkaStrategySelector extends Application {
 
 	private void runLocalGridSearch() {
 		periodAndDatafeedController.loadStockStorage(eh -> Platform.runLater(() -> {
-			localGridSearch(periodAndDatafeedController.getStockStorage());
+			localSearch(periodAndDatafeedController.getStockStorage(), SimulationType.GRID, "Grid");
 		}));
 	}
 
-	private void localGridSearch(StockStorage stockStorage) {
+	private void runLocalGeneticSearch() {
+		periodAndDatafeedController.loadStockStorage(eh -> Platform.runLater(() -> {
+			localSearch(periodAndDatafeedController.getStockStorage(), SimulationType.GENETIC, "Genetic");
+		}));
+	}
+
+	private void localSearch(StockStorage stockStorage, SimulationType simulationType, String tabName) {
 		if (stockStorage == null)
 			return;
 		final FromToPeriod period = periodAndDatafeedController.getPeriod();
 		try {
-			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage, chart);
-			final Tab tab = new Tab("Grid(" + (new Date()) + ")");
+			final StrategiesPane pane = new StrategiesPane(owner, period, simulatorSettingsController.getModel(), stockStorage, chart,
+					simulationType);
+			final Tab tab = new Tab(tabName + "(" + (new Date()) + ")");
 			tab.setContent(pane);
 			tabPane.getTabs().add(tab);
 			tabPane.getSelectionModel().select(tab);
-		} catch (BadAlgorithmException | UnexpectedException e) {
+		} catch (BadAlgorithmException | UnexpectedException | InterruptedException e) {
 			Dialogs.create().owner(owner).showException(e);
 		}
 	}
