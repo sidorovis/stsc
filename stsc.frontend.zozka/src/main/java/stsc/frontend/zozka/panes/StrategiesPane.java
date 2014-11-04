@@ -17,6 +17,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.dialogs.TextFieldDialog;
 import stsc.frontend.zozka.gui.models.ObservableStrategySelector;
 import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.frontend.zozka.gui.models.SimulationType;
@@ -43,6 +44,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -64,6 +66,7 @@ public class StrategiesPane extends BorderPane {
 		}
 	}
 
+	private final Stage owner;
 	private final ObservableList<StatisticsDescription> model = FXCollections.synchronizedObservableList(FXCollections
 			.observableArrayList());
 	private final StrategySearchControlPane controlPane;
@@ -72,12 +75,12 @@ public class StrategiesPane extends BorderPane {
 
 	public StrategiesPane(Stage owner, FromToPeriod period, SimulatorSettingsModel model, StockStorage stockStorage, JFreeChart chart,
 			SimulationType simulationType) throws BadAlgorithmException, UnexpectedException, InterruptedException {
+		this.owner = owner;
 		this.chart = chart;
 		this.controlPane = new StrategySearchControlPane();
 		createTopElements();
 		createEmptyTable();
-		final StrategySearcher ss = startCalculation(owner, period, model, stockStorage, simulationType);
-		setupControlPane(ss);
+		setupControlPane(startCalculation(period, model, stockStorage, simulationType));
 	}
 
 	private void setupControlPane(StrategySearcher ss) throws UnexpectedException {
@@ -136,6 +139,12 @@ public class StrategiesPane extends BorderPane {
 				}
 			}
 		});
+		table.setOnMouseClicked(e -> {
+			if (e.getButton().equals(MouseButton.PRIMARY) && e.getClickCount() == 2) {
+				final StatisticsDescription sd = table.getSelectionModel().getSelectedItem();
+				new TextFieldDialog(owner, sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getSettings().toString()).show();
+			}
+		});
 	}
 
 	private void drawStatistics(long id, Statistics statistics) {
@@ -158,17 +167,17 @@ public class StrategiesPane extends BorderPane {
 		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 	}
 
-	private StrategySearcher startCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
-			StockStorage stockStorage, SimulationType simulationType) throws BadAlgorithmException, InterruptedException {
+	private StrategySearcher startCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage,
+			SimulationType simulationType) throws BadAlgorithmException, InterruptedException {
 		if (simulationType.equals(SimulationType.GRID)) {
-			return startGridCalculation(owner, period, settingsModel, stockStorage);
+			return startGridCalculation(period, settingsModel, stockStorage);
 		} else {
-			return startGeneticCalculation(owner, period, settingsModel, stockStorage);
+			return startGeneticCalculation(period, settingsModel, stockStorage);
 		}
 	}
 
-	private StrategySearcher startGridCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
-			StockStorage stockStorage) throws BadAlgorithmException {
+	private StrategySearcher startGridCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
+			throws BadAlgorithmException {
 		try {
 			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
 			checkCorrectSize(list.size());
@@ -184,8 +193,8 @@ public class StrategiesPane extends BorderPane {
 		return null;
 	}
 
-	private StrategySearcher startGeneticCalculation(Stage owner, FromToPeriod period, SimulatorSettingsModel settingsModel,
-			StockStorage stockStorage) throws BadAlgorithmException, InterruptedException {
+	private StrategySearcher startGeneticCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
+			throws BadAlgorithmException, InterruptedException {
 		try {
 			final SimulatorSettingsGeneticList list = settingsModel.generateGeneticSettings(stockStorage, period);
 

@@ -43,7 +43,6 @@ public class VisualTestStockViewPane extends Application {
 
 	public static void main(String[] args) {
 		Application.launch(VisualTestStockViewPane.class, (java.lang.String[]) null);
-
 	}
 
 }
