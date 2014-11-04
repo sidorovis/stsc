@@ -40,13 +40,14 @@ public class MpDouble extends MpIterator<Double> {
 
 	@Override
 	public long size() {
-		long result = Math.round((to - from) / step);
+		long result = (long) Math.ceil((to - from) / step);
 		return (result == 0) ? 1 : result;
 	}
 
 	@Override
 	public String toString() {
-		return getName() + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from) + ":" + String.valueOf(to) + ")";
+		return getName() + ":" + String.valueOf(current()) + " from (" + String.valueOf(step) + "|" + String.valueOf(from) + ":"
+				+ String.valueOf(to) + ")";
 	}
 
 	@Override

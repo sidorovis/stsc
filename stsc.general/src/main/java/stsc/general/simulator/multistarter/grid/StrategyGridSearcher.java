@@ -10,6 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import com.google.common.util.concurrent.AtomicDouble;
+
 import stsc.common.BadSignalException;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.Simulator;
@@ -31,22 +33,47 @@ public class StrategyGridSearcher implements StrategySearcher {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/mt_strategy_grid_searcher_log4j2.xml");
 	}
 
+	static class IteratorProxy implements Iterator<SimulatorSettings> {
+		private final Iterator<SimulatorSettings> value;
+
+		IteratorProxy(Iterator<SimulatorSettings> value) {
+			this.value = value;
+		}
+
+		@Override
+		public synchronized boolean hasNext() {
+			return value.hasNext();
+		}
+
+		@Override
+		public synchronized SimulatorSettings next() {
+			return value.next();
+		}
+
+	}
+
 	private static Logger logger = LogManager.getLogger("StrategyGridSearcher");
 
 	private final Set<String> processedSettings = new HashSet<>();
 	private final StrategySelector selector;
 	private final double fullSize;
+	private final AtomicDouble processedSize = new AtomicDouble(1.0);
 
 	private class StatisticsCalculationThread extends Thread {
 
 		private IndicatorProgressListener progressListener = null;
+
 		private final double fullSize;
-		private final Iterator<SimulatorSettings> iterator;
+		private final AtomicDouble processedSize;
+
+		private final IteratorProxy iterator;
 		private final StrategySelector selector;
 		private boolean stoppedByRequest;
 
-		public StatisticsCalculationThread(double fullSize, final Iterator<SimulatorSettings> iterator, final StrategySelector selector) {
+		public StatisticsCalculationThread(double fullSize, AtomicDouble processedSize, final IteratorProxy iterator,
+				final StrategySelector selector) {
 			this.fullSize = fullSize;
+			this.processedSize = processedSize;
 			this.iterator = iterator;
 			this.selector = selector;
 			this.stoppedByRequest = false;
@@ -70,7 +97,6 @@ public class StrategyGridSearcher implements StrategySearcher {
 		}
 
 		private SimulatorSettings getNextSimulatorSettings() {
-			long processedSize = 0;
 			synchronized (iterator) {
 				while (!stoppedByRequest && iterator.hasNext()) {
 					final SimulatorSettings nextValue = iterator.next();
@@ -83,9 +109,8 @@ public class StrategyGridSearcher implements StrategySearcher {
 					} else {
 						processedSettings.add(hashCode);
 					}
-					processedSize += 1;
+					final double processedSize = this.processedSize.getAndAdd(1.0);
 					if (progressListener != null) {
-						System.out.println(processedSize + " " + fullSize);
 						progressListener.processed(processedSize / fullSize);
 					}
 					return nextValue;
@@ -108,11 +133,11 @@ public class StrategyGridSearcher implements StrategySearcher {
 	public StrategyGridSearcher(final SimulatorSettingsGridList iterable, final StrategySelector selector, int threadAmount) {
 		this.selector = selector;
 		this.fullSize = (double) iterable.size();
-		final Iterator<SimulatorSettings> iterator = iterable.iterator();
+		final IteratorProxy iteratorProxy = new IteratorProxy(iterable.iterator());
 		logger.debug("Starting");
 
 		for (int i = 0; i < threadAmount; ++i) {
-			threads.add(new StatisticsCalculationThread(fullSize, iterator, selector));
+			threads.add(new StatisticsCalculationThread(fullSize, processedSize, iteratorProxy, selector));
 		}
 		for (Thread t : threads) {
 			t.start();

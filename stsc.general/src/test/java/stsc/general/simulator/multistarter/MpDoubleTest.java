@@ -23,8 +23,10 @@ public class MpDoubleTest extends TestCase {
 
 	public void testMpDoubleSize() throws BadParameterException {
 		assertEquals(7, new MpDouble("b", -0.6, 0.4, 0.15).size());
-		assertEquals(3, new MpDouble("b", -0.6, 0.4, 0.3).size());
+		assertEquals(4, new MpDouble("b", -0.6, 0.4, 0.3).size());
 		assertEquals(200, new MpDouble("b", -0.6, 1.4, 0.01).size());
+		assertEquals(2, new MpDouble("b", 0.1, 0.6, 0.4).size());
+		assertEquals(1, new MpDouble("b", 0.1, 0.6, 0.8).size());
 	}
 
 	public void testMpDoubleClone() throws BadParameterException {

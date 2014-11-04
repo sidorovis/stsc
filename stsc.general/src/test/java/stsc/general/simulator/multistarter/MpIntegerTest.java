@@ -31,7 +31,9 @@ public class MpIntegerTest extends TestCase {
 
 	public void testMpIntegerSize() throws BadParameterException {
 		assertEquals(20L, new MpInteger("a", -10, 10, 1).size());
-		assertEquals(7L, new MpInteger("a", 0, 30, 4).size());
+		assertEquals(8L, new MpInteger("a", 0, 30, 4).size());
+		assertEquals(2L, new MpInteger("a", 4, 30, 25).size());
+		assertEquals(1L, new MpInteger("a", 4, 30, 28).size());
 		assertEquals(75L, new MpInteger("a", 100, 1000, 12).size());
 	}
 

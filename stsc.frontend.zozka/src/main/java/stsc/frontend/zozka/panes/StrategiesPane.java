@@ -226,21 +226,23 @@ public class StrategiesPane extends BorderPane {
 	}
 
 	protected void processOnChanged(ListChangeListener.Change<? extends TradingStrategy> c) {
-		while (c.next()) {
-			if (c.wasAdded()) {
-				for (TradingStrategy ts : c.getAddedSubList()) {
-					model.add(new StatisticsDescription(ts));
+		Platform.runLater(() -> {
+			while (c.next()) {
+				if (c.wasAdded()) {
+					for (TradingStrategy ts : c.getAddedSubList()) {
+						model.add(new StatisticsDescription(ts));
+					}
+				}
+				if (c.wasRemoved()) {
+					final List<Long> idsToDelete = new ArrayList<Long>();
+					for (TradingStrategy tsRemoved : c.getRemoved()) {
+						idsToDelete.add(tsRemoved.getSettings().getId());
+					}
+					model.removeIf(p -> {
+						return idsToDelete.contains(p.getId());
+					});
 				}
 			}
-			if (c.wasRemoved()) {
-				final List<Long> idsToDelete = new ArrayList<Long>();
-				for (TradingStrategy tsRemoved : c.getRemoved()) {
-					idsToDelete.add(tsRemoved.getSettings().getId());
-				}
-				model.removeIf(p -> {
-					return idsToDelete.contains(p.getId());
-				});
-			}
-		}
+		});
 	}
 }
