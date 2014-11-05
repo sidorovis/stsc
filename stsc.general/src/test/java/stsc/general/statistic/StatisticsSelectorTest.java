@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.statistic.StatisticsByCostSelector;
 import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestGridSimulatorSettings;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class StatisticsSelectorTest extends TestCase {
+public class StatisticsSelectorTest {
+
+	@Test
 	public void testStatisticsSelector() throws ParseException {
 		final CostWeightedSumFunction compareMethod = new CostWeightedSumFunction();
 		final StrategySelector statisticsSelector = new StatisticsByCostSelector(2, compareMethod);
@@ -30,8 +34,8 @@ public class StatisticsSelectorTest extends TestCase {
 		statisticsSelector.addStrategy(new TradingStrategy(testSettings.next(), TestStatisticsHelper.getStatistics(150, 210)));
 
 		final List<TradingStrategy> strategies = statisticsSelector.getStrategies();
-		assertEquals(2, strategies.size());
-		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[0]).getStatistics()), values.get(2));
-		assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[1]).getStatistics()), values.get(1));
+		Assert.assertEquals(2, strategies.size());
+		Assert.assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[0]).getStatistics()), values.get(2));
+		Assert.assertEquals(compareMethod.calculate(((TradingStrategy) strategies.toArray()[1]).getStatistics()), values.get(1));
 	}
 }

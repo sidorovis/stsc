@@ -2,16 +2,20 @@ package stsc.general.statistic;
 
 import java.util.Set;
 
-import stsc.general.statistic.Statistics;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class StatisticsTest extends TestCase {
+import stsc.general.statistic.Statistics;
+
+public class StatisticsTest {
+
+	@Test
 	public void testStatistics() {
 		final Set<String> names = Statistics.getStatisticsMethods();
-		assertEquals(23, names.size());
-		assertTrue(names.contains("getFreq"));
-		assertTrue(names.contains("getMaxWin"));
-		assertTrue(names.contains("getDdValueAvGain"));
-		assertTrue(names.contains("getAvGain"));
+		Assert.assertEquals(23, names.size());
+		Assert.assertTrue(names.contains("getFreq"));
+		Assert.assertTrue(names.contains("getMaxWin"));
+		Assert.assertTrue(names.contains("getDdValueAvGain"));
+		Assert.assertTrue(names.contains("getAvGain"));
 	}
 }
