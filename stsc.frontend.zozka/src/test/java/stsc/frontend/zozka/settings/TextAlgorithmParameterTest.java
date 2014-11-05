@@ -1,11 +1,13 @@
 package stsc.frontend.zozka.settings;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.frontend.zozka.gui.models.TextAlgorithmParameter;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
-public class TextAlgorithmParameterTest extends TestCase {
+public class TextAlgorithmParameterTest {
 
+	@Test
 	public void testTextAlgorithmParameterTestDomen() {
 		Assert.assertEquals(3, TextAlgorithmParameter.createDomenRepresentation("'','',''").size());
 		Assert.assertEquals("", TextAlgorithmParameter.createDomenRepresentation("'','',''").get(0));

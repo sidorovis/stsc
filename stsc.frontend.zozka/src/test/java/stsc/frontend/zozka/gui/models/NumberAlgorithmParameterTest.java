@@ -3,11 +3,12 @@ package stsc.frontend.zozka.gui.models;
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class NumberAlgorithmParameterTest extends TestCase {
+public class NumberAlgorithmParameterTest {
 
+	@Test
 	public void testIntegerParPatternCreateAlgorithmController() {
 		final Pattern p = NumberAlgorithmParameter.integerParPattern;
 		for (int i = -2000; i < 2000; ++i) {

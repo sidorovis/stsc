@@ -2,11 +2,12 @@ package stsc.frontend.zozka.controllers;
 
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestCreateAlgorithmController extends TestCase {
+public class TestCreateAlgorithmController {
 
+	@Test
 	public void testParameterNamePatternCreateAlgorithmController() {
 		final Pattern p = CreateAlgorithmController.parameterNamePattern;
 		Assert.assertTrue(p.matcher("asd_gre_htr34_her_y5hdg_ge57_gerg").matches());
