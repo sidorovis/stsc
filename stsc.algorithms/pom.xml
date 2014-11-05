@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>stsc.algorithms</artifactId>
-  <version>0.0.10-DISTRIBUTED</version>
+  <version>0.0.11-CLEANING</version>
   <packaging>jar</packaging>
 
   <name>stsc.algorithms</name>

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>stsc</groupId>
   <artifactId>stsc</artifactId>
-  <version>0.0.10-DISTRIBUTED</version>
+  <version>0.0.11-CLEANING</version>
   <packaging>pom</packaging>
   <name>stsc</name>
   <url>https://github.com/sidorovis/stsc</url>
@@ -39,6 +39,7 @@
 	<module>stsc.yahoo.downloader</module>
 	<module>stsc.yahoo.liquidator</module>
 	<module>stsc.performance</module>
+	<module>stsc.distributed.hadoop</module>
 	<module>stsc.frontend.zozka</module>
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
