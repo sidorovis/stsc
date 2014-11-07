@@ -7,7 +7,9 @@ import stsc.general.strategy.TradingStrategy;
 
 public interface SortedStrategies {
 
-	public boolean add(Double rating, TradingStrategy value);
+	public boolean addStrategy(Double rating, TradingStrategy value);
+
+	public boolean removeStrategy(Double rating, TradingStrategy value);
 
 	public TradingStrategy deleteLast();
 

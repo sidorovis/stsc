@@ -28,12 +28,11 @@ public class TradingStrategy {
 		return statistics.getAvGain();
 	}
 
-	public String stringHashCode() {
-		return simulatorSettings.stringHashCode();
-	}
-
 	@Override
 	public String toString() {
+		if (simulatorSettings == null) {
+			return "TEST: " + statistics.getAvGain();
+		}
 		return simulatorSettings.toString() + "\n" + statistics.toString();
 	}
 }

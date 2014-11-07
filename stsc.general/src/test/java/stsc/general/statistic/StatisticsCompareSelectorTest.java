@@ -4,15 +4,18 @@ import java.text.ParseException;
 import java.util.Iterator;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.general.statistic.cost.comparator.CostWeightedSumComparator;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class StatisticsCompareSelectorTest extends TestCase {
+public class StatisticsCompareSelectorTest {
+
+	@Test
 	public void testStatisticsCompareSelector() throws ParseException {
 		final CostWeightedSumComparator c = new CostWeightedSumComparator();
 		c.addParameter("getWinProb", 5.0);
@@ -29,11 +32,10 @@ public class StatisticsCompareSelectorTest extends TestCase {
 		sel.addStrategy(ts3);
 		sel.addStrategy(ts4);
 
-		assertEquals(3, sel.getStrategies().size());
+		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
-
 }

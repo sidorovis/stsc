@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import stsc.general.statistic.cost.comparator.CostStatisticsComparator;
 import stsc.general.strategy.TradingStrategy;
 
-public class StatisticsCompareSelector extends StrategySelector {
+public class StatisticsCompareSelector extends BorderedStrategySelector {
 
 	private final class StrategyComparator implements Comparator<TradingStrategy> {
 		private CostStatisticsComparator comparator;
@@ -25,11 +25,13 @@ public class StatisticsCompareSelector extends StrategySelector {
 
 	}
 
+	private final StrategyComparator strategyComparator;
 	private final TreeSet<TradingStrategy> select;
 
 	public StatisticsCompareSelector(int selectLastElements, CostStatisticsComparator comparator) {
 		super(selectLastElements);
-		this.select = new TreeSet<TradingStrategy>(new StrategyComparator(comparator));
+		this.strategyComparator = new StrategyComparator(comparator);
+		this.select = new TreeSet<TradingStrategy>(strategyComparator);
 	}
 
 	@Override
@@ -39,6 +41,11 @@ public class StatisticsCompareSelector extends StrategySelector {
 			return select.pollLast();
 		}
 		return null;
+	}
+
+	@Override
+	public synchronized void removeStrategy(final TradingStrategy strategy) {
+		select.remove(strategy);
 	}
 
 	@Override

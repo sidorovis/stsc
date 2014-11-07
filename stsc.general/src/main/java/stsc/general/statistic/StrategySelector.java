@@ -4,19 +4,13 @@ import java.util.List;
 
 import stsc.general.strategy.TradingStrategy;
 
-public abstract class StrategySelector {
+public interface StrategySelector {
 
-	private final int selectLastElements;
+	public TradingStrategy addStrategy(final TradingStrategy strategy);
 
-	protected StrategySelector(final int selectLastElements) {
-		this.selectLastElements = selectLastElements;
-	}
+	public void removeStrategy(TradingStrategy strategy);
 
-	public abstract TradingStrategy addStrategy(final TradingStrategy strategy);
+	public List<TradingStrategy> getStrategies();
 
-	public abstract List<TradingStrategy> getStrategies();
-
-	public int size() {
-		return selectLastElements;
-	}
+	public int size();
 }
