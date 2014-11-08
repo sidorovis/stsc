@@ -16,6 +16,7 @@ public class TextFieldDialog extends Dialog {
 		this.textArea = new TextArea(value);
 		this.getWindow().setWidth(600);
 		this.getWindow().setHeight(600);
+		this.getWindow().centerOnScreen();
 		final BorderPane borderPane = new BorderPane();
 		this.setContent(borderPane);
 		borderPane.setCenter(textArea);

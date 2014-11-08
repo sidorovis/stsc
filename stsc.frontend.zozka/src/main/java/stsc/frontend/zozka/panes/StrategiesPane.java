@@ -2,6 +2,7 @@ package stsc.frontend.zozka.panes;
 
 import java.awt.Color;
 import java.rmi.UnexpectedException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.simulator.multistarter.grid.StrategyGridSearcher;
 import stsc.general.statistic.EquityCurve;
 import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsByCostSelector;
+import stsc.general.statistic.StatisticsWithDistanceSelector;
 import stsc.general.statistic.cost.function.CostWeightedSumFunction;
 import stsc.general.strategy.TradingStrategy;
 import javafx.application.Platform;
@@ -51,6 +52,8 @@ import javafx.stage.Stage;
 public class StrategiesPane extends BorderPane {
 
 	public static class StatisticsDescription {
+		private static DecimalFormat df = new DecimalFormat("0.0000");
+
 		private final TradingStrategy tradingStrategy;
 
 		public StatisticsDescription(TradingStrategy tradingStrategy) {
@@ -62,13 +65,19 @@ public class StrategiesPane extends BorderPane {
 		}
 
 		public SimpleDoubleProperty getProperty(String methodName) {
-			return new SimpleDoubleProperty(Statistics.invokeMethod(tradingStrategy.getStatistics(), methodName));
+			final Double value = Statistics.invokeMethod(tradingStrategy.getStatistics(), methodName);
+			df.format(value);
+			return new SimpleDoubleProperty(Double.valueOf(df.format(value)));
+		}
+
+		@Override
+		public String toString() {
+			return tradingStrategy.getSettings().toString();
 		}
 	}
 
 	private final Stage owner;
-	private final ObservableList<StatisticsDescription> model = FXCollections.synchronizedObservableList(FXCollections
-			.observableArrayList());
+	private final ObservableList<StatisticsDescription> model = FXCollections.observableArrayList();
 	private final StrategySearchControlPane controlPane;
 	private final TableView<StatisticsDescription> table = new TableView<>();
 	private final JFreeChart chart;
@@ -131,20 +140,31 @@ public class StrategiesPane extends BorderPane {
 		table.getSelectionModel().setCellSelectionEnabled(false);
 		table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener<Integer>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends Integer> c) {
-				final int selected = table.getSelectionModel().getSelectedIndex();
-				if (selected >= 0) {
-					final StatisticsDescription sd = model.get(selected);
-					drawStatistics(sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getStatistics());
-				}
+			public void onChanged(final ListChangeListener.Change<? extends Integer> c) {
+				tableSelectionChanged(c.getList());
 			}
 		});
 		table.setOnMouseClicked(e -> {
 			if (e.getButton().equals(MouseButton.PRIMARY) && e.getClickCount() == 2) {
-				final StatisticsDescription sd = table.getSelectionModel().getSelectedItem();
-				new TextFieldDialog(owner, sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getSettings().toString()).show();
+				showTextField();
 			}
 		});
+	}
+
+	private void tableSelectionChanged(ObservableList<? extends Integer> observableList) {
+		final int selected = table.getSelectionModel().getSelectedIndex();
+		if (selected >= 0) {
+			final StatisticsDescription sd = model.get(selected);
+			drawStatistics(sd.tradingStrategy.getSettings().getId(), sd.tradingStrategy.getStatistics());
+		}
+	}
+
+	private void showTextField() {
+		final StatisticsDescription sd = table.getSelectionModel().getSelectedItem();
+		if (sd != null) {
+			final long id = sd.getId();
+			new TextFieldDialog(owner, id, sd.toString()).show();
+		}
 	}
 
 	private void drawStatistics(long id, Statistics statistics) {
@@ -181,9 +201,7 @@ public class StrategiesPane extends BorderPane {
 		try {
 			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
 			checkCorrectSize(list.size());
-
-			final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
-					new CostWeightedSumFunction()));
+			final ObservableStrategySelector selector = createSelector();
 
 			addListenerOnChanged(selector.getStrategyList());
 			return new StrategyGridSearcher(list, selector, 4);
@@ -197,10 +215,7 @@ public class StrategiesPane extends BorderPane {
 			throws BadAlgorithmException, InterruptedException {
 		try {
 			final SimulatorSettingsGeneticList list = settingsModel.generateGeneticSettings(stockStorage, period);
-
-			final ObservableStrategySelector selector = new ObservableStrategySelector(new StatisticsByCostSelector(50,
-					new CostWeightedSumFunction()));
-
+			final ObservableStrategySelector selector = createSelector();
 			checkCorrectSize(selector.size());
 
 			addListenerOnChanged(selector.getStrategyList());
@@ -217,6 +232,17 @@ public class StrategiesPane extends BorderPane {
 			Dialogs.create().owner(owner).showException(badParameterException);
 		}
 		return null;
+	}
+
+	private ObservableStrategySelector createSelector() {
+		final CostWeightedSumFunction costFunction = new CostWeightedSumFunction();
+		costFunction.addParameter("getWinProb", 1.0);
+		costFunction.addParameter("getDdValueAvGain", -1.0);
+		final StatisticsWithDistanceSelector selectorBase = new StatisticsWithDistanceSelector(20, 10, costFunction);
+		selectorBase.addDistanceParameter("getWinProb", 0.75);
+		selectorBase.addDistanceParameter("getAvGain", 0.75);
+		final ObservableStrategySelector selector = new ObservableStrategySelector(selectorBase);
+		return selector;
 	}
 
 	private void addListenerOnChanged(ObservableList<TradingStrategy> strategyList) {
@@ -236,20 +262,22 @@ public class StrategiesPane extends BorderPane {
 
 	protected void processOnChanged(ListChangeListener.Change<? extends TradingStrategy> c) {
 		Platform.runLater(() -> {
-			while (c.next()) {
-				if (c.wasAdded()) {
-					for (TradingStrategy ts : c.getAddedSubList()) {
-						model.add(new StatisticsDescription(ts));
+			synchronized (model) {
+				while (c.next()) {
+					if (c.wasAdded()) {
+						for (TradingStrategy ts : c.getAddedSubList()) {
+							model.add(new StatisticsDescription(ts));
+						}
 					}
-				}
-				if (c.wasRemoved()) {
-					final List<Long> idsToDelete = new ArrayList<Long>();
-					for (TradingStrategy tsRemoved : c.getRemoved()) {
-						idsToDelete.add(tsRemoved.getSettings().getId());
+					if (c.wasRemoved()) {
+						final List<Long> idsToDelete = new ArrayList<Long>();
+						for (TradingStrategy tsRemoved : c.getRemoved()) {
+							idsToDelete.add(tsRemoved.getSettings().getId());
+						}
+						model.removeIf(p -> {
+							return idsToDelete.contains(p.getId());
+						});
 					}
-					model.removeIf(p -> {
-						return idsToDelete.contains(p.getId());
-					});
 				}
 			}
 		});
