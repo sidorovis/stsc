@@ -103,7 +103,7 @@ public class SimulatorSettingsController {
 		final File f = dc.showSaveDialog(owner);
 		try {
 			if (f != null) {
-				if (!f.canWrite()) {
+				if (f.exists() && !f.canWrite()) {
 					Dialogs.create().owner(owner).title("Simulator Settings Save Error")
 							.masthead("File can't be writen (" + f.getAbsolutePath() + ")").message("Please choose another one")
 							.showError();
