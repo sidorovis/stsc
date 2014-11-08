@@ -240,7 +240,7 @@ public class StrategiesPane extends BorderPane {
 		costFunction.addParameter("getDdValueAvGain", -1.0);
 		final StatisticsWithDistanceSelector selectorBase = new StatisticsWithDistanceSelector(20, 10, costFunction);
 		selectorBase.addDistanceParameter("getWinProb", 0.75);
-		selectorBase.addDistanceParameter("getAvGain", 0.75);
+		selectorBase.addDistanceParameter("getAvGain", 0.0075);
 		final ObservableStrategySelector selector = new ObservableStrategySelector(selectorBase);
 		return selector;
 	}
