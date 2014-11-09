@@ -86,8 +86,8 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 		return new AlgorithmSettingsImpl(period, integers, doubles, strings, subExecutions);
 	}
 
-	private AlgorithmSettingsImpl(FromToPeriod p, HashMap<String, Integer> integers, HashMap<String, Double> doubles, HashMap<String, String> strings,
-			ArrayList<String> executions) {
+	private AlgorithmSettingsImpl(FromToPeriod p, HashMap<String, Integer> integers, HashMap<String, Double> doubles,
+			HashMap<String, String> strings, ArrayList<String> executions) {
 		this.period = p;
 		this.integers = new HashMap<String, Integer>(integers);
 		this.doubles = new HashMap<String, Double>(doubles);
@@ -237,10 +237,11 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 	@Override
 	public String toString() {
 		String result = "";
-		for (String subExecution : subExecutions) {
-			result += subExecution;
-			if (!subExecution.equals(subExecutions.get(subExecutions.size() - 1)))
+		for (int i = 0 ; i < subExecutions.size(); ++i ) {
+			result += subExecutions.get(i);
+			if ( i + 1 < subExecutions.size()) {
 				result += ", ";
+			}
 		}
 		result = addParameters(result, integers, "I");
 		result = addParameters(result, doubles, "D");
