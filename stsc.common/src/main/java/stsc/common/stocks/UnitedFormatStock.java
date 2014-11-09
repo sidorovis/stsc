@@ -72,10 +72,15 @@ public final class UnitedFormatStock extends Stock {
 			double close = is.readDouble();
 			double volume = is.readDouble();
 			double adjClose = is.readDouble();
-			Day newDay = new Day(dayTime, new Prices(open, high, low, close), volume, adjClose);
+			Day newDay = new Day(dayTime, calculatePrices(open, high, low, close, adjClose), volume, adjClose);
 			s.addDay(newDay);
 		}
 		return s;
+	}
+
+	private static Prices calculatePrices(double open, double high, double low, double close, double adjClose) {
+		final double diff_value = adjClose - close;
+		return new Prices(diff_value + open, diff_value + high, diff_value + low, diff_value + close);
 	}
 
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
@@ -86,7 +91,6 @@ public final class UnitedFormatStock extends Stock {
 			String[] tokens = line.split(",");
 			double volume = Double.parseDouble(tokens[5]);
 			double adj_close = Double.parseDouble(tokens[6]);
-
 			Day newDay = new Day(date, Prices.fromTokens(tokens), volume, adj_close);
 			stock.addDay(newDay);
 		} catch (ParseException e) {
