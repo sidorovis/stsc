@@ -12,6 +12,7 @@ public class VisualTestStockDatafeedListPane extends Application {
 		final Scene scene = new Scene(mainPane.getGui());
 		parent.setScene(scene);
 		parent.show();
+		mainPane.loadDatafeed("./test_data/data");
 	}
 
 	public static void main(String[] args) {

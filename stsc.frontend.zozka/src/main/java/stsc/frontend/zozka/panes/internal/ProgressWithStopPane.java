@@ -6,13 +6,13 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-public class StrategySearchControlPane extends BorderPane {
+public class ProgressWithStopPane extends BorderPane {
 
 	private final HBox pane = new HBox();
 	private final ProgressIndicator indicator = new ProgressIndicator();
 	private final Button stopSearchButton = new Button();
 
-	public StrategySearchControlPane() {
+	public ProgressWithStopPane() {
 		this.indicator.setPrefSize(40, 40);
 		this.indicator.setProgress(0.0);
 		this.setCenter(pane);
@@ -35,8 +35,12 @@ public class StrategySearchControlPane extends BorderPane {
 		stopSearchButton.setDisable(false);
 	}
 
+	public void show() {
+		pane.setVisible(true);
+	}
+
 	public void hide() {
-		this.setCenter(null);
+		pane.setVisible(false);
 	}
 
 	public void setIndicatorProgress(double percent) {

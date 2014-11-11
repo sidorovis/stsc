@@ -23,7 +23,7 @@ import stsc.frontend.zozka.gui.models.ObservableStrategySelector;
 import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.frontend.zozka.gui.models.SimulationType;
 import stsc.frontend.zozka.models.SimulatorSettingsModel;
-import stsc.frontend.zozka.panes.internal.StrategySearchControlPane;
+import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.StrategySearcher;
 import stsc.general.simulator.multistarter.StrategySearcher.IndicatorProgressListener;
@@ -78,7 +78,7 @@ public class StrategiesPane extends BorderPane {
 
 	private final Stage owner;
 	private final ObservableList<StatisticsDescription> model = FXCollections.observableArrayList();
-	private final StrategySearchControlPane controlPane;
+	private final ProgressWithStopPane controlPane;
 	private final TableView<StatisticsDescription> table = new TableView<>();
 	private final JFreeChart chart;
 
@@ -86,7 +86,7 @@ public class StrategiesPane extends BorderPane {
 			SimulationType simulationType) throws BadAlgorithmException, UnexpectedException, InterruptedException {
 		this.owner = owner;
 		this.chart = chart;
-		this.controlPane = new StrategySearchControlPane();
+		this.controlPane = new ProgressWithStopPane();
 		createTopElements();
 		createEmptyTable();
 		setupControlPane(startCalculation(period, model, stockStorage, simulationType));
