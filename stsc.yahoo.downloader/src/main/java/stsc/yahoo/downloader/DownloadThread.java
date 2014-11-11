@@ -50,7 +50,7 @@ class DownloadThread implements Runnable {
 					partiallyDownload(s, task);
 					logger.trace("task {} partially downloaded", task);
 				}
-				if (stockFilter.test(s)) {
+				if (stockFilter.test(s) == null) {
 					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.info("task {} is liquid and copied to filter stock directory", task);
 				} else {

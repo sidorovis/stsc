@@ -79,8 +79,10 @@ public final class UnitedFormatStock extends Stock {
 	}
 
 	private static Prices calculatePrices(double open, double high, double low, double close, double adjClose) {
-		final double diff_value = adjClose - close;
-		return new Prices(diff_value + open, diff_value + high, diff_value + low, diff_value + close);
+//		final double diff_value = adjClose - close;
+		return new Prices(open, high, low, close);
+		// return new Prices(diff_value + open, diff_value + high, diff_value +
+		// low, diff_value + close);
 	}
 
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {

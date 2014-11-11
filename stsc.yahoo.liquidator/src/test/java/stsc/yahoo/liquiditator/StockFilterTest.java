@@ -18,20 +18,20 @@ public class StockFilterTest extends TestCase {
 
 		StockFilter stockFilter = new StockFilter(new LocalDate(2013, 1, 13).toDate());
 		Stock s1 = UnitedFormatStock.readFromCsvFile("ibm", "./test_data/ibm.csv");
-		assertEquals(true, stockFilter.test(s1));
+		assertEquals(true, stockFilter.test(s1) == null);
 		Stock s2 = UnitedFormatStock.readFromCsvFile("anse", "./test_data/anse.csv");
-		assertEquals(false, stockFilter.test(s2));
+		assertEquals(false, stockFilter.test(s2) == null);
 
 		StockFilter stockFilter2 = new StockFilter(new LocalDate(2014, 2, 10).toDate());
 
 		Stock s3 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		assertEquals(true, stockFilter2.test(s3));
+		assertEquals(true, stockFilter2.test(s3) == null);
 
 		Stock s4 = UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf");
-		assertEquals(true, stockFilter2.test(s4));
+		assertEquals(true, stockFilter2.test(s4) == null);
 
 		Stock s5 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aaae.uf");
-		assertEquals(false, stockFilter2.test(s5));
+		assertEquals(false, stockFilter2.test(s5) == null);
 	}
 
 	public void testLast10Year() throws IOException {
@@ -44,7 +44,7 @@ public class StockFilterTest extends TestCase {
 		ArrayList<Day> days = smallappl.getDays();
 
 		int indexOfDeletingTo = aapl.findDayIndex(new LocalDate(2007, 1, 1).toDate());
-		
+
 		for (int i = 0; i < indexOfDeletingTo; i++) {
 			days.add(copyFromDays.get(i));
 		}
@@ -52,7 +52,7 @@ public class StockFilterTest extends TestCase {
 		for (int i = indexOfDeletingFrom; i < copyFromDays.size(); i++) {
 			days.add(copyFromDays.get(i));
 		}
-		assertEquals(false, stockFilter.test(smallappl));
+		assertEquals(false, stockFilter.test(smallappl) == null);
 
 	}
 }

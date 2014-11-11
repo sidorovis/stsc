@@ -32,7 +32,8 @@ public class StockFilter {
 		today = testToday;
 	}
 
-	public boolean testLastPeriods(Stock s) {
+	public String testLastPeriods(Stock s) {
+		String errors = "";
 
 		ArrayList<Day> days = s.getDays();
 		LocalDate todayDate = new LocalDate(today);
@@ -46,14 +47,14 @@ public class StockFilter {
 		int daysWithDataForLastYear = days.size() - yearAgoIndex;
 		if (daysWithDataForLastYear < minimalDaysWithDataPerLastYear) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastYear + " days for last year");
-			return false;
+			errors += "stock " + s.getName() + " have only " + daysWithDataForLastYear + " days for last year\n";
 		}
 
 		int monthAgoIndex = s.findDayIndex(todayDate.plusMonths(-1).toDate());
 		int daysWithDataForLastMonth = days.size() - monthAgoIndex;
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month");
-			return false;
+			errors += "stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month\n";
 		} else
 			logger.info("stock " + s.getName() + " have " + daysWithDataForLastMonth + " days for last month");
 		double volumeAmount = 0;
@@ -62,42 +63,43 @@ public class StockFilter {
 		volumeAmount = volumeAmount / daysWithDataForLastYear;
 
 		if (volumeAmount < minimalAverageYearVolume) {
-			logger.debug("stock " + s.getName() + " have only " + volumeAmount
-					+ ", it is too small average volume amount for last year");
-			return false;
+			logger.debug("stock " + s.getName() + " have only " + volumeAmount + ", it is too small average volume amount for last year");
+			errors += "stock " + s.getName() + " have only " + volumeAmount + ", it is too small average volume amount for last year\n";
 		}
-
-		return true;
+		return errors;
 	}
 
-	private boolean testLastNYears(Stock s) {
-		LocalDate todayDate = new LocalDate(today);
+	private String testLastNYears(Stock s) {
+		String errors = "";
 
+		LocalDate todayDate = new LocalDate(today);
 		ArrayList<Day> days = s.getDays();
 
 		int tenYearsAgoIndex = s.findDayIndex(todayDate.plusYears(-lastYearsAmount).toDate());
-
 		int realDaysForTenYears = days.size() - tenYearsAgoIndex;
 		int expectedDaysForLast10Year = daysPerYear * lastYearsAmount;
 
 		float averagePercentDaysPer10Year = (float) realDaysForTenYears / expectedDaysForLast10Year;
 
 		if (averagePercentDaysPer10Year < minimalDaysPercentPerLast15Years) {
-			logger.debug("stock " + s.getName() + " have only " + realDaysForTenYears + " days per last "
-					+ lastYearsAmount + " years, thats not enought");
-			return false;
+			logger.debug("stock " + s.getName() + " have only " + realDaysForTenYears + " days per last " + lastYearsAmount
+					+ " years, thats not enought");
+			errors += "stock " + s.getName() + " have only " + realDaysForTenYears + " days per last " + lastYearsAmount
+					+ " years, thats not enought\n";
 		}
-		return true;
+		return errors;
 	}
 
-	public boolean test(Stock s) {
+	public String test(Stock s) {
 		if (s != null) {
-			if (!testLastPeriods(s))
-				return false;
-			if (!testLastNYears(s))
-				return false;
-			return true;
+			final String lastPeriodsErrors = testLastPeriods(s);
+			final String lastNYearsErrors = testLastNYears(s);
+			if (lastPeriodsErrors == "" && lastNYearsErrors == "") {
+				return null;
+			} else {
+				return lastPeriodsErrors + lastNYearsErrors;
+			}
 		}
-		return false;
+		return "Stock could not be null";
 	}
 }

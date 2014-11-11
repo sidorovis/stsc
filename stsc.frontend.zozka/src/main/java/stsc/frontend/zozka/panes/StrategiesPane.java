@@ -163,7 +163,7 @@ public class StrategiesPane extends BorderPane {
 		final StatisticsDescription sd = table.getSelectionModel().getSelectedItem();
 		if (sd != null) {
 			final long id = sd.getId();
-			new TextFieldDialog(owner, id, sd.toString()).show();
+			new TextFieldDialog(owner, "Strategy: " + String.valueOf(id), sd.toString()).show();
 		}
 	}
 

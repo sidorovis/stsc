@@ -10,16 +10,20 @@ import org.controlsfx.dialog.Dialog;
 public class TextFieldDialog extends Dialog {
 
 	private final TextArea textArea;
+	private final BorderPane borderPane = new BorderPane();
 
-	public TextFieldDialog(Stage owner, long id, String value) {
-		super(owner, "Strategy: " + String.valueOf(id));
+	public TextFieldDialog(Stage owner, String title, String value) {
+		super(owner, title);
 		this.textArea = new TextArea(value);
 		this.getWindow().setWidth(600);
 		this.getWindow().setHeight(600);
 		this.getWindow().centerOnScreen();
-		final BorderPane borderPane = new BorderPane();
 		this.setContent(borderPane);
 		borderPane.setCenter(textArea);
 		borderPane.setBottom(new Label(""));
+	}
+
+	public BorderPane getBorderPane() {
+		return borderPane;
 	}
 }
