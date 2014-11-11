@@ -55,6 +55,7 @@ public class StockFilter {
 		if (daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth) {
 			logger.debug("stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month");
 			errors += "stock " + s.getName() + " have only " + daysWithDataForLastMonth + " days for last month\n";
+			return errors;
 		} else
 			logger.info("stock " + s.getName() + " have " + daysWithDataForLastMonth + " days for last month");
 		double volumeAmount = 0;

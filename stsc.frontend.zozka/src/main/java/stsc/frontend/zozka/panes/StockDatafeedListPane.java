@@ -3,14 +3,16 @@ package stsc.frontend.zozka.panes;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.storage.StockStorage;
-import stsc.frontend.zozka.components.ProgressBarTask;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
 import stsc.yahoo.YahooFileStockStorage;
+import stsc.yahoo.liquiditator.StockFilter;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,10 +21,13 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class StockDatafeedListPane {
+
+	private static final StockFilter stockFilter = new StockFilter();
 
 	private final Stage owner;
 	private final Parent gui;
@@ -38,7 +43,7 @@ public class StockDatafeedListPane {
 	@FXML
 	private TableView<StockDescription> table;
 	@FXML
-	private TableColumn<StockDescription, Integer> idColumn;
+	private TableColumn<StockDescription, Number> idColumn;
 	@FXML
 	private TableColumn<StockDescription, String> stockColumn;
 	@FXML
@@ -62,7 +67,13 @@ public class StockDatafeedListPane {
 	private void initialize() {
 		validateGui();
 		table.setItems(model);
-		borderPane.setBottom(progressWithStopPane);
+		idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+		stockColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+		liquidColumn.setCellValueFactory(cellData -> cellData.getValue().liquidProperty());
+		liquidColumn.setCellFactory(CheckBoxTableCell.forTableColumn(liquidColumn));
+		validColumn.setCellValueFactory(cellData -> cellData.getValue().validProperty());
+		validColumn.setCellFactory(CheckBoxTableCell.forTableColumn(validColumn));
+		borderPane.setBottom(null);
 	}
 
 	private void validateGui() {
@@ -79,28 +90,67 @@ public class StockDatafeedListPane {
 		return gui;
 	}
 
-	public void loadDatafeed(String string) {
+	public void loadDatafeed(final String string) {
 		model.clear();
 		try {
-			progressWithStopPane.setVisible(true);
-
+			borderPane.setBottom(progressWithStopPane);
 			final YahooFileStockStorage ss = new YahooFileStockStorage(string, string, false);
-			final Queue<String> queue = ss.getTasks();
-			final int allSize = queue.size();
-
-			Thread t = new Thread(() -> {
-				while (!queue.isEmpty()) {
-					final int value = queue.size();
-					progressWithStopPane.setIndicatorProgress((double) value / allSize);
-				}
-				progressWithStopPane.setIndicatorProgress(100.0);
-				progressWithStopPane.setVisible(false);
-			});
-			t.start();
 			stockStorage = ss;
+			setUpdateModel(ss);
+			startLoadIndicatorUpdates(ss);
 			ss.startLoadStocks();
+			setProgressStopButton(ss);
 		} catch (ClassNotFoundException | IOException e) {
 			Dialogs.create().owner(owner).showException(e);
 		}
+	}
+
+	private void setUpdateModel(final YahooFileStockStorage ss) {
+		final AtomicInteger index = new AtomicInteger(0);
+		ss.addReceiver(newStock -> Platform.runLater(() -> {
+			final boolean liquid = stockFilter.test(newStock) == null;
+			synchronized (model) {
+				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid));
+			}
+		}));
+	}
+
+	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss) {
+		final Queue<String> queue = ss.getTasks();
+
+		final Thread t = new Thread(() -> {
+			try {
+				updateIndicatorValue(queue);
+				Platform.runLater(() -> {
+					progressWithStopPane.setIndicatorProgress(100.0);
+					borderPane.setBottom(null);
+				});
+			} catch (Exception e) {
+				Dialogs.create().owner(owner).showException(e);
+			}
+		});
+		t.start();
+	}
+
+	private void updateIndicatorValue(final Queue<String> queue) throws InterruptedException {
+		final int allSize = queue.size();
+		while (!queue.isEmpty()) {
+			final int value = allSize - queue.size();
+			Platform.runLater(() -> {
+				progressWithStopPane.setIndicatorProgress((double) value / allSize);
+			});
+			Thread.sleep(300);
+		}
+	}
+
+	private void setProgressStopButton(final YahooFileStockStorage ss) {
+		progressWithStopPane.setOnStopButtonAction(() -> {
+			try {
+				ss.stopLoadStocks();
+				ss.waitForLoad();
+			} catch (Exception e) {
+				Dialogs.create().owner(owner).showException(e);
+			}
+		});
 	}
 }

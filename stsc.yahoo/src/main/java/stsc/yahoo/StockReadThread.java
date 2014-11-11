@@ -1,19 +1,26 @@
 package stsc.yahoo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import stsc.common.stocks.Stock;
 
 class StockReadThread implements Runnable {
 
-	public static interface StockReceiver {
-		void newStock(Stock newStock);
+	private final YahooSettings settings;
+	private final List<LoadStockReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadStockReceiver>());
+
+	public StockReadThread(YahooSettings settings) {
+		this.settings = settings;
 	}
 
-	private YahooSettings settings;
-	private StockReceiver receiver;
+	public void addReceiver(final LoadStockReceiver receiver) {
+		receivers.add(receiver);
+	}
 
-	public StockReadThread(YahooSettings settings, final StockReceiver receiver) {
-		this.settings = settings;
-		this.receiver = receiver;
+	public void addReceivers(List<LoadStockReceiver> receiversToAdd) {
+		receivers.addAll(receiversToAdd);
 	}
 
 	@Override
@@ -22,9 +29,16 @@ class StockReadThread implements Runnable {
 		while (task != null) {
 			Stock s = settings.getStockFromFileSystem(task);
 			if (s != null) {
-				receiver.newStock(s);
+				updateReceivers(s);
 			}
 			task = settings.getTask();
 		}
 	}
+
+	private void updateReceivers(Stock s) {
+		for (LoadStockReceiver receiver : receivers) {
+			receiver.newStock(s);
+		}
+	}
+
 }

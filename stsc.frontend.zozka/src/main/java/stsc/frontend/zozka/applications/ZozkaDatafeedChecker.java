@@ -196,7 +196,7 @@ public class ZozkaDatafeedChecker extends Application {
 
 	private void loadStock(int id, File file) throws IOException {
 		final UnitedFormatStock stock = UnitedFormatStock.readFromUniteFormatFile(file.getAbsolutePath());
-		model.add(new StockDescription(id, stock));
+		model.add(new StockDescription(id, stock, true));
 	}
 
 	static boolean validateStock(Stock stock) {

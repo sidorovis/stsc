@@ -36,11 +36,11 @@ public class ProgressWithStopPane extends BorderPane {
 	}
 
 	public void show() {
-		pane.setVisible(true);
+		this.setVisible(true);
 	}
 
 	public void hide() {
-		pane.setVisible(false);
+		this.setVisible(false);
 	}
 
 	public void setIndicatorProgress(double percent) {

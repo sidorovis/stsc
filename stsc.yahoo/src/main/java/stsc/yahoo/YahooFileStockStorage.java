@@ -2,6 +2,7 @@ package stsc.yahoo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
@@ -14,7 +15,7 @@ import stsc.common.stocks.StockLock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.storage.ThreadSafeStockStorage;
 
-public class YahooFileStockStorage extends ThreadSafeStockStorage implements StockReadThread.StockReceiver {
+public class YahooFileStockStorage extends ThreadSafeStockStorage implements LoadStockReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -22,9 +23,10 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 
 	private static Logger logger = LogManager.getLogger("YahooFileStorage");
 
-	private YahooSettings settings;
-	private int readStockThreadSize = 4;
-	private List<Thread> threads = new ArrayList<Thread>();
+	private final YahooSettings settings;
+	private final int readStockThreadSize = 4;
+	private final List<Thread> threads = new ArrayList<Thread>();
+	private final List<LoadStockReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadStockReceiver>());
 
 	public YahooFileStockStorage(YahooSettings settings) throws ClassNotFoundException, IOException {
 		super();
@@ -55,6 +57,10 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 		loadStocksFromFileSystem(autoStart);
 	}
 
+	public void addReceiver(LoadStockReceiver receiver) {
+		receivers.add(receiver);
+	}
+
 	private void loadStocksFromFileSystem(final boolean autoStart) throws ClassNotFoundException, IOException {
 		logger.trace("created");
 		loadFilteredDatafeed();
@@ -70,8 +76,9 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 
 	private void loadStocks() throws ClassNotFoundException, IOException {
 		logger.info("stocks load was initiated");
-		final StockReadThread stockReadThread = new StockReadThread(settings, this);
-
+		final StockReadThread stockReadThread = new StockReadThread(settings);
+		stockReadThread.addReceiver(this);
+		stockReadThread.addReceivers(receivers);
 		for (int i = 0; i < readStockThreadSize; ++i) {
 			final Thread newThread = new Thread(stockReadThread);
 			newThread.setName("YahooFileStockStorage Reading Thread - " + String.valueOf(i));
@@ -82,6 +89,10 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Sto
 
 	public void startLoadStocks() throws ClassNotFoundException, IOException {
 		loadStocks();
+	}
+
+	public void stopLoadStocks() {
+		getTasks().clear();
 	}
 
 	public YahooFileStockStorage waitForLoad() throws InterruptedException {
