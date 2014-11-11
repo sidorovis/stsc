@@ -7,7 +7,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="539.0" prefWidth="468.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<BorderPane prefHeight="539.0" prefWidth="776.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <BorderPane prefHeight="537.0" prefWidth="339.0">
+         <center>
+            <TableView fx:id="stocksTable" prefHeight="510.0" prefWidth="755.0" BorderPane.alignment="CENTER">
+              <columns>
+                  <TableColumn fx:id="stockIdColumn" prefWidth="78.0" text="Id" />
+                <TableColumn fx:id="stockNameColumn" editable="false" prefWidth="107.0" text="Stocks" />
+                  <TableColumn fx:id="stockValidColumn" editable="false" prefWidth="82.0" text="Valid ?" />
+                  <TableColumn fx:id="stockLiquidColumn" prefWidth="70.0" text="Liquid ?" />
+              </columns>
+            </TableView>
+         </center>
+      </BorderPane>
+   </center>
    <top>
       <BorderPane prefHeight="29.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <left>
@@ -22,14 +37,4 @@
          </center>
       </BorderPane>
    </top>
-   <center>
-      <TableView fx:id="stocksTable" prefHeight="510.0" prefWidth="755.0" BorderPane.alignment="CENTER">
-        <columns>
-            <TableColumn fx:id="stockIdColumn" prefWidth="78.0" text="Id" />
-          <TableColumn fx:id="stockNameColumn" editable="false" prefWidth="176.0" text="Stocks" />
-            <TableColumn fx:id="stockValidColumn" editable="false" prefWidth="98.0" text="Valid ?" />
-            <TableColumn fx:id="stockLiquidColumn" prefWidth="92.0" text="Liquid ?" />
-        </columns>
-      </TableView>
-   </center>
 </BorderPane>
