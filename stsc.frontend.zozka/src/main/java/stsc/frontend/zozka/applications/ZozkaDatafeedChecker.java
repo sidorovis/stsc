@@ -11,15 +11,10 @@ import org.controlsfx.dialog.Dialogs;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.frontend.zozka.dialogs.TextFieldDialog;
+import stsc.frontend.zozka.models.StockDescription;
 import stsc.yahoo.liquiditator.StockFilter;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -75,43 +70,6 @@ public class ZozkaDatafeedChecker extends Application {
 
 	}
 
-	static public final class StockDescription {
-		private final IntegerProperty id;
-		private final StringProperty name;
-		private final BooleanProperty valid;
-		private final BooleanProperty liquid;
-
-		private final Stock stock;
-
-		public StockDescription(int id, UnitedFormatStock stock) {
-			this.id = new SimpleIntegerProperty(id);
-			this.name = new SimpleStringProperty(stock.getName());
-			this.valid = new SimpleBooleanProperty(true);
-			this.liquid = new SimpleBooleanProperty(validateStock(stock));
-			this.stock = stock;
-		}
-
-		public IntegerProperty idProperty() {
-			return id;
-		}
-
-		public StringProperty nameProperty() {
-			return name;
-		}
-
-		public BooleanProperty validProperty() {
-			return valid;
-		}
-
-		public BooleanProperty liquidProperty() {
-			return liquid;
-		}
-
-		public Stock getStock() {
-			return stock;
-		}
-	}
-
 	final private ObservableList<StockDescription> model = FXCollections.observableArrayList();
 
 	@FXML
@@ -160,8 +118,8 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void showStockDescriptionDialog(StockDescription s) {
-		final String errors = filter.test(s.stock);
-		new TextFieldDialog(owner, "Stock validation errors: " + s.stock.getName(), errors).show();
+		final String errors = filter.test(s.getStock());
+		new TextFieldDialog(owner, "Stock validation errors: " + s.getStock().getName(), errors).show();
 	}
 
 	private void setupTable() {
@@ -241,7 +199,7 @@ public class ZozkaDatafeedChecker extends Application {
 		model.add(new StockDescription(id, stock));
 	}
 
-	private static boolean validateStock(Stock stock) {
+	static boolean validateStock(Stock stock) {
 		return filter.test(stock) == null;
 	}
 

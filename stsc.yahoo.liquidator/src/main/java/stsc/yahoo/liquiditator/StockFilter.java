@@ -90,6 +90,9 @@ public class StockFilter {
 		return errors;
 	}
 
+	/**
+	 * @return null if there is no errors in liquidity test
+	 */
 	public String test(Stock s) {
 		if (s != null) {
 			final String lastPeriodsErrors = testLastPeriods(s);
