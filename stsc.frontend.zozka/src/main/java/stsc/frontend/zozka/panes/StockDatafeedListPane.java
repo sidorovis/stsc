@@ -25,19 +25,16 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class StockDatafeedListPane {
+public class StockDatafeedListPane extends BorderPane {
 
 	private static final StockFilter stockFilter = new StockFilter();
 
 	private final Stage owner;
-	private final Parent gui;
 
 	private StockStorage stockStorage;
 
 	@FXML
 	private Label label;
-	@FXML
-	private BorderPane borderPane;
 
 	private ObservableList<StockDescription> model = FXCollections.observableArrayList();
 	@FXML
@@ -55,10 +52,11 @@ public class StockDatafeedListPane {
 
 	public StockDatafeedListPane(final Stage owner, final String title) throws IOException {
 		this.owner = owner;
-		final URL location = EquityPane.class.getResource("04_stock_datafeed_list_pane.fxml");
+		final URL location = StockDatafeedListPane.class.getResource("04_stock_datafeed_list_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
-		this.gui = loader.load();
+		final Parent gui = loader.load();
+		setCenter(gui);
 
 		initialize();
 		label.setText(title);
@@ -73,12 +71,11 @@ public class StockDatafeedListPane {
 		liquidColumn.setCellFactory(CheckBoxTableCell.forTableColumn(liquidColumn));
 		validColumn.setCellValueFactory(cellData -> cellData.getValue().validProperty());
 		validColumn.setCellFactory(CheckBoxTableCell.forTableColumn(validColumn));
-		borderPane.setBottom(null);
+		setBottom(null);
 	}
 
 	private void validateGui() {
 		assert label != null : "fx:id=\"label\" was not injected: check your FXML file.";
-		assert borderPane != null : "fx:id=\"borderPane\" was not injected: check your FXML file.";
 		assert table != null : "fx:id=\"table\" was not injected: check your FXML file.";
 		assert idColumn != null : "fx:id=\"idColumn\" was not injected: check your FXML file.";
 		assert stockColumn != null : "fx:id=\"stockColumn\" was not injected: check your FXML file.";
@@ -86,18 +83,18 @@ public class StockDatafeedListPane {
 		assert validColumn != null : "fx:id=\"validColumn\" was not injected: check your FXML file.";
 	}
 
-	public Parent getGui() {
-		return gui;
+	public void loadDatafeed(final String datafeedPath) {
+		loadDatafeed(datafeedPath, null);
 	}
 
-	public void loadDatafeed(final String string) {
+	public void loadDatafeed(final String datafeedPath, Runnable onFinish) {
 		model.clear();
 		try {
-			borderPane.setBottom(progressWithStopPane);
-			final YahooFileStockStorage ss = new YahooFileStockStorage(string, string, false);
-			stockStorage = ss;
+			setBottom(progressWithStopPane);
+			final YahooFileStockStorage ss = new YahooFileStockStorage(datafeedPath, datafeedPath, false);
+			setStockStorage(ss);
 			setUpdateModel(ss);
-			startLoadIndicatorUpdates(ss);
+			startLoadIndicatorUpdates(ss, onFinish);
 			ss.startLoadStocks();
 			setProgressStopButton(ss);
 		} catch (ClassNotFoundException | IOException e) {
@@ -115,15 +112,17 @@ public class StockDatafeedListPane {
 		}));
 	}
 
-	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss) {
+	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss, Runnable onFinish) {
 		final Queue<String> queue = ss.getTasks();
-
 		final Thread t = new Thread(() -> {
 			try {
 				updateIndicatorValue(queue);
 				Platform.runLater(() -> {
 					progressWithStopPane.setIndicatorProgress(100.0);
-					borderPane.setBottom(null);
+					setBottom(null);
+					if (onFinish != null) {
+						onFinish.run();
+					}
 				});
 			} catch (Exception e) {
 				Dialogs.create().owner(owner).showException(e);
@@ -152,5 +151,13 @@ public class StockDatafeedListPane {
 				Dialogs.create().owner(owner).showException(e);
 			}
 		});
+	}
+
+	public StockStorage getStockStorage() {
+		return stockStorage;
+	}
+
+	private void setStockStorage(StockStorage stockStorage) {
+		this.stockStorage = stockStorage;
 	}
 }

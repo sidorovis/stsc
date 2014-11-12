@@ -7,10 +7,13 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.frontend.zozka.panes.StockDatafeedListPane;
 import javafx.application.Application;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -22,25 +25,55 @@ public class ZozkaDatafeedChecker extends Application {
 	private Stage owner;
 
 	@FXML
-	private final BorderPane borderPane = new BorderPane();
+	private BorderPane borderPane;
 	@FXML
 	private final Label datafeedPathLabel = new Label();
 	private String datafeedPath;
 
+	private StockDatafeedListPane dataStockList;
+	private StockDatafeedListPane filteredStockDataList;
+
 	public ZozkaDatafeedChecker() {
+		datafeedPathLabel.setText("./test_data/");
 	}
 
 	@Override
 	public void start(final Stage owner) throws Exception {
 		this.owner = owner;
-		final Scene scene = new Scene(borderPane);
-		borderPane.setTop(datafeedPathLabel);
-		owner.setScene(scene);
+		owner.setScene(initializeGui());
+		owner.setMinHeight(500);
+		owner.setMinWidth(830);
+		owner.setWidth(830);
 		owner.show();
-		loadDatafeed();
+		connectDatafeedChange();
 	}
 
-	@FXML
+	private void connectDatafeedChange() {
+		datafeedPathLabel.setOnMouseClicked(e -> {
+			if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 2) {
+				chooseFolder();
+			}
+		});
+	}
+
+	private Scene initializeGui() throws IOException {
+		borderPane = new BorderPane();
+		borderPane.setTop(datafeedPathLabel);
+		final Scene scene = new Scene(borderPane);
+		final SplitPane splitPane = new SplitPane();
+		splitPane.setOrientation(Orientation.HORIZONTAL);
+		dataStockList = new StockDatafeedListPane(owner, "Data");
+		filteredStockDataList = new StockDatafeedListPane(owner, "Filtered data");
+		addData(splitPane, dataStockList);
+		addData(splitPane, filteredStockDataList);
+		borderPane.setCenter(splitPane);
+		return scene;
+	}
+
+	private void addData(SplitPane splitPane, StockDatafeedListPane listPane) {
+		splitPane.getItems().add(listPane);
+	}
+
 	public void datafeedEdit(final MouseEvent mouseEvent) {
 		if (mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2) {
 			chooseFolder();
@@ -74,8 +107,17 @@ public class ZozkaDatafeedChecker extends Application {
 	private void loadDatafeed() throws IOException {
 		if (datafeedPath == null || datafeedPath != datafeedPathLabel.getText()) {
 			datafeedPath = datafeedPathLabel.getText();
-
+			dataStockList.loadDatafeed(datafeedPath + "/data", () -> {
+				filteredStockDataList.loadDatafeed(datafeedPath + "/filtered_data", () -> {
+					checkLists();
+				});
+			});
 		}
+	}
+
+	private void checkLists() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public static void main(String[] args) {
