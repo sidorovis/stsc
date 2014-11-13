@@ -139,6 +139,7 @@ public class ZozkaDatafeedChecker extends Application {
 				}
 			}
 		}
+		
 		System.out.println(notEqualStockList);
 	}
 

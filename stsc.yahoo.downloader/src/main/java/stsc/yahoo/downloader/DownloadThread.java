@@ -18,8 +18,9 @@ import com.google.common.io.CharStreams;
 
 class DownloadThread implements Runnable {
 
-	private static final int waitTimeBetweenTries = 300;
+	private static final int waitTimeBetweenTries = 500;
 	private static final int waitTriesAmount = 5;
+	private static final int printEach = 100;
 
 	private final YahooSettings settings;
 	private final StockFilter stockFilter;
@@ -64,7 +65,7 @@ class DownloadThread implements Runnable {
 			}
 			synchronized (settings) {
 				solvedAmount += 1;
-				if (solvedAmount % 100 == 0)
+				if (solvedAmount % printEach == 0)
 					logger.info("solved {} tasks last stock name {}", solvedAmount, task);
 			}
 			task = settings.getTask();
@@ -96,10 +97,10 @@ class DownloadThread implements Runnable {
 				newStock.storeUniteFormat(getPath(settings.getDataFolder(), newStock.getName()));
 				return newStock;
 			} catch (ParseException | IOException e) {
-				Thread.sleep(waitTimeBetweenTries);
 				error = e.toString();
 			}
 			tries += 1;
+			Thread.sleep(waitTimeBetweenTries);
 		}
 		if (newStock == null)
 			throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName + " stock. " + error);
@@ -112,7 +113,7 @@ class DownloadThread implements Runnable {
 		String stockNewContent = "";
 		int tries = 0;
 
-		while (tries < 5) {
+		while (tries < waitTriesAmount) {
 			try {
 				URL url = new URL(downloadLink);
 				stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
@@ -122,13 +123,13 @@ class DownloadThread implements Runnable {
 				return;
 			} catch (ParseException e) {
 				error = "exception " + e.toString() + " with: '" + stockNewContent + "'";
-				break;
 			} catch (IOException e) {
-				Thread.sleep(waitTimeBetweenTries);
 			}
 			tries += 1;
+			Thread.sleep(waitTimeBetweenTries);
 		}
-		throw new InterruptedException("5 tries not enought to partially download data on " + downloadLink + " stock " + error);
+		throw new InterruptedException("" + waitTriesAmount + " tries not enought to partially download data on " + downloadLink
+				+ " stock " + error);
 	}
 
 	private static String getPath(String folder, String taskName) {
