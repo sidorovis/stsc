@@ -2,12 +2,14 @@ package stsc.frontend.zozka.applications;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
 import javafx.application.Application;
@@ -126,7 +128,18 @@ public class ZozkaDatafeedChecker extends Application {
 		final StockStorage filteredDataStockStorage = filteredStockDataList.getStockStorage();
 
 		final Set<String> allList = dataStockStorage.getStockNames();
-		final Set<String> filteredList = dataStockStorage.getStockNames();
+		final Set<String> filteredList = filteredDataStockStorage.getStockNames();
+		final Set<String> notEqualStockList = new HashSet<>();
+		for (String stockName : allList) {
+			if (filteredList.contains(stockName)) {
+				final Stock dataStock = dataStockStorage.getStock(stockName);
+				final Stock filteredDataStock = filteredDataStockStorage.getStock(stockName);
+				if (dataStock.getDays().size() != filteredDataStock.getDays().size()) {
+					notEqualStockList.add(stockName);
+				}
+			}
+		}
+		System.out.println(notEqualStockList);
 	}
 
 	public static void main(String[] args) {

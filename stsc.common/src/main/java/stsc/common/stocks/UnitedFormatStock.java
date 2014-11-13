@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Queue;
 import java.util.TimeZone;
@@ -79,7 +80,7 @@ public final class UnitedFormatStock extends Stock {
 	}
 
 	private static Prices calculatePrices(double open, double high, double low, double close, double adjClose) {
-//		final double diff_value = adjClose - close;
+		// final double diff_value = adjClose - close;
 		return new Prices(open, high, low, close);
 		// return new Prices(diff_value + open, diff_value + high, diff_value +
 		// low, diff_value + close);
@@ -168,6 +169,7 @@ public final class UnitedFormatStock extends Stock {
 	public static void loadStockList(String folderData, Queue<String> fileNames) {
 		File folder = new File(folderData);
 		File[] listOfFiles = folder.listFiles();
+		Arrays.sort(listOfFiles, new FileComparator());
 		for (File file : listOfFiles) {
 			String filename = file.getName();
 			if (file.isFile() && filename.endsWith(EXTENSION)) {
@@ -178,6 +180,21 @@ public final class UnitedFormatStock extends Stock {
 
 	public static String generatePath(String dataFolder, String stockName) {
 		return dataFolder + stockName + EXTENSION;
+	}
+
+	private final static class FileComparator implements Comparator<File> {
+
+		@Override
+		public int compare(File left, File right) {
+			return getStockName(left).compareTo(getStockName(right));
+		}
+
+		private String getStockName(File file) {
+			String filename = file.getName();
+			filename = filename.substring(0, filename.length() - EXTENSION.length());
+			return filename;
+		}
+
 	}
 
 }
