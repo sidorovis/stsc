@@ -2,11 +2,13 @@ package stsc.frontend.zozka.applications;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -116,8 +118,15 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void checkLists() {
-		// TODO Auto-generated method stub
-		
+		checkThatStocksAreEqual();
+	}
+
+	private void checkThatStocksAreEqual() {
+		final StockStorage dataStockStorage = dataStockList.getStockStorage();
+		final StockStorage filteredDataStockStorage = filteredStockDataList.getStockStorage();
+
+		final Set<String> allList = dataStockStorage.getStockNames();
+		final Set<String> filteredList = dataStockStorage.getStockNames();
 	}
 
 	public static void main(String[] args) {
