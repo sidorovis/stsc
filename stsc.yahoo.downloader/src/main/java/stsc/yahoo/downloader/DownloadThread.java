@@ -44,18 +44,25 @@ class DownloadThread implements Runnable {
 		while (task != null) {
 			try {
 				UnitedFormatStock s = settings.getStockFromFileSystem(task);
+				boolean downloaded = false;
 				if (s == null) {
 					s = download(task);
+					downloaded = true;
 					logger.trace("task {} fully downloaded", task);
 				} else {
-					partiallyDownload(s, task);
+					downloaded = partiallyDownload(s, task);
 					logger.trace("task {} partially downloaded", task);
 				}
-				if (stockFilter.test(s) == null) {
-					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
-					logger.info("task {} is liquid and copied to filter stock directory", task);
+				final boolean filtered = stockFilter.test(s) == null;
+				if (downloaded) {
+					if (filtered) {
+						YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
+						logger.info("task {} is liquid and copied to filter stock directory", task);
+					} else {
+						deleteEmptyFilteredFile(task);
+					}
 				} else {
-					deleteEmptyFilteredFile(task);
+					logger.info("task {} is considered as downloaded", task);
 				}
 			} catch (Exception e) {
 				logger.debug("task {} throwed an exception {}", task, e.toString());
@@ -107,8 +114,11 @@ class DownloadThread implements Runnable {
 		return newStock;
 	}
 
-	private final void partiallyDownload(UnitedFormatStock stock, String stockName) throws InterruptedException {
+	private final boolean partiallyDownload(UnitedFormatStock stock, String stockName) throws InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
+		if (downloadLink.isEmpty()) {
+			return false;
+		}
 		String error = "";
 		String stockNewContent = "";
 		int tries = 0;
@@ -120,7 +130,7 @@ class DownloadThread implements Runnable {
 				boolean newDays = stock.addDaysFromString(stockNewContent);
 				if (newDays)
 					stock.storeUniteFormat(getPath(settings.getDataFolder(), stock.getName()));
-				return;
+				return true;
 			} catch (ParseException e) {
 				error = "exception " + e.toString() + " with: '" + stockNewContent + "'";
 			} catch (IOException e) {

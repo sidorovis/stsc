@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.Queue;
 import java.util.TimeZone;
 
+import org.joda.time.LocalDate;
+
 import stsc.common.Day;
 
 public final class UnitedFormatStock extends Stock {
@@ -159,6 +161,15 @@ public final class UnitedFormatStock extends Stock {
 		Date lastDate = days.get(days.size() - 1).date;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(lastDate);
+		if (new LocalDate(lastDate).equals(new LocalDate(new Date()))) {
+			return "";
+		}
+		if (new LocalDate(lastDate).plusDays(1).equals(new LocalDate(new Date()))) {
+			return "";
+		}
+		if (new LocalDate(lastDate).plusDays(2).equals(new LocalDate(new Date()))) {
+			return "";
+		}
 		cal.add(Calendar.DATE, 1);
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 		int month = cal.get(Calendar.MONTH);
