@@ -29,16 +29,20 @@ public class StockListDialog extends Dialog {
 	private final TableColumn<StockDescription, Boolean> validColumn = new TableColumn<>();
 
 	public StockListDialog(Stage owner, String title) {
+		this(owner, title, true, true);
+	}
+
+	public StockListDialog(Stage owner, String title, boolean showLiquidColumn, boolean showValidColumn) {
 		super(owner, title);
 		this.getWindow().setWidth(640);
 		this.getWindow().setHeight(480);
 		this.setContent(borderPane);
 		borderPane.setCenter(table);
 		borderPane.setBottom(new Label());
-		configurateTable();
+		configurateTable(showLiquidColumn, showValidColumn);
 	}
 
-	private void configurateTable() {
+	private void configurateTable(boolean showLiquidColumn, boolean showValidColumn) {
 		table.setItems(model);
 		idColumn.setText("Id");
 		idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
@@ -47,10 +51,14 @@ public class StockListDialog extends Dialog {
 		nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 		nameColumn.setPrefWidth(350.0);
 		table.getColumns().add(nameColumn);
-		configurateBooleanColumn(liquidColumn, "Liquid", "liquid");
-		configurateBooleanColumn(validColumn, "Valid", "valid");
-		table.getColumns().add(liquidColumn);
-		table.getColumns().add(validColumn);
+		if (showLiquidColumn) {
+			configurateBooleanColumn(liquidColumn, "Liquid", "liquid");
+			table.getColumns().add(liquidColumn);
+		}
+		if (showValidColumn) {
+			configurateBooleanColumn(validColumn, "Valid", "valid");
+			table.getColumns().add(validColumn);
+		}
 	}
 
 	private void configurateBooleanColumn(TableColumn<StockDescription, Boolean> booleanColumn, String title, String propertyName) {

@@ -18,20 +18,20 @@ public class StockFilterTest extends TestCase {
 
 		StockFilter stockFilter = new StockFilter(new LocalDate(2013, 1, 13).toDate());
 		Stock s1 = UnitedFormatStock.readFromCsvFile("ibm", "./test_data/ibm.csv");
-		assertEquals(true, stockFilter.test(s1) == null);
+		assertEquals(true, stockFilter.testStock(s1));
 		Stock s2 = UnitedFormatStock.readFromCsvFile("anse", "./test_data/anse.csv");
-		assertEquals(false, stockFilter.test(s2) == null);
+		assertEquals(false, stockFilter.testStock(s2));
 
 		StockFilter stockFilter2 = new StockFilter(new LocalDate(2014, 2, 10).toDate());
 
 		Stock s3 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
-		assertEquals(true, stockFilter2.test(s3) == null);
+		assertEquals(true, stockFilter2.testStock(s3));
 
 		Stock s4 = UnitedFormatStock.readFromUniteFormatFile("./test_data/spy.uf");
-		assertEquals(true, stockFilter2.test(s4) == null);
+		assertEquals(true, stockFilter2.testStock(s4));
 
 		Stock s5 = UnitedFormatStock.readFromUniteFormatFile("./test_data/aaae.uf");
-		assertEquals(false, stockFilter2.test(s5) == null);
+		assertEquals(false, stockFilter2.testStock(s5));
 	}
 
 	public void testLast10Year() throws IOException {
@@ -52,7 +52,7 @@ public class StockFilterTest extends TestCase {
 		for (int i = indexOfDeletingFrom; i < copyFromDays.size(); i++) {
 			days.add(copyFromDays.get(i));
 		}
-		assertEquals(false, stockFilter.test(smallappl) == null);
+		assertEquals(false, stockFilter.testStock(smallappl));
 
 	}
 }

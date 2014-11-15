@@ -106,4 +106,8 @@ public class StockFilter {
 		}
 		return "Stock could not be null";
 	}
+
+	public boolean testStock(Stock s) {
+		return test(s) == null;
+	}
 }

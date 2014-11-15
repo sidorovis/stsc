@@ -11,7 +11,10 @@ import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.dialogs.StockListDialog;
+import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
+import stsc.yahoo.liquiditator.StockFilter;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -25,6 +28,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class ZozkaDatafeedChecker extends Application {
+
+	private static final StockFilter stockFilter = new StockFilter();
 
 	private Stage owner;
 
@@ -129,6 +134,24 @@ public class ZozkaDatafeedChecker extends Application {
 
 		final Set<String> allList = dataStockStorage.getStockNames();
 		final Set<String> filteredList = filteredDataStockStorage.getStockNames();
+		final Set<String> notEqualStockList = findDifferenceByDaysSize(dataStockStorage, filteredDataStockStorage, allList, filteredList);
+		final StockListDialog stockListDialog = new StockListDialog(owner,
+				"List of Stocks which have different days size at data and filtered data.");
+		stockListDialog.setOnMouseClicked(sd -> {
+
+			return null;
+		});
+		int index = 0;
+		for (String stockName : notEqualStockList) {
+			final Stock stock = dataStockStorage.getStock(stockName);
+			stockListDialog.getModel().add(new StockDescription(index++, stock, stockFilter.testStock(stock), false));
+		}
+		stockListDialog.show();
+		// System.out.println(notEqualStockList);
+	}
+
+	private Set<String> findDifferenceByDaysSize(final StockStorage dataStockStorage, final StockStorage filteredDataStockStorage,
+			final Set<String> allList, final Set<String> filteredList) {
 		final Set<String> notEqualStockList = new HashSet<>();
 		for (String stockName : allList) {
 			if (filteredList.contains(stockName)) {
@@ -139,8 +162,7 @@ public class ZozkaDatafeedChecker extends Application {
 				}
 			}
 		}
-		
-		System.out.println(notEqualStockList);
+		return notEqualStockList;
 	}
 
 	public static void main(String[] args) {

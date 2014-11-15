@@ -105,9 +105,12 @@ public class StockDatafeedListPane extends BorderPane {
 	private void setUpdateModel(final YahooFileStockStorage ss) {
 		final AtomicInteger index = new AtomicInteger(0);
 		ss.addReceiver(newStock -> Platform.runLater(() -> {
-			final boolean liquid = stockFilter.test(newStock) == null;
+			final boolean liquid = stockFilter.testStock(newStock);
 			synchronized (model) {
-				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, false)); // TODO fix valid check
+				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, false)); // TODO
+																									// fix
+																									// valid
+																									// check
 			}
 		}));
 	}
