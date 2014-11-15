@@ -6,7 +6,7 @@ import java.io.IOException;
 import stsc.common.stocks.Stock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
-import stsc.yahoo.downloader.DownloadThread;
+import stsc.yahoo.downloader.DownloadYahooStockThread;
 
 import com.google.common.io.Files;
 
@@ -17,7 +17,7 @@ public class YahooDownloadThreadTest extends TestCase {
 		final YahooSettings settings = YahooUtils.createSettings("./test/", "./test/");
 		Files.copy(new File("./test_data/aaoi.uf"), new File("./test/aaoi.uf"));
 		settings.addTask("a");
-		DownloadThread downloadThread = new DownloadThread(settings, false);
+		DownloadYahooStockThread downloadThread = new DownloadYahooStockThread(settings, false);
 		{
 			Thread th = new Thread(downloadThread);
 			th.start();

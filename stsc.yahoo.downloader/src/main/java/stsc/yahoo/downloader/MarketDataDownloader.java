@@ -78,7 +78,7 @@ final class MarketDataDownloader {
 
 		readProperties();
 
-		DownloadThread downloadThread = new DownloadThread(settings);
+		DownloadYahooStockThread downloadThread = new DownloadYahooStockThread(settings);
 
 		logger.trace("starting");
 
