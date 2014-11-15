@@ -12,8 +12,9 @@ public class VisualTestStockListDialog extends Application {
 		final YahooFileStockStorage ss = new YahooFileStockStorage("./test_data/data", "./test_data/filtered_data");
 		ss.waitForLoad();
 		final StockListDialog dialog = new StockListDialog(parent, "StockList");
+		int index = 0;
 		for (String stockName : ss.getStockNames()) {
-			dialog.getModel().add(new StockDescription(13, ss.getStock(stockName), true));
+			dialog.getModel().add(new StockDescription(index++, ss.getStock(stockName), index % 3 == 0, index % 2 == 0));
 		}
 		dialog.show();
 	}

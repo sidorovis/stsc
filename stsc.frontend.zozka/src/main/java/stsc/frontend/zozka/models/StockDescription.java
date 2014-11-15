@@ -12,16 +12,16 @@ public final class StockDescription {
 
 	private final IntegerProperty id;
 	private final StringProperty name;
-	private final BooleanProperty valid;
 	private final BooleanProperty liquid;
+	private final BooleanProperty valid;
 
 	private final Stock stock;
 
-	public StockDescription(int id, Stock stock, boolean liquid) {
+	public StockDescription(int id, Stock stock, boolean liquid, boolean valid) {
 		this.id = new SimpleIntegerProperty(id);
 		this.name = new SimpleStringProperty(stock.getName());
-		this.valid = new SimpleBooleanProperty(true);
 		this.liquid = new SimpleBooleanProperty(liquid);
+		this.valid = new SimpleBooleanProperty(valid);
 		this.stock = stock;
 	}
 
@@ -33,12 +33,12 @@ public final class StockDescription {
 		return name;
 	}
 
-	public BooleanProperty validProperty() {
-		return valid;
-	}
-
 	public BooleanProperty liquidProperty() {
 		return liquid;
+	}
+
+	public BooleanProperty validProperty() {
+		return valid;
 	}
 
 	public Stock getStock() {
