@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -22,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -105,12 +107,9 @@ public class StockDatafeedListPane extends BorderPane {
 	private void setUpdateModel(final YahooFileStockStorage ss) {
 		final AtomicInteger index = new AtomicInteger(0);
 		ss.addReceiver(newStock -> Platform.runLater(() -> {
-			final boolean liquid = stockFilter.testStock(newStock);
+			final boolean liquid = stockFilter.isLiquidTest(newStock);
 			synchronized (model) {
 				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, false)); // TODO
-																									// fix
-																									// valid
-																									// check
 			}
 		}));
 	}
@@ -152,6 +151,17 @@ public class StockDatafeedListPane extends BorderPane {
 				ss.waitForLoad();
 			} catch (Exception e) {
 				Dialogs.create().owner(owner).showException(e);
+			}
+		});
+	}
+
+	public void setOnMouseDoubleClick(final Function<StockDescription, Void> function) {
+		table.setOnMouseClicked(eh -> {
+			if (eh.getButton() == MouseButton.PRIMARY && eh.getClickCount() == 2) {
+				final StockDescription sd = table.getSelectionModel().getSelectedItem();
+				if (sd != null) {
+					function.apply(sd);
+				}
 			}
 		});
 	}

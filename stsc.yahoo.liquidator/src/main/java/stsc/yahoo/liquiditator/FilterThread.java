@@ -34,7 +34,7 @@ class FilterThread implements Runnable {
 		while (task != null) {
 			try {
 				Stock s = settings.getStockFromFileSystem(task);
-				if (s != null && stockFilter.testStock(s)) {
+				if (s != null && stockFilter.isLiquidTest(s)) {
 					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.trace("stock " + task + " liquid");
 				} else {

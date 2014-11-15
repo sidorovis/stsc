@@ -11,6 +11,24 @@ import org.joda.time.LocalDate;
 import stsc.common.Day;
 import stsc.common.stocks.Stock;
 
+// @formatter:off
+/**
+ * 
+ * {@link StockFilter} class that provide possibility to test stock data.
+ * Liquidity Test
+ * consist of:
+ *  - testLastPeriods add errors:
+ *  1) if daysWithDataForLastYear < minimalDaysWithDataPerLastYear
+ *  2) if daysWithDataForLastMonth < minimalDaysWithDataPerLastMonth
+ *  3) if volumeAmount < minimalAverageYearVolume
+ *  - testLastNYears add errors:
+ *  1) if averagePercentDaysPer10Year < minimalDaysPercentPerLast15Years
+ * 
+ * Validity Test
+ * 
+ * 
+ */
+// @formatter:on
 public class StockFilter {
 
 	static final int minimalDaysWithDataPerLastYear = 216;
@@ -28,11 +46,11 @@ public class StockFilter {
 
 	}
 
-	public StockFilter(Date testToday) {
+	public StockFilter(final Date testToday) {
 		today = testToday;
 	}
 
-	public String testLastPeriods(Stock s) {
+	private String testLastPeriods(Stock s) {
 		String errors = "";
 
 		ArrayList<Day> days = s.getDays();
@@ -91,10 +109,12 @@ public class StockFilter {
 		return errors;
 	}
 
+	// Liquidity Test
+
 	/**
 	 * @return null if there is no errors in liquidity test
 	 */
-	public String test(Stock s) {
+	public String isLiquidTestWithError(Stock s) {
 		if (s != null) {
 			final String lastPeriodsErrors = testLastPeriods(s);
 			final String lastNYearsErrors = testLastNYears(s);
@@ -107,7 +127,18 @@ public class StockFilter {
 		return "Stock could not be null";
 	}
 
-	public boolean testStock(Stock s) {
-		return test(s) == null;
+	public boolean isLiquidTest(Stock s) {
+		return isLiquidTestWithError(s) == null;
 	}
+
+	// Validity Test
+
+	public String isValidWithError(Stock s) {
+		return "not valid yet";
+	}
+
+	public boolean isValid(Stock s) {
+		return isValidWithError(s) == null;
+	}
+
 }
