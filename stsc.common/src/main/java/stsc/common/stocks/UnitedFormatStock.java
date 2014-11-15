@@ -130,7 +130,7 @@ public final class UnitedFormatStock extends Stock {
 			os.writeDouble(day.prices.low);
 			os.writeDouble(day.prices.close);
 			os.writeDouble(day.volume);
-			os.writeDouble(day.adj_close);
+			os.writeDouble(day.adjClose);
 		}
 	}
 

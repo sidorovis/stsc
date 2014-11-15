@@ -117,7 +117,8 @@ public class ZozkaStrategyVisualiser extends Application {
 			final Simulator simulator = new Simulator(settings, stockNames);
 			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
 
-			final StockViewPane stockViewPane = new StockViewPane(owner, stock, period, executionsName, signalsStorage);
+			final StockViewPane stockViewPane = StockViewPane.createPaneForOnStockAlgorithm(owner, stock, period, executionsName,
+					signalsStorage);
 			final Tab tab = new Tab();
 			tab.setText(stock.getName());
 			tab.setContent(stockViewPane.getMainPane());

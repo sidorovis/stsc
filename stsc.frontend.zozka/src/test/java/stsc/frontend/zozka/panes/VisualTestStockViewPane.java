@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.controlsfx.dialog.Dialog;
+
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import stsc.common.FromToPeriod;
 import stsc.common.stocks.Stock;
@@ -23,7 +24,7 @@ public class VisualTestStockViewPane extends Application {
 		final YahooFileStockStorage yfss = new YahooFileStockStorage("./test_data/data", "./test_data/filtered_data");
 		yfss.waitForLoad();
 		final Stock aapl = yfss.getStock("aapl");
-		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-2010");
+		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-2015");
 
 		final TradeProcessorInit init = new TradeProcessorInit(yfss, period,
 				"EodExecutions = a1\na1.loadLine = OpenWhileSignalAlgorithm( Level( f = 0.75d, Diff(In(e=close), In(e=open)) ) )\n");
@@ -33,12 +34,19 @@ public class VisualTestStockViewPane extends Application {
 		final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { "aapl" }));
 		final Simulator simulator = new Simulator(settings, stockNames);
 		final SignalsStorage signalsStorage = simulator.getSignalsStorage();
-
-		final StockViewPane stockViewPane = new StockViewPane(parent, aapl, period, executionsName, signalsStorage);
-
-		final Scene scene = new Scene(stockViewPane.getMainPane());
-		parent.setScene(scene);
-		parent.show();
+		{
+			final Dialog dialog = new Dialog(parent, "ForOnStockAlgorithm");
+			final StockViewPane stockViewPane = StockViewPane.createPaneForOnStockAlgorithm(parent, aapl, period, executionsName,
+					signalsStorage);
+			dialog.setContent(stockViewPane.getMainPane());
+			dialog.show();
+		}
+		{
+			final Dialog dialog = new Dialog(parent, "ForAdjectiveClose");
+			final StockViewPane stockViewPane = StockViewPane.createPaneForAdjectiveClose(parent, aapl, period);
+			dialog.setContent(stockViewPane.getMainPane());
+			dialog.show();
+		}
 	}
 
 	public static void main(String[] args) {

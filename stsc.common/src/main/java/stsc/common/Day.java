@@ -23,7 +23,7 @@ public final class Day implements Comparable<Day> {
 	public final Date date;
 	public final Prices prices;
 	public final double volume;
-	public final double adj_close;
+	public final double adjClose;
 
 	public static Date createDate(final LocalDate date) {
 		return nullableTime(date.toDate());
@@ -52,22 +52,22 @@ public final class Day implements Comparable<Day> {
 		date = d;
 		prices = null;
 		volume = 0.0;
-		adj_close = 0.0;
+		adjClose = 0.0;
 	}
 
 	public Day(Date d, Prices p, double v, double ac) {
 		date = d;
 		prices = p;
 		volume = v;
-		adj_close = ac;
+		adjClose = ac;
 	}
 
 	public double getVolume() {
 		return volume;
 	}
 
-	public double getAdj_close() {
-		return adj_close;
+	public double getAdjClose() {
+		return adjClose;
 	}
 
 	public Date getDate() {

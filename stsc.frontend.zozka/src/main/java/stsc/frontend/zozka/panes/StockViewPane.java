@@ -111,23 +111,26 @@ public class StockViewPane {
 
 	}
 
-	public static class TimeSerieSetting extends StockViewSetting {
+	private static class TimeSerieSetting extends StockViewSetting {
 
 		private final int index;
 		private final TimeSeriesCollection timeSeriesCollection;
 		private final XYItemRenderer seriesRenderer;
 
-		public TimeSerieSetting(boolean showAlgo, String title, String stockName, int index, SignalsStorage signalsStorage) {
+		public TimeSerieSetting(boolean showAlgo, String title, Stock stock, int index, FromToPeriod period) {
 			super(showAlgo, title);
 			this.index = index;
 			this.timeSeriesCollection = new TimeSeriesCollection();
 			final TimeSeries timeSeries = new TimeSeries(title);
-			final String outName = ExecutionsStorage.outNameFor(title);
-			final int size = signalsStorage.getIndexSize(stockName, outName);
-			for (int i = 0; i < size; ++i) {
-				final Signal<? extends StockSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
-				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).value);
+
+			final int from = stock.findDayIndex(period.getFrom());
+			final int to = stock.findDayIndex(period.getTo()) - 1;
+
+			for (int i = from; i < to; ++i) {
+				stsc.common.Day day = stock.getDays().get(i);
+				timeSeries.add(new Day(day.getDate()), day.getAdjClose());
 			}
+
 			timeSeriesCollection.addSeries(timeSeries);
 			this.seriesRenderer = new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(title));
 			addListenerToShowAlgorithm(new ChangeListener<Boolean>() {
@@ -136,6 +139,33 @@ public class StockViewPane {
 					seriesRenderer.setSeriesVisible(0, newValue);
 				}
 			});
+
+		}
+
+		public TimeSerieSetting(boolean showAlgo, String title, String stockName, int index, SignalsStorage signalsStorage) {
+			super(showAlgo, title);
+			this.index = index;
+			this.timeSeriesCollection = new TimeSeriesCollection();
+			final TimeSeries timeSeries = createTimeSeries(title, stockName, signalsStorage);
+			timeSeriesCollection.addSeries(timeSeries);
+			this.seriesRenderer = new StandardXYItemRenderer(StandardXYItemRenderer.LINES, new SerieXYToolTipGenerator(title));
+			addListenerToShowAlgorithm(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					seriesRenderer.setSeriesVisible(0, newValue);
+				}
+			});
+		}
+
+		private TimeSeries createTimeSeries(String title, String stockName, SignalsStorage signalsStorage) {
+			final TimeSeries timeSeries = new TimeSeries(title);
+			final String outName = ExecutionsStorage.outNameFor(title);
+			final int size = signalsStorage.getIndexSize(stockName, outName);
+			for (int i = 0; i < size; ++i) {
+				final Signal<? extends StockSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
+				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).value);
+			}
+			return timeSeries;
 		}
 
 		public TimeSeriesCollection getTimeSeriesCollection() {
@@ -165,16 +195,29 @@ public class StockViewPane {
 	@FXML
 	private BorderPane chartPane;
 
-	public StockViewPane(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage)
-			throws IOException {
+	public static StockViewPane createPaneForAdjectiveClose(Stage owner, Stock stock, FromToPeriod period) throws IOException {
+		final StockViewPane result = new StockViewPane(owner, stock, period);
+		result.loadTableModelForAdjective(stock, period);
+		result.addChart(stock, period);
+		return result;
+	}
+
+	public static StockViewPane createPaneForOnStockAlgorithm(Stage owner, Stock stock, FromToPeriod period, List<String> executionsName,
+			SignalsStorage signalsStorage) throws IOException {
+		final StockViewPane result = new StockViewPane(owner, stock, period);
+		result.loadTableModel(stock.getName(), executionsName, signalsStorage);
+		result.addChart(stock, period);
+		return result;
+	}
+
+	public StockViewPane(Stage owner, Stock stock, FromToPeriod period) throws IOException {
 		this.chartDataset = new ChartDataset(new DatasetForStock(stock, period));
 		final URL location = EquityPane.class.getResource("04_stock_view_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		this.gui = loader.load();
 		initialize();
-		loadTableModel(stock.getName(), executionsName, signalsStorage);
-		addChart(stock, period, executionsName, signalsStorage);
+		tableModel.add(chartDataset);
 	}
 
 	private void initialize() {
@@ -196,7 +239,6 @@ public class StockViewPane {
 	}
 
 	private void loadTableModel(final String stockName, final List<String> executionsName, SignalsStorage signalsStorage) {
-		tableModel.add(chartDataset);
 		int index = 1;
 		for (String executionName : executionsName) {
 			tableModel.add(new TimeSerieSetting(true, executionName, stockName, index, signalsStorage));
@@ -204,7 +246,11 @@ public class StockViewPane {
 		}
 	}
 
-	private void addChart(Stock stock, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage) {
+	private void loadTableModelForAdjective(Stock stock, FromToPeriod period) {
+		tableModel.add(new TimeSerieSetting(true, "Adjective Close", stock, 1, period));
+	}
+
+	private void addChart(Stock stock, FromToPeriod period) {
 		final JFreeChart chart = ChartFactory.createCandlestickChart("Price", "", "", chartDataset.getTimeSeriesCollection(), true);
 		chart.getXYPlot().setRenderer(0, chartDataset.getRenderer());
 		for (StockViewSetting serie : tableModel) {

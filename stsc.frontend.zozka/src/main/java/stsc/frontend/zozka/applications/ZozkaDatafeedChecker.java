@@ -203,7 +203,7 @@ public class ZozkaDatafeedChecker extends Application {
 		try {
 			final UnitedFormatStock redownloadedStock = YahooDownloadHelper.download(stockName);
 			if (stockFilter.isLiquid(redownloadedStock) && stockFilter.isValid(redownloadedStock)) {
-
+				
 			}
 		} catch (InterruptedException e) {
 			Dialogs.create().owner(owner).showException(e);
