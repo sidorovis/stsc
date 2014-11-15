@@ -7,7 +7,7 @@ public class VisualTestTextFieldDialog extends Application {
 
 	@Override
 	public void start(Stage parent) throws Exception {
-		new TextFieldDialog(parent, "Strategy: " + String.valueOf(14), "hello world\nresult").show();
+		new TextAreaDialog(parent, "Strategy: " + String.valueOf(14), "hello world\nresult").show();
 	}
 
 	public static void main(String[] args) {

@@ -18,7 +18,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
-import stsc.frontend.zozka.dialogs.TextFieldDialog;
+import stsc.frontend.zozka.dialogs.TextAreaDialog;
 import stsc.frontend.zozka.gui.models.ObservableStrategySelector;
 import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.frontend.zozka.gui.models.SimulationType;
@@ -163,7 +163,7 @@ public class StrategiesPane extends BorderPane {
 		final StatisticsDescription sd = table.getSelectionModel().getSelectedItem();
 		if (sd != null) {
 			final long id = sd.getId();
-			new TextFieldDialog(owner, "Strategy: " + String.valueOf(id), sd.toString()).show();
+			new TextAreaDialog(owner, "Strategy: " + String.valueOf(id), sd.toString()).show();
 		}
 	}
 

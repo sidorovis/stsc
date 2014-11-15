@@ -65,7 +65,7 @@ public class StockListDialog extends Dialog {
 	}
 
 	public void setOnMouseClicked(final Function<StockDescription, Void> function) {
-		table.setOnMouseClicked(eh -> {			
+		table.setOnMouseClicked(eh -> {
 			if (eh.getButton().equals(MouseButton.PRIMARY) && eh.getClickCount() == 2) {
 				final StockDescription selectedItem = table.getSelectionModel().getSelectedItem();
 				if (selectedItem != null) {

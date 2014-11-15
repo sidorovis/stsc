@@ -44,4 +44,10 @@ public final class StockDescription {
 	public Stock getStock() {
 		return stock;
 	}
+
+	@Override
+	public String toString() {
+		return "StockDescription('" + stock.getName() + "' with days size:" + stock.getDays().size() + ")\n[\n\tliquid: "
+				+ liquid.getValue().booleanValue() + "; \n\tvalid: " + valid.getValue().booleanValue() + ";\n]";
+	}
 }

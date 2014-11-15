@@ -7,12 +7,12 @@ import javafx.stage.Stage;
 
 import org.controlsfx.dialog.Dialog;
 
-public class TextFieldDialog extends Dialog {
+public class TextAreaDialog extends Dialog {
 
 	private final TextArea textArea;
 	private final BorderPane borderPane = new BorderPane();
 
-	public TextFieldDialog(Stage owner, String title, String value) {
+	public TextAreaDialog(Stage owner, String title, String value) {
 		super(owner, title);
 		this.textArea = new TextArea(value);
 		this.getWindow().setWidth(600);
@@ -23,7 +23,4 @@ public class TextFieldDialog extends Dialog {
 		borderPane.setBottom(new Label(""));
 	}
 
-	public BorderPane getBorderPane() {
-		return borderPane;
-	}
 }

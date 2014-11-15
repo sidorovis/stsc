@@ -16,6 +16,10 @@ public class VisualTestStockListDialog extends Application {
 		for (String stockName : ss.getStockNames()) {
 			dialog.getModel().add(new StockDescription(index++, ss.getStock(stockName), index % 3 == 0, index % 2 == 0));
 		}
+		dialog.setOnMouseClicked(stockDescription -> {
+			new TextAreaDialog(parent, "Temp Dialog", stockDescription.toString()).show();
+			return null;
+		});
 		dialog.show();
 	}
 
