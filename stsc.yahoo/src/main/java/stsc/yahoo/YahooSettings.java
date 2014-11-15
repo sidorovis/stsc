@@ -13,7 +13,7 @@ public class YahooSettings {
 	private String dataFolder = "./data/";
 	private String filteredDataFolder = "./filtered_data/";
 
-	YahooSettings(String dataFolder, String filteredDataFolder) throws IOException {
+	public YahooSettings(String dataFolder, String filteredDataFolder) throws IOException {
 		this.dataFolder = checkFolder(dataFolder, "Bad data folder");
 		this.filteredDataFolder = checkFolder(filteredDataFolder, "Bad filtered data folder");
 	}

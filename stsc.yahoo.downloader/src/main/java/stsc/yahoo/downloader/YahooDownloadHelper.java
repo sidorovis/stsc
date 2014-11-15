@@ -15,18 +15,17 @@ public class YahooDownloadHelper {
 	private static final int waitTriesAmount = 5;
 	private static final int waitTimeBetweenTries = 500;
 
-	public static final UnitedFormatStock download(YahooSettings settings, String stockName) throws InterruptedException {
+	public static final UnitedFormatStock download(String stockName) throws InterruptedException {
 		int tries = 0;
 		String error = "";
 		UnitedFormatStock newStock = null;
 		while (tries < waitTriesAmount) {
 			try {
-				URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
-				String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
+				final URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + stockName);
+				final String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				newStock = UnitedFormatStock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
 					return null;
-				newStock.storeUniteFormat(getPath(settings.getDataFolder(), newStock.getName()));
 				return newStock;
 			} catch (ParseException | IOException e) {
 				error = e.toString();
@@ -34,9 +33,7 @@ public class YahooDownloadHelper {
 			tries += 1;
 			Thread.sleep(waitTimeBetweenTries);
 		}
-		if (newStock == null)
-			throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName + " stock. " + error);
-		return newStock;
+		throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName + " stock. " + error);
 	}
 
 	public static final boolean partiallyDownload(YahooSettings settings, UnitedFormatStock stock, String stockName)
@@ -54,9 +51,7 @@ public class YahooDownloadHelper {
 				URL url = new URL(downloadLink);
 				stockNewContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				boolean newDays = stock.addDaysFromString(stockNewContent);
-				if (newDays)
-					stock.storeUniteFormat(getPath(settings.getDataFolder(), stock.getName()));
-				return true;
+				return newDays;
 			} catch (ParseException e) {
 				error = "exception " + e.toString() + " with: '" + stockNewContent + "'";
 			} catch (IOException e) {

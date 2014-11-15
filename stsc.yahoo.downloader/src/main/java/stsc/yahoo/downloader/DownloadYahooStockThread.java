@@ -37,14 +37,19 @@ class DownloadYahooStockThread implements Runnable {
 				UnitedFormatStock s = settings.getStockFromFileSystem(task);
 				boolean downloaded = false;
 				if (s == null) {
-					s = YahooDownloadHelper.download(settings, task);
+					s = YahooDownloadHelper.download(task);
+					if (s != null) {
+						s.storeUniteFormat(getPath(settings.getDataFolder(), s.getName()));
+					}
 					downloaded = true;
 					logger.trace("task {} fully downloaded", task);
 				} else {
 					downloaded = YahooDownloadHelper.partiallyDownload(settings, s, task);
+					if (downloaded)
+						s.storeUniteFormat(getPath(settings.getDataFolder(), s.getName()));
 					logger.trace("task {} partially downloaded", task);
 				}
-				final boolean filtered = stockFilter.isLiquidTest(s);
+				final boolean filtered = stockFilter.isLiquid(s);
 				if (downloaded) {
 					if (filtered) {
 						YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
