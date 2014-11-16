@@ -44,7 +44,7 @@ class DownloadYahooStockThread implements Runnable {
 					downloaded = true;
 					logger.trace("task {} fully downloaded", task);
 				} else {
-					downloaded = YahooDownloadHelper.partiallyDownload(settings, s, task);
+					downloaded = YahooDownloadHelper.partiallyDownload(s, task);
 					if (downloaded)
 						s.storeUniteFormat(getPath(settings.getDataFolder(), s.getName()));
 					logger.trace("task {} partially downloaded", task);
@@ -55,7 +55,11 @@ class DownloadYahooStockThread implements Runnable {
 						YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 						logger.info("task {} is liquid and copied to filter stock directory", task);
 					} else {
-						deleteEmptyFilteredFile(task);
+						final boolean deleted = YahooDownloadHelper.deleteFilteredFile(deleteFilteredData,
+								settings.getFilteredDataFolder(), task);
+						if (deleted) {
+							logger.debug("deleting filtered file with stock " + task + " it doesn't pass new liquidity filter tests");
+						}
 					}
 				} else {
 					logger.info("task {} is considered as downloaded", task);
@@ -72,17 +76,6 @@ class DownloadYahooStockThread implements Runnable {
 					logger.info("solved {} tasks last stock name {}", solvedAmount, task);
 			}
 			task = settings.getTask();
-		}
-	}
-
-	private void deleteEmptyFilteredFile(String stockName) {
-		if (deleteFilteredData) {
-			String filteredFilePath = getPath(settings.getFilteredDataFolder(), stockName);
-			File filteredFile = new File(filteredFilePath);
-			if (filteredFile.exists()) {
-				logger.debug("deleting filtered file with stock " + stockName + " it doesn't pass new liquidity filter tests");
-				filteredFile.delete();
-			}
 		}
 	}
 

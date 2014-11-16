@@ -1,13 +1,12 @@
 package stsc.yahoo.downloader;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
 
 import stsc.common.stocks.UnitedFormatStock;
-import stsc.yahoo.YahooSettings;
-
 import com.google.common.io.CharStreams;
 
 public class YahooDownloadHelper {
@@ -36,8 +35,7 @@ public class YahooDownloadHelper {
 		throw new InterruptedException(waitTriesAmount + " tries not enought to download data on " + stockName + " stock. " + error);
 	}
 
-	public static final boolean partiallyDownload(YahooSettings settings, UnitedFormatStock stock, String stockName)
-			throws InterruptedException {
+	public static final boolean partiallyDownload(UnitedFormatStock stock, String stockName) throws InterruptedException {
 		String downloadLink = stock.generatePartiallyDownloadLine();
 		if (downloadLink.isEmpty()) {
 			return false;
@@ -63,7 +61,20 @@ public class YahooDownloadHelper {
 				+ " stock " + error);
 	}
 
+	public static boolean deleteFilteredFile(boolean deleteFilteredData, String filteredDataFolder, String stockName) {
+		if (deleteFilteredData) {
+			String filteredFilePath = getPath(filteredDataFolder, stockName);
+			File filteredFile = new File(filteredFilePath);
+			if (filteredFile.exists()) {
+				filteredFile.delete();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static String getPath(String folder, String taskName) {
 		return UnitedFormatStock.generatePath(folder, taskName);
 	}
+
 }

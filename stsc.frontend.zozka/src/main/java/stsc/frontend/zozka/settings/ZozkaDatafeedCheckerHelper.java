@@ -162,9 +162,13 @@ public class ZozkaDatafeedCheckerHelper {
 			}
 			if (isUserAgreeForAction(owner, s, "Want you to save just downloaded stock?", error, "")) {
 				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
-				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
 				dataStockList.updateStock(s);
-				filteredStockDataList.updateStock(s);
+				if (isLiquid(s) && isValid(s) || filteredStockDataList.getStockStorage().getStock(s.getName()) != null) {
+					s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
+					filteredStockDataList.updateStock(s);
+				} else {
+					YahooDownloadHelper.deleteFilteredFile(true, datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, stockName);
+				}
 				updateDialogModel(s);
 				return false;
 			} else {

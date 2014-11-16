@@ -19,6 +19,7 @@ import stsc.frontend.zozka.dialogs.StockListDialog;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
 import stsc.frontend.zozka.settings.ZozkaDatafeedCheckerHelper;
+import stsc.yahoo.YahooFileStockStorage;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -92,7 +93,7 @@ public class ZozkaDatafeedChecker extends Application {
 					final String stockName = sd.getStock().getName();
 					final Stock data = dataStockList.getStockStorage().getStock(stockName);
 					final Stock filtered = filteredStockDataList.getStockStorage().getStock(stockName);
-					final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(stockName, dataStockList,
+					final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList,
 							filteredStockDataList, null);
 					helper.checkStockAndAskForUser(sd, data, filtered, owner);
 				} catch (Exception e) {
@@ -159,8 +160,8 @@ public class ZozkaDatafeedChecker extends Application {
 		final Predicate<String> predicate = (p) -> {
 			return !p.startsWith(result.get());
 		};
-		dataStockList.loadDatafeed(datafeedPath + "/data", onDataEnd -> {
-			filteredStockDataList.loadDatafeed(datafeedPath + "/filtered_data", onFilterEnd -> {
+		dataStockList.loadDatafeed(datafeedPath + YahooFileStockStorage.DATA_FOLDER, onDataEnd -> {
+			filteredStockDataList.loadDatafeed(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, onFilterEnd -> {
 				checkLists();
 				return null;
 			}, predicate);
@@ -193,7 +194,7 @@ public class ZozkaDatafeedChecker extends Application {
 			final String stockName = sd.getStock().getName();
 			final Stock data = dataStockStorage.getStock(stockName);
 			final Stock filtered = filteredDataStockStorage.getStock(stockName);
-			final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(stockName, dataStockList, filteredStockDataList,
+			final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList, filteredStockDataList,
 					stockListDialog.getModel());
 			helper.checkStockAndAskForUser(sd, data, filtered, owner);
 			return null;
