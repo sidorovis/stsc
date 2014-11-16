@@ -140,11 +140,7 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void loadDatafeed() throws IOException {
-		final List<String> prefixVariants = new ArrayList<>();
-		for (char z = 'a'; z != 'z'; z++) {
-			prefixVariants.add(String.valueOf(z));
-		}
-		prefixVariants.add("");
+		final List<String> prefixVariants = generatePrefixForNames();
 		final Optional<String> result = Dialogs.create().owner(owner).title("Select Prefix for StockStorage").masthead(null)
 				.showChoices(prefixVariants);
 		if (result.isPresent()
@@ -154,6 +150,15 @@ public class ZozkaDatafeedChecker extends Application {
 			datafeedPrefix = result.get();
 			runLoadDatafeed(result);
 		}
+	}
+
+	private List<String> generatePrefixForNames() {
+		final List<String> prefixVariants = new ArrayList<>();
+		for (char z = 'a'; z != 'z' + 1; z++) {
+			prefixVariants.add(String.valueOf(z));
+		}
+		prefixVariants.add("");
+		return prefixVariants;
 	}
 
 	private void runLoadDatafeed(final Optional<String> result) {
