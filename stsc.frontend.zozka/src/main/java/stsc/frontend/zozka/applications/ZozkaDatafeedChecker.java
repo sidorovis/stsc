@@ -153,15 +153,20 @@ public class ZozkaDatafeedChecker extends Application {
 
 		final Set<String> allList = dataStockStorage.getStockNames();
 		final Set<String> filteredList = filteredDataStockStorage.getStockNames();
-		final Set<String> notEqualStockList = findDifferenceByDaysSize(dataStockStorage, filteredDataStockStorage, allList, filteredList);
+		final Set<String> notEqualStockList = findDifferenceByDaysSizeAndStockFilter(dataStockStorage, filteredDataStockStorage, allList,
+				filteredList);
 		final StockListDialog stockListDialog = new StockListDialog(owner,
 				"List of Stocks which have different days size at data and filtered data.");
-		stockListDialog.setOnMouseClicked(sd -> {
+		stockListDialog.setOnMouseDoubleClicked(sd -> {
 			final Stock data = dataStockStorage.getStock(sd.getStock().getName());
 			final Stock filtered = filteredDataStockStorage.getStock(sd.getStock().getName());
 			try {
 				checkSizeOfDataSmallerThanFiltered(data, filtered);
-				checkLiquidityAndValidityAndRedownload(data);
+				if (stockFilter.isLiquid(data) && stockFilter.isValid(data)) {
+					showStockRepresentation(data, filtered);
+				} else {
+					checkLiquidityAndValidityAndRedownload(data);
+				}
 			} catch (Exception e) {
 				Dialogs.create().owner(owner).showException(e);
 			}
@@ -174,6 +179,11 @@ public class ZozkaDatafeedChecker extends Application {
 			stockListDialog.getModel().add(new StockDescription(index++, s, stockFilter.isLiquid(s), stockFilter.isValid(s)));
 		}
 		stockListDialog.show();
+	}
+
+	private void showStockRepresentation(Stock data, Stock filtered) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void checkLiquidityAndValidityAndRedownload(Stock stock) {
@@ -237,14 +247,18 @@ public class ZozkaDatafeedChecker extends Application {
 			throw new InvalidDatafeedException("Stock data at common data have smaller size than filtered stock data.");
 	}
 
-	private Set<String> findDifferenceByDaysSize(final StockStorage dataStockStorage, final StockStorage filteredDataStockStorage,
-			final Set<String> allList, final Set<String> filteredList) {
+	private Set<String> findDifferenceByDaysSizeAndStockFilter(final StockStorage dataStockStorage,
+			final StockStorage filteredDataStockStorage, final Set<String> allList, final Set<String> filteredList) {
 		final Set<String> notEqualStockList = new HashSet<>();
 		for (String stockName : allList) {
 			if (filteredList.contains(stockName)) {
 				final Stock dataStock = dataStockStorage.getStock(stockName);
 				final Stock filteredDataStock = filteredDataStockStorage.getStock(stockName);
 				if (dataStock.getDays().size() != filteredDataStock.getDays().size()) {
+					notEqualStockList.add(stockName);
+				} else if (stockFilter.isLiquid(dataStock) != stockFilter.isLiquid(filteredDataStock)) {
+					notEqualStockList.add(stockName);
+				} else if (stockFilter.isValid(dataStock) != stockFilter.isValid(filteredDataStock)) {
 					notEqualStockList.add(stockName);
 				}
 			}
