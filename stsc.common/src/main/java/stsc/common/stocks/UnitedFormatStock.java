@@ -114,6 +114,10 @@ public final class UnitedFormatStock extends Stock {
 		return name;
 	}
 
+	public void storeUniteFormatToFolder(String folderPath) throws IOException {
+		storeUniteFormat(folderPath + "/" + getName() + EXTENSION);
+	}
+
 	public void storeUniteFormat(String filePath) throws IOException {
 		try (DataOutputStream os = new DataOutputStream(new FileOutputStream(filePath))) {
 			storeUniteFormat(os);

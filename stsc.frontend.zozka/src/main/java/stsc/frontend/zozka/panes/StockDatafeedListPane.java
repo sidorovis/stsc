@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.controlsfx.dialog.Dialogs;
 
+import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
@@ -162,6 +164,23 @@ public class StockDatafeedListPane extends BorderPane {
 				final StockDescription sd = table.getSelectionModel().getSelectedItem();
 				if (sd != null) {
 					function.apply(sd);
+				}
+			}
+		});
+	}
+
+	public void updateStock(Stock newStockData, boolean liquid, boolean valid) {
+		stockStorage.updateStock(newStockData);
+		updateModel(newStockData, liquid, valid, model);
+		table.setItems(model);
+	}
+
+	public static void updateModel(Stock newStockData, boolean liquid, boolean valid, ObservableList<StockDescription> model) {
+		model.forEach(new Consumer<StockDescription>() {
+			@Override
+			public void accept(StockDescription sd) {
+				if (sd.getStock().getName().equals(newStockData.getName())) {
+					sd.setStock(newStockData, liquid, valid);
 				}
 			}
 		});

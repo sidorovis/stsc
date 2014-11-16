@@ -20,6 +20,7 @@ import stsc.yahoo.downloader.YahooDownloadHelper;
 import stsc.yahoo.liquiditator.InvalidDatafeedException;
 import stsc.yahoo.liquiditator.StockFilter;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -45,6 +46,8 @@ public class ZozkaDatafeedChecker extends Application {
 
 	private StockDatafeedListPane dataStockList;
 	private StockDatafeedListPane filteredStockDataList;
+
+	private ObservableList<StockDescription> dialogModel;
 
 	public ZozkaDatafeedChecker() {
 		datafeedPathLabel.setText("./test_data/");
@@ -164,6 +167,7 @@ public class ZozkaDatafeedChecker extends Application {
 			}
 			return null;
 		});
+		dialogModel = stockListDialog.getModel();
 		int index = 0;
 		for (String stockName : notEqualStockList) {
 			final Stock s = dataStockStorage.getStock(stockName);
@@ -179,7 +183,7 @@ public class ZozkaDatafeedChecker extends Application {
 
 	private void checkLiquidutyAndRedownload(Stock stock) {
 		if (!stockFilter.isLiquid(stock)) {
-			if (isUserAgreeForDownload(stock, stockFilter.isLiquidTestWithError(stock), " not liquid")) {
+			if (isUserAgreeForAction(stock, "Want you redownload data?", stockFilter.isLiquidTestWithError(stock), " not liquid")) {
 				redownloadStock(stock.getName());
 			}
 		}
@@ -187,26 +191,44 @@ public class ZozkaDatafeedChecker extends Application {
 
 	private void checkValidityAndRedownload(Stock stock) {
 		if (!stockFilter.isValid(stock)) {
-			if (isUserAgreeForDownload(stock, stockFilter.isValidWithError(stock), " not valid")) {
+			if (isUserAgreeForAction(stock, "Want you redownload data?", stockFilter.isValidWithError(stock), " not valid")) {
 				redownloadStock(stock.getName());
 			}
 		}
 	}
 
-	private boolean isUserAgreeForDownload(Stock stock, String errorString, String mastheadPostfix) {
-		final Action response = Dialogs.create().owner(owner).title("Want you redownload data?")
-				.masthead("Stock " + stock.getName() + mastheadPostfix).message(errorString).showConfirm();
+	private boolean isUserAgreeForAction(Stock stock, String title, String errorString, String mastheadPostfix) {
+		final Action response = Dialogs.create().owner(owner).title(title).masthead("Stock " + stock.getName() + mastheadPostfix)
+				.message(errorString).showConfirm();
 		return response == Dialog.Actions.YES;
 	}
 
 	private void redownloadStock(String stockName) {
 		try {
-			final UnitedFormatStock redownloadedStock = YahooDownloadHelper.download(stockName);
-			if (stockFilter.isLiquid(redownloadedStock) && stockFilter.isValid(redownloadedStock)) {
-				
+			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
+			final String liquid = stockFilter.isLiquidTestWithError(s);
+			final String valid = stockFilter.isValidWithError(s);
+			String error = "";
+			error += (liquid != null) ? liquid : "";
+			error += (valid != null) ? valid : "";
+			if (error.isEmpty()) {
+				error = "Liquid and Valid test passed";
 			}
-		} catch (InterruptedException e) {
+			if (isUserAgreeForAction(s, "Want you to save just downloaded stock?", error, "")) {
+				s.storeUniteFormatToFolder(datafeedPath + "/data/");
+				s.storeUniteFormatToFolder(datafeedPath + "/filtered_data/");
+				dataStockList.updateStock(s, liquid == null, valid == null);
+				filteredStockDataList.updateStock(s, liquid == null, valid == null);
+				updateDialogModel(s, liquid == null, valid == null);
+			}
+		} catch (InterruptedException | IOException e) {
 			Dialogs.create().owner(owner).showException(e);
+		}
+	}
+
+	private void updateDialogModel(UnitedFormatStock s, boolean liquid, boolean valid) {
+		if (dialogModel != null) {
+			StockDatafeedListPane.updateModel(s, liquid, valid, dialogModel);
 		}
 	}
 

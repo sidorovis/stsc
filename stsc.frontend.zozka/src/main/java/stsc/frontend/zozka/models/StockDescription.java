@@ -15,7 +15,7 @@ public final class StockDescription {
 	private final BooleanProperty liquid;
 	private final BooleanProperty valid;
 
-	private final Stock stock;
+	private Stock stock;
 
 	public StockDescription(int id, Stock stock, boolean liquid, boolean valid) {
 		this.id = new SimpleIntegerProperty(id);
@@ -49,5 +49,11 @@ public final class StockDescription {
 	public String toString() {
 		return "StockDescription('" + stock.getName() + "' with days size:" + stock.getDays().size() + ")\n[\n\tliquid: "
 				+ liquid.getValue().booleanValue() + "; \n\tvalid: " + valid.getValue().booleanValue() + ";\n]";
+	}
+
+	public void setStock(Stock newStockData, boolean liquid, boolean valid) {
+		this.liquid.set(liquid);
+		this.valid.set(valid);
+		stock = newStockData;
 	}
 }
