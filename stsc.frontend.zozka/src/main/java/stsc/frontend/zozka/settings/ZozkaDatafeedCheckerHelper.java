@@ -25,7 +25,6 @@ import stsc.frontend.zozka.panes.StockDatafeedListPane;
 import stsc.frontend.zozka.panes.StockViewPane;
 import stsc.yahoo.YahooFileStockStorage;
 import stsc.yahoo.downloader.YahooDownloadHelper;
-import stsc.yahoo.liquiditator.InvalidDatafeedException;
 import stsc.yahoo.liquiditator.StockFilter;
 
 public class ZozkaDatafeedCheckerHelper {
@@ -52,20 +51,6 @@ public class ZozkaDatafeedCheckerHelper {
 
 	public static boolean isValid(Stock s) {
 		return stockFilter.isValid(s);
-	}
-
-	public void showAppropriateDialogForStockFromDataAndFiltered(Stage owner, final Stock data, final Stock filtered) {
-		try {
-			checkSizeOfDataSmallerThanFiltered(data, filtered);
-			checkStockAndAskForUser(data, data, filtered, owner);
-		} catch (Exception e) {
-			Dialogs.create().owner(owner).showException(e);
-		}
-	}
-
-	private void checkSizeOfDataSmallerThanFiltered(Stock data, Stock filtered) throws InvalidDatafeedException {
-		if (data.getDays().size() < filtered.getDays().size())
-			throw new InvalidDatafeedException("Stock data at common data have smaller size than filtered stock data.");
 	}
 
 	private boolean showStockRepresentation(Stage owner, Stock data, Stock filtered, boolean askForSave) {
@@ -192,22 +177,20 @@ public class ZozkaDatafeedCheckerHelper {
 	private boolean redownloadStock(Stage owner, String stockName) {
 		try {
 			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
-			if (!isLiquid(s) || !isValid(s)) {
-				final boolean isSave = showStockRepresentation(owner, s, dataStockList.getStockStorage().getStock(stockName), true);
-				if (isSave) {
-					s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
-					dataStockList.updateStock(s);
-					if (isLiquid(s) && isValid(s) || filteredStockDataList.getStockStorage().getStock(s.getName()) != null) {
-						s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
-						filteredStockDataList.updateStock(s);
-					} else {
-						YahooDownloadHelper.deleteFilteredFile(true, datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, stockName);
-					}
-					updateDialogModel(s);
-					return false;
+			final boolean isSave = showStockRepresentation(owner, s, dataStockList.getStockStorage().getStock(stockName), true);
+			if (isSave) {
+				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
+				dataStockList.updateStock(s);
+				if (isLiquid(s) && isValid(s) || filteredStockDataList.getStockStorage().getStock(s.getName()) != null) {
+					s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
+					filteredStockDataList.updateStock(s);
 				} else {
-					return true;
+					YahooDownloadHelper.deleteFilteredFile(true, datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, stockName);
 				}
+				updateDialogModel(s);
+				return false;
+			} else {
+				return true;
 			}
 		} catch (InterruptedException | IOException e) {
 			Dialogs.create().owner(owner).showException(e);

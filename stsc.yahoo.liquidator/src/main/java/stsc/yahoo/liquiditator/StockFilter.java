@@ -152,7 +152,7 @@ public class StockFilter {
 				return "Adjective Close Price Gap found (" + s.getName() + ":" + days.get(i - 1).getDate() + ")";
 			}
 		}
-		return null;
+		return "";
 	}
 
 	public String isValidWithError(Stock s) {

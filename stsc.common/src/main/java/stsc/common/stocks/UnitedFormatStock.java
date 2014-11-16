@@ -75,28 +75,20 @@ public final class UnitedFormatStock extends Stock {
 			double close = is.readDouble();
 			double volume = is.readDouble();
 			double adjClose = is.readDouble();
-			Day newDay = new Day(dayTime, calculatePrices(open, high, low, close, adjClose), volume, adjClose);
+			Day newDay = new Day(dayTime, Prices.calculatePrices(open, high, low, close, adjClose), volume, adjClose);
 			s.addDay(newDay);
 		}
 		return s;
 	}
 
-	private static Prices calculatePrices(double open, double high, double low, double close, double adjClose) {
-		// final double diff_value = adjClose - close;
-		return new Prices(open, high, low, close);
-		// return new Prices(diff_value + open, diff_value + high, diff_value +
-		// low, diff_value + close);
-	}
-
 	static private void storeDataLine(UnitedFormatStock stock, String line) throws ParseException {
-		Date date;
 		final String lineDate = line.substring(0, 10);
 		try {
-			date = Day.nullableTime(dateFormat.parse(lineDate));
-			String[] tokens = line.split(",");
-			double volume = Double.parseDouble(tokens[5]);
-			double adj_close = Double.parseDouble(tokens[6]);
-			Day newDay = new Day(date, Prices.fromTokens(tokens), volume, adj_close);
+			final Date date = Day.nullableTime(dateFormat.parse(lineDate));
+			final String[] tokens = line.split(",");
+			final double volume = Double.parseDouble(tokens[5]);
+			final double adjClose = Double.parseDouble(tokens[6]);
+			final Day newDay = new Day(date, Prices.fromTokens(tokens, adjClose), volume, adjClose);
 			stock.addDay(newDay);
 		} catch (ParseException e) {
 			throw new ParseException(e.toString() + " while parsing data: " + lineDate, 1);

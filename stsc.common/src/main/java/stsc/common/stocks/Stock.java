@@ -23,6 +23,15 @@ public abstract class Stock {
 
 	@Override
 	public String toString() {
-		return "Stock(" + getName() + ")";
+		String result = "Stock(" + getName() + ")\n";
+		int count = 0;
+		final ArrayList<Day> days = new ArrayList<>(getDays());
+		Collections.reverse(days);
+		for (Day day : days) {
+			result += day.toString() + "\n";
+			if (count++ > 20)
+				break;
+		}
+		return result;
 	}
 }

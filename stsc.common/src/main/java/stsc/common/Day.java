@@ -85,6 +85,6 @@ public final class Day implements Comparable<Day> {
 
 	@Override
 	public String toString() {
-		return "Day:" + date.toString();
+		return "Day:" + df.format(date) + "("+getPrices()+")";
 	}
 }
