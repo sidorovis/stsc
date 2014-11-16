@@ -23,6 +23,12 @@ public class DatasetForStock extends AbstractXYDataset implements OHLCDataset {
 		this.toIndex = Math.abs(Collections.binarySearch(stock.getDays(), new Day(period.getTo())));
 	}
 
+	public DatasetForStock(Stock stock) {
+		this.stock = stock;
+		this.fromIndex = 0;
+		this.toIndex = stock.getDays().size();
+	}
+
 	private Day get(int index) {
 		return stock.getDays().get(fromIndex + index);
 	}

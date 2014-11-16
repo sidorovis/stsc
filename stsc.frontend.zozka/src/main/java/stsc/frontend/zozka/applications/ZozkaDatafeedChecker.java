@@ -16,6 +16,7 @@ import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.dialogs.StockListDialog;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
+import stsc.frontend.zozka.panes.StockViewPane;
 import stsc.yahoo.downloader.YahooDownloadHelper;
 import stsc.yahoo.liquiditator.InvalidDatafeedException;
 import stsc.yahoo.liquiditator.StockFilter;
@@ -83,6 +84,7 @@ public class ZozkaDatafeedChecker extends Application {
 		setOnDoubleClickTableAction(dataStockList);
 		filteredStockDataList = new StockDatafeedListPane(owner, "Filtered data");
 		addData(splitPane, filteredStockDataList);
+		setOnDoubleClickTableAction(filteredStockDataList);
 		borderPane.setCenter(splitPane);
 		return scene;
 	}
@@ -91,7 +93,18 @@ public class ZozkaDatafeedChecker extends Application {
 		listPane.setOnMouseDoubleClick(new Function<StockDescription, Void>() {
 			@Override
 			public Void apply(StockDescription sd) {
-				checkLiquidityAndValidityAndRedownload(sd.getStock());
+				try {
+					final String stockName = sd.getStock().getName();
+					final Stock data = dataStockList.getStockStorage().getStock(stockName);
+					final Stock filtered = dataStockList.getStockStorage().getStock(stockName);
+					if (stockFilter.isLiquid(sd.getStock()) && stockFilter.isValid(sd.getStock())) {
+						showStockRepresentation(data, filtered);
+					} else {
+						checkLiquidityAndValidityAndRedownload(sd.getStock());
+					}
+				} catch (Exception e) {
+					Dialogs.create().owner(owner).showException(e);
+				}
 				return null;
 			}
 		});
@@ -181,9 +194,21 @@ public class ZozkaDatafeedChecker extends Application {
 		stockListDialog.show();
 	}
 
-	private void showStockRepresentation(Stock data, Stock filtered) {
-		// TODO Auto-generated method stub
-		
+	private void showStockRepresentation(Stock data, Stock filtered) throws IOException {
+		final Dialog dialog = new Dialog(owner, "ForAdjectiveClose");
+		SplitPane splitPane = new SplitPane();
+		splitPane.setOrientation(Orientation.VERTICAL);
+
+		if (data != null) {
+			final StockViewPane dataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, data);
+			splitPane.getItems().add(dataStockViewPane.getMainPane());
+		}
+		if (filtered != null) {
+			final StockViewPane filteredDataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, filtered);
+			splitPane.getItems().add(filteredDataStockViewPane.getMainPane());
+		}
+		dialog.setContent(splitPane);
+		dialog.show();
 	}
 
 	private void checkLiquidityAndValidityAndRedownload(Stock stock) {
