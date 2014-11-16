@@ -2,10 +2,13 @@ package stsc.frontend.zozka.panes;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -14,7 +17,6 @@ import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
 import stsc.yahoo.YahooFileStockStorage;
-import stsc.yahoo.liquiditator.StockFilter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,8 +32,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class StockDatafeedListPane extends BorderPane {
-
-	private static final StockFilter stockFilter = new StockFilter();
 
 	private final Stage owner;
 
@@ -87,37 +87,47 @@ public class StockDatafeedListPane extends BorderPane {
 		assert validColumn != null : "fx:id=\"validColumn\" was not injected: check your FXML file.";
 	}
 
-	public void loadDatafeed(final String datafeedPath) {
-		loadDatafeed(datafeedPath, null);
-	}
-
-	public void loadDatafeed(final String datafeedPath, Runnable onFinish) {
+	public Set<String> loadDatafeed(final String datafeedPath, Function<Set<String>, Void> onFinish, Predicate<String> filter) {
 		model.clear();
+		final Set<String> result = new HashSet<>();
 		try {
 			setBottom(progressWithStopPane);
 			final YahooFileStockStorage ss = new YahooFileStockStorage(datafeedPath, datafeedPath, false);
-			setStockStorage(ss);
-			setUpdateModel(ss);
-			startLoadIndicatorUpdates(ss, onFinish);
-			ss.startLoadStocks();
-			setProgressStopButton(ss);
+			final Queue<String> tasks = ss.getTasks();
+			applySizeFilter(tasks, filter);
+			result.addAll(tasks);
+			postLoadDatafeedActions(onFinish, ss);
 		} catch (ClassNotFoundException | IOException e) {
 			Dialogs.create().owner(owner).showException(e);
+		}
+		return result;
+	}
+
+	private void postLoadDatafeedActions(Function<Set<String>, Void> onFinish, final YahooFileStockStorage ss)
+			throws ClassNotFoundException, IOException {
+		setStockStorage(ss);
+		setUpdateModel(ss);
+		startLoadIndicatorUpdates(ss, onFinish);
+		ss.startLoadStocks();
+		setProgressStopButton(ss);
+	}
+
+	private void applySizeFilter(Queue<String> tasks, Predicate<String> filter) {
+		if (filter != null) {
+			tasks.removeIf(filter);
 		}
 	}
 
 	private void setUpdateModel(final YahooFileStockStorage ss) {
 		final AtomicInteger index = new AtomicInteger(0);
 		ss.addReceiver(newStock -> Platform.runLater(() -> {
-			final boolean liquid = stockFilter.isLiquid(newStock);
-			final boolean valid = stockFilter.isValid(newStock);
 			synchronized (model) {
-				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, valid));
+				model.add(new StockDescription(index.getAndIncrement(), newStock));
 			}
 		}));
 	}
 
-	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss, Runnable onFinish) {
+	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss, Function<Set<String>, Void> onFinish) {
 		final Queue<String> queue = ss.getTasks();
 		final Thread t = new Thread(() -> {
 			try {
@@ -126,7 +136,7 @@ public class StockDatafeedListPane extends BorderPane {
 					progressWithStopPane.setIndicatorProgress(100.0);
 					setBottom(null);
 					if (onFinish != null) {
-						onFinish.run();
+						onFinish.apply(null);
 					}
 				});
 			} catch (Exception e) {
@@ -169,18 +179,18 @@ public class StockDatafeedListPane extends BorderPane {
 		});
 	}
 
-	public void updateStock(Stock newStockData, boolean liquid, boolean valid) {
+	public void updateStock(Stock newStockData) {
 		stockStorage.updateStock(newStockData);
-		updateModel(newStockData, liquid, valid, model);
+		updateModel(newStockData, model);
 		table.setItems(model);
 	}
 
-	public static void updateModel(Stock newStockData, boolean liquid, boolean valid, ObservableList<StockDescription> model) {
+	public static void updateModel(Stock newStockData, ObservableList<StockDescription> model) {
 		model.forEach(new Consumer<StockDescription>() {
 			@Override
 			public void accept(StockDescription sd) {
 				if (sd.getStock().getName().equals(newStockData.getName())) {
-					sd.setStock(newStockData, liquid, valid);
+					sd.setStock(newStockData);
 				}
 			}
 		});
@@ -193,4 +203,5 @@ public class StockDatafeedListPane extends BorderPane {
 	private void setStockStorage(YahooFileStockStorage stockStorage) {
 		this.stockStorage = stockStorage;
 	}
+
 }

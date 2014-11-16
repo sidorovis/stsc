@@ -2,26 +2,24 @@ package stsc.frontend.zozka.applications;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.common.stocks.Stock;
-import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.dialogs.StockListDialog;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
-import stsc.frontend.zozka.panes.StockViewPane;
-import stsc.yahoo.downloader.YahooDownloadHelper;
-import stsc.yahoo.liquiditator.InvalidDatafeedException;
-import stsc.yahoo.liquiditator.StockFilter;
+import stsc.frontend.zozka.settings.ZozkaDatafeedCheckerHelper;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -35,8 +33,6 @@ import javafx.stage.Stage;
 
 public class ZozkaDatafeedChecker extends Application {
 
-	private static final StockFilter stockFilter = new StockFilter();
-
 	private Stage owner;
 
 	@FXML
@@ -44,11 +40,10 @@ public class ZozkaDatafeedChecker extends Application {
 	@FXML
 	private final Label datafeedPathLabel = new Label();
 	private String datafeedPath;
+	private String datafeedPrefix;
 
 	private StockDatafeedListPane dataStockList;
 	private StockDatafeedListPane filteredStockDataList;
-
-	private ObservableList<StockDescription> dialogModel;
 
 	public ZozkaDatafeedChecker() {
 		datafeedPathLabel.setText("./test_data/");
@@ -96,12 +91,10 @@ public class ZozkaDatafeedChecker extends Application {
 				try {
 					final String stockName = sd.getStock().getName();
 					final Stock data = dataStockList.getStockStorage().getStock(stockName);
-					final Stock filtered = dataStockList.getStockStorage().getStock(stockName);
-					if (stockFilter.isLiquid(sd.getStock()) && stockFilter.isValid(sd.getStock())) {
-						showStockRepresentation(data, filtered);
-					} else {
-						checkLiquidityAndValidityAndRedownload(sd.getStock());
-					}
+					final Stock filtered = filteredStockDataList.getStockStorage().getStock(stockName);
+					final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(stockName, dataStockList,
+							filteredStockDataList, null);
+					helper.checkStockAndAskForUser(sd, data, filtered, owner);
 				} catch (Exception e) {
 					Dialogs.create().owner(owner).showException(e);
 				}
@@ -146,14 +139,33 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void loadDatafeed() throws IOException {
-		if (datafeedPath == null || datafeedPath != datafeedPathLabel.getText()) {
-			datafeedPath = datafeedPathLabel.getText();
-			dataStockList.loadDatafeed(datafeedPath + "/data", () -> {
-				filteredStockDataList.loadDatafeed(datafeedPath + "/filtered_data", () -> {
-					checkLists();
-				});
-			});
+		final List<String> prefixVariants = new ArrayList<>();
+		for (char z = 'a'; z != 'z'; z++) {
+			prefixVariants.add(String.valueOf(z));
 		}
+		prefixVariants.add("");
+		final Optional<String> result = Dialogs.create().owner(owner).title("Select Prefix for StockStorage").masthead(null)
+				.showChoices(prefixVariants);
+		if (result.isPresent()
+				&& ((datafeedPrefix == null || datafeedPrefix != result.get()) || (datafeedPath == null || datafeedPath != datafeedPathLabel
+						.getText()))) {
+			datafeedPath = datafeedPathLabel.getText();
+			datafeedPrefix = result.get();
+			runLoadDatafeed(result);
+		}
+	}
+
+	private void runLoadDatafeed(final Optional<String> result) {
+		final Predicate<String> predicate = (p) -> {
+			return !p.startsWith(result.get());
+		};
+		dataStockList.loadDatafeed(datafeedPath + "/data", onDataEnd -> {
+			filteredStockDataList.loadDatafeed(datafeedPath + "/filtered_data", onFilterEnd -> {
+				checkLists();
+				return null;
+			}, predicate);
+			return null;
+		}, predicate);
 	}
 
 	private void checkLists() {
@@ -166,129 +178,32 @@ public class ZozkaDatafeedChecker extends Application {
 
 		final Set<String> allList = dataStockStorage.getStockNames();
 		final Set<String> filteredList = filteredDataStockStorage.getStockNames();
-		final Set<String> notEqualStockList = findDifferenceByDaysSizeAndStockFilter(dataStockStorage, filteredDataStockStorage, allList,
-				filteredList);
+		final Set<String> notEqualStockList = ZozkaDatafeedCheckerHelper.findDifferenceByDaysSizeAndStockFilter(dataStockStorage,
+				filteredDataStockStorage, allList, filteredList);
+		if (!notEqualStockList.isEmpty()) {
+			runShowListDialog(dataStockStorage, filteredDataStockStorage, notEqualStockList);
+		}
+	}
+
+	private void runShowListDialog(final StockStorage dataStockStorage, final StockStorage filteredDataStockStorage,
+			final Set<String> notEqualStockList) {
 		final StockListDialog stockListDialog = new StockListDialog(owner,
 				"List of Stocks which have different days size at data and filtered data.");
 		stockListDialog.setOnMouseDoubleClicked(sd -> {
-			final Stock data = dataStockStorage.getStock(sd.getStock().getName());
-			final Stock filtered = filteredDataStockStorage.getStock(sd.getStock().getName());
-			try {
-				checkSizeOfDataSmallerThanFiltered(data, filtered);
-				if (stockFilter.isLiquid(data) && stockFilter.isValid(data)) {
-					showStockRepresentation(data, filtered);
-				} else {
-					checkLiquidityAndValidityAndRedownload(data);
-				}
-			} catch (Exception e) {
-				Dialogs.create().owner(owner).showException(e);
-			}
+			final String stockName = sd.getStock().getName();
+			final Stock data = dataStockStorage.getStock(stockName);
+			final Stock filtered = filteredDataStockStorage.getStock(stockName);
+			final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(stockName, dataStockList, filteredStockDataList,
+					stockListDialog.getModel());
+			helper.checkStockAndAskForUser(sd, data, filtered, owner);
 			return null;
 		});
-		dialogModel = stockListDialog.getModel();
 		int index = 0;
 		for (String stockName : notEqualStockList) {
 			final Stock s = dataStockStorage.getStock(stockName);
-			stockListDialog.getModel().add(new StockDescription(index++, s, stockFilter.isLiquid(s), stockFilter.isValid(s)));
+			stockListDialog.getModel().add(new StockDescription(index++, s));
 		}
 		stockListDialog.show();
-	}
-
-	private void showStockRepresentation(Stock data, Stock filtered) throws IOException {
-		final Dialog dialog = new Dialog(owner, "ForAdjectiveClose");
-		SplitPane splitPane = new SplitPane();
-		splitPane.setOrientation(Orientation.VERTICAL);
-
-		if (data != null) {
-			final StockViewPane dataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, data);
-			splitPane.getItems().add(dataStockViewPane.getMainPane());
-		}
-		if (filtered != null) {
-			final StockViewPane filteredDataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, filtered);
-			splitPane.getItems().add(filteredDataStockViewPane.getMainPane());
-		}
-		dialog.setContent(splitPane);
-		dialog.show();
-	}
-
-	private void checkLiquidityAndValidityAndRedownload(Stock stock) {
-		checkLiquidutyAndRedownload(stock);
-		checkValidityAndRedownload(stock);
-	}
-
-	private void checkLiquidutyAndRedownload(Stock stock) {
-		if (!stockFilter.isLiquid(stock)) {
-			if (isUserAgreeForAction(stock, "Want you redownload data?", stockFilter.isLiquidTestWithError(stock), " not liquid")) {
-				redownloadStock(stock.getName());
-			}
-		}
-	}
-
-	private void checkValidityAndRedownload(Stock stock) {
-		if (!stockFilter.isValid(stock)) {
-			if (isUserAgreeForAction(stock, "Want you redownload data?", stockFilter.isValidWithError(stock), " not valid")) {
-				redownloadStock(stock.getName());
-			}
-		}
-	}
-
-	private boolean isUserAgreeForAction(Stock stock, String title, String errorString, String mastheadPostfix) {
-		final Action response = Dialogs.create().owner(owner).title(title).masthead("Stock " + stock.getName() + mastheadPostfix)
-				.message(errorString).showConfirm();
-		return response == Dialog.Actions.YES;
-	}
-
-	private void redownloadStock(String stockName) {
-		try {
-			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
-			final String liquid = stockFilter.isLiquidTestWithError(s);
-			final String valid = stockFilter.isValidWithError(s);
-			String error = "";
-			error += (liquid != null) ? liquid : "";
-			error += (valid != null) ? valid : "";
-			if (error.isEmpty()) {
-				error = "Liquid and Valid test passed";
-			}
-			if (isUserAgreeForAction(s, "Want you to save just downloaded stock?", error, "")) {
-				s.storeUniteFormatToFolder(datafeedPath + "/data/");
-				s.storeUniteFormatToFolder(datafeedPath + "/filtered_data/");
-				dataStockList.updateStock(s, liquid == null, valid == null);
-				filteredStockDataList.updateStock(s, liquid == null, valid == null);
-				updateDialogModel(s, liquid == null, valid == null);
-			}
-		} catch (InterruptedException | IOException e) {
-			Dialogs.create().owner(owner).showException(e);
-		}
-	}
-
-	private void updateDialogModel(UnitedFormatStock s, boolean liquid, boolean valid) {
-		if (dialogModel != null) {
-			StockDatafeedListPane.updateModel(s, liquid, valid, dialogModel);
-		}
-	}
-
-	private void checkSizeOfDataSmallerThanFiltered(Stock data, Stock filtered) throws InvalidDatafeedException {
-		if (data.getDays().size() < filtered.getDays().size())
-			throw new InvalidDatafeedException("Stock data at common data have smaller size than filtered stock data.");
-	}
-
-	private Set<String> findDifferenceByDaysSizeAndStockFilter(final StockStorage dataStockStorage,
-			final StockStorage filteredDataStockStorage, final Set<String> allList, final Set<String> filteredList) {
-		final Set<String> notEqualStockList = new HashSet<>();
-		for (String stockName : allList) {
-			if (filteredList.contains(stockName)) {
-				final Stock dataStock = dataStockStorage.getStock(stockName);
-				final Stock filteredDataStock = filteredDataStockStorage.getStock(stockName);
-				if (dataStock.getDays().size() != filteredDataStock.getDays().size()) {
-					notEqualStockList.add(stockName);
-				} else if (stockFilter.isLiquid(dataStock) != stockFilter.isLiquid(filteredDataStock)) {
-					notEqualStockList.add(stockName);
-				} else if (stockFilter.isValid(dataStock) != stockFilter.isValid(filteredDataStock)) {
-					notEqualStockList.add(stockName);
-				}
-			}
-		}
-		return notEqualStockList;
 	}
 
 	public static void main(String[] args) {

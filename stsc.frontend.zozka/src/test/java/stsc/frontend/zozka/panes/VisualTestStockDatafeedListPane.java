@@ -18,9 +18,10 @@ public class VisualTestStockDatafeedListPane extends Application {
 		final Scene scene = new Scene(mainPane);
 		parent.setScene(scene);
 		parent.show();
-		mainPane.loadDatafeed("./test_data/data", () -> {
+		mainPane.loadDatafeed("./test_data/data", f -> {
 			Dialogs.create().title("Finished").masthead(null).message("Download Finished").showInformation();
-		});
+			return null;
+		}, null);
 		mainPane.setOnMouseDoubleClick(new Function<StockDescription, Void>() {
 			@Override
 			public Void apply(StockDescription sd) {

@@ -10,6 +10,7 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 public class ControllerHelper {
+
 	public static <T> void connectDeleteAction(Stage stage, TableView<T> table, ObservableList<T> model) {
 		table.setItems(model);
 		table.setOnKeyReleased(e -> {
@@ -26,5 +27,4 @@ public class ControllerHelper {
 			}
 		});
 	}
-
 }

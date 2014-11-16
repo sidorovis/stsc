@@ -17,6 +17,9 @@ import stsc.storage.ThreadSafeStockStorage;
 
 public class YahooFileStockStorage extends ThreadSafeStockStorage implements LoadStockReceiver {
 
+	public static final String DATA_FOLDER = "./data/";
+	public static final String FILTER_DATA_FOLDER = "./filtered_data/";
+
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 	}
@@ -35,15 +38,15 @@ public class YahooFileStockStorage extends ThreadSafeStockStorage implements Loa
 	}
 
 	public YahooFileStockStorage() throws ClassNotFoundException, IOException {
-		this("./data/", "./filtered_data/");
+		this(DATA_FOLDER, FILTER_DATA_FOLDER);
 	}
 
 	public static YahooFileStockStorage forData(String dataFolder) throws ClassNotFoundException, IOException {
-		return new YahooFileStockStorage(dataFolder, "./filtered_data/");
+		return new YahooFileStockStorage(dataFolder, FILTER_DATA_FOLDER);
 	}
 
 	public static YahooFileStockStorage forFilteredData(String dataFilterFolder) throws ClassNotFoundException, IOException {
-		return new YahooFileStockStorage("./data/", dataFilterFolder);
+		return new YahooFileStockStorage(DATA_FOLDER, dataFilterFolder);
 	}
 
 	public YahooFileStockStorage(String dataFolder, String filteredDataFolder) throws ClassNotFoundException, IOException {

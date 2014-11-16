@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import stsc.common.stocks.Stock;
+import stsc.frontend.zozka.settings.ZozkaDatafeedCheckerHelper;
 
 public final class StockDescription {
 
@@ -17,11 +18,11 @@ public final class StockDescription {
 
 	private Stock stock;
 
-	public StockDescription(int id, Stock stock, boolean liquid, boolean valid) {
+	public StockDescription(int id, Stock stock) {
 		this.id = new SimpleIntegerProperty(id);
 		this.name = new SimpleStringProperty(stock.getName());
-		this.liquid = new SimpleBooleanProperty(liquid);
-		this.valid = new SimpleBooleanProperty(valid);
+		this.liquid = new SimpleBooleanProperty(ZozkaDatafeedCheckerHelper.isLiquid(stock));
+		this.valid = new SimpleBooleanProperty(ZozkaDatafeedCheckerHelper.isValid(stock));
 		this.stock = stock;
 	}
 
@@ -51,9 +52,9 @@ public final class StockDescription {
 				+ liquid.getValue().booleanValue() + "; \n\tvalid: " + valid.getValue().booleanValue() + ";\n]";
 	}
 
-	public void setStock(Stock newStockData, boolean liquid, boolean valid) {
-		this.liquid.set(liquid);
-		this.valid.set(valid);
+	public void setStock(Stock newStockData) {
+		this.liquid.set(ZozkaDatafeedCheckerHelper.isLiquid(newStockData));
+		this.valid.set(ZozkaDatafeedCheckerHelper.isValid(newStockData));
 		stock = newStockData;
 	}
 }
