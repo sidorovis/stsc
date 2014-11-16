@@ -108,8 +108,9 @@ public class StockDatafeedListPane extends BorderPane {
 		final AtomicInteger index = new AtomicInteger(0);
 		ss.addReceiver(newStock -> Platform.runLater(() -> {
 			final boolean liquid = stockFilter.isLiquid(newStock);
+			final boolean valid = stockFilter.isValid(newStock);
 			synchronized (model) {
-				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, false)); // TODO
+				model.add(new StockDescription(index.getAndIncrement(), newStock, liquid, valid));
 			}
 		}));
 	}

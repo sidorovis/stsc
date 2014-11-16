@@ -49,7 +49,7 @@ class DownloadYahooStockThread implements Runnable {
 						s.storeUniteFormat(getPath(settings.getDataFolder(), s.getName()));
 					logger.trace("task {} partially downloaded", task);
 				}
-				final boolean filtered = stockFilter.isLiquid(s);
+				final boolean filtered = stockFilter.isLiquid(s) && stockFilter.isValid(s);
 				if (downloaded) {
 					if (filtered) {
 						YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);

@@ -166,8 +166,8 @@ public class ZozkaDatafeedChecker extends Application {
 		});
 		int index = 0;
 		for (String stockName : notEqualStockList) {
-			final Stock stock = dataStockStorage.getStock(stockName);
-			stockListDialog.getModel().add(new StockDescription(index++, stock, stockFilter.isLiquid(stock), false));
+			final Stock s = dataStockStorage.getStock(stockName);
+			stockListDialog.getModel().add(new StockDescription(index++, s, stockFilter.isLiquid(s), stockFilter.isValid(s)));
 		}
 		stockListDialog.show();
 	}
