@@ -34,9 +34,11 @@ public class StockFilter {
 	static final int minimalDaysWithDataPerLastYear = 216;
 	static final int minimalDaysWithDataPerLastMonth = 19;
 	static final int minimalAverageYearVolume = 60000000;
-	static final float minimalDaysPercentPerLast15Years = (float) 0.9;
+	static final float minimalDaysPercentPerLastSeveralYears = (float) 0.9;
 	static final int lastYearsAmount = 18;
 	static final int daysPerYear = 256;
+
+	static final float valuableGapInPercents = 2.0f;
 
 	static Date today = new Date();
 
@@ -49,6 +51,8 @@ public class StockFilter {
 	public StockFilter(final Date testToday) {
 		today = testToday;
 	}
+
+	// Liquidity Test
 
 	private String testLastPeriods(Stock s) {
 		String errors = "";
@@ -98,9 +102,9 @@ public class StockFilter {
 		int realDaysForTenYears = days.size() - tenYearsAgoIndex;
 		int expectedDaysForLast10Year = daysPerYear * lastYearsAmount;
 
-		float averagePercentDaysPer10Year = (float) realDaysForTenYears / expectedDaysForLast10Year;
+		float averagePercentDaysPerSeveralYear = (float) realDaysForTenYears / expectedDaysForLast10Year;
 
-		if (averagePercentDaysPer10Year < minimalDaysPercentPerLast15Years) {
+		if (averagePercentDaysPerSeveralYear < minimalDaysPercentPerLastSeveralYears) {
 			logger.debug("stock " + s.getName() + " have only " + realDaysForTenYears + " days per last " + lastYearsAmount
 					+ " years, thats not enought");
 			errors += "stock " + s.getName() + " have only " + realDaysForTenYears + " days per last " + lastYearsAmount
@@ -108,8 +112,6 @@ public class StockFilter {
 		}
 		return errors;
 	}
-
-	// Liquidity Test
 
 	/**
 	 * @return null if there is no errors in liquidity test
@@ -133,8 +135,36 @@ public class StockFilter {
 
 	// Validity Test
 
+	private String testGapsOnAdjectiveClose(Stock s) {
+		final ArrayList<Day> days = s.getDays();
+
+		final int todayIndex = s.findDayIndex(today) - 1;
+		for (int i = 1; i < todayIndex; ++i) {
+			final double previousAdjective = days.get(i - 1).getAdjClose();
+			final double currentAdjective = days.get(i).getAdjClose();
+			if (Double.compare(previousAdjective, 0.0) == 0) {
+				return "Adjective Close Price could not be Zero (" + s.getName() + ":" + days.get(i - 1).getDate() + ")";
+			}
+			if (Double.compare(currentAdjective, 0.0) == 0) {
+				return "Adjective Close Price could not be Zero (" + s.getName() + ":" + days.get(i).getDate() + ")";
+			}
+			if (Math.abs(1.0 - previousAdjective / currentAdjective) > valuableGapInPercents) {
+				return "Adjective Close Price Gap found (" + s.getName() + ":" + days.get(i - 1).getDate() + ")";
+			}
+		}
+		return null;
+	}
+
 	public String isValidWithError(Stock s) {
-		return "not valid yet";
+		if (s != null) {
+			final String gapsOnAdjectiveClose = testGapsOnAdjectiveClose(s);
+			if (gapsOnAdjectiveClose == "") {
+				return null;
+			} else {
+				return gapsOnAdjectiveClose;
+			}
+		}
+		return "Stock could not be null";
 	}
 
 	public boolean isValid(Stock s) {

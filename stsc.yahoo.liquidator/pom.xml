@@ -79,47 +79,10 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
 
-<!--	<dependency>
-		<groupId>joda-time</groupId>
-		<artifactId>joda-time</artifactId>
-		<version>2.3</version>
-	</dependency>            
-	<dependency>
-    	<groupId>com.google.guava</groupId>
-    	<artifactId>guava</artifactId>
-    	<version>16.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-		<version>3.3.1</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-api</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.0-beta9</version>
-	</dependency>
-
-	<dependency>
-		<groupId>org.antlr</groupId>
-		<artifactId>antlr4-runtime</artifactId>
-		<version>4.2</version>
-	</dependency>
-	<dependency>
-		<groupId>commons-validator</groupId>
-		<artifactId>commons-validator</artifactId>
-		<version>1.4.0</version>
-	</dependency>
- -->
   </dependencies>
   <description>Stsc common is a common classes for stsc project.</description>
 </project>
