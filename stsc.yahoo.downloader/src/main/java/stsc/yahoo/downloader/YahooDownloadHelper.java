@@ -9,7 +9,7 @@ import java.text.ParseException;
 import stsc.common.stocks.UnitedFormatStock;
 import com.google.common.io.CharStreams;
 
-public class YahooDownloadHelper {
+public final class YahooDownloadHelper {
 
 	private static final int waitTriesAmount = 5;
 	private static final int waitTimeBetweenTries = 500;

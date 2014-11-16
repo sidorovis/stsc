@@ -1,10 +1,10 @@
 package stsc.yahoo;
 
-public class StringUtils {
+public final class StringUtils {
 	public static int comparePatterns(String l, String r) {
 		if (l.length() > r.length())
 			return l.length() - r.length();
-		
+
 		return l.compareTo(r);
 	}
 
@@ -31,5 +31,4 @@ public class StringUtils {
 			}
 		return f;
 	}
-
 }

@@ -75,13 +75,10 @@ final class MarketDataDownloader {
 	}
 
 	MarketDataDownloader() throws InterruptedException, IOException {
-
 		readProperties();
-
-		DownloadYahooStockThread downloadThread = new DownloadYahooStockThread(settings);
+		final DownloadYahooStockThread downloadThread = new DownloadYahooStockThread(settings);
 
 		logger.trace("starting");
-
 		if (downloadExisted) {
 			UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.getTaskQueue());
 		} else {
@@ -97,9 +94,7 @@ final class MarketDataDownloader {
 			}
 		}
 		logger.trace("tasks size: {}", settings.taskQueueSize());
-
-		List<Thread> threads = new ArrayList<Thread>();
-
+		final List<Thread> threads = new ArrayList<Thread>();
 		for (int i = 0; i < downloadThreadSize; ++i) {
 			Thread newThread = new Thread(downloadThread);
 			threads.add(newThread);
@@ -107,7 +102,6 @@ final class MarketDataDownloader {
 		}
 
 		logger.info("calculating threads started ( {} )", downloadThreadSize);
-
 		for (Thread thread : threads) {
 			thread.join();
 		}

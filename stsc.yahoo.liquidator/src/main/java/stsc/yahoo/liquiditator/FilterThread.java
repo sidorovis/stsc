@@ -29,12 +29,13 @@ class FilterThread implements Runnable {
 		stockFilter = new StockFilter();
 	}
 
+	@Override
 	public void run() {
 		String task = settings.getTask();
 		while (task != null) {
 			try {
 				Stock s = settings.getStockFromFileSystem(task);
-				if (s != null && stockFilter.isLiquid(s)) {
+				if (s != null && stockFilter.isLiquid(s) && stockFilter.isValid(s)) {
 					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.trace("stock " + task + " liquid");
 				} else {
@@ -47,7 +48,7 @@ class FilterThread implements Runnable {
 		}
 	}
 
-	public void deleteIfExisted(String stockName) {
+	private void deleteIfExisted(String stockName) {
 		final File file = new File(UnitedFormatStock.generatePath(settings.getFilteredDataFolder(), stockName));
 		if (file.exists()) {
 			logger.debug("deleting filtered file with stock " + stockName + " it doesn't pass new liquidity filter tests");
