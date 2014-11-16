@@ -6,7 +6,11 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import org.controlsfx.control.action.Action;
@@ -53,14 +57,7 @@ public class ZozkaDatafeedCheckerHelper {
 	public void showAppropriateDialogForStockFromDataAndFiltered(Stage owner, final Stock data, final Stock filtered) {
 		try {
 			checkSizeOfDataSmallerThanFiltered(data, filtered);
-			if (isLiquid(data) && isValid(data)) {
-				showStockRepresentation(owner, data, filtered);
-			} else {
-				final boolean showRepresentation = checkLiquidityAndValidityAndRedownload(owner, data);
-				if (showRepresentation) {
-					showStockRepresentation(owner, data, filtered);
-				}
-			}
+			checkStockAndAskForUser(data, data, filtered, owner);
 		} catch (Exception e) {
 			Dialogs.create().owner(owner).showException(e);
 		}
@@ -71,9 +68,11 @@ public class ZozkaDatafeedCheckerHelper {
 			throw new InvalidDatafeedException("Stock data at common data have smaller size than filtered stock data.");
 	}
 
-	private void showStockRepresentation(Stage owner, Stock data, Stock filtered) {
+	private boolean showStockRepresentation(Stage owner, Stock data, Stock filtered, boolean askForSave) {
 		try {
-			final Dialog dialog = new Dialog(owner, "ForAdjectiveClose");
+			final String stockRepresentationTitle = generateRepresentationTitle(askForSave);
+			final Dialog dialog = new Dialog(owner, stockRepresentationTitle);
+			final BorderPane borderPane = new BorderPane();
 			SplitPane splitPane = new SplitPane();
 			splitPane.setOrientation(Orientation.VERTICAL);
 
@@ -85,19 +84,60 @@ public class ZozkaDatafeedCheckerHelper {
 				final StockViewPane filteredDataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, filtered);
 				splitPane.getItems().add(filteredDataStockViewPane.getMainPane());
 			}
-			dialog.setContent(splitPane);
-			dialog.show();
+			borderPane.setCenter(splitPane);
+			dialog.setContent(borderPane);
+			if (askForSave) {
+				final String error = createErrorMessage(data);
+				Dialogs.create().owner(owner).masthead(null).message(error).showInformation();
+				final HBox hbox = new HBox();
+				final Button saveButton = new Button("Save");
+				final Button exitButton = new Button("Exit");
+				hbox.setAlignment(Pos.CENTER);
+				saveButton.setDefaultButton(true);
+				hbox.getChildren().add(saveButton);
+				hbox.getChildren().add(exitButton);
+				borderPane.setBottom(hbox);
+				saveButton.setOnAction(e -> {
+					dialog.setResult(Dialog.Actions.YES);
+					dialog.hide();
+				});
+				exitButton.setOnAction(e -> dialog.hide());
+			}
+			dialog.getWindow().setHeight(700);
+			final Action a = dialog.show();
+			return a == Dialog.Actions.YES;
 		} catch (IOException e) {
 			Dialogs.create().owner(owner).showException(e);
 		}
+		return false;
 	}
 
-	public void checkStockAndAskForUser(StockDescription sd, Stock data, Stock filtered, Stage owner) {
-		if (isLiquid(sd.getStock()) && isValid(sd.getStock())) {
-			showStockRepresentation(owner, data, filtered);
+	private String createErrorMessage(Stock s) {
+		final String liquid = stockFilter.isLiquidTestWithError(s);
+		final String valid = stockFilter.isValidWithError(s);
+		String error = "";
+		error += (liquid != null) ? liquid : "";
+		error += (valid != null) ? valid : "";
+		if (error.isEmpty()) {
+			error = "Liquid and Valid test passed";
+		}
+		return error;
+	}
+
+	private String generateRepresentationTitle(boolean askForSave) {
+		if (askForSave) {
+			return "ForAdjectiveClose - do you want to save it?";
 		} else {
-			if (checkLiquidityAndValidityAndRedownload(owner, sd.getStock())) {
-				showStockRepresentation(owner, data, filtered);
+			return "ForAdjectiveClose";
+		}
+	}
+
+	public void checkStockAndAskForUser(Stock toTest, Stock data, Stock filtered, Stage owner) {
+		if (isLiquid(toTest) && isValid(toTest)) {
+			showStockRepresentation(owner, data, filtered, false);
+		} else {
+			if (checkLiquidityAndValidityAndRedownload(owner, toTest)) {
+				showStockRepresentation(owner, data, filtered, false);
 			}
 		}
 	}
@@ -152,27 +192,22 @@ public class ZozkaDatafeedCheckerHelper {
 	private boolean redownloadStock(Stage owner, String stockName) {
 		try {
 			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
-			final String liquid = stockFilter.isLiquidTestWithError(s);
-			final String valid = stockFilter.isValidWithError(s);
-			String error = "";
-			error += (liquid != null) ? liquid : "";
-			error += (valid != null) ? valid : "";
-			if (error.isEmpty()) {
-				error = "Liquid and Valid test passed";
-			}
-			if (isUserAgreeForAction(owner, s, "Want you to save just downloaded stock?", error, "")) {
-				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
-				dataStockList.updateStock(s);
-				if (isLiquid(s) && isValid(s) || filteredStockDataList.getStockStorage().getStock(s.getName()) != null) {
-					s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
-					filteredStockDataList.updateStock(s);
+			if (!isLiquid(s) || !isValid(s)) {
+				final boolean isSave = showStockRepresentation(owner, s, dataStockList.getStockStorage().getStock(stockName), true);
+				if (isSave) {
+					s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
+					dataStockList.updateStock(s);
+					if (isLiquid(s) && isValid(s) || filteredStockDataList.getStockStorage().getStock(s.getName()) != null) {
+						s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER);
+						filteredStockDataList.updateStock(s);
+					} else {
+						YahooDownloadHelper.deleteFilteredFile(true, datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, stockName);
+					}
+					updateDialogModel(s);
+					return false;
 				} else {
-					YahooDownloadHelper.deleteFilteredFile(true, datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, stockName);
+					return true;
 				}
-				updateDialogModel(s);
-				return false;
-			} else {
-				return true;
 			}
 		} catch (InterruptedException | IOException e) {
 			Dialogs.create().owner(owner).showException(e);

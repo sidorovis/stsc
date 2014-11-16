@@ -125,7 +125,7 @@ public class StockViewPane {
 
 			for (int i = 0; i < stock.getDays().size(); ++i) {
 				stsc.common.Day day = stock.getDays().get(i);
-				timeSeries.add(new Day(day.getDate()), day.getAdjClose());
+				timeSeries.addOrUpdate(new Day(day.getDate()), day.getAdjClose());
 			}
 
 			timeSeriesCollection.addSeries(timeSeries);

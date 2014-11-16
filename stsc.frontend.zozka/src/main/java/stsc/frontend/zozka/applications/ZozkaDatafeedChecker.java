@@ -95,7 +95,7 @@ public class ZozkaDatafeedChecker extends Application {
 					final Stock filtered = filteredStockDataList.getStockStorage().getStock(stockName);
 					final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList,
 							filteredStockDataList, null);
-					helper.checkStockAndAskForUser(sd, data, filtered, owner);
+					helper.checkStockAndAskForUser(sd.getStock(), data, filtered, owner);
 				} catch (Exception e) {
 					Dialogs.create().owner(owner).showException(e);
 				}
@@ -201,7 +201,7 @@ public class ZozkaDatafeedChecker extends Application {
 			final Stock filtered = filteredDataStockStorage.getStock(stockName);
 			final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList, filteredStockDataList,
 					stockListDialog.getModel());
-			helper.checkStockAndAskForUser(sd, data, filtered, owner);
+			helper.checkStockAndAskForUser(sd.getStock(), data, filtered, owner);
 			return null;
 		});
 		int index = 0;
