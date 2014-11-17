@@ -40,7 +40,10 @@ For equity curve's:
  * colored lines;
  * colored lines (Bezier like);
  * statistics tables.
-
+For datafeed:
+ * list of stocks;
+ * comparing dialog with charts and adjective closes;
+ * possibility to simple redownload.
 
 stsc.signals
 ------------
