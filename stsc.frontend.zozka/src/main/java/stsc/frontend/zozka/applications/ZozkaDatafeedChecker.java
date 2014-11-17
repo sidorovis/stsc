@@ -43,16 +43,26 @@ public class ZozkaDatafeedChecker extends Application {
 	private String datafeedPath;
 	private String datafeedPrefix;
 
+	private boolean loadDataFolder;
 	private StockDatafeedListPane dataStockList;
 	private StockDatafeedListPane filteredStockDataList;
 
 	public ZozkaDatafeedChecker() {
+		loadDataFolder = true;
 		datafeedPathLabel.setText("./test_data/");
 	}
 
 	@Override
 	public void start(final Stage owner) throws Exception {
 		this.owner = owner;
+		final Action result = Dialogs.create().owner(owner).title("Do you want to load all data?").masthead(null)
+				.message("Click Yes and we will download ./data/ folder also.").showConfirm();
+		loadDataFolder = (result == Dialog.Actions.YES);
+		if (result == Dialog.Actions.CANCEL) {
+			owner.close();
+			this.stop();
+			return;
+		}
 		owner.setScene(initializeGui());
 		owner.setMinHeight(500);
 		owner.setMinWidth(830);
@@ -74,8 +84,8 @@ public class ZozkaDatafeedChecker extends Application {
 		borderPane.setTop(datafeedPathLabel);
 		final Scene scene = new Scene(borderPane);
 		final SplitPane splitPane = new SplitPane();
-		splitPane.setOrientation(Orientation.HORIZONTAL);
-		dataStockList = new StockDatafeedListPane(owner, "Data");
+		splitPane.setOrientation(Orientation.HORIZONTAL);		
+		dataStockList = new StockDatafeedListPane(owner, getNameForLeftTable());
 		addData(splitPane, dataStockList);
 		setOnDoubleClickTableAction(dataStockList);
 		filteredStockDataList = new StockDatafeedListPane(owner, "Filtered data");
@@ -83,6 +93,12 @@ public class ZozkaDatafeedChecker extends Application {
 		setOnDoubleClickTableAction(filteredStockDataList);
 		borderPane.setCenter(splitPane);
 		return scene;
+	}
+
+	private String getNameForLeftTable() {
+		if (loadDataFolder)
+			return "Data";
+		return "Filtered Data";
 	}
 
 	private void setOnDoubleClickTableAction(StockDatafeedListPane listPane) {
@@ -165,13 +181,21 @@ public class ZozkaDatafeedChecker extends Application {
 		final Predicate<String> predicate = (p) -> {
 			return !p.startsWith(result.get());
 		};
-		dataStockList.loadDatafeed(datafeedPath + YahooFileStockStorage.DATA_FOLDER, onDataEnd -> {
+		dataStockList.loadDatafeed(datafeedPath + getDataDatafeed(), onDataEnd -> {
 			filteredStockDataList.loadDatafeed(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, onFilterEnd -> {
 				checkLists();
 				return null;
 			}, predicate);
 			return null;
 		}, predicate);
+	}
+
+	private String getDataDatafeed() {
+		if (loadDataFolder) {
+			return YahooFileStockStorage.DATA_FOLDER;
+		} else {
+			return YahooFileStockStorage.FILTER_DATA_FOLDER;
+		}
 	}
 
 	private void checkLists() {
