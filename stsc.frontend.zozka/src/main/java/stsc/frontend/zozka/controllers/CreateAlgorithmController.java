@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.controlsfx.dialog.Dialogs;
@@ -31,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -126,8 +128,7 @@ public class CreateAlgorithmController implements Initializable {
 		connectActionsForAlgorithmClass();
 		connectQuestionButton();
 		if (model == null) {
-			model = new ExecutionDescription(this.algorithmType.getValue(), this.executionName.getText(),
-					this.algorithmClass.getValue());
+			model = new ExecutionDescription(this.algorithmType.getValue(), this.executionName.getText(), this.algorithmClass.getValue());
 		} else {
 			algorithmType.getSelectionModel().select(model.getAlgorithmType());
 			executionName.setText(model.getExecutionName());
@@ -219,40 +220,54 @@ public class CreateAlgorithmController implements Initializable {
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
 
+		setStyleApplierForTable(numberTable);
+
 		connectNumberColumn(numberParFrom, "from");
-		// numberParFrom.setOnEditCommit(e ->
-		// e.getRowValue().setFrom(e.getNewValue()));
+		numberParFrom.setOnEditCommit(e -> {
+			e.getRowValue().setFrom(e.getNewValue());
+			triggerNumberTable();
+		});
 		connectNumberColumn(numberParStep, "step");
-		// numberParStep.setOnEditCommit(e ->
-		// e.getRowValue().setStep(e.getNewValue()));
+		numberParStep.setOnEditCommit(e -> {
+			e.getRowValue().setStep(e.getNewValue());
+			triggerNumberTable();
+		});
 		connectNumberColumn(numberParTo, "to");
-		// numberParTo.setOnEditCommit(e ->
-		// e.getRowValue().setTo(e.getNewValue()));
+		numberParTo.setOnEditCommit(e -> {
+			e.getRowValue().setTo(e.getNewValue());
+			triggerNumberTable();
+		});
+	}
+
+	static private final class MyTableRow extends TableRow<Function<Void, Boolean>> {
+		@Override
+		protected void updateItem(Function<Void, Boolean> item, boolean empty) {
+			super.updateItem(item, empty);
+			if (item == null) {
+				return;
+			}
+			if (!item.apply(null)) {
+				getStyleClass().add("error");
+			} else {
+				getStyleClass().remove("error");
+			}
+		}
+	}
+
+	private void setStyleApplierForTable(TableView<? extends Function<Void, Boolean>> table) {
+		table.setRowFactory(c -> {
+			return new MyTableRow();
+		});
 	}
 
 	private void connectNumberColumn(TableColumn<NumberAlgorithmParameter, String> column, String name) {
 		column.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
+	}
 
-		column.setOnEditCommit(e -> {
-			e.getRowValue().setFrom(e.getNewValue());
-			if (!e.getRowValue().isValid()) {
-//				e.getTableView().get
-				e.getTableView().getRowFactory();
-				numberTable.getRowFactory().call(numberTable).setStyle("error");
-
-				// numberTable.getSelectionModel().getSelectedIndex();
-				// e.
-				// numberTable.applyCss();
-			}
-		});
-		// TODO add validation to Algorithm Controller Tables on edit
-		// if (!e.getRowValue().isValid()) {
-		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().add("error");
-		// } else {
-		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().clear();//
-		// add("correct");
-		// }
+	private void triggerNumberTable() {
+		numberTable.getColumns().get(0).setVisible(false);
+		numberTable.getColumns().get(0).setVisible(true);
 	}
 
 	private void connectTableForText() {
@@ -351,8 +366,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		model.getNumberAlgorithms().add(
-				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
+		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
 	}
 
 	private String readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
@@ -389,8 +403,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		model.getNumberAlgorithms().add(
-				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
+		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
 	}
 
 	private void addStringParameter(String parameterName) {

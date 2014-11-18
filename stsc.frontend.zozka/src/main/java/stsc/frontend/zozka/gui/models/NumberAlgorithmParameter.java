@@ -1,11 +1,12 @@
 package stsc.frontend.zozka.gui.models;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public final class NumberAlgorithmParameter {
+public final class NumberAlgorithmParameter implements Function<Void, Boolean> {
 
 	public static final Pattern integerParPattern = Pattern.compile("^-?(\\d)+$");
 	public static final Pattern doubleParPattern = Pattern.compile("^-?(\\d)+(\\.(\\d)+)?$");
@@ -75,7 +76,7 @@ public final class NumberAlgorithmParameter {
 		return valid;
 	}
 
-	private void validate() {
+	public void validate() {
 		try {
 			valid = false;
 
@@ -100,6 +101,11 @@ public final class NumberAlgorithmParameter {
 		// valid = false;
 		// return;
 		// }
+	}
+
+	@Override
+	public Boolean apply(Void notUsedArgument) {
+		return isValid();
 	}
 
 }
