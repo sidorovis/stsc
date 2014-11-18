@@ -42,7 +42,7 @@ public class CreateAlgorithmController implements Initializable {
 
 	private final Stage stage;
 	private boolean valid;
-	private ExecutionDescription executionDescriptionModel;
+	private ExecutionDescription model;
 
 	public static final Pattern parameterNamePattern = Pattern.compile("^([\\w_\\d])+$");
 
@@ -96,13 +96,14 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void initialize(Stage owner) throws IOException {
-		final URL location = CreateAlgorithmController.class.getResource("01_create_algorithm.fxml");
+		final URL location = getClass().getResource("01_create_algorithm.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		final Parent gui = loader.load();
 		stage.initOwner(owner);
 		stage.initModality(Modality.WINDOW_MODAL);
 		final Scene scene = new Scene(gui);
+		scene.getStylesheets().add(getClass().getResource("01_create_algorithm.css").toExternalForm());
 		stage.setScene(scene);
 		stage.setMinHeight(480);
 		stage.setMinWidth(640);
@@ -113,7 +114,7 @@ public class CreateAlgorithmController implements Initializable {
 	public ExecutionDescription getExecutionDescription() {
 		this.stage.showAndWait();
 		if (isValid()) {
-			return executionDescriptionModel;
+			return model;
 		}
 		return null;
 	}
@@ -124,13 +125,13 @@ public class CreateAlgorithmController implements Initializable {
 		connectActionsForAlgorithmType();
 		connectActionsForAlgorithmClass();
 		connectQuestionButton();
-		if (executionDescriptionModel == null) {
-			executionDescriptionModel = new ExecutionDescription(this.algorithmType.getValue(), this.executionName.getText(),
+		if (model == null) {
+			model = new ExecutionDescription(this.algorithmType.getValue(), this.executionName.getText(),
 					this.algorithmClass.getValue());
 		} else {
-			algorithmType.getSelectionModel().select(executionDescriptionModel.getAlgorithmType());
-			executionName.setText(executionDescriptionModel.getExecutionName());
-			algorithmClass.getSelectionModel().select(executionDescriptionModel.getAlgorithmName());
+			algorithmType.getSelectionModel().select(model.getAlgorithmType());
+			executionName.setText(model.getExecutionName());
+			algorithmClass.getSelectionModel().select(model.getAlgorithmName());
 		}
 		connectTableForNumber();
 		connectTableForText();
@@ -212,24 +213,39 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForNumber() {
-		ControllerHelper.connectDeleteAction(stage, numberTable, executionDescriptionModel.getNumberAlgorithms());
+		ControllerHelper.connectDeleteAction(stage, numberTable, model.getNumberAlgorithms());
 
 		numberParName.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("parameterName"));
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
 
 		connectNumberColumn(numberParFrom, "from");
-		numberParFrom.setOnEditCommit(e -> e.getRowValue().setFrom(e.getNewValue()));
+		// numberParFrom.setOnEditCommit(e ->
+		// e.getRowValue().setFrom(e.getNewValue()));
 		connectNumberColumn(numberParStep, "step");
-		numberParStep.setOnEditCommit(e -> e.getRowValue().setStep(e.getNewValue()));
+		// numberParStep.setOnEditCommit(e ->
+		// e.getRowValue().setStep(e.getNewValue()));
 		connectNumberColumn(numberParTo, "to");
-		numberParTo.setOnEditCommit(e -> e.getRowValue().setTo(e.getNewValue()));
+		// numberParTo.setOnEditCommit(e ->
+		// e.getRowValue().setTo(e.getNewValue()));
 	}
 
 	private void connectNumberColumn(TableColumn<NumberAlgorithmParameter, String> column, String name) {
 		column.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
 
+		column.setOnEditCommit(e -> {
+			e.getRowValue().setFrom(e.getNewValue());
+			if (!e.getRowValue().isValid()) {
+//				e.getTableView().get
+				e.getTableView().getRowFactory();
+				numberTable.getRowFactory().call(numberTable).setStyle("error");
+
+				// numberTable.getSelectionModel().getSelectedIndex();
+				// e.
+				// numberTable.applyCss();
+			}
+		});
 		// TODO add validation to Algorithm Controller Tables on edit
 		// if (!e.getRowValue().isValid()) {
 		// e.getTableView().getRowFactory().call(e.getTableView()).getStyleClass().add("error");
@@ -240,7 +256,7 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private void connectTableForText() {
-		ControllerHelper.connectDeleteAction(stage, textTable, executionDescriptionModel.getTextAlgorithms());
+		ControllerHelper.connectDeleteAction(stage, textTable, model.getTextAlgorithms());
 
 		textParName.setCellValueFactory(new PropertyValueFactory<TextAlgorithmParameter, String>("parameterName"));
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -303,12 +319,12 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private boolean parameterNameExists(String parameterName) {
-		for (NumberAlgorithmParameter p : executionDescriptionModel.getNumberAlgorithms()) {
+		for (NumberAlgorithmParameter p : model.getNumberAlgorithms()) {
 			if (p.parameterNameProperty().get().equals(parameterName)) {
 				return true;
 			}
 		}
-		for (TextAlgorithmParameter p : executionDescriptionModel.getTextAlgorithms()) {
+		for (TextAlgorithmParameter p : model.getTextAlgorithms()) {
 			if (p.parameterNameProperty().get().equals(parameterName)) {
 				return true;
 			}
@@ -335,7 +351,7 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		executionDescriptionModel.getNumberAlgorithms().add(
+		model.getNumberAlgorithms().add(
 				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
 	}
 
@@ -373,20 +389,20 @@ public class CreateAlgorithmController implements Initializable {
 		if (to == null) {
 			return;
 		}
-		executionDescriptionModel.getNumberAlgorithms().add(
+		model.getNumberAlgorithms().add(
 				new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
 	}
 
 	private void addStringParameter(String parameterName) {
 		final List<String> values = getStringDomen("String Parameter");
 		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
-		executionDescriptionModel.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.STRING, domen));
+		model.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.STRING, domen));
 	}
 
 	private void addSubExecutionParameter(String parameterName) {
 		final List<String> values = getStringDomen("SubExecution Parameter");
 		final String domen = TextAlgorithmParameter.createStringRepresentation(values);
-		executionDescriptionModel.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.SUB_EXECUTION, domen));
+		model.getTextAlgorithms().add(new TextAlgorithmParameter(parameterName, ParameterType.SUB_EXECUTION, domen));
 	}
 
 	private List<String> getStringDomen(String title) {
@@ -412,13 +428,13 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private boolean isValid() {
-		executionDescriptionModel.setAlgorithmName(this.algorithmClass.getValue());
-		executionDescriptionModel.setExecutionName(this.executionName.getText());
-		executionDescriptionModel.setAlgorithmType(this.algorithmType.getValue());
+		model.setAlgorithmName(this.algorithmClass.getValue());
+		model.setExecutionName(this.executionName.getText());
+		model.setAlgorithmType(this.algorithmType.getValue());
 		return valid;
 	}
 
 	private void setExecutionDescription(ExecutionDescription ed) {
-		executionDescriptionModel = ed;
+		model = ed;
 	}
 }
