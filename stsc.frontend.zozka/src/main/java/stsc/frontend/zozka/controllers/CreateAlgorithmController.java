@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.controlsfx.dialog.Dialogs;
@@ -32,7 +31,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -220,54 +218,18 @@ public class CreateAlgorithmController implements Initializable {
 		numberParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		numberParType.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>("type"));
 
-		setStyleApplierForTable(numberTable);
-
-		connectNumberColumn(numberParFrom, "from");
+		connectColumn(numberParFrom, "from");
 		numberParFrom.setOnEditCommit(e -> {
 			e.getRowValue().setFrom(e.getNewValue());
-			triggerNumberTable();
 		});
-		connectNumberColumn(numberParStep, "step");
+		connectColumn(numberParStep, "step");
 		numberParStep.setOnEditCommit(e -> {
 			e.getRowValue().setStep(e.getNewValue());
-			triggerNumberTable();
 		});
-		connectNumberColumn(numberParTo, "to");
+		connectColumn(numberParTo, "to");
 		numberParTo.setOnEditCommit(e -> {
 			e.getRowValue().setTo(e.getNewValue());
-			triggerNumberTable();
 		});
-	}
-
-	static private final class MyTableRow extends TableRow<Function<Void, Boolean>> {
-		@Override
-		protected void updateItem(Function<Void, Boolean> item, boolean empty) {
-			super.updateItem(item, empty);
-			if (item == null) {
-				return;
-			}
-			if (!item.apply(null)) {
-				getStyleClass().add("error");
-			} else {
-				getStyleClass().remove("error");
-			}
-		}
-	}
-
-	private void setStyleApplierForTable(TableView<? extends Function<Void, Boolean>> table) {
-		table.setRowFactory(c -> {
-			return new MyTableRow();
-		});
-	}
-
-	private void connectNumberColumn(TableColumn<NumberAlgorithmParameter, String> column, String name) {
-		column.setCellValueFactory(new PropertyValueFactory<NumberAlgorithmParameter, String>(name));
-		column.setCellFactory(TextFieldTableCell.forTableColumn());
-	}
-
-	private void triggerNumberTable() {
-		numberTable.getColumns().get(0).setVisible(false);
-		numberTable.getColumns().get(0).setVisible(true);
 	}
 
 	private void connectTableForText() {
@@ -277,10 +239,10 @@ public class CreateAlgorithmController implements Initializable {
 		textParName.setCellFactory(TextFieldTableCell.forTableColumn());
 		textParType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType().getName()));
 
-		connectTextColumn(textParDomen, "domen");
+		connectColumn(textParDomen, "domen");
 	}
 
-	private <T> void connectTextColumn(TableColumn<T, String> column, String name) {
+	private <T> void connectColumn(TableColumn<T, String> column, String name) {
 		column.setCellValueFactory(new PropertyValueFactory<T, String>(name));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
 	}
@@ -315,36 +277,21 @@ public class CreateAlgorithmController implements Initializable {
 	}
 
 	private Optional<String> getParameterName() {
-		Optional<String> parameterName = Optional.empty();
-		parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:").message("Enter: ")
-				.showTextInput("ParameterName");
+		final Optional<String> parameterName = Dialogs.create().owner(stage).title("Enter Parameter Name").masthead("Parameter name:")
+				.message("Enter: ").showTextInput("ParameterName");
 		if (parameterName.isPresent()) {
 			if (!parameterNamePattern.matcher(parameterName.get()).matches()) {
 				Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name not match pattern.")
 						.message("Parameter name should contain only letters, numbers and '_' symbol.").showError();
 				return Optional.empty();
 			}
-			if (parameterNameExists(parameterName.get())) {
+			if (model.parameterNameExists(parameterName.get())) {
 				Dialogs.create().owner(stage).title("Bad Parameter Name").masthead("Parameter name already exists.")
 						.message("You could add only one parameter (one for both for number or test tables).").showError();
 				return Optional.empty();
 			}
 		}
 		return parameterName;
-	}
-
-	private boolean parameterNameExists(String parameterName) {
-		for (NumberAlgorithmParameter p : model.getNumberAlgorithms()) {
-			if (p.parameterNameProperty().get().equals(parameterName)) {
-				return true;
-			}
-		}
-		for (TextAlgorithmParameter p : model.getTextAlgorithms()) {
-			if (p.parameterNameProperty().get().equals(parameterName)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private Optional<ParameterType> getParameterType() {
@@ -369,6 +316,23 @@ public class CreateAlgorithmController implements Initializable {
 		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
 	}
 
+	private void addDoubleParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
+		final String errorMessage = "Double is a number (-)?([0-9])+(.[0-9]+)?";
+		final String from = readDoubleParameter(defaultFrom, "Double Parameter", "Enter From", "From: ", errorMessage);
+		if (from == null) {
+			return;
+		}
+		final String step = readDoubleParameter(defaultStep, "Double Parameter", "Enter Step", "Step: ", errorMessage);
+		if (step == null) {
+			return;
+		}
+		final String to = readDoubleParameter(defaultTo, "Double Parameter", "Enter To", "To: ", errorMessage);
+		if (to == null) {
+			return;
+		}
+		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
+	}
+
 	private String readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
 		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead(masthead)
 				.message(message).showTextInput(defaultValue);
@@ -379,31 +343,14 @@ public class CreateAlgorithmController implements Initializable {
 		return integerParameter.get();
 	}
 
-	private String readDoubleParameter(final String defaultValue, String masthead, String message, String errorMessage) {
-		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title("Double Parameter").masthead(masthead)
-				.message(message).showTextInput(defaultValue);
+	private String readDoubleParameter(final String defaultValue, String title, String masthead, String message, String errorMessage) {
+		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title(title).masthead(masthead).message(message)
+				.showTextInput(defaultValue);
 		if (doubleParameter.isPresent() && !NumberAlgorithmParameter.doubleParPattern.matcher(doubleParameter.get()).matches()) {
-			Dialogs.create().owner(stage).title("Double Parameter").masthead("Please insert double").message(errorMessage).showError();
+			Dialogs.create().owner(stage).title(title).masthead("Please insert double").message(errorMessage).showError();
 			return null;
 		}
 		return doubleParameter.get();
-	}
-
-	private void addDoubleParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
-		final String errorMessage = "Double is a number (-)?([0-9])+(.[0-9]+)?";
-		final String from = readDoubleParameter(defaultFrom, "Enter From", "From: ", errorMessage);
-		if (from == null) {
-			return;
-		}
-		final String step = readDoubleParameter(defaultStep, "Enter Step", "Step: ", errorMessage);
-		if (step == null) {
-			return;
-		}
-		final String to = readDoubleParameter(defaultTo, "Enter To", "To: ", errorMessage);
-		if (to == null) {
-			return;
-		}
-		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
 	}
 
 	private void addStringParameter(String parameterName) {

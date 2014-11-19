@@ -132,6 +132,20 @@ public final class ExecutionDescription implements Externalizable {
 		}
 	}
 
+	public boolean parameterNameExists(String parameterName) {
+		for (NumberAlgorithmParameter p : getNumberAlgorithms()) {
+			if (p.parameterNameProperty().get().equals(parameterName)) {
+				return true;
+			}
+		}
+		for (TextAlgorithmParameter p : getTextAlgorithms()) {
+			if (p.parameterNameProperty().get().equals(parameterName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(executionName) + " (" + String.valueOf(algorithmName) + ")";

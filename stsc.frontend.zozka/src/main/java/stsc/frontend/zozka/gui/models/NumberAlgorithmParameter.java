@@ -97,10 +97,6 @@ public final class NumberAlgorithmParameter implements Function<Void, Boolean> {
 		} catch (NumberFormatException e) {
 			valid = false;
 		}
-		// if (from > to) {
-		// valid = false;
-		// return;
-		// }
 	}
 
 	@Override
