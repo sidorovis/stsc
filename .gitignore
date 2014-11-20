@@ -15,7 +15,8 @@ target
 /.*
 stsc.general/test/*.csv
 stsc.distributed.hadoop/test_data/output.txt
-stsc.distributed.hadoop/test_output/
+stsc.distributed.hadoop/output_data/
+stsc.distributed.hadoop/output.txt
 stsc.distributed.hadoop/yahoo_datafeed/*
 stsc.distributed.hadoop/test_data/.*
 stsc.distributed.hadoop/test_data/_SUCCESS
