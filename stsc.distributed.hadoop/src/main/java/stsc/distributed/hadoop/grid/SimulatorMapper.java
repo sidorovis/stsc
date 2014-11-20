@@ -3,9 +3,9 @@ package stsc.distributed.hadoop.grid;
 import java.io.IOException;
 
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
+
 import stsc.common.BadSignalException;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
@@ -28,7 +28,7 @@ public class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWrita
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		final FileSystem hdfs = FileSystem.get(context.getConfiguration());
-		this.stockStorage = HadoopStaticDataSingleton.getStockStorage(hdfs, new Path(HadoopStaticDataSingleton.DATAFEED_HDFS_PATH));
+		this.stockStorage = HadoopStaticDataSingleton.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopHdfsPath());
 	}
 
 	@Override

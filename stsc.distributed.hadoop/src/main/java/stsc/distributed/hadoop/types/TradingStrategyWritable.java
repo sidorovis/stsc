@@ -23,7 +23,10 @@ public class TradingStrategyWritable implements Writable {
 		this.tradingStrategy = ts;
 	}
 
-	protected TradingStrategyWritable() {
+	/**
+	 * For reading
+	 */
+	public TradingStrategyWritable() {
 	}
 
 	@Override

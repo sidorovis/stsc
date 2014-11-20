@@ -1,18 +1,20 @@
 package stsc.distributed.hadoop.types;
 
 import java.io.IOException;
+
 import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.DataOutputByteBuffer;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
 import stsc.general.testhelper.TestGeneticSimulatorSettings;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
-public class SimulatorSettingsWritableTest extends TestCase {
+public class SimulatorSettingsWritableTest {
 
+	@Test
 	public void testHadoopSimulatorSettings() throws IOException, BadAlgorithmException {
 		final SimulatorSettingsGeneticList list = TestGeneticSimulatorSettings.getGeneticList();
 

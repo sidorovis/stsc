@@ -15,6 +15,7 @@ import stsc.general.simulator.SimulatorSettings;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 
 public class GridRecordReader extends RecordReader<LongWritable, SimulatorSettingsWritable> {
+
 	private long size;
 	private long id = 0;
 	private Iterator<SimulatorSettings> iterator;
@@ -22,8 +23,6 @@ public class GridRecordReader extends RecordReader<LongWritable, SimulatorSettin
 	private boolean finished;
 
 	public GridRecordReader(final FileSystem hdfs, Path path) throws IOException {
-		System.out.println(hdfs);
-		System.out.println(path);
 		HadoopStaticDataSingleton.getStockStorage(hdfs, path);
 		final SimulatorSettingsGridList list = HadoopStaticDataSingleton.getGridList();
 		this.iterator = list.iterator();

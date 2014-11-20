@@ -32,8 +32,6 @@ public class HadoopStaticDataSingleton {
 
 	// StockStorage
 
-	public static String DATAFEED_HDFS_PATH = "./yahoo_datafeed/";
-
 	private static StockStorage stockStorage = null;
 
 	public static StockStorage getStockStorage(final String dataFolder, final String filteredDataFolder) throws ClassNotFoundException,

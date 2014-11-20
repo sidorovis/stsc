@@ -5,17 +5,18 @@ import java.util.List;
 
 import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.DataOutputByteBuffer;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.genetic.GeneticExecutionInitializer;
 import stsc.general.simulator.multistarter.genetic.SimulatorSettingsGeneticList;
 import stsc.general.testhelper.TestGeneticSimulatorSettings;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
-public class SimulatorSettingsGeneticListWritableTest extends TestCase {
+public class SimulatorSettingsGeneticListWritableTest {
 
+	@Test
 	public void testSimulatorSettingsGeneticListWritable() throws BadAlgorithmException, IOException, BadParameterException {
 		final SimulatorSettingsGeneticList list = TestGeneticSimulatorSettings.getGeneticList();
 

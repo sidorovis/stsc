@@ -4,14 +4,16 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.DataOutputByteBuffer;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
 import stsc.general.testhelper.TestGridSimulatorSettings;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
-public class SimulatorSettingsGridListWritableTest extends TestCase {
+public class SimulatorSettingsGridListWritableTest {
+
+	@Test
 	public void testSimulatorSettingsGridListWritable() throws IOException, BadParameterException {
 		final SimulatorSettingsGridList list = TestGridSimulatorSettings.getGridList();
 

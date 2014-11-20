@@ -15,20 +15,17 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.distributed.hadoop.types.SimulatorSettingsWritable;
 import stsc.distributed.hadoop.types.StatisticsWritable;
+import stsc.distributed.hadoop.types.TradingStrategyWritable;
 import stsc.general.strategy.TradingStrategy;
 
 public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, StatisticsWritable> {
 
 	private final StockStorage stockStorage;
 	private final List<TradingStrategy> tradingStrategies = Collections.synchronizedList(new ArrayList<TradingStrategy>());
-	private final Path path;
-
-	public final static String FILE_NAME = "/output.txt";
 
 	public GridRecordWriter(FileSystem hdfs, final Path path) throws IOException {
-		HadoopStaticDataSingleton.getStockStorage(hdfs, new Path(HadoopStaticDataSingleton.DATAFEED_HDFS_PATH));
+		HadoopStaticDataSingleton.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopHdfsPath());
 		this.stockStorage = HadoopStaticDataSingleton.getStockStorage();
-		this.path = path;
 	}
 
 	@Override
@@ -42,7 +39,7 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 
 	@Override
 	public void close(TaskAttemptContext context) throws IOException, InterruptedException {
-		final Path file = new Path(path + FILE_NAME);
+		final Path file = HadoopSettings.getInstance().getHdfsOutputPath();
 		final FileSystem fs = file.getFileSystem(context.getConfiguration());
 		if (fs.isDirectory(file)) {
 			fs.delete(file, true);
@@ -51,11 +48,10 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 			fs.delete(file, true);
 		}
 		final FSDataOutputStream fileOut = fs.create(file, true);
-		fileOut.writeUTF(String.valueOf(tradingStrategies.size()) + "\n");
+		fileOut.writeInt(tradingStrategies.size());
 		for (TradingStrategy ts : tradingStrategies) {
-			fileOut.writeUTF(ts.getSettings().getId() + "\n");
-			fileOut.writeUTF(ts.getSettings().toString());
-			fileOut.writeUTF(ts.getStatistics().toString());
+			final TradingStrategyWritable tsw = new TradingStrategyWritable(ts);
+			tsw.write(fileOut);
 		}
 		fileOut.close();
 	}
