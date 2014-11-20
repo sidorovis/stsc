@@ -18,27 +18,11 @@ import stsc.distributed.hadoop.types.TradingStrategyWritable;
 
 public class GridHadoopStarterExample extends Configured implements Tool {
 
-	// TODO think to delete that or usage
-	// private static void addJarToDistributedCache(Class<?> classToAdd,
-	// Configuration conf) throws IOException {
-	// final String jar =
-	// classToAdd.getProtectionDomain().getCodeSource().getLocation().getPath();
-	// final File jarFile = new File(jar);
-	// final Path hdfsJar = new Path("/vagrant/package/" + jarFile.getName());
-	// final FileSystem hdfs = FileSystem.get(conf);
-	// hdfs.copyFromLocalFile(false, true, new Path(jar), hdfsJar);
-	// DistributedCache.addFileToClassPath(hdfsJar, conf);
-	// }
-
 	@Override
 	public int run(String[] args) throws Exception {
-		final TimeTracker tt = new TimeTracker();
 
 		final Job job = Job.getInstance(this.getConf());
 		checkAndCopyDatafeed("./test_data/", HadoopStaticDataSingleton.DATAFEED_HDFS_PATH);
-
-		// HadoopStaticDataSingleton.getGridList();
-		// addJarToDistributedCache(AlgorithmsStorage.class, this.getConf());
 
 		job.setJobName(GridHadoopStarterExample.class.getSimpleName());
 		job.setJarByClass(GridHadoopStarterExample.class);
@@ -56,7 +40,6 @@ public class GridHadoopStarterExample extends Configured implements Tool {
 		job.setOutputFormatClass(GridOutputFormat.class);
 
 		job.waitForCompletion(true);
-		System.out.println("Resolution time: " + TimeTracker.lengthInSeconds(tt.finish()));
 		copyAnswerToLocal();
 		return 0;
 	}

@@ -81,7 +81,7 @@ public class HadoopStaticDataSingleton {
 			return simulatorSettingsGridList;
 		}
 		try {
-			final FromToPeriod period = new FromToPeriod("01-01-2000", "01-01-2014");
+			final FromToPeriod period = new FromToPeriod("01-01-2013", "01-01-2014");
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(getStockStorage(), period);
 			fillFactory(period, factory);
 			simulatorSettingsGridList = factory.getList();
@@ -95,11 +95,11 @@ public class HadoopStaticDataSingleton {
 			BadAlgorithmException {
 		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
 		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.1)).add(new MpSubExecution("", "in")));
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.5)).add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
 				algoStockName(Level.class.getSimpleName()),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 1)).add(
+				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 5)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
 		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side",
 				Arrays.asList(new String[] { "long", "short" }));
