@@ -33,7 +33,7 @@ public class GridHadoopStarter extends Configured implements Tool, HadoopStarter
 	private final List<TradingStrategy> tradingStrategies = new ArrayList<TradingStrategy>();
 
 	@Override
-	public List<TradingStrategy> startSearch() throws Exception {
+	public List<TradingStrategy> searchOnHadoop() throws Exception {
 		String[] args = new String[0];
 		ToolRunner.run(this, args);
 		return tradingStrategies;
@@ -44,8 +44,9 @@ public class GridHadoopStarter extends Configured implements Tool, HadoopStarter
 		final Job job = Job.getInstance(this.getConf());
 		final HadoopSettings hs = HadoopSettings.getInstance();
 		if (hs.copyOriginalDatafeedPath) {
-			checkAndCopyDatafeed(hs.originalDatafeedPath, hs.datafeedHdfsPath);
+			checkAndCopyDatafeed(hs.originalDatafeedPath, hs.getHadoopDatafeedHdfsPath());
 		}
+		HadoopSettings.getStockStorage(FileSystem.get(this.getConf()), hs.getHadoopDatafeedHdfsPath());
 		job.setJobName(GridHadoopStarter.class.getSimpleName());
 		job.setJarByClass(GridHadoopStarter.class);
 
@@ -78,19 +79,19 @@ public class GridHadoopStarter extends Configured implements Tool, HadoopStarter
 			for (int i = 0; i < size; ++i) {
 				final TradingStrategyWritable tsw = new TradingStrategyWritable();
 				tsw.readFields(fileIn);
-				tradingStrategies.add(tsw.getTradingStrategy(HadoopStaticDataSingleton.getStockStorage()));
+				tradingStrategies.add(tsw.getTradingStrategy(HadoopSettings.getStockStorage()));
 			}
 		}
 	}
 
-	private void checkAndCopyDatafeed(String localPath, String hdfsPath) throws IOException {
+	private void checkAndCopyDatafeed(String localPath, Path path) throws IOException {
 		final FileSystem hdfs = FileSystem.get(this.getConf());
-		if (!hdfs.exists(new Path(hdfsPath))) {
-			hdfs.mkdirs(new Path(hdfsPath));
+		if (!hdfs.exists(path)) {
+			hdfs.mkdirs(path);
 			File folder = new File(localPath);
 			File[] listOfFiles = folder.listFiles();
 			for (File file : listOfFiles) {
-				hdfs.copyFromLocalFile(new Path(file.getPath()), new Path(hdfsPath + file.getName()));
+				hdfs.copyFromLocalFile(new Path(file.getPath()), new Path(path + "/" + file.getName()));
 			}
 		}
 	}

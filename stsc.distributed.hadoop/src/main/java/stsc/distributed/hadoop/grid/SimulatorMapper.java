@@ -28,7 +28,7 @@ public class SimulatorMapper extends Mapper<LongWritable, SimulatorSettingsWrita
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		final FileSystem hdfs = FileSystem.get(context.getConfiguration());
-		this.stockStorage = HadoopStaticDataSingleton.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopHdfsPath());
+		this.stockStorage = HadoopSettings.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopDatafeedHdfsPath());
 	}
 
 	@Override

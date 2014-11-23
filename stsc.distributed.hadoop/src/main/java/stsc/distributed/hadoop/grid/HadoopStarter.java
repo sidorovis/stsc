@@ -5,5 +5,5 @@ import java.util.List;
 import stsc.general.strategy.TradingStrategy;
 
 public interface HadoopStarter {
-	public List<TradingStrategy> startSearch() throws Exception;
+	public List<TradingStrategy> searchOnHadoop() throws Exception;
 }

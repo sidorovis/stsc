@@ -8,6 +8,10 @@ public class TestGridHadoopStarter {
 	@Test
 	public void testGridHadoopStarter() throws Exception {
 		final HadoopStarter hs = new GridHadoopStarter();
-		Assert.assertEquals(8, hs.startSearch().size());
+		Assert.assertEquals(8, hs.searchOnHadoop().size());
+
+		// Assert.assertTrue(new File("./output_data").delete());
+		// Assert.assertTrue(new File("./yahoo_datafeed").delete());
+		// Assert.assertTrue(new File("./output.txt").delete());
 	}
 }

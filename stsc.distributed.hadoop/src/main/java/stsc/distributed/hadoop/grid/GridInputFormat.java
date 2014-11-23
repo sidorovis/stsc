@@ -30,7 +30,7 @@ public class GridInputFormat extends InputFormat<LongWritable, SimulatorSettings
 	public RecordReader<LongWritable, SimulatorSettingsWritable> createRecordReader(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
 		final FileSystem hdfs = FileSystem.get(context.getConfiguration());
-		return new GridRecordReader(hdfs, HadoopSettings.getInstance().getHadoopHdfsPath());
+		return new GridRecordReader(hdfs, HadoopSettings.getInstance().getHadoopDatafeedHdfsPath());
 	}
 
 }
