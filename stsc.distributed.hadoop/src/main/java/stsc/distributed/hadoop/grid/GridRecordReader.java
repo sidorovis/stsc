@@ -23,7 +23,7 @@ public class GridRecordReader extends RecordReader<LongWritable, SimulatorSettin
 	private boolean finished;
 
 	public GridRecordReader(final FileSystem hdfs, Path path) throws IOException {
-		HadoopSettings.getStockStorage(hdfs, path);
+		HadoopSettings.getInstance().getStockStorage(hdfs, path);
 		final SimulatorSettingsGridList list = HadoopSettings.getInstance().getGridList();
 		this.iterator = list.iterator();
 		this.size = list.size();

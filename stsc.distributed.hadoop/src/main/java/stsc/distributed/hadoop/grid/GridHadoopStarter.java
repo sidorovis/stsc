@@ -46,7 +46,7 @@ public class GridHadoopStarter extends Configured implements Tool, HadoopStarter
 		if (hs.copyOriginalDatafeedPath) {
 			checkAndCopyDatafeed(hs.originalDatafeedPath, hs.getHadoopDatafeedHdfsPath());
 		}
-		HadoopSettings.getStockStorage(FileSystem.get(this.getConf()), hs.getHadoopDatafeedHdfsPath());
+		hs.getStockStorage(FileSystem.get(this.getConf()), hs.getHadoopDatafeedHdfsPath());
 		job.setJobName(GridHadoopStarter.class.getSimpleName());
 		job.setJarByClass(GridHadoopStarter.class);
 
@@ -72,14 +72,15 @@ public class GridHadoopStarter extends Configured implements Tool, HadoopStarter
 
 	private void loadTradingStrategies() throws IOException, BadAlgorithmException {
 		final FileSystem hdfs = FileSystem.get(this.getConf());
-		final Path out = HadoopSettings.getInstance().getHdfsOutputPath();
+		final HadoopSettings hs = HadoopSettings.getInstance();
+		final Path out = hs.getHdfsOutputPath();
 		if (hdfs.exists(out)) {
 			final FSDataInputStream fileIn = hdfs.open(out);
 			final int size = fileIn.readInt();
 			for (int i = 0; i < size; ++i) {
 				final TradingStrategyWritable tsw = new TradingStrategyWritable();
 				tsw.readFields(fileIn);
-				tradingStrategies.add(tsw.getTradingStrategy(HadoopSettings.getStockStorage()));
+				tradingStrategies.add(tsw.getTradingStrategy(hs.getStockStorage()));
 			}
 		}
 	}

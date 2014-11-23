@@ -24,7 +24,8 @@ public class GridRecordWriter extends RecordWriter<SimulatorSettingsWritable, St
 	private final List<TradingStrategy> tradingStrategies = Collections.synchronizedList(new ArrayList<TradingStrategy>());
 
 	public GridRecordWriter(FileSystem hdfs, final Path path) throws IOException {
-		this.stockStorage = HadoopSettings.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopDatafeedHdfsPath());
+		final HadoopSettings hs = HadoopSettings.getInstance();
+		this.stockStorage = hs.getStockStorage(hdfs, hs.getHadoopDatafeedHdfsPath());
 	}
 
 	@Override

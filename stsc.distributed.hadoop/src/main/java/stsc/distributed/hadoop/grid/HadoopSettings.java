@@ -69,7 +69,7 @@ public class HadoopSettings {
 
 	// StockStorage part
 
-	private static StockStorage stockStorage = null;
+	private StockStorage stockStorage = null;
 
 	// SimulatorSettingsGrid part
 
@@ -107,7 +107,11 @@ public class HadoopSettings {
 		return hadoopSettings;
 	}
 
-	public synchronized static StockStorage getStockStorage(FileSystem hdfs, Path path) throws IOException {
+	public synchronized StockStorage getStockStorage(FileSystem hdfs) throws IOException {
+		return getStockStorage(hdfs, getHadoopDatafeedHdfsPath());
+	}
+
+	public synchronized StockStorage getStockStorage(FileSystem hdfs, Path path) throws IOException {
 		if (stockStorage == null) {
 			stockStorage = new ThreadSafeStockStorage();
 			final RemoteIterator<LocatedFileStatus> fileIterator = hdfs.listFiles(path, false);
@@ -121,7 +125,7 @@ public class HadoopSettings {
 		return stockStorage;
 	}
 
-	public synchronized static StockStorage getStockStorage() throws IOException {
+	public synchronized StockStorage getStockStorage() throws IOException {
 		if (stockStorage == null) {
 			throw new IOException("Method getStockStorage() should be called only after getStockStorage(FileSystem, Path) version.");
 		}
@@ -142,7 +146,7 @@ public class HadoopSettings {
 	private SimulatorSettingsGridList getDefaultSimulatorSettingsGridList() throws IOException {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2013", "01-01-2014");
-			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(HadoopSettings.getStockStorage(), period);
+			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(getStockStorage(), period);
 			fillFactory(period, factory);
 			simulatorSettingsGridList = factory.getList();
 			return simulatorSettingsGridList;

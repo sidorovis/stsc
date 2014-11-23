@@ -23,7 +23,7 @@ public class SimulatorReducer extends Reducer<LongWritable, TradingStrategyWrita
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		final FileSystem hdfs = FileSystem.get(context.getConfiguration());
-		this.stockStorage = HadoopSettings.getStockStorage(hdfs, HadoopSettings.getInstance().getHadoopDatafeedHdfsPath());
+		this.stockStorage = HadoopSettings.getInstance().getStockStorage(hdfs);
 	}
 
 	@Override
