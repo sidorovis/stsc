@@ -34,7 +34,8 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public void addStockSignal(final String stockName, final String executionName, final Date date, final StockSignal signal) throws BadSignalException {
+	public void addStockSignal(final String stockName, final String executionName, final Date date, final StockSignal signal)
+			throws BadSignalException {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		synchronized (stockSignals) {
 			stockSignals.get(key).addSignal(date, signal);
