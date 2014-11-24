@@ -7,6 +7,19 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
+// @formatter:off
+/**
+ * CostWeightedProductFunction is a cost function for {@link Statistics}.
+ * Store amount of parameters and double weights for each: (P[X] -> W[X]
+ * CostFunction Calculation algorithm is next:
+ * 1) calculate sum = W[1] + W[2] + ... W[N];
+ * 2) calculate elements E[1] = W[1] / sum;
+ * 3) get S[X] = signum(P[X])
+ * 4) get V[X] = power(abs(P[X]),E[X]);
+ * 5) get ResultSum = S[X] * V[X] (for X in 1..N).
+ */
+//@formatter:on
+
 public class CostWeightedProductFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
