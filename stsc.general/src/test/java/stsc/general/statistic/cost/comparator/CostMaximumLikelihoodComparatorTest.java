@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Iterator;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.common.Day;
 import stsc.common.Settings;
@@ -11,10 +13,10 @@ import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsCompareSelector;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class CostMaximumLikelihoodComparatorTest extends TestCase {
+public class CostMaximumLikelihoodComparatorTest {
 
+	@Test
 	public void testCostMaximumLikelihoodComparatorOnSeveral() {
 		final CostMaximumLikelihoodComparator comparator = new CostMaximumLikelihoodComparator();
 		comparator.addParameter("getKelly", 0.8);
@@ -27,12 +29,13 @@ public class CostMaximumLikelihoodComparatorTest extends TestCase {
 					final Statistics rightStat = TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, u));
 					final int r = comparator.compare(leftStat, rightStat) * comparator.compare(rightStat, leftStat);
 					if (r != 0)
-						assertEquals(-1, r);
+						Assert.assertEquals(-1, r);
 				}
 			}
 		}
 	}
 
+	@Test
 	public void testCostStatisticsCompareSelectorWithLikelihood() throws ParseException {
 		final CostMaximumLikelihoodComparator c = new CostMaximumLikelihoodComparator();
 		final StatisticsCompareSelector sel = new StatisticsCompareSelector(3, c);
@@ -42,13 +45,15 @@ public class CostMaximumLikelihoodComparatorTest extends TestCase {
 		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("16-05-2013"))));
 		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, Day.createDate("12-05-2013"))));
 
-		assertEquals(3, sel.getStrategies().size());
+		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
+		
+		Assert.assertEquals(0.486048, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.075294, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.163027, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testCostStatisticsCompareSelectorWithLikelihoodWithKelly() {
 		final CostMaximumLikelihoodComparator c = new CostMaximumLikelihoodComparator();
 		c.addParameter("getMaxLoss", 100.0);
@@ -60,10 +65,10 @@ public class CostMaximumLikelihoodComparatorTest extends TestCase {
 		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 16))));
 		sel.addStrategy(TradingStrategy.createTest(TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 12))));
 
-		assertEquals(3, sel.getStrategies().size());
+		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
-		assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.0752941, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.486048, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.163027, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 }
