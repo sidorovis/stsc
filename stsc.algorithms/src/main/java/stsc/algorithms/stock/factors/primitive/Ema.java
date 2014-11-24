@@ -14,6 +14,14 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
+//@formatter:off
+/**
+ * Ema on-stock algorithm calculate EMA function over necessary input require:
+ * 1) setting for P: EMA[x+1] = PRICE_VALUE * P + EMA[x] * (1 - P); (0.2 by default);
+ * 2) size setting that limit result serie; (2 by default);
+ * 3) sub on-stock algorithm name (for example In(e=open)).
+ */
+//@formatter:on
 public class Ema extends StockAlgorithm {
 
 	private final String subAlgoName;
