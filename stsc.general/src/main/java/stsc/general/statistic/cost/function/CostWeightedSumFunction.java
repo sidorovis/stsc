@@ -8,6 +8,13 @@ import java.util.Map;
 import stsc.general.statistic.PublicMethod;
 import stsc.general.statistic.Statistics;
 
+// @formatter:off
+/**
+ * {@link CostWeightedSumFunction} is a cost function for {@link Statistics}.
+ * Require set of parameters: P[1]...P[N];
+ * Result = V[1] * P[1] + V[2] * P[2] ... V[N] * P[N].
+ */
+//@formatter:on
 public class CostWeightedSumFunction implements CostFunction {
 
 	private final Map<String, Double> parameters = new HashMap<>();
