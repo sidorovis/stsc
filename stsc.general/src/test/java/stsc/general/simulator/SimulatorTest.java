@@ -33,7 +33,7 @@ public class SimulatorTest {
 	public void testOneSideSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/one_side.ini")).getStatistics().print("./test/statistics.csv");
-		Assert.assertEquals(544, new File("./test/statistics.csv").length());
+		Assert.assertEquals(543, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
@@ -49,7 +49,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(-0.0266706, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(1.964963, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(39.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(1.405099, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(3.425256, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(0.0266706, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.964963, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class SimulatorTest {
 		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		statistics.print("./test/statistics.csv");
 		Assert.assertEquals(2096, statistics.getEquityCurveInMoney().size());
-		Assert.assertEquals(46400, new File("./test/statistics.csv").length());
+		Assert.assertEquals(46071, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
@@ -104,7 +104,7 @@ public class SimulatorTest {
 	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/open_while_signal.ini")).getStatistics().print("./test/statistics.csv");
-		Assert.assertEquals(530, new File("./test/statistics.csv").length());
+		Assert.assertEquals(522, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
