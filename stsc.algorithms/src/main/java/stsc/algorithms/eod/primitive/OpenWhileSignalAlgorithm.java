@@ -54,6 +54,9 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 				}
 			} else {
 				final SideSignal ss = isSignal.getSignal(SideSignal.class);
+				if (ss == null) {
+					return;
+				}
 				final Side signalSide = ss.getSide();
 				if (signalSide == Side.LONG && !longPositions.containsKey(stockName)) {
 					final int sharesSize = getSharesSize(i.getValue().getPrices().getOpen());
