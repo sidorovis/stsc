@@ -3,6 +3,9 @@ package stsc.general.simulator;
 import java.io.File;
 import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.common.FromToPeriod;
@@ -17,9 +20,8 @@ import stsc.general.testhelper.TestStatisticsHelper;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorageFactory;
-import junit.framework.TestCase;
 
-public class SimulatorTest extends TestCase {
+public class SimulatorTest {
 
 	private void deleteFileIfExists(String fileName) {
 		File file = new File(fileName);
@@ -27,13 +29,15 @@ public class SimulatorTest extends TestCase {
 			file.delete();
 	}
 
+	@Test
 	public void testOneSideSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/one_side.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(480 + 33 * 2, new File("./test/statistics.csv").length());
+		Assert.assertEquals(544, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
+	@Test
 	public void testLongSideOnAppl() throws Exception {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
@@ -44,10 +48,11 @@ public class SimulatorTest extends TestCase {
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
-		assertEquals(19.0, statistics.getPeriod());
-		assertEquals(0.0, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.0266706, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testLongSideOnApplForTwoMonths() throws Exception {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
@@ -58,10 +63,11 @@ public class SimulatorTest extends TestCase {
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
-		assertEquals(39.0, statistics.getPeriod());
-		assertEquals(1.380262, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(39.0, statistics.getPeriod(), Settings.doubleEpsilon);
+		Assert.assertEquals(1.405099, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testShortSideOnAppl() throws Exception {
 		final StockStorage stockStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
@@ -73,33 +79,36 @@ public class SimulatorTest extends TestCase {
 		final TradeProcessorInit tpi = new TradeProcessorInit(stockStorage, period, executionsStorage);
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
-		assertEquals(19.0, statistics.getPeriod());
-		assertEquals(-0.0, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0266706, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testSimpleSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		statistics.print("./test/statistics.csv");
-		assertEquals(2096, statistics.getEquityCurveInMoney().size());
-		assertEquals(2121 * 2 + 42044, new File("./test/statistics.csv").length());
+		Assert.assertEquals(2096, statistics.getEquityCurveInMoney().size());
+		Assert.assertEquals(46400, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
 	public void testPositiveNDaysSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(575 * 2 + 11165, new File("./test/statistics.csv").length());
+		Assert.assertEquals(575 * 2 + 11165, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
+	@Test
 	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/open_while_signal.ini")).getStatistics().print("./test/statistics.csv");
-		assertEquals(32 * 2 + 471, new File("./test/statistics.csv").length());
+		Assert.assertEquals(530, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
+	@Test
 	public void testFromConfigOutAlgos() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		final StockStorage stoskStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
@@ -108,13 +117,13 @@ public class SimulatorTest extends TestCase {
 
 		final TradeProcessorInit init = new TradeProcessorInit(stoskStorage, period, config);
 		final List<String> stockExecutions = init.generateOutForStocks();
-		assertEquals(2, stockExecutions.size());
-		assertEquals("Alg1", stockExecutions.get(1));
+		Assert.assertEquals(2, stockExecutions.size());
+		Assert.assertEquals("Alg1", stockExecutions.get(1));
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
-		assertEquals(0.0, simulator.getStatistics().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0, simulator.getStatistics().getAvGain(), Settings.doubleEpsilon);
 		final SignalsStorage ss = simulator.getSignalsStorage();
 		final String en = ExecutionsStorage.outNameFor("Alg1");
-		assertEquals(2515, ss.getIndexSize("aapl", en));
+		Assert.assertEquals(2515, ss.getIndexSize("aapl", en));
 	}
 
 }

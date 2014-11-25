@@ -34,8 +34,8 @@ public class StatisticsCompareSelectorTest {
 
 		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		Assert.assertEquals(0.590615, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(-0.071069, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(-1.162257, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.486048, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.075294, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.163027, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 }

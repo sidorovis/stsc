@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.algorithms.In;
 import stsc.algorithms.stock.factors.primitive.Sma;
@@ -16,11 +18,11 @@ import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
-import junit.framework.TestCase;
 
-public class SmaTest extends TestCase {
+public class SmaTest {
+
+	@Test
 	public void testSma() throws IOException, BadSignalException, BadAlgorithmException, ParseException {
-
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
 		stockInit.getSettings().setString("e", "open");
 		final In inAlgo = new In(stockInit.getInit());
@@ -53,15 +55,16 @@ public class SmaTest extends TestCase {
 			smaClose.process(day);
 		}
 
-		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
-		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
-		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()));
-		assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(days.size() - 1).getDate()));
+		Assert.assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()));
+		Assert.assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 3).getDate()));
+		Assert.assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()));
+		Assert.assertNotNull(init.getStorage().getStockSignal("aapl", "testSma", days.get(days.size() - 1).getDate()));
 
-		assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()),
-				init.getStorage().getStockSignal("aapl", "testSma", 4));
+		Assert.assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex + 4).getDate()), init.getStorage()
+				.getStockSignal("aapl", "testSma", 4));
 
-		assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()), init.getStorage().getStockSignal("aapl", "testSma", 0));
+		Assert.assertEquals(init.getStorage().getStockSignal("aapl", "testSma", days.get(aaplIndex).getDate()), init.getStorage()
+				.getStockSignal("aapl", "testSma", 0));
 
 		Double lastSum = 0.0;
 		Double lastSumClose = 0.0;
@@ -71,9 +74,10 @@ public class SmaTest extends TestCase {
 		}
 		final Day lastDay = days.get(days.size() - 1);
 		final double lastSma = init.getStorage().getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(DoubleSignal.class).value;
-		assertEquals(lastSum / 5, lastSma, Settings.doubleEpsilon);
+		Assert.assertEquals(lastSum / 5, lastSma, Settings.doubleEpsilon);
 
-		final double lastSmaClose = init.getStorage().getStockSignal("aapl", "testSmaClose", lastDay.getDate()).getSignal(DoubleSignal.class).value;
-		assertEquals(lastSumClose / 5, lastSmaClose, Settings.doubleEpsilon);
+		final double lastSmaClose = init.getStorage().getStockSignal("aapl", "testSmaClose", lastDay.getDate())
+				.getSignal(DoubleSignal.class).value;
+		Assert.assertEquals(lastSumClose / 5, lastSmaClose, Settings.doubleEpsilon);
 	}
 }

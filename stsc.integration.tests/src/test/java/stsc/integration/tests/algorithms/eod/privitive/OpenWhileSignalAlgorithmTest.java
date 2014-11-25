@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.algorithms.In;
 import stsc.algorithms.eod.primitive.OpenWhileSignalAlgorithm;
@@ -22,18 +24,18 @@ import stsc.general.trading.TradingRecord.TradingType;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.storage.ThreadSafeStockStorage;
-import junit.framework.TestCase;
 
-public class OpenWhileSignalAlgorithmTest extends TestCase {
+public class OpenWhileSignalAlgorithmTest {
+
+	@Test
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException, ParseException {
-
 		final StockAlgoInitHelper inInit = new StockAlgoInitHelper("in", "aapl");
 		inInit.getSettings().setString("e", "open");
 		final In in = new In(inInit.getInit());
 
 		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", inInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");
-		levelInit.getSettings().setDouble("f", 699.0);
+		levelInit.getSettings().setDouble("f", 667.0);
 		final Level level = new Level(levelInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
@@ -60,10 +62,10 @@ public class OpenWhileSignalAlgorithmTest extends TestCase {
 		}
 
 		final TradingLog tl = broker.getTradingLog();
-		assertEquals(2, tl.getRecords().size());
-		assertEquals(tl.getRecords().get(0).getAmount(), tl.getRecords().get(1).getAmount());
-		assertEquals(tl.getRecords().get(0).getStockName(), tl.getRecords().get(1).getStockName());
-		assertEquals(TradingType.BUY, tl.getRecords().get(0).getType());
-		assertEquals(TradingType.SELL, tl.getRecords().get(1).getType());
+		Assert.assertEquals(2, tl.getRecords().size());
+		Assert.assertEquals(tl.getRecords().get(0).getAmount(), tl.getRecords().get(1).getAmount());
+		Assert.assertEquals(tl.getRecords().get(0).getStockName(), tl.getRecords().get(1).getStockName());
+		Assert.assertEquals(TradingType.BUY, tl.getRecords().get(0).getType());
+		Assert.assertEquals(TradingType.SELL, tl.getRecords().get(1).getType());
 	}
 }
