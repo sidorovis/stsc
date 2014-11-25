@@ -82,7 +82,7 @@ public class TradeProcessor {
 		return statisticsProcessor;
 	}
 
-	private void collectStocksFromStorage(Set<String> stockNames) {
+	private void collectStocksFromStorage(final Set<String> stockNames) {
 		final StockStorage stockStorage = broker.getStockStorage();
 		for (String i : stockStorage.getStockNames()) {
 			if (stockNames.contains(i)) {

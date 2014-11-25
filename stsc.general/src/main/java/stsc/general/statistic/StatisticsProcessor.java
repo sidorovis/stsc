@@ -125,38 +125,54 @@ public final class StatisticsProcessor {
 			lastPrice.put(stockName, stockDay.getPrices().getOpen());
 		}
 
-		double processEod(boolean debug) {
-			final int tradingRecordSize = tradingRecords.size();
-			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
-				final TradingRecord record = tradingRecords.get(i);
-				final String stockName = record.getStockName();
-
-				final double price = lastPrice.get(stockName);
-				final int shares = record.getAmount();
-				final double sharesPrice = shares * price;
-
-				if (record.isPurchase()) {
-					if (record.isLong()) {
-						spentLongCash += sharesPrice;
-						longPositions.increment(stockName, shares, sharesPrice);
-					} else {
-						spentShortCash += sharesPrice;
-						shortPositions.increment(stockName, shares, sharesPrice);
-					}
-				} else {
-					if (record.isLong()) {
-						processLong(stockName, shares, price, sharesPrice);
-					} else {
-						processShort(stockName, shares, price, sharesPrice);
-					}
-				}
-			}
-			tradingRecordsIndex = tradingRecordSize;
+		double processEod(boolean debug) { // TODO cleanup this parameter
+			tradingRecordsIndex = processLastSignals(tradingRecords.size());
 
 			calculateMaximumSpentMoney();
 			final double dayResult = calculateDayCash();
 			statisticsInit.equityCurve.add(lastDate, dayResult);
 			return dayResult;
+		}
+
+		private int processLastSignals(int tradingRecordSize) {
+			for (int i = tradingRecordsIndex; i < tradingRecordSize; ++i) {
+				final TradingRecord record = tradingRecords.get(i);
+				if (record.getDate().equals(lastDate)) {
+					return i;
+				}
+				if (record.isPurchase()) {
+					processPurchase(record);
+				} else {
+					processSelling(record);
+				}
+			}
+			return tradingRecordSize;
+		}
+
+		private void processPurchase(TradingRecord record) {
+			final String stockName = record.getStockName();
+			final double price = lastPrice.get(stockName);
+			final int shares = record.getAmount();
+			final double sharesPrice = shares * price;
+			if (record.isLong()) {
+				spentLongCash += sharesPrice;
+				longPositions.increment(stockName, shares, sharesPrice);
+			} else {
+				spentShortCash += sharesPrice;
+				shortPositions.increment(stockName, shares, sharesPrice);
+			}
+		}
+
+		private void processSelling(TradingRecord record) {
+			final String stockName = record.getStockName();
+			final double price = lastPrice.get(stockName);
+			final int shares = record.getAmount();
+			final double sharesPrice = shares * price;
+			if (record.isLong()) {
+				processLong(stockName, shares, price, sharesPrice);
+			} else {
+				processShort(stockName, shares, price, sharesPrice);
+			}
 		}
 
 		private void processLong(String stockName, int shares, double price, double sharesPrice) {
