@@ -7,11 +7,11 @@ import java.util.Date;
 
 import stsc.common.Side;
 
-public class TradingLog {
+public final class TradingLog {
+
 	private ArrayList<TradingRecord> records = new ArrayList<TradingRecord>();
 
 	TradingLog() {
-
 	}
 
 	public void addBuyRecord(Date when, String stockName, Side side, int sharesAmount) {

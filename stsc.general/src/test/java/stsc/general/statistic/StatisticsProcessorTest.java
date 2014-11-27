@@ -13,8 +13,6 @@ import stsc.common.Settings;
 import stsc.common.Side;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
-import stsc.general.statistic.Statistics;
-import stsc.general.statistic.StatisticsProcessor;
 import stsc.general.trading.BrokerImpl;
 import stsc.general.trading.TradingLog;
 import stsc.storage.mocks.StockStorageMock;
@@ -74,8 +72,10 @@ public class StatisticsProcessorTest {
 
 		final Statistics statisticsData = statistics.calculate();
 
-		final double aaplPriceDiff = aaplLongSize * (aaplLongOut - aaplLongIn);
-		final double admPriceDiff = admShortSize * (admShortOut - admShortIn);
+		final double aaplPriceDiff = aaplLongSize * aaplLongOut * (1.0 - statistics.getCommision()) - aaplLongIn * aaplLongSize
+				* (1.0 + statistics.getCommision());
+		final double admPriceDiff = admShortSize * admShortOut * (1.0 - statistics.getCommision()) - admShortSize * admShortIn
+				* (1.0 + statistics.getCommision());
 
 		Assert.assertEquals(3.0, statisticsData.getPeriod(), Settings.doubleEpsilon);
 		Assert.assertEquals(aaplPriceDiff, statisticsData.getMaxWin(), Settings.doubleEpsilon);
@@ -129,8 +129,10 @@ public class StatisticsProcessorTest {
 
 		Statistics statisticsData = statistics.calculate();
 
-		final double aaplPriceDiff = aaplLongSize * (aaplLongOut - aaplLongIn);
-		final double admPriceDiff = admShortSize * (admShortOut - admShortIn);
+		final double aaplPriceDiff = aaplLongSize * aaplLongOut * (1.0 - statistics.getCommision()) - aaplLongIn * aaplLongSize
+				* (1.0 + statistics.getCommision());
+		final double admPriceDiff = admShortSize * admShortOut * (1.0 - statistics.getCommision()) - admShortSize * admShortIn
+				* (1.0 + statistics.getCommision());
 
 		Assert.assertEquals(3.0, statisticsData.getPeriod(), Settings.doubleEpsilon);
 		Assert.assertEquals(aaplPriceDiff, statisticsData.getMaxLoss(), Settings.doubleEpsilon);
@@ -150,41 +152,46 @@ public class StatisticsProcessorTest {
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int spyIndex = spy.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 
-		TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
+		final TradingLog tradingLog = new BrokerImpl(stockStorage).getTradingLog();
 
-		StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
+		final StatisticsProcessor statistics = new StatisticsProcessor(tradingLog);
 
-		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
-		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
-		statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
+		statistics.setStockDay("aapl", gd(aapl, ++aaplIndex));
+		statistics.setStockDay("adm", gd(adm, ++admIndex));
+		statistics.setStockDay("spy", gd(spy, ++spyIndex));
 
-		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
-		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 200);
-		tradingLog.addBuyRecord(new Date(), "spy", Side.LONG, 30);
+		tradingLog.addBuyRecord(gdd(aapl, aaplIndex), "aapl", Side.SHORT, 100);
+		tradingLog.addBuyRecord(gdd(adm, admIndex), "adm", Side.LONG, 200);
+		tradingLog.addBuyRecord(gdd(spy, spyIndex), "spy", Side.LONG, 30);
 
 		statistics.processEod();
 
-		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
-		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
+		statistics.setStockDay("aapl", gd(aapl, ++aaplIndex));
+		statistics.setStockDay("adm", gd(adm, ++admIndex));
+
+		final double aaplLongIn = gd(aapl, aaplIndex).getPrices().getOpen();
+		final double admShortIn = gd(adm, admIndex).getPrices().getOpen();
+		final double spyLongIn = gd(spy, spyIndex).getPrices().getOpen();
+
 		spyIndex++;
 
-		tradingLog.addBuyRecord(new Date(), "aapl", Side.SHORT, 100);
-		tradingLog.addBuyRecord(new Date(), "adm", Side.LONG, 500);
+		tradingLog.addBuyRecord(gdd(aapl, aaplIndex), "aapl", Side.SHORT, 100);
+		tradingLog.addBuyRecord(gdd(adm, admIndex), "adm", Side.LONG, 500);
 
 		statistics.processEod();
 
-		statistics.setStockDay("aapl", aapl.getDays().get(aaplIndex++));
-		statistics.setStockDay("adm", adm.getDays().get(admIndex++));
-		statistics.setStockDay("spy", spy.getDays().get(spyIndex++));
+		statistics.setStockDay("aapl", gd(aapl, ++aaplIndex));
+		statistics.setStockDay("adm", gd(adm, ++admIndex));
+		statistics.setStockDay("spy", gd(spy, ++spyIndex));
 
 		statistics.processEod();
 
-		tradingLog.addSellRecord(new Date(), "aapl", Side.SHORT, 200);
-		tradingLog.addSellRecord(new Date(), "adm", Side.LONG, 700);
-		tradingLog.addSellRecord(new Date(), "spy", Side.LONG, 30);
+		tradingLog.addSellRecord(gdd(aapl, aaplIndex), "aapl", Side.SHORT, 200);
+		tradingLog.addSellRecord(gdd(adm, admIndex), "adm", Side.LONG, 700);
+		tradingLog.addSellRecord(gdd(spy, spyIndex), "spy", Side.LONG, 30);
 
 		statistics.processEod();
-
+		
 		final Statistics statisticsData = statistics.calculate();
 
 		Assert.assertEquals(4.0, statisticsData.getPeriod(), Settings.doubleEpsilon);
@@ -267,7 +274,7 @@ public class StatisticsProcessorTest {
 		Assert.assertEquals(0.0, stats.getDdValueMax(), Settings.doubleEpsilon);
 		final File file = new File("./test/out.csv");
 		Assert.assertTrue(file.exists());
-		Assert.assertEquals(457.0, file.length(), Settings.doubleEpsilon);
+		Assert.assertEquals(458.0, file.length(), Settings.doubleEpsilon);
 		file.delete();
 	}
 

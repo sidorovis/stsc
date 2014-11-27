@@ -89,7 +89,7 @@ public class SimulatorTest {
 		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		statistics.print("./test/statistics.csv");
 		Assert.assertEquals(2096, statistics.getEquityCurveInMoney().size());
-		Assert.assertEquals(46071, new File("./test/statistics.csv").length());
+		Assert.assertEquals(46082, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
@@ -104,7 +104,7 @@ public class SimulatorTest {
 	public void testOpenWhileSignalAlgorithmSimulator() throws Exception {
 		deleteFileIfExists("./test/statistics.csv");
 		Simulator.fromFile(new File("./test_data/simulator_tests/open_while_signal.ini")).getStatistics().print("./test/statistics.csv");
-		Assert.assertEquals(522, new File("./test/statistics.csv").length());
+		Assert.assertEquals(524, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
