@@ -57,6 +57,6 @@ public final class Prices {
 	}
 
 	private String toStringHelper(double v) {
-		return String.format("%3f", (v) / 2.0);
+		return String.format("%3f", v);
 	}
 }

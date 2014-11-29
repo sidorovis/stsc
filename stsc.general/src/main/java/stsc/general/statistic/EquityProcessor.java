@@ -177,7 +177,7 @@ final class EquityProcessor {
 
 				double price = lastPrice.get(stockName);
 				int shares = p.shares;
-				double sharesPrice = shares * price;
+				double sharesPrice = shares * price * (1 - commision);
 
 				processSellingLong(stockName, shares, price, sharesPrice);
 			}
@@ -187,7 +187,7 @@ final class EquityProcessor {
 
 				double price = lastPrice.get(stockName);
 				int shares = p.shares;
-				double sharesPrice = shares * price;
+				double sharesPrice = shares * price * (1 - commision);
 
 				processSellingShort(stockName, shares, price, sharesPrice);
 			}
