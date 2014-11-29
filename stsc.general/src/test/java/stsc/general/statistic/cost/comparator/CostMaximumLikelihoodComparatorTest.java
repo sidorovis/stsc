@@ -48,9 +48,9 @@ public class CostMaximumLikelihoodComparatorTest {
 		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
 		
-		Assert.assertEquals(0.486048, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(-0.075294, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(-1.163027, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.358820, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.201986, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.288391, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class CostMaximumLikelihoodComparatorTest {
 
 		Assert.assertEquals(3, sel.getStrategies().size());
 		final Iterator<TradingStrategy> si = sel.getStrategies().iterator();
-		Assert.assertEquals(-0.0752941, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(0.486048, si.next().getAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(-1.163027, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-0.201986, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.358820, si.next().getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.288391, si.next().getAvGain(), Settings.doubleEpsilon);
 	}
 }

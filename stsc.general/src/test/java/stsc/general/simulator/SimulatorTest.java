@@ -49,7 +49,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(1.964963, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(1.761237, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(39.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(3.425256, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(3.218612, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class SimulatorTest {
 		Simulator simulator = new Simulator(new SimulatorSettings(0, tpi));
 		final Statistics statistics = simulator.getStatistics();
 		Assert.assertEquals(19.0, statistics.getPeriod(), Settings.doubleEpsilon);
-		Assert.assertEquals(-1.964963, statistics.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(-1.761237, statistics.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class SimulatorTest {
 		final Statistics statistics = Simulator.fromFile(new File("./test_data/simulator_tests/simple.ini")).getStatistics();
 		statistics.print("./test/statistics.csv");
 		Assert.assertEquals(2096, statistics.getEquityCurveInMoney().size());
-		Assert.assertEquals(46082, new File("./test/statistics.csv").length());
+		Assert.assertEquals(46134, new File("./test/statistics.csv").length());
 		deleteFileIfExists("./test/statistics.csv");
 	}
 
