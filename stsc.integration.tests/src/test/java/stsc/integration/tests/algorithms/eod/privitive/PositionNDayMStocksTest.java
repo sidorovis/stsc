@@ -38,7 +38,7 @@ public class PositionNDayMStocksTest extends TestCase {
 		Statistics s = Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics();
 		assertNotNull(s);
 		assertEquals(550.0, s.getPeriod());
-		assertEquals(-22.178509, s.getAvGain(), Settings.doubleEpsilon);
+		assertEquals(-21.784509, s.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	private void testHelper(String side) throws BadAlgorithmException, BadSignalException, ParseException, IOException {
