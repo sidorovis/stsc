@@ -45,6 +45,8 @@ For datafeed:
  * comparing dialog with charts and adjective closes;
  * possibility to simple redownload.
 
+Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). Works only for Yahoo EOD datafeed currently.
+
 stsc.signals
 ------------
 
