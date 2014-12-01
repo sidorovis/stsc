@@ -10,7 +10,7 @@ import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.eod.primitive.OneSideOpenAlgorithm;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
 import stsc.algorithms.stock.factors.primitive.Ema;
@@ -157,7 +157,7 @@ public class HadoopSettings {
 
 	private static void fillFactory(FromToPeriod period, SimulatorSettingsGridFactory settings) throws BadParameterException,
 			BadAlgorithmException {
-		settings.addStock("in", algoStockName(In.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
+		settings.addStock("in", algoStockName(Input.class.getSimpleName()), "e", Arrays.asList(new String[] { "open", "close" }));
 		settings.addStock("ema", algoStockName(Ema.class.getSimpleName()),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.5)).add(new MpSubExecution("", "in")));
 		settings.addStock(

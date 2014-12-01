@@ -9,17 +9,32 @@ import stsc.common.storage.SignalsStorage;
 
 public class StockAlgorithmInit {
 
-	final String executionName;
+	private final String executionName;
 	final SignalsStorage signalsStorage;
 	final AlgorithmSettings settings;
 
-	final String stockName;
+	private final String stockName;
+
+	public StockAlgorithmInit(String executionName, StockAlgorithmInit init, AlgorithmSettings settings) {
+		this.executionName = executionName;
+		this.signalsStorage = init.signalsStorage;
+		this.settings = settings;
+		this.stockName = init.stockName;
+	}
 
 	public StockAlgorithmInit(String executionName, SignalsStorage signalsStorage, String stockName, AlgorithmSettings settings) {
 		this.executionName = executionName;
 		this.signalsStorage = signalsStorage;
 		this.stockName = stockName;
 		this.settings = settings;
+	}
+
+	public String getStockName() {
+		return stockName;
+	}
+
+	public String getExecutionName() {
+		return executionName;
 	}
 
 	final void addSignal(Date date, StockSignal signal) throws BadSignalException {

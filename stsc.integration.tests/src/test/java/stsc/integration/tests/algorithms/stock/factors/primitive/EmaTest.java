@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.stock.factors.primitive.Ema;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -25,7 +25,7 @@ public class EmaTest {
 	public void testEma() throws IOException, BadSignalException, BadAlgorithmException, ParseException {
 		final StockAlgoInitHelper inInit = new StockAlgoInitHelper("testIn", "aapl");
 		inInit.getSettings().setString("e", "open");
-		final In inAlgo = new In(inInit.getInit());
+		final Input inAlgo = new Input(inInit.getInit());
 
 		final StockAlgoInitHelper emaInit = new StockAlgoInitHelper("testEma", "aapl", inInit.getStorage());
 		emaInit.getSettings().setDouble("P", 0.3);

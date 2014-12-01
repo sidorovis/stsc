@@ -17,14 +17,14 @@ import stsc.signals.series.LimitSignalsSerie;
 public class Sma extends StockAlgorithm {
 
 	private final String subAlgoName;
-	private final AlgorithmSetting<Integer> n;
+	private final AlgorithmSetting<Integer> N;
 
 	final LinkedList<Double> elements = new LinkedList<>();
 	Double sum = Double.valueOf(0.0);
 
 	public Sma(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
-		n = init.getSettings().getIntegerSetting("n", 5);
+		N = init.getSettings().getIntegerSetting("N", 5);
 		List<String> subExecutionNames = init.getSettings().getSubExecutions();
 		if (subExecutionNames.size() < 1)
 			throw new BadAlgorithmException("Sma algorithm should receive at least one sub algorithm");
@@ -42,12 +42,12 @@ public class Sma extends StockAlgorithm {
 		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).value;
 		elements.push(price);
 		sum += price;
-		if (elements.size() <= n.getValue()) {
+		if (elements.size() <= N.getValue()) {
 			addSignal(day.getDate(), new DoubleSignal(sum / elements.size()));
-		} else if (elements.size() > n.getValue()) {
+		} else if (elements.size() > N.getValue()) {
 			Double lastElement = elements.pollLast();
 			sum -= lastElement;
-			addSignal(day.getDate(), new DoubleSignal(sum / n.getValue()));
+			addSignal(day.getDate(), new DoubleSignal(sum / N.getValue()));
 		}
 	}
 }

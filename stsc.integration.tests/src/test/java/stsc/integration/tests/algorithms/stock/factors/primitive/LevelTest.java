@@ -6,7 +6,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.Day;
 import stsc.common.stocks.Stock;
@@ -20,7 +20,7 @@ public class LevelTest {
 
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
 		stockInit.getSettings().setString("e", "open");
-		final In in = new In(stockInit.getInit());
+		final Input in = new Input(stockInit.getInit());
 
 		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", stockInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");

@@ -18,7 +18,7 @@ public abstract class StockAlgorithm {
 	}
 
 	private void signalSerieRegistration(final StockAlgorithmInit init) throws BadAlgorithmException {
-		init.signalsStorage.registerStockAlgorithmSerie(init.stockName, init.executionName, registerSignalsClass(init));
+		init.signalsStorage.registerStockAlgorithmSerie(init.getStockName(), init.getExecutionName(), registerSignalsClass(init));
 	}
 
 	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {

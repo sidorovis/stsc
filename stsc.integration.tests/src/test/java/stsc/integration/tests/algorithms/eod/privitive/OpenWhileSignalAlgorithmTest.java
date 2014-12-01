@@ -9,7 +9,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.eod.primitive.OpenWhileSignalAlgorithm;
 import stsc.algorithms.stock.factors.primitive.Level;
 import stsc.common.BadSignalException;
@@ -31,7 +31,7 @@ public class OpenWhileSignalAlgorithmTest {
 	public void testOpenWhileSignalAlgorithm() throws BadAlgorithmException, IOException, BadSignalException, ParseException {
 		final StockAlgoInitHelper inInit = new StockAlgoInitHelper("in", "aapl");
 		inInit.getSettings().setString("e", "open");
-		final In in = new In(inInit.getInit());
+		final Input in = new Input(inInit.getInit());
 
 		final StockAlgoInitHelper levelInit = new StockAlgoInitHelper("level", "aapl", inInit.getStorage());
 		levelInit.getSettings().addSubExecutionName("in");

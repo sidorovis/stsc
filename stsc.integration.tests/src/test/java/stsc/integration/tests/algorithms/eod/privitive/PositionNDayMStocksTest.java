@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
 import stsc.common.BadSignalException;
 import stsc.common.FromToPeriod;
@@ -49,7 +49,7 @@ public class PositionNDayMStocksTest extends TestCase {
 
 		final AlgorithmSettingsImpl in = new AlgorithmSettingsImpl(period);
 		in.setString("e", "open");
-		init.getExecutionsStorage().addStockExecution(new StockExecution("in", In.class, in));
+		init.getExecutionsStorage().addStockExecution(new StockExecution("in", Input.class, in));
 
 		final AlgorithmSettingsImpl positionNDayMStocks = new AlgorithmSettingsImpl(period);
 		positionNDayMStocks.setInteger("n", 22);

@@ -10,7 +10,7 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class In extends StockAlgorithm {
+public class Input extends StockAlgorithm {
 
 	enum DayField {
 		OPEN, HIGH, LOW, CLOSE, VALUE
@@ -37,7 +37,7 @@ public class In extends StockAlgorithm {
 
 	DayField dayField;
 
-	public In(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Input(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
 		dayField = fromString(initialize.getSettings().getString("e"));
 	}

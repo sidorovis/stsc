@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -25,11 +25,11 @@ public class SmaTest {
 	public void testSma() throws IOException, BadSignalException, BadAlgorithmException, ParseException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
 		stockInit.getSettings().setString("e", "open");
-		final In inAlgo = new In(stockInit.getInit());
+		final Input inAlgo = new Input(stockInit.getInit());
 
 		final StockAlgoInitHelper stockInitClose = new StockAlgoInitHelper("testInClose", "aapl", stockInit.getStorage());
 		stockInitClose.getSettings().setString("e", "close");
-		final In inAlgoClose = new In(stockInitClose.getInit());
+		final Input inAlgoClose = new Input(stockInitClose.getInit());
 
 		final StockAlgoInitHelper init = new StockAlgoInitHelper("testSma", "aapl", stockInit.getStorage());
 		init.getSettings().setInteger("n", 5);

@@ -87,21 +87,29 @@ public final class AlgorithmsStorage {
 			algorithmsMap.put(className, classType);
 	}
 
-	public Class<? extends EodAlgorithm> getEod(final String algorithmName) {
+	public Class<? extends EodAlgorithm> getEod(final String algorithmName) throws BadAlgorithmException {
 		return getAlgorithmClass(algorithmName, eodNames);
 	}
 
-	public Class<? extends StockAlgorithm> getStock(final String algorithmName) {
+	public Class<? extends StockAlgorithm> getStock(final String algorithmName) throws BadAlgorithmException {
 		return getAlgorithmClass(algorithmName, stockNames);
 	}
 
-	private final <T> Class<? extends T> getAlgorithmClass(final String algorithmName, HashMap<String, Class<? extends T>> algorithmsMap) {
+	private final <T> Class<? extends T> getAlgorithmClass(final String algorithmName, HashMap<String, Class<? extends T>> algorithmsMap)
+			throws BadAlgorithmException {
 		final String lowCase = algorithmName.toLowerCase();
+		Class<? extends T> result = null;
 		for (Map.Entry<String, Class<? extends T>> i : algorithmsMap.entrySet()) {
-			if (i.getKey().contains(lowCase))
-				return i.getValue();
+			if (i.getKey().contains(lowCase)) {
+				if (result == null) {
+					result = i.getValue();
+				} else {
+					throw new BadAlgorithmException("For '" + algorithmName + "' we could assume:" + result.getName() + " or "
+							+ i.getValue().getName());
+				}
+			}
 		}
-		return null;
+		return result;
 	}
 
 	public final Set<String> getStockLabels() {

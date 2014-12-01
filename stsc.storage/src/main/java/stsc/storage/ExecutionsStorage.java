@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
-import stsc.algorithms.Out;
+import stsc.algorithms.Output;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
@@ -99,7 +99,7 @@ public class ExecutionsStorage implements Cloneable {
 			final String executionName = stockExecution.getExecutionName();
 			as.addSubExecutionName(executionName);
 			names.add(executionName);
-			stockExecutions.add(new StockExecution(outNameFor(executionName), Out.class, as));
+			stockExecutions.add(new StockExecution(outNameFor(executionName), Output.class, as));
 		}
 		return names;
 	}

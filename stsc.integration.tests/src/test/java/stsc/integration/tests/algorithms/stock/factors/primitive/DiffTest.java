@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.In;
+import stsc.algorithms.Input;
 import stsc.algorithms.stock.factors.primitive.Diff;
 import stsc.algorithms.stock.factors.primitive.Ema;
 import stsc.algorithms.stock.factors.primitive.Sma;
@@ -29,7 +29,7 @@ public class DiffTest {
 
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
 		stockInit.getSettings().setString("e", "open");
-		final In in = new In(stockInit.getInit());
+		final Input in = new Input(stockInit.getInit());
 
 		final StockAlgoInitHelper emaInit = new StockAlgoInitHelper("ema", "aapl", stockInit.getStorage());
 		emaInit.getSettings().addSubExecutionName("in");

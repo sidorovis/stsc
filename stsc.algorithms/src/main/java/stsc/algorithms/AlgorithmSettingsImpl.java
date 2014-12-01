@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.AlgorithmSettings;
+import stsc.common.algorithms.StockAlgorithmInit;
 
 public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 
@@ -21,6 +22,10 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 	private final HashMap<String, Double> doubles;
 	private final HashMap<String, String> strings;
 	private final ArrayList<String> subExecutions;
+
+	public AlgorithmSettingsImpl(final StockAlgorithmInit init) {
+		this(init.getSettings().getPeriod());
+	}
 
 	public AlgorithmSettingsImpl(final FromToPeriod period) {
 		this.period = period;
@@ -237,9 +242,9 @@ public final class AlgorithmSettingsImpl implements AlgorithmSettings {
 	@Override
 	public String toString() {
 		String result = "";
-		for (int i = 0 ; i < subExecutions.size(); ++i ) {
+		for (int i = 0; i < subExecutions.size(); ++i) {
 			result += subExecutions.get(i);
-			if ( i + 1 < subExecutions.size()) {
+			if (i + 1 < subExecutions.size()) {
 				result += ", ";
 			}
 		}

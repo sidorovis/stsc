@@ -113,7 +113,7 @@ public class SimulatorTest {
 		deleteFileIfExists("./test/statistics.csv");
 		final StockStorage stoskStorage = StockStorageFactory.createStockStorage("aapl", "./test_data/");
 		final FromToPeriod period = TestStatisticsHelper.getPeriod();
-		final String config = "StockExecutions = Alg1\n" + "Alg1.loadLine = Sma(n = 5, In(e=close))";
+		final String config = "StockExecutions = Alg1\n" + "Alg1.loadLine = Sma(n = 5, Input(e=close))";
 
 		final TradeProcessorInit init = new TradeProcessorInit(stoskStorage, period, config);
 		final List<String> stockExecutions = init.generateOutForStocks();

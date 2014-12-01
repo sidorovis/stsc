@@ -15,11 +15,11 @@ import stsc.signals.IntegerSignal;
 import stsc.signals.SideSignal;
 import stsc.signals.series.CommonSignalsSerie;
 
-public class Out extends StockAlgorithm {
+public class Output extends StockAlgorithm {
 
 	final String fromExecution;
 
-	public Out(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Output(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		super(initialize);
 		List<String> subExecutions = initialize.getSettings().getSubExecutions();
 		if (subExecutions.size() < 1)
