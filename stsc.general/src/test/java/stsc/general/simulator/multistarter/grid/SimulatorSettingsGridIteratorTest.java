@@ -72,8 +72,8 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		f1.add(new MpDouble("c", 0.1, 0.2, 0.1));
 		f1.add(new MpString("side2", Arrays.asList(new String[] { "long", "long" })));
 
-		ssFactory.addStock("a1", TestGridSimulatorSettings.algoStockName("In"), f1.getGridIterator());
-		ssFactory.addStock("a2", TestGridSimulatorSettings.algoStockName("In"), f1.getGridIterator());
+		ssFactory.addStock("a1", TestGridSimulatorSettings.algoStockName("Input"), f1.getGridIterator());
+		ssFactory.addStock("a2", TestGridSimulatorSettings.algoStockName("Input"), f1.getGridIterator());
 		ssFactory.addEod("a3", TestGridSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 		ssFactory.addEod("a4", TestGridSimulatorSettings.algoEodName("OneSideOpenAlgorithm"), f1.getGridIterator());
 
