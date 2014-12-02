@@ -12,11 +12,13 @@ import stsc.algorithms.Input;
 import stsc.algorithms.stock.indices.BollingerBands;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
+import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
+import stsc.signals.ListOfDoubleSignal;
 
 public class BollingerBandsTest {
 
@@ -40,9 +42,19 @@ public class BollingerBandsTest {
 			in.process(day);
 			bb.process(day);
 		}
+
 		final Day lastDay = days.get(days.size() - 1);
-		
-//		final double lastBB = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(DoubleSignal.class).value;
-		// TODO accomplish test
+
+		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getSignal(DoubleSignal.class).value;
+		final Double stdDevValue = bbInit.getStorage().getStockSignal("aapl", "BB_StdDev_bb", lastDay.getDate())
+				.getSignal(DoubleSignal.class).value;
+
+		final Double bbLowValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class).values
+				.get(0);
+		final Double bbHighValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class).values
+				.get(1);
+
+		Assert.assertEquals(smaValue - 2 * stdDevValue, bbLowValue, Settings.doubleEpsilon);
+		Assert.assertEquals(smaValue + 2 * stdDevValue, bbHighValue, Settings.doubleEpsilon);
 	}
 }
