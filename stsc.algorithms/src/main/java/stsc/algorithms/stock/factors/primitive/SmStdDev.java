@@ -15,19 +15,22 @@ import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
 public class SmStdDev extends StockAlgorithm {
+
 	private final String subAlgoName;
+	private final String subAlgoNameSma;
 	private final AlgorithmSetting<Integer> N;
 
-	final LinkedList<Double> elements = new LinkedList<>();
-	Double sum = Double.valueOf(0.0);
+	private final LinkedList<Double> elements = new LinkedList<>();
+	private Double sum = 0.0;
 
 	public SmStdDev(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		N = init.getSettings().getIntegerSetting("N", 5);
-		List<String> subExecutionNames = init.getSettings().getSubExecutions();
-		if (subExecutionNames.size() < 1)
+		final List<String> subExecutionNames = init.getSettings().getSubExecutions();
+		if (subExecutionNames.size() < 2)
 			throw new BadAlgorithmException("Sma algorithm should receive at least one sub algorithm");
 		subAlgoName = subExecutionNames.get(0);
+		subAlgoNameSma = subExecutionNames.get(1);
 	}
 
 	@Override
@@ -39,14 +42,18 @@ public class SmStdDev extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).value;
-		elements.push(price);
-		sum += price;
+		final double sma = getSignal(subAlgoNameSma, day.getDate()).getSignal(DoubleSignal.class).value;
+		final double sqr = Math.pow(sma - price, 2);
+		sum += sqr;
+		elements.push(sqr);
 		if (elements.size() <= N.getValue()) {
-			addSignal(day.getDate(), new DoubleSignal(sum / elements.size()));
+			final double sqrt = Math.sqrt(sum / elements.size());
+			addSignal(day.getDate(), new DoubleSignal(sqrt));
 		} else if (elements.size() > N.getValue()) {
-			Double lastElement = elements.pollLast();
+			final Double lastElement = elements.pollLast();
 			sum -= lastElement;
-			addSignal(day.getDate(), new DoubleSignal(sum / N.getValue()));
+			final double sqrt = Math.sqrt(sum / elements.size());
+			addSignal(day.getDate(), new DoubleSignal(sqrt));
 		}
 	}
 }

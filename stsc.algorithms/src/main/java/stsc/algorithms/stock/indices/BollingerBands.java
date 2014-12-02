@@ -3,6 +3,7 @@ package stsc.algorithms.stock.indices;
 import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
+import stsc.algorithms.stock.factors.primitive.SmStdDev;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -21,26 +22,37 @@ public class BollingerBands extends StockAlgorithm {
 	private final AlgorithmSetting<Integer> K;
 	private Integer size;
 
-	private final Sma sma;
 	private final String smaName;
+	private final Sma sma;
+	private final String smStdDevName;
+	private final SmStdDev smStdDev;
 
 	public BollingerBands(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		N = init.getSettings().getIntegerSetting("N", 20);
 		K = init.getSettings().getIntegerSetting("K", 2);
 		this.smaName = "BB_Sma_" + init.getExecutionName();
+		this.smStdDevName = "BB_StdDev_" + init.getExecutionName();
 
 		this.sma = createSma(init);
-		// this.stdev = createStdDev(init);
+		this.smStdDev = createStdDev(init);
 	}
 
 	private Sma createSma(StockAlgorithmInit init) throws BadAlgorithmException {
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
 		settings.setInteger("N", N.getValue());
 		settings.setInteger("size", size);
-		settings.getSubExecutions().addAll(init.getSettings().getSubExecutions());
 		final StockAlgorithmInit smaInit = new StockAlgorithmInit(smaName, init, settings);
 		return new Sma(smaInit);
+	}
+
+	private SmStdDev createStdDev(StockAlgorithmInit init) throws BadAlgorithmException {
+		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
+		settings.setInteger("N", N.getValue());
+		settings.setInteger("size", size);
+		settings.addSubExecutionName(smaName);
+		final StockAlgorithmInit smStdDevInit = new StockAlgorithmInit(smStdDevName, init, settings);
+		return new SmStdDev(smStdDevInit);
 	}
 
 	@Override
