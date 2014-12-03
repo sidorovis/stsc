@@ -18,7 +18,7 @@ import stsc.signals.series.LimitSignalsSerie;
 public class BollingerBands extends StockAlgorithm {
 
 	private final AlgorithmSetting<Integer> N;
-	private final AlgorithmSetting<Integer> K;
+	private final AlgorithmSetting<Double> K;
 	private Integer size;
 
 	private final String smaName;
@@ -29,7 +29,7 @@ public class BollingerBands extends StockAlgorithm {
 	public BollingerBands(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		N = init.getSettings().getIntegerSetting("N", 20);
-		K = init.getSettings().getIntegerSetting("K", 2);
+		K = init.getSettings().getDoubleSetting("K", 2.0);
 		this.smaName = "BB_Sma_" + init.getExecutionName();
 		this.smStdDevName = "BB_StdDev_" + init.getExecutionName();
 
