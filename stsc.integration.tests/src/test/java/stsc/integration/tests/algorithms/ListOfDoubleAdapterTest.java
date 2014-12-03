@@ -1,7 +1,5 @@
 package stsc.integration.tests.algorithms;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
-import stsc.signals.ListOfDoubleSignal;
 
 public class ListOfDoubleAdapterTest {
 
