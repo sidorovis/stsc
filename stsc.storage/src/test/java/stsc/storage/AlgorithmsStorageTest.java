@@ -22,7 +22,7 @@ public class AlgorithmsStorageTest {
 			ans.getStock("IN");
 			Assert.fail("IN could be used for BollingerBands and for Input");
 		} catch (BadAlgorithmException e) {
-			Assert.assertEquals("For 'IN' we could assume:stsc.algorithms.stock.indices.BollingerBands or stsc.algorithms.Input",
+			Assert.assertEquals("For 'IN' we could assume:stsc.algorithms.stock.indices.BollingerBands or stsc.algorithms.stock.indices.adx.AverageDirectionalMovement",
 					e.getMessage());
 		}
 	}
