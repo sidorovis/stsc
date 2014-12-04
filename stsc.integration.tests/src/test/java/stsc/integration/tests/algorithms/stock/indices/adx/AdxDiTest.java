@@ -8,7 +8,6 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.Input;
 import stsc.algorithms.stock.indices.adx.AdxDi;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -25,11 +24,8 @@ public class AdxDiTest {
 	@Test
 	public void testAdxDi() throws ParseException, BadAlgorithmException, IOException, BadSignalException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
-		stockInit.getSettings().setString("e", "open");
-		final Input in = new Input(stockInit.getInit());
 
 		final StockAlgoInitHelper adiInit = new StockAlgoInitHelper("adi", "aapl", stockInit.getStorage());
-		adiInit.getSettings().addSubExecutionName("in");
 		adiInit.getSettings().setInteger("size", 10000);
 		final AdxDi adi = new AdxDi(adiInit.getInit());
 
@@ -39,7 +35,6 @@ public class AdxDiTest {
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
-			in.process(day);
 			adi.process(day);
 		}
 

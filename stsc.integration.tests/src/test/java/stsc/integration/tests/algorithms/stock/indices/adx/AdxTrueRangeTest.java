@@ -8,7 +8,6 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.Input;
 import stsc.algorithms.stock.indices.adx.AdxTrueRange;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -23,11 +22,8 @@ public class AdxTrueRangeTest {
 	@Test
 	public void testBollingerBands() throws BadAlgorithmException, ParseException, IOException, BadSignalException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
-		stockInit.getSettings().setString("e", "open");
-		final Input in = new Input(stockInit.getInit());
 
 		final StockAlgoInitHelper atrInit = new StockAlgoInitHelper("atr", "aapl", stockInit.getStorage());
-		atrInit.getSettings().addSubExecutionName("in");
 		atrInit.getSettings().setInteger("size", 10000);
 		final AdxTrueRange atr = new AdxTrueRange(atrInit.getInit());
 
@@ -37,7 +33,6 @@ public class AdxTrueRangeTest {
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
-			in.process(day);
 			atr.process(day);
 		}
 
