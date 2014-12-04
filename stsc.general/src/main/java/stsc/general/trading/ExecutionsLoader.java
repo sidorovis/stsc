@@ -39,7 +39,7 @@ final class ExecutionsLoader {
 	}
 
 	private static final class Regexps {
-		public static final Pattern loadLine = Pattern.compile("^(\\w+)\\((.*)\\)$");
+		public static final Pattern loadLine = Pattern.compile("^(.?\\w+)\\((.*)\\)$");
 		public static final Pattern subAlgoParameter = Pattern.compile("^([^\\(]+)\\((.*)\\)(\\s)*$");
 		public static final Pattern integerParameter = Pattern.compile("^(.+)=(.+)[iI]$");
 		public static final Pattern doubleParameter = Pattern.compile("^(.+)=(.+)[dD]$");
