@@ -12,8 +12,14 @@ public class ListOfDoubleSignal extends StockSignal {
 	public ListOfDoubleSignal() {
 	}
 
-	public void addDouble(final double element) {
+	public ListOfDoubleSignal add(final double element) {
 		values.add(element);
+		return this;
+	}
+
+	public ListOfDoubleSignal addDouble(final double element) {
+		values.add(element);
+		return this;
 	}
 
 	@Override
