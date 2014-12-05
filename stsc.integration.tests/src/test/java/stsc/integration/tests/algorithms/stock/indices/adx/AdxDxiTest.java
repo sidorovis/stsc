@@ -46,7 +46,7 @@ public class AdxDxiTest {
 			final double r = adxInit.getStorage().getStockSignal("aapl", "adx", day.getDate()).getSignal(DoubleSignal.class).getValue();
 
 			if (Double.compare(p + m, 0.0) == 0) {
-				Assert.assertEquals(0.0, r, Settings.doubleEpsilon);
+				Assert.assertEquals(100.0, r, Settings.doubleEpsilon);
 			} else {
 				Assert.assertEquals(100.0 * Math.abs(p - m) / (p + m), r, Settings.doubleEpsilon);
 			}
