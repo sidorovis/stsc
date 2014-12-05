@@ -55,14 +55,14 @@ public class SmStdDevTest {
 		for (int i = aaplIndex; i < aaplIndex + 8; ++i) {
 			final double openValue = days.get(i).getPrices().getOpen();
 			final double smaValue = smaInit.getStorage().getStockSignal("aapl", "testSma", days.get(i).getDate())
-					.getSignal(DoubleSignal.class).value;
+					.getSignal(DoubleSignal.class).getValue();
 			final double sqr = Math.pow(openValue - smaValue, 2);
 			sqrSum += sqr / 7;
 		}
 
 		final double sqrt = Math.sqrt(sqrSum);
 		final double stdDevValue = smStdDevInit.getStorage().getStockSignal("aapl", "testStdDev", days.get(aaplIndex + 7).getDate())
-				.getSignal(DoubleSignal.class).value;
+				.getSignal(DoubleSignal.class).getValue();
 
 		Assert.assertEquals(sqrt, stdDevValue, Settings.doubleEpsilon);
 	}

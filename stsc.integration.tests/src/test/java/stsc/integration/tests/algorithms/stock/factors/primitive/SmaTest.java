@@ -73,11 +73,12 @@ public class SmaTest {
 			lastSumClose += days.get(i).getPrices().getClose();
 		}
 		final Day lastDay = days.get(days.size() - 1);
-		final double lastSma = init.getStorage().getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(DoubleSignal.class).value;
+		final double lastSma = init.getStorage().getStockSignal("aapl", "testSma", lastDay.getDate()).getSignal(DoubleSignal.class)
+				.getValue();
 		Assert.assertEquals(lastSum / 5, lastSma, Settings.doubleEpsilon);
 
 		final double lastSmaClose = init.getStorage().getStockSignal("aapl", "testSmaClose", lastDay.getDate())
-				.getSignal(DoubleSignal.class).value;
+				.getSignal(DoubleSignal.class).getValue();
 		Assert.assertEquals(lastSumClose / 5, lastSmaClose, Settings.doubleEpsilon);
 	}
 }

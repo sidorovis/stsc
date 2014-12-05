@@ -39,7 +39,7 @@ public class Sma extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).value;
+		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).getValue();
 		elements.push(price);
 		sum += price;
 		if (elements.size() <= N.getValue()) {

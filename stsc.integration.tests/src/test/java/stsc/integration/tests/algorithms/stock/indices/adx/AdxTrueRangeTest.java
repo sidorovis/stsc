@@ -41,17 +41,16 @@ public class AdxTrueRangeTest {
 			final double min = Math.min(days.get(aaplIndex).getPrices().getLow(), days.get(aaplIndex).getPrices().getClose());
 
 			Assert.assertEquals(max - min,
-					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex).getDate()).getSignal(DoubleSignal.class).value,
-					Settings.doubleEpsilon);
+					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex).getDate()).getSignal(DoubleSignal.class)
+							.getValue(), Settings.doubleEpsilon);
 		}
 		{
 			final double max = Math.max(days.get(aaplIndex + 1).getPrices().getHigh(), days.get(aaplIndex).getPrices().getLow());
 			final double min = Math.min(days.get(aaplIndex + 1).getPrices().getLow(), days.get(aaplIndex).getPrices().getClose());
 
-			Assert.assertEquals(
-					max - min,
-					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex + 1).getDate()).getSignal(DoubleSignal.class).value,
-					Settings.doubleEpsilon);
+			Assert.assertEquals(max - min,
+					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex + 1).getDate()).getSignal(DoubleSignal.class)
+							.getValue(), Settings.doubleEpsilon);
 		}
 	}
 }

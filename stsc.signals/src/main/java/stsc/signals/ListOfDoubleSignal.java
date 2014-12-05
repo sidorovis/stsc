@@ -7,7 +7,7 @@ import stsc.common.signals.StockSignal;
 
 public class ListOfDoubleSignal extends StockSignal {
 
-	final public List<Double> values = new ArrayList<>();
+	final private List<Double> values = new ArrayList<>();
 
 	public ListOfDoubleSignal() {
 	}
@@ -20,6 +20,10 @@ public class ListOfDoubleSignal extends StockSignal {
 	public ListOfDoubleSignal addDouble(final double element) {
 		values.add(element);
 		return this;
+	}
+
+	public List<Double> getValues() {
+		return values;
 	}
 
 	@Override

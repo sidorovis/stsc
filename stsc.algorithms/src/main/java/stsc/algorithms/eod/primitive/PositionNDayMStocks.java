@@ -97,7 +97,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 			String stockName = i.getKey();
 			Signal<? extends StockSignal> signal = getSignal(stockName, factorExecutionName, date);
 			if (signal != null && signal.getSignal(DoubleSignal.class) != null)
-				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).value, stockName));
+				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).getValue(), stockName));
 		}
 		Collections.sort(sortedStocks);
 		return sortedStocks;

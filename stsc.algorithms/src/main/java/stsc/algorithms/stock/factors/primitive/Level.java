@@ -31,9 +31,9 @@ public class Level extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		final DoubleSignal s = getSignal(factorName, day.getDate()).getSignal(DoubleSignal.class);
-		if (s.value > level)
-			addSignal(day.getDate(), new SideSignal(Side.LONG, s.value));
-		else if (s.value < -level)
-			addSignal(day.getDate(), new SideSignal(Side.SHORT, s.value));
+		if (s.getValue() > level)
+			addSignal(day.getDate(), new SideSignal(Side.LONG, s.getValue()));
+		else if (s.getValue() < -level)
+			addSignal(day.getDate(), new SideSignal(Side.SHORT, s.getValue()));
 	}
 }

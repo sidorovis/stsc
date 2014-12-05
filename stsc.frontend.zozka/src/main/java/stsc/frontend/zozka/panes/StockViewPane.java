@@ -184,7 +184,7 @@ public class StockViewPane {
 			final int size = signalsStorage.getIndexSize(stockName, outName);
 			for (int i = 0; i < size; ++i) {
 				final Signal<? extends StockSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
-				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).value);
+				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).getValue());
 			}
 			return timeSeries;
 		}

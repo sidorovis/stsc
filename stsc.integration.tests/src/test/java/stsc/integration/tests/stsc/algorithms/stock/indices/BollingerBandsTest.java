@@ -45,14 +45,15 @@ public class BollingerBandsTest {
 
 		final Day lastDay = days.get(days.size() - 1);
 
-		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getSignal(DoubleSignal.class).value;
+		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getSignal(DoubleSignal.class)
+				.getValue();
 		final Double stdDevValue = bbInit.getStorage().getStockSignal("aapl", "BB_StdDev_bb", lastDay.getDate())
-				.getSignal(DoubleSignal.class).value;
+				.getSignal(DoubleSignal.class).getValue();
 
-		final Double bbLowValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class).values
-				.get(0);
-		final Double bbHighValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class).values
-				.get(1);
+		final Double bbLowValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class)
+				.getValues().get(0);
+		final Double bbHighValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class)
+				.getValues().get(1);
 
 		Assert.assertEquals(smaValue - 2 * stdDevValue, bbLowValue, Settings.doubleEpsilon);
 		Assert.assertEquals(smaValue + 2 * stdDevValue, bbHighValue, Settings.doubleEpsilon);

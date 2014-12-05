@@ -32,6 +32,7 @@ public class ListOfDoubleAdapter extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		addSignal(day.getDate(), new DoubleSignal(getSignal(subAlgoName, day.getDate()).getSignal(ListOfDoubleSignal.class).values.get(I)));
+		addSignal(day.getDate(), new DoubleSignal(getSignal(subAlgoName, day.getDate()).getSignal(ListOfDoubleSignal.class).getValues()
+				.get(I)));
 	}
 }

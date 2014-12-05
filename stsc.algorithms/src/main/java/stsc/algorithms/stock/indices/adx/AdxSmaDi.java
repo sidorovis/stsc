@@ -78,8 +78,8 @@ public class AdxSmaDi extends StockAlgorithm {
 		adxDiPlusListOfDoubleAdapter.process(day);
 		adxSmaDiMinus.process(day);
 		adxSmaDiPlus.process(day);
-		final double smaMinus = getSignal(adxSmaDiMinusName, day.getDate()).getSignal(DoubleSignal.class).value;
-		final double smaPlus = getSignal(adxSmaDiPlusName, day.getDate()).getSignal(DoubleSignal.class).value;
+		final double smaMinus = getSignal(adxSmaDiMinusName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double smaPlus = getSignal(adxSmaDiPlusName, day.getDate()).getSignal(DoubleSignal.class).getValue();
 		addSignal(day.getDate(), new ListOfDoubleSignal().add(smaMinus).add(smaPlus));
 	}
 }

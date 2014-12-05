@@ -37,22 +37,19 @@ public class AdxDmTest {
 			adm.process(day);
 		}
 
-		Assert.assertEquals(
-				0.0,
-				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex).getDate()).getSignal(ListOfDoubleSignal.class).values
-						.get(0), Settings.doubleEpsilon);
-		Assert.assertEquals(
-				0.0,
-				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex).getDate()).getSignal(ListOfDoubleSignal.class).values
-						.get(1), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0,
+				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex).getDate()).getSignal(ListOfDoubleSignal.class)
+						.getValues().get(0), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0,
+				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex).getDate()).getSignal(ListOfDoubleSignal.class)
+						.getValues().get(1), Settings.doubleEpsilon);
 
 		Assert.assertEquals(Math.max(days.get(aaplIndex).getPrices().getLow() - days.get(aaplIndex + 1).getPrices().getLow(), 0.0), admInit
-				.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex + 1).getDate()).getSignal(ListOfDoubleSignal.class).values
-				.get(0), Settings.doubleEpsilon);
-		Assert.assertEquals(
-				Math.max(0.0, days.get(aaplIndex + 1).getPrices().getHigh() - days.get(aaplIndex).getPrices().getHigh()),
-				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex + 1).getDate()).getSignal(ListOfDoubleSignal.class).values
-						.get(1), Settings.doubleEpsilon);
+				.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex + 1).getDate()).getSignal(ListOfDoubleSignal.class)
+				.getValues().get(0), Settings.doubleEpsilon);
+		Assert.assertEquals(Math.max(0.0, days.get(aaplIndex + 1).getPrices().getHigh() - days.get(aaplIndex).getPrices().getHigh()),
+				admInit.getStorage().getStockSignal("aapl", "adm", days.get(aaplIndex + 1).getDate()).getSignal(ListOfDoubleSignal.class)
+						.getValues().get(1), Settings.doubleEpsilon);
 
 	}
 }

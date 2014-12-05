@@ -41,8 +41,8 @@ public class SmStdDev extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).value;
-		final double sma = getSignal(subAlgoNameSma, day.getDate()).getSignal(DoubleSignal.class).value;
+		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double sma = getSignal(subAlgoNameSma, day.getDate()).getSignal(DoubleSignal.class).getValue();
 		final double sqr = Math.pow(sma - price, 2);
 		sum += sqr;
 		elements.push(sqr);
