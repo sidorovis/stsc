@@ -5,6 +5,7 @@ import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.Output;
+import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
 import stsc.common.algorithms.StockExecution;
@@ -105,6 +106,6 @@ public class ExecutionsStorage implements Cloneable {
 	}
 
 	public static String outNameFor(String name) {
-		return name + "_out";
+		return name + Settings.algorithmStaticPostfix;
 	}
 }

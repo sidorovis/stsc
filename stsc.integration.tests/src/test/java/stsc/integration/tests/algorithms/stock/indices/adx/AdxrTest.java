@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.stock.indices.adx.AdxAdxr;
+import stsc.algorithms.stock.indices.adx.Adxr;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
@@ -18,15 +18,15 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
-public class AdxAdxrTest {
+public class AdxrTest {
 
 	@Test
-	public void testAdxAdxr() throws ParseException, IOException, BadSignalException, BadAlgorithmException {
+	public void testAdxr() throws ParseException, IOException, BadSignalException, BadAlgorithmException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
 
 		final StockAlgoInitHelper adxInit = new StockAlgoInitHelper("adxr", "aapl", stockInit.getStorage());
 		adxInit.getSettings().setInteger("size", 10000);
-		final AdxAdxr adxr = new AdxAdxr(adxInit.getInit());
+		final Adxr adxr = new Adxr(adxInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -42,8 +42,8 @@ public class AdxAdxrTest {
 		final double current = adxInit.getStorage().getStockSignal("aapl", "adxr_AdxAdx", days.size() - 1 - aaplIndex)
 				.getSignal(DoubleSignal.class).getValue();
 
-		final double adxrValue = adxInit.getStorage().getStockSignal("aapl", "adxr", days.size() - 1 - aaplIndex).getSignal(DoubleSignal.class)
-				.getValue();
+		final double adxrValue = adxInit.getStorage().getStockSignal("aapl", "adxr", days.size() - 1 - aaplIndex)
+				.getSignal(DoubleSignal.class).getValue();
 
 		Assert.assertEquals((current - previous) / 2.0, adxrValue, Settings.doubleEpsilon);
 	}
