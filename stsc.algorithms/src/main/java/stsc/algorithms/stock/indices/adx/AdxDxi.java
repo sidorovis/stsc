@@ -45,7 +45,7 @@ public class AdxDxi extends StockAlgorithm {
 		final double diMinus = adxSmaDiSignal.getValues().get(0);
 		final double diPlus = adxSmaDiSignal.getValues().get(1);
 		if (Double.compare(diPlus + diMinus, 0.0) == 0) {
-			addSignal(day.getDate(), new DoubleSignal(0.0));
+			addSignal(day.getDate(), new DoubleSignal(100.0));
 		} else {
 			final double dxi = 100 * Math.abs(diPlus - diMinus) / (diPlus + diMinus);
 			addSignal(day.getDate(), new DoubleSignal(dxi));
