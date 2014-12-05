@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.stock.indices.adx.Adx;
+import stsc.algorithms.stock.indices.adx.AdxAdx;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
@@ -18,15 +18,15 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
-public class AdxTest {
+public class AdxAdxTest {
 
 	@Test
-	public void testAdx() throws ParseException, BadAlgorithmException, IOException, BadSignalException {
+	public void testAdxAdx() throws ParseException, BadAlgorithmException, IOException, BadSignalException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
 
 		final StockAlgoInitHelper adxInit = new StockAlgoInitHelper("adx", "aapl", stockInit.getStorage());
 		adxInit.getSettings().setInteger("size", 10000);
-		final Adx adx = new Adx(adxInit.getInit());
+		final AdxAdx adx = new AdxAdx(adxInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());

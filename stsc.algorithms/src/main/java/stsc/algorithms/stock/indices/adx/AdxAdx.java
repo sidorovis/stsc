@@ -12,7 +12,7 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class Adx extends StockAlgorithm {
+public class AdxAdx extends StockAlgorithm {
 
 	private final String adxDxiName;
 	private final AdxDxi adxDxi;
@@ -20,7 +20,7 @@ public class Adx extends StockAlgorithm {
 	private final String adxDxiSmaName;
 	private final Sma adxDxiSma;
 
-	public Adx(StockAlgorithmInit init) throws BadAlgorithmException {
+	public AdxAdx(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		final Integer N = init.getSettings().getIntegerSetting("N", 14).getValue();
 		final Integer nSma = init.getSettings().getIntegerSetting("nSma", 14).getValue();
