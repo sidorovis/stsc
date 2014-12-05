@@ -14,7 +14,7 @@ import stsc.signals.DoubleSignal;
 import stsc.signals.ListOfDoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class AdxWithSmaDi extends StockAlgorithm {
+public class AdxSmaDi extends StockAlgorithm {
 
 	private final Integer N;
 
@@ -32,7 +32,7 @@ public class AdxWithSmaDi extends StockAlgorithm {
 	private final String adxSmaDiPlusName;
 	private final Sma adxSmaDiPlus;
 
-	public AdxWithSmaDi(StockAlgorithmInit init) throws BadAlgorithmException {
+	public AdxSmaDi(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		this.N = init.getSettings().getIntegerSetting("N", 14).getValue();
 		this.adxDiName = init.getExecutionName() + "_AdxDi";
