@@ -79,6 +79,12 @@ MfiTypicalPrice <br/>
 &ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
 &ensp;&ensp;-> DoubleSignal.
 </p>
+<p>
+MfiMoneyFlow <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
   </li>
 
 </ol>
