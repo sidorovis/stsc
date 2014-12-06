@@ -34,7 +34,7 @@ Output <br/>
   <li>
     <h5>stsc.algorithms.eod.primitive</h5>
     <ol>
-      <ul>TODO</ul>
+      <ul>TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).</ul>
     </ol>
   </li>
   <li>
@@ -43,6 +43,40 @@ Output <br/>
       <ul>TODO</ul>
     </ol>
   </li>
+  <li>
+    <h5>stsc.algorithms.stock.indices.adx</h5>
+<p>
+AdxAdx <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: N (14 by default), nSma (14 by default), size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+AdxDi <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;-> ListOfDoubleSignal (dmMinus/trueRange, dmPlus/trueRange).
+</p>
+<p>
+AdxDm <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;-> ListOfDoubleSignal (dmMinus, dmPlus).
+</p>
+<p>
+AdxDxi <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+AdxAdxr <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: N (14 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+  </li>
+
 </ol>
 
 stsc.common

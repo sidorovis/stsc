@@ -1,4 +1,4 @@
-package stsc.algorithms.stock.indices;
+package stsc.algorithms.stock.indices.bb;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.stock.factors.primitive.SmStdDev;

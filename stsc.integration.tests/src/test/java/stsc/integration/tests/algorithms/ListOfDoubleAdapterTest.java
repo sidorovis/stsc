@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import stsc.algorithms.Input;
 import stsc.algorithms.ListOfDoubleAdapter;
-import stsc.algorithms.stock.indices.BollingerBands;
+import stsc.algorithms.stock.indices.bb.BollingerBands;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
