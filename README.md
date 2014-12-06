@@ -12,13 +12,24 @@ On Stock Algorithms tree:
 <ol>
   <li>
     <h5>stsc.algorithms(common)</h5>
-<div>
-Input <br/>
-&ensp;{ {no_input}, <br/>e -> [String: open by default, high, low, close, value]} <br/>
-&ensp;-> DoubleSignal.
-</div>
-`ListOfDoubleAdapter { {1: ListOfDoubleSignal}, e -> [Integer: I - index of double into list 0 by default]} -> DoubleSignal.`
-`Output { {1: DoubleSignal or SideSignal or IntegerSignal}, e -> [-SubAlgoName-]} -> DoubleSignal.`
+<p>
+Input<br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [String: open by default, high, low, close, value]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+ListOfDoubleAdapter<br/>
+&ensp;&ensp;{ {1: ListOfDoubleSignal}, <br/>
+&ensp;&ensp;e -> [Integer: I - index of double into list 0 by default]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+Output <br/>
+&ensp;&ensp;{ {1: DoubleSignal or SideSignal or IntegerSignal}, <br/>
+&ensp;&ensp;e -> [-SubAlgoName-]} <br/>
+&ensp;&ensp;-> DoubleSignal.<br/>
+</p>
   </li>
   <li>
     <h5>stsc.algorithms.eod.primitive</h5>
