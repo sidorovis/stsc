@@ -14,8 +14,8 @@ public class Mfi extends StockAlgorithm {
 
 	private final int N;
 	private int currentIndex = 0;
-	private double positiveMoneyFlowSum = 0.0;
-	private double negativeMoneyFlowSum = 0.0;
+
+	
 	
 	public Mfi(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);

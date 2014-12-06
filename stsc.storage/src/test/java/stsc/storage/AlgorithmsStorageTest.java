@@ -23,7 +23,7 @@ public class AlgorithmsStorageTest {
 			Assert.fail("For 'IN' we could assume:stsc.algorithms.stock.indices.adx.AverageDirectionalMovement or stsc.algorithms.stock.indices.adx.AdxTrueRange");
 		} catch (BadAlgorithmException e) {
 			Assert.assertEquals(
-					"For 'IN' we could assume:stsc.algorithms.stock.indices.adx.AdxSmaDi or stsc.algorithms.stock.indices.adx.AverageDirectionalMovement",
+					"For 'IN' we could assume:stsc.algorithms.stock.indices.adx.AdxSmaDi or stsc.algorithms.stock.indices.mfi.MfiMoneyFlow",
 					e.getMessage());
 		}
 	}
