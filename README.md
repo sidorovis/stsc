@@ -13,9 +13,14 @@ On Stock Algorithms tree:
   <li>
     <h5>stsc.algorithms(common)</h5>
     <ol>
-      <ul>Input { {no_input}, e -> [String: open by default, high, low, close, value]} -> DoubleSignal.</ul>
-      <ul>ListOfDoubleAdapter { {1: ListOfDoubleSignal}, e -> [Integer: I - index of double into list 0 by default]} -> DoubleSignal.</ul>
-      <ul>Output { {1: DoubleSignal or SideSignal or IntegerSignal}, e -> [-SubAlgoName-]} -> DoubleSignal.</ul>
+```
+Input { {no_input}, e -> [String: open by default, high, low, close, value]} -> DoubleSignal.
+```
+ListOfDoubleAdapter { {1: ListOfDoubleSignal}, e -> [Integer: I - index of double into list 0 by default]} -> DoubleSignal.
+```
+```
+Output { {1: DoubleSignal or SideSignal or IntegerSignal}, e -> [-SubAlgoName-]} -> DoubleSignal.
+```
     </ol>
   </li>
   <li>
