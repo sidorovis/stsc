@@ -33,15 +33,10 @@ Output <br/>
   </li>
   <li>
     <h5>stsc.algorithms.eod.primitive</h5>
-    <ol>
-      <ul>TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).</ul>
-    </ol>
+TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
   </li>
   <li>
     <h5>stsc.algorithms.stock.factors.primitive</h5>
-    <ol>
-      <ul>TODO</ul>
-    </ol>
   </li>
   <li>
     <h5>stsc.algorithms.stock.indices.adx</h5>
