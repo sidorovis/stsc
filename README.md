@@ -72,7 +72,7 @@ AdxAdxr <br/>
 </p>
   </li>
   <li>
-    <h5>stsc.algorithms.stock.indices.adx</h5>
+    <h5>stsc.algorithms.stock.indices.mfi</h5>
 <p>
 MfiTypicalPrice <br/>
 &ensp;&ensp;{ {no_input}, <br/>
