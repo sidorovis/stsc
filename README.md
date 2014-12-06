@@ -36,38 +36,38 @@ stsc.frontend.zozka
 ------------
 
 Zozka is a simple frontend that have end-user interface with datafeed's on-stock signals, on-eod signals, equity curve's and statistics for trading strategies in different ways:
-For settings:
+<b>For settings:</b>
 <ol>
   <li>settings tables (parameters (from, to, step or domen for string values));</li>
   <li>big multi-parameter sets (multiplication of parameters);</li>
 </ol>
-For datafeed:
+<b>For datafeed:</b>
 <ol>
   <li>candles, colored lines for prices;</li>
   <li>colored bars for values;</li>
 </ol>
-For on-stock signals / values:
+<b>For on-stock signals / values:</b>
 <ol>
   <li>colored marks (dots/crosses etc.);</li>
   <li>colored lines (straight lines between dots);</li>
   <li>colored lines (Bezier like);</li>
 </ol>
-For on-eod signals:
+<b>For on-eod signals:</b>
 <ol>
   <li>colored marks;</li>
   <li>labels with amounts/wasted amounts/values;</li>
 </ol>
-For equity curve's:
+<b>For equity curve's:</b>
 <ol>
- * colored lines;
- * colored lines (Bezier like);
- * statistics tables.
+  <li>colored lines;</li>
+  <li>colored lines (Bezier like);</li>
+  <li>statistics tables.</li>
 </ol>
-For datafeed:
+<b>For datafeed:</b>
 <ol>
- * list of stocks;
- * comparing dialog with charts and adjective closes;
- * possibility to simple redownload.
+  <li>list of stocks;</li>
+  <li>comparing dialog with charts and adjective closes;</li>
+  <li>possibility to simple redownload.</li>
 </ol>
 
 Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). Works only for Yahoo EOD datafeed currently.
