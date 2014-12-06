@@ -8,16 +8,27 @@ stst.algorithms
 
 This module would store all eod and stock algorithms.
 
-Algorithms tree:
+On Stock Algorithms tree:
 <ol>
   <li>
-<h5>stsc.algorithms</h5> (common)<br/>
+    <h5>stsc.algorithms(common)</h5>
+    <ol>
+      <ul>Input { {no_input}, e -> [String: open by default, high, low, close, value]} -> DoubleSignal.</ul>
+      <ul>ListOfDoubleAdapter { {1: ListOfDoubleSignal}, e -> [Integer: I - index of double into list 0 by default]} -> DoubleSignal.</ul>
+      <ul>Output { {1: DoubleSignal or SideSignal or IntegerSignal}, e -> [-SubAlgoName-]} -> DoubleSignal.</ul>
+    </ol>
   </li>
   <li>
-<h5>stsc.algorithms.eod.primitive</h5>
+    <h5>stsc.algorithms.eod.primitive</h5>
+    <ol>
+      <ul>TODO</ul>
+    </ol>
   </li>
   <li>
-<h5>stsc.algorithms.stock.factors.primitive</h5>
+    <h5>stsc.algorithms.stock.factors.primitive</h5>
+    <ol>
+      <ul>TODO</ul>
+    </ol>
   </li>
 </ol>
 
