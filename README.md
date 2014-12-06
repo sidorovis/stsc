@@ -8,6 +8,19 @@ stst.algorithms
 
 This module would store all eod and stock algorithms.
 
+Algorithms tree:
+<ol>
+  <li>
+<h5>stsc.algorithms</h5> (common)<br/>
+  </li>
+  <li>
+<h5>stsc.algorithms.eod.primitive</h5>
+  </li>
+  <li>
+<h5>stsc.algorithms.stock.factors.primitive</h5>
+  </li>
+</ol>
+
 stsc.common
 -----------
 
@@ -24,26 +37,38 @@ stsc.frontend.zozka
 
 Zozka is a simple frontend that have end-user interface with datafeed's on-stock signals, on-eod signals, equity curve's and statistics for trading strategies in different ways:
 For settings:
- * settings tables (parameters (from, to, step or domen for string values));
- * big multi-parameter sets (multiplication of parameters);
+<ol>
+  <li>settings tables (parameters (from, to, step or domen for string values));</li>
+  <li>big multi-parameter sets (multiplication of parameters);</li>
+</ol>
 For datafeed:
- * candles, colored lines for prices;
- * colored bars for values;
+<ol>
+  <li>candles, colored lines for prices;</li>
+  <li>colored bars for values;</li>
+</ol>
 For on-stock signals / values:
- * colored marks (dots/crosses etc.);
- * colored lines (straight lines between dots);
- * colored lines (Bezier like);
+<ol>
+  <li>colored marks (dots/crosses etc.);</li>
+  <li>colored lines (straight lines between dots);</li>
+  <li>colored lines (Bezier like);</li>
+</ol>
 For on-eod signals:
- * colored marks;
- * labels with amounts/wasted amounts/values;
+<ol>
+  <li>colored marks;</li>
+  <li>labels with amounts/wasted amounts/values;</li>
+</ol>
 For equity curve's:
+<ol>
  * colored lines;
  * colored lines (Bezier like);
  * statistics tables.
+</ol>
 For datafeed:
+<ol>
  * list of stocks;
  * comparing dialog with charts and adjective closes;
  * possibility to simple redownload.
+</ol>
 
 Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). Works only for Yahoo EOD datafeed currently.
 
