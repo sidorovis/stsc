@@ -29,6 +29,14 @@ public class StockAlgorithmInit {
 		this.settings = settings;
 	}
 
+	public StockAlgorithmInit createInit(String executionName, AlgorithmSettings settings) {
+		return new StockAlgorithmInit(executionName, this, settings);
+	}
+
+	public StockAlgorithmInit createInit(String executionName) {
+		return new StockAlgorithmInit(executionName, this, settings);
+	}
+	
 	public String getStockName() {
 		return stockName;
 	}
