@@ -71,6 +71,15 @@ AdxAdxr <br/>
 &ensp;&ensp;-> DoubleSignal.
 </p>
   </li>
+  <li>
+    <h5>stsc.algorithms.stock.indices.adx</h5>
+<p>
+MfiTypicalPrice <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+  </li>
 
 </ol>
 
