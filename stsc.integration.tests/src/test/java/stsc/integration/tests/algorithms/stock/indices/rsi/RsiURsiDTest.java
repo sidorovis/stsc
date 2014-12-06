@@ -60,9 +60,7 @@ public class RsiURsiDTest {
 					Assert.assertEquals(0.0, rsiuValue, Settings.doubleEpsilon);
 					Assert.assertEquals(-v, rsidValue, Settings.doubleEpsilon);
 				}
-
 			}
 		}
 	}
-
 }
