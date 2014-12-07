@@ -11,7 +11,8 @@ This module would store all eod and stock algorithms.
 On Stock Algorithms tree:
 
 1. stsc.algorithms(common)
-..Input
+..*Input
+
     { {no_input},
     e -> [String: open by default, high, low, close, value]}
 
