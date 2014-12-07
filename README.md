@@ -85,6 +85,22 @@ MfiMoneyFlow <br/>
 &ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
 &ensp;&ensp;-> DoubleSignal.
 </p>
+<p>
+MfiMfi <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: N (14 be default), size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+  </li>
+  <li>
+    <h5>stsc.algorithms.stock.indices.msi</h5>
+<p>
+McClellanOscillator <br/>
+&ensp;&ensp;{ {1: DoubleSignal}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;e -> [Double: slowP (0.1 by default), fastP (0.05 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
   </li>
 
 </ol>
