@@ -97,8 +97,30 @@ MfiMfi <br/>
 <p>
 McClellanOscillator <br/>
 &ensp;&ensp;{ {1: DoubleSignal}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ], <br/>
 &ensp;&ensp;e -> [Double: slowP (0.1 by default), fastP (0.05 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+  </li>
+  <li>
+    <h5>stsc.algorithms.stock.indices.rsi</h5>
+<p>
+RsiD <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+RsiRsi <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ], <br/>
+&ensp;&ensp;e -> [Double: P (0.3 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
+</p>
+<p>
+RsiU <br/>
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
 &ensp;&ensp;-> DoubleSignal.
 </p>
   </li>
