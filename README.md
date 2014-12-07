@@ -60,9 +60,9 @@ AdxDm <br/>
 </p>
 <p>
 AdxDxi <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
+    &ensp;&ensp;{ {no_input}, <br/>
+    &ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
+    &ensp;&ensp;-> DoubleSignal.
 </p>
 <p>
 AdxAdxr <br/>
