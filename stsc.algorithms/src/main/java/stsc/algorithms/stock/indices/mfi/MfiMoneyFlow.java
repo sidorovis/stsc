@@ -21,6 +21,10 @@ public class MfiMoneyFlow extends StockAlgorithm {
 		final StockAlgorithmInit tpInit = init.createInit(mfiTpName);
 		this.mfiTp = new MfiTypicalPrice(tpInit);
 	}
+	
+	public String getMfiTpName() {
+		return this.mfiTpName;
+	}
 
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
