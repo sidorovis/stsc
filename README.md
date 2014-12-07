@@ -9,6 +9,11 @@ stst.algorithms
 This module would store all eod and stock algorithms.
 
 On Stock Algorithms tree:
+1. stsc.algorithms(common)
+..Input
+    { {no_input},
+    e -> [String: open by default, high, low, close, value]}
+
 <ol>
   <li>
     <h5>stsc.algorithms(common)</h5>
@@ -60,9 +65,9 @@ AdxDm <br/>
 </p>
 <p>
 AdxDxi <br/>
-    &ensp;&ensp;{ {no_input}, <br/>
-    &ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
-    &ensp;&ensp;-> DoubleSignal.
+&ensp;&ensp;{ {no_input}, <br/>
+&ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
+&ensp;&ensp;-> DoubleSignal.
 </p>
 <p>
 AdxAdxr <br/>
