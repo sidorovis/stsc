@@ -9,6 +9,7 @@ stst.algorithms
 This module would store all eod and stock algorithms.
 
 On Stock Algorithms tree:
+
 1. stsc.algorithms(common)
 ..Input
     { {no_input},
