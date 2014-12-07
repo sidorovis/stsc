@@ -17,29 +17,19 @@ On Stock Algorithms tree:
 e -> [String: open by default, high, low, close, value]}
 -> DoubleSignal
 ```
-
+ * ListOfDoubleAdapter
+```
+{ {1: ListOfDoubleSignal},
+e -> [Integer: I - index of double into list 0 by default]}
+-> DoubleSignal
+```
+ * Output
+```
+{ {1: DoubleSignal or SideSignal or IntegerSignal},
+e -> [-SubAlgoName-]}
+-> DoubleSignal.
+```
 <ol>
-  <li>
-    <h5>stsc.algorithms(common)</h5>
-<p>
-Input<br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [String: open by default, high, low, close, value]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-ListOfDoubleAdapter<br/>
-&ensp;&ensp;{ {1: ListOfDoubleSignal}, <br/>
-&ensp;&ensp;e -> [Integer: I - index of double into list 0 by default]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-Output <br/>
-&ensp;&ensp;{ {1: DoubleSignal or SideSignal or IntegerSignal}, <br/>
-&ensp;&ensp;e -> [-SubAlgoName-]} <br/>
-&ensp;&ensp;-> DoubleSignal.<br/>
-</p>
-  </li>
   <li>
     <h5>stsc.algorithms.eod.primitive</h5>
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
