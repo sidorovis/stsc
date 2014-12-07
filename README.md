@@ -12,7 +12,6 @@ On Stock Algorithms tree:
 
 ##### stsc.algorithms(common)
  * Input
-
 ```
 { {no_input},
 e -> [String: open by default, high, low, close, value]}
