@@ -37,8 +37,9 @@ public class MfiMfi extends StockAlgorithm {
 
 	@Override
 	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+		final int n = initialize.getSettings().getIntegerSetting("N", 2).getValue();
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(DoubleSignal.class, Math.max(size + 2, N + 2));
+		return new LimitSignalsSerie<>(DoubleSignal.class, Math.max(size + 2, n + 2));
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class MfiMfi extends StockAlgorithm {
 		if (currentIndex > N) {
 			final double previousOldMTp = getSignal(mfiTpName, currentIndex - N - 1).getSignal(DoubleSignal.class).getValue();
 			final double oldTp = getSignal(mfiTpName, currentIndex - N).getSignal(DoubleSignal.class).getValue();
-			
+
 			final double oldMf = getSignal(mfiMfName, currentIndex - N).getSignal(DoubleSignal.class).getValue();
 
 			if (oldTp >= previousOldMTp) {
