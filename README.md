@@ -34,41 +34,39 @@ TODO End of day primitive (test-like) algortihms (with positions and auto monito
 ##### stsc.algorithms.stock.factors.primitive
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.indices.adx
-
+ * AdxAdx
+```
+{ {no_input}, <br/>
+e -> [Integer: N (14 by default), nSma (14 by default), size (2 by default) ]} <br/>
+-> DoubleSignal.
+```
+ * AdxDi
+```
+{ {no_input}, <br/>
+e -> [Integer: size (2 by default) ]} <br/>
+-> ListOfDoubleSignal (dmMinus/trueRange, dmPlus/trueRange).
+```
+ * AdxDm
+```
+{ {no_input}, <br/>
+e -> [Integer: size (2 by default) ]} <br/>
+-> ListOfDoubleSignal (dmMinus, dmPlus).
+```
+ * AdxDxi
+```
+{ {no_input}, <br/>
+e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
+-> DoubleSignal.
+```
+ * AdxAdxr
+```
+{ {no_input}, <br/>
+e -> [Integer: N (14 by default) ]} <br/>
+-> DoubleSignal.
+```
 
 <ol>
   <li>
-    <h5>stsc.algorithms.stock.indices.adx</h5>
-<p>
-AdxAdx <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: N (14 by default), nSma (14 by default), size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-AdxDi <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
-&ensp;&ensp;-> ListOfDoubleSignal (dmMinus/trueRange, dmPlus/trueRange).
-</p>
-<p>
-AdxDm <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
-&ensp;&ensp;-> ListOfDoubleSignal (dmMinus, dmPlus).
-</p>
-<p>
-AdxDxi <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-AdxAdxr <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: N (14 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
   </li>
   <li>
     <h5>stsc.algorithms.stock.indices.bb</h5>
