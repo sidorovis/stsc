@@ -1,10 +1,11 @@
 package stsc.storage;
 
+import java.util.regex.Pattern;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.common.algorithms.BadAlgorithmException;
-import stsc.storage.AlgorithmsStorage;
 
 public class AlgorithmsStorageTest {
 
@@ -20,11 +21,10 @@ public class AlgorithmsStorageTest {
 
 		try {
 			ans.getStock("IN");
-			Assert.fail("For 'IN' we could assume:stsc.algorithms.stock.indices.adx.AverageDirectionalMovement or stsc.algorithms.stock.indices.adx.AdxTrueRange");
+			Assert.fail("For 'IN' we could assume to find several algorithms.");
 		} catch (BadAlgorithmException e) {
-			Assert.assertEquals(
-					"For 'IN' we could assume:stsc.algorithms.stock.indices.adx.AdxSmaDi or stsc.algorithms.stock.indices.mfi.MfiMoneyFlow",
-					e.getMessage());
+			Assert.assertTrue(Pattern.matches(
+					"For 'IN' we could assume:stsc.algorithms.stock.indices.(.+) or stsc.algorithms.stock.indices.(.+)", e.getMessage()));
 		}
 	}
 }
