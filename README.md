@@ -64,6 +64,13 @@ e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
 e -> [Integer: N (14 by default) ]} <br/>
 -> DoubleSignal.
 ```
+##### stsc.algorithms.stock.indices.atr
+ * AtrTrueRange
+```
+{ {no_input}, <br/>
+e -> [Integer: size (2 by default) ]} <br/>
+-> DoubleSignal.
+```
 ##### stsc.algorithms.stock.indices.bb
  * BollingerBands
 ```

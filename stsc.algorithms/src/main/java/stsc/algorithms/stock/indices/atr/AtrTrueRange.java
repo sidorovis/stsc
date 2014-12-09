@@ -12,6 +12,8 @@ import stsc.signals.series.LimitSignalsSerie;
 
 public class AtrTrueRange extends StockAlgorithm {
 
+	private Day previousDay;
+
 	public AtrTrueRange(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 	}
@@ -24,8 +26,16 @@ public class AtrTrueRange extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		// TODO finish this algorithm
+		if (previousDay == null) {
+			previousDay = day;
+		}
 
+		final double firstValue = day.getPrices().getHigh() - day.getPrices().getLow();
+		final double secondValue = Math.abs(day.getPrices().getHigh() - previousDay.getPrices().getClose());
+		final double thirdValue = Math.abs(day.getPrices().getLow() - previousDay.getPrices().getClose());
+
+		final double value = Math.max(firstValue, Math.max(secondValue, thirdValue));
+		addSignal(day.getDate(), new DoubleSignal(value));
+		previousDay = day;
 	}
-
 }
