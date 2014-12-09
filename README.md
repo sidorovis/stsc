@@ -64,20 +64,17 @@ e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
 e -> [Integer: N (14 by default) ]} <br/>
 -> DoubleSignal.
 ```
+##### stsc.algorithms.stock.indices.bb
+ * BollingerBands
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default), N (20 by default) ], <br/>
+e -> [Double: K (2.0 by default) ]} <br/>
+-> ListOfDoubleSignal.
+```
+
 
 <ol>
-  <li>
-  </li>
-  <li>
-    <h5>stsc.algorithms.stock.indices.bb</h5>
-<p>
-BollingerBands <br/>
-&ensp;&ensp;{ {1: DoubleSignal}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default), N (20 by default) ], <br/>
-&ensp;&ensp;e -> [Double: K (2.0 by default) ]} <br/>
-&ensp;&ensp;-> ListOfDoubleSignal.
-</p>
-  </li>
   <li>
     <h5>stsc.algorithms.stock.indices.mfi</h5>
 <p>
