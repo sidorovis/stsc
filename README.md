@@ -85,11 +85,11 @@ e -> [Integer: size (2 by default), N (20 by default) ], <br/>
 e -> [Double: K (2.0 by default) ]} <br/>
 -> ListOfDoubleSignal.
 ```
+##### stsc.algorithms.stock.indices.mfi
 
 
 <ol>
   <li>
-    <h5>stsc.algorithms.stock.indices.mfi</h5>
 <p>
 MfiTypicalPrice <br/>
 &ensp;&ensp;{ {no_input}, <br/>
