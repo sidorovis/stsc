@@ -77,6 +77,13 @@ e -> [Integer: size (2 by default); ]
 e -> [Double: P (0.2 by default); ] } <br/>
 -> DoubleSignal.
 ```
+##### stsc.algorithms.stock.indices
+ * Trix
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default); ] } <br/>
+-> DoubleSignal.
+```
 
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.indices.adx
