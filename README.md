@@ -32,6 +32,52 @@ e -> [-SubAlgoName-]}
 ##### stsc.algorithms.eod.primitive
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.factors.primitive
+ * Diff
+```
+{ {1: DoubleSignal, 2: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default) ]} <br/>
+-> DoubleSignal.
+```
+ * Dma
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default); ]
+e -> [Double: P (0.2 by default); ] } <br/>
+-> DoubleSignal.
+```
+ * Ema
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default); ]
+e -> [Double: P (0.2 by default); ] } <br/>
+-> DoubleSignal.
+```
+ * Level
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Double: f (0.0 by default) ]} <br/>
+-> SideSignal.
+```
+ * Sma
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default), N (5 by default); ]} <br/>
+-> DoubleSignal.
+```
+ * SmStdDev
+```
+{ {1: DoubleSignal, 2: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default), N (5 by default); ]} <br/>
+-> DoubleSignal.
+```
+ * Tma
+```
+{ {1: DoubleSignal}, <br/>
+e -> [Integer: size (2 by default); ]
+e -> [Double: P (0.2 by default); ] } <br/>
+-> DoubleSignal.
+```
+
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.indices.adx
  * AdxAdx
