@@ -113,31 +113,40 @@ e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
 ```
  * AdxAdxr
 ```
-{ {no_input}, <br/>
-e -> [Integer: N (14 by default) ]} <br/>
+{ {no_input},
+e -> [Integer: N (14 by default) ]}
 -> DoubleSignal.
 ```
 ##### stsc.algorithms.stock.indices.atr
  * AtrTrueRange
 ```
 { {no_input}, <br/>
-e -> [Integer: size (2 by default) ]} <br/>
+e -> [Integer: size (2 by default) ]}
 -> DoubleSignal.
 ```
  * AtrAtr
 ```
 { {no_input}, <br/>
-e -> [Integer: size (2 by default), N (14 by default) ]} <br/>
+e -> [Integer: size (2 by default), N (14 by default) ]}
 -> DoubleSignal.
 ```
 ##### stsc.algorithms.stock.indices.bb
  * BollingerBands
 ```
 { {1: DoubleSignal}, <br/>
-e -> [Integer: size (2 by default), N (20 by default) ], <br/>
-e -> [Double: K (2.0 by default) ]} <br/>
+e -> [Integer: size (2 by default), N (20 by default) ]
+e -> [Double: K (2.0 by default) ]}
 -> ListOfDoubleSignal.
 ```
+##### stsc.algorithms.stock.indices.ikh
+ * IkhTenkan
+```
+{ {no_input}, <br/>
+e -> [Integer: size (2 by default), TS (9 by default) ]}
+-> DoubleSignal.
+```
+
+
 ##### stsc.algorithms.stock.indices.mfi
 
 
