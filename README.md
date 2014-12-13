@@ -34,54 +34,54 @@ TODO End of day primitive (test-like) algortihms (with positions and auto monito
 ##### stsc.algorithms.stock.factors.primitive
  * Diff
 ```
-{ {1: DoubleSignal, 2: DoubleSignal}, <br/>
-e -> [Integer: size (2 by default) ]} <br/>
+{ {1: DoubleSignal, 2: DoubleSignal}, 
+e -> [Integer: size (2 by default) ]} 
 -> DoubleSignal.
 ```
  * Dma
 ```
-{ {1: DoubleSignal}, <br/>
+{ {1: DoubleSignal}, 
 e -> [Integer: size (2 by default); ]
-e -> [Double: P (0.2 by default); ] } <br/>
+e -> [Double: P (0.2 by default); ] } 
 -> DoubleSignal.
 ```
  * Ema
 ```
-{ {1: DoubleSignal}, <br/>
+{ {1: DoubleSignal}, 
 e -> [Integer: size (2 by default); ]
-e -> [Double: P (0.2 by default); ] } <br/>
+e -> [Double: P (0.2 by default); ] } 
 -> DoubleSignal.
 ```
  * Level
 ```
-{ {1: DoubleSignal}, <br/>
-e -> [Double: f (0.0 by default) ]} <br/>
+{ {1: DoubleSignal}, 
+e -> [Double: f (0.0 by default) ]} 
 -> SideSignal.
 ```
  * Sma
 ```
-{ {1: DoubleSignal}, <br/>
-e -> [Integer: size (2 by default), N (5 by default); ]} <br/>
+{ {1: DoubleSignal}, 
+e -> [Integer: size (2 by default), N (5 by default); ]} 
 -> DoubleSignal.
 ```
  * SmStdDev
 ```
-{ {1: DoubleSignal, 2: DoubleSignal}, <br/>
-e -> [Integer: size (2 by default), N (5 by default); ]} <br/>
+{ {1: DoubleSignal, 2: DoubleSignal}, 
+e -> [Integer: size (2 by default), N (5 by default); ]} 
 -> DoubleSignal.
 ```
  * Tma
 ```
-{ {1: DoubleSignal}, <br/>
+{ {1: DoubleSignal}, 
 e -> [Integer: size (2 by default); ]
-e -> [Double: P (0.2 by default); ] } <br/>
+e -> [Double: P (0.2 by default); ] } 
 -> DoubleSignal.
 ```
 ##### stsc.algorithms.stock.indices
  * Trix
 ```
-{ {1: DoubleSignal}, <br/>
-e -> [Integer: size (2 by default); ] } <br/>
+{ {1: DoubleSignal}, 
+e -> [Integer: size (2 by default); ] } 
 -> DoubleSignal.
 ```
 
@@ -89,26 +89,26 @@ TODO End of day primitive (test-like) algortihms (with positions and auto monito
 ##### stsc.algorithms.stock.indices.adx
  * AdxAdx
 ```
-{ {no_input}, <br/>
-e -> [Integer: N (14 by default), nSma (14 by default), size (2 by default) ]} <br/>
+{ {no_input}, 
+e -> [Integer: N (14 by default), nSma (14 by default), size (2 by default) ]} 
 -> DoubleSignal.
 ```
  * AdxDi
 ```
-{ {no_input}, <br/>
-e -> [Integer: size (2 by default) ]} <br/>
+{ {no_input}, 
+e -> [Integer: size (2 by default) ]} 
 -> ListOfDoubleSignal (dmMinus/trueRange, dmPlus/trueRange).
 ```
  * AdxDm
 ```
-{ {no_input}, <br/>
-e -> [Integer: size (2 by default) ]} <br/>
+{ {no_input}, 
+e -> [Integer: size (2 by default) ]} 
 -> ListOfDoubleSignal (dmMinus, dmPlus).
 ```
  * AdxDxi
 ```
-{ {no_input}, <br/>
-e -> [Integer: N (14 by default), size (2 by default) ]} <br/>
+{ {no_input}, 
+e -> [Integer: N (14 by default), size (2 by default) ]} 
 -> DoubleSignal.
 ```
  * AdxAdxr
@@ -120,20 +120,20 @@ e -> [Integer: N (14 by default) ]}
 ##### stsc.algorithms.stock.indices.atr
  * AtrTrueRange
 ```
-{ {no_input}, <br/>
+{ {no_input}, 
 e -> [Integer: size (2 by default) ]}
 -> DoubleSignal.
 ```
  * AtrAtr
 ```
-{ {no_input}, <br/>
+{ {no_input}, 
 e -> [Integer: size (2 by default), N (14 by default) ]}
 -> DoubleSignal.
 ```
 ##### stsc.algorithms.stock.indices.bb
  * BollingerBands
 ```
-{ {1: DoubleSignal}, <br/>
+{ {1: DoubleSignal}, 
 e -> [Integer: size (2 by default), N (20 by default) ]
 e -> [Double: K (2.0 by default) ]}
 -> ListOfDoubleSignal.
@@ -141,36 +141,32 @@ e -> [Double: K (2.0 by default) ]}
 ##### stsc.algorithms.stock.indices.ikh
  * IkhTenkan
 ```
-{ {no_input}, <br/>
+{ {no_input}, 
 e -> [Integer: size (2 by default), TS (9 by default) ]}
 -> DoubleSignal.
 ```
 
-
 ##### stsc.algorithms.stock.indices.mfi
-
+ * MfiTypicalPrice
+```
+{ {no_input},
+e -> [Integer: size (2 by default) ]}
+-> DoubleSignal.
+```
+ * MfiMoneyFlow 
+```
+{ {no_input},
+e -> [Integer: size (2 by default) ]}
+-> DoubleSignal.
+```
+ * MfiMfi
+```
+{ {no_input},
+e -> [Integer: N (14 be default), size (2 by default) ]}
+-> DoubleSignal.
+```
 
 <ol>
-  <li>
-<p>
-MfiTypicalPrice <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-MfiMoneyFlow <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-<p>
-MfiMfi <br/>
-&ensp;&ensp;{ {no_input}, <br/>
-&ensp;&ensp;e -> [Integer: N (14 be default), size (2 by default) ]} <br/>
-&ensp;&ensp;-> DoubleSignal.
-</p>
-  </li>
   <li>
     <h5>stsc.algorithms.stock.indices.msi</h5>
 <p>
