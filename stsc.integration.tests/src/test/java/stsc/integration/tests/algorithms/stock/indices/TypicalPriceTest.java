@@ -1,4 +1,4 @@
-package stsc.integration.tests.algorithms.stock.indices.mfi;
+package stsc.integration.tests.algorithms.stock.indices;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -8,7 +8,7 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.algorithms.stock.indices.mfi.MfiTypicalPrice;
+import stsc.algorithms.stock.indices.TypicalPrice;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
@@ -18,15 +18,15 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
-public class MfiTypicalPriceTest {
+public class TypicalPriceTest {
 
 	@Test
-	public void testMfiTypicalPrice() throws ParseException, IOException, BadAlgorithmException, BadSignalException {
+	public void testTypicalPrice() throws ParseException, IOException, BadAlgorithmException, BadSignalException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("in", "aapl");
 
-		final StockAlgoInitHelper mfiTpInit = new StockAlgoInitHelper("mfiTp", "aapl", stockInit.getStorage());
-		mfiTpInit.getSettings().setInteger("size", 10000);
-		final MfiTypicalPrice mfiTp = new MfiTypicalPrice(mfiTpInit.getInit());
+		final StockAlgoInitHelper tpInit = new StockAlgoInitHelper("tp", "aapl", stockInit.getStorage());
+		tpInit.getSettings().setInteger("size", 10000);
+		final TypicalPrice tp = new TypicalPrice(tpInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -34,12 +34,11 @@ public class MfiTypicalPriceTest {
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
-			mfiTp.process(day);
+			tp.process(day);
 
 			final double typicalPrice = (day.getPrices().getHigh() + day.getPrices().getLow() + day.getPrices().getClose()) / 3;
-			Assert.assertEquals(typicalPrice,
-					mfiTpInit.getStorage().getStockSignal("aapl", "mfiTp", day.getDate()).getSignal(DoubleSignal.class).getValue(),
-					Settings.doubleEpsilon);
+			Assert.assertEquals(typicalPrice, tpInit.getStorage().getStockSignal("aapl", "tp", day.getDate()).getSignal(DoubleSignal.class)
+					.getValue(), Settings.doubleEpsilon);
 		}
 	}
 }

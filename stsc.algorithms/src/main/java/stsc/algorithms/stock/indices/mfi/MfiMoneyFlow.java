@@ -1,5 +1,6 @@
 package stsc.algorithms.stock.indices.mfi;
 
+import stsc.algorithms.stock.indices.TypicalPrice;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -13,13 +14,13 @@ import stsc.signals.series.LimitSignalsSerie;
 public class MfiMoneyFlow extends StockAlgorithm {
 
 	private final String mfiTpName;
-	private final MfiTypicalPrice mfiTp;
+	private final TypicalPrice mfiTp;
 
 	public MfiMoneyFlow(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		this.mfiTpName = init.getExecutionName() + "_mfiTp";
 		final StockAlgorithmInit tpInit = init.createInit(mfiTpName);
-		this.mfiTp = new MfiTypicalPrice(tpInit);
+		this.mfiTp = new TypicalPrice(tpInit);
 	}
 	
 	public String getMfiTpName() {

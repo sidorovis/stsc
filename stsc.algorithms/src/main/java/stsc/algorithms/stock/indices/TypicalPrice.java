@@ -1,4 +1,4 @@
-package stsc.algorithms.stock.indices.mfi;
+package stsc.algorithms.stock.indices;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -10,9 +10,9 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class MfiTypicalPrice extends StockAlgorithm {
+public class TypicalPrice extends StockAlgorithm {
 
-	public MfiTypicalPrice(StockAlgorithmInit init) throws BadAlgorithmException {
+	public TypicalPrice(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 	}
 
