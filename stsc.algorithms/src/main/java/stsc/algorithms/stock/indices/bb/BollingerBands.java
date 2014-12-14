@@ -1,7 +1,7 @@
 package stsc.algorithms.stock.indices.bb;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
-import stsc.algorithms.stock.factors.primitive.SmStdDev;
+import stsc.algorithms.stock.factors.primitive.SmStDev;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -23,18 +23,18 @@ public class BollingerBands extends StockAlgorithm {
 
 	private final String smaName;
 	private final Sma sma;
-	private final String smStdDevName;
-	private final SmStdDev smStdDev;
+	private final String smStDevName;
+	private final SmStDev smStDev;
 
 	public BollingerBands(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		N = init.getSettings().getIntegerSetting("N", 20);
 		K = init.getSettings().getDoubleSetting("K", 2.0);
 		this.smaName = "BB_Sma_" + init.getExecutionName();
-		this.smStdDevName = "BB_StdDev_" + init.getExecutionName();
+		this.smStDevName = "BB_StDev_" + init.getExecutionName();
 
 		this.sma = createSma(init);
-		this.smStdDev = createStdDev(init);
+		this.smStDev = createStDev(init);
 	}
 
 	private Sma createSma(StockAlgorithmInit init) throws BadAlgorithmException {
@@ -46,14 +46,14 @@ public class BollingerBands extends StockAlgorithm {
 		return new Sma(smaInit);
 	}
 
-	private SmStdDev createStdDev(StockAlgorithmInit init) throws BadAlgorithmException {
+	private SmStDev createStDev(StockAlgorithmInit init) throws BadAlgorithmException {
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
 		settings.setInteger("N", N.getValue());
 		settings.setInteger("size", size);
 		settings.getSubExecutions().addAll(init.getSettings().getSubExecutions());
 		settings.addSubExecutionName(smaName);
-		final StockAlgorithmInit smStdDevInit = new StockAlgorithmInit(smStdDevName, init, settings);
-		return new SmStdDev(smStdDevInit);
+		final StockAlgorithmInit smStDevInit = new StockAlgorithmInit(smStDevName, init, settings);
+		return new SmStDev(smStDevInit);
 	}
 
 	@Override
@@ -65,12 +65,12 @@ public class BollingerBands extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		sma.process(day);
-		smStdDev.process(day);
+		smStDev.process(day);
 		final Double sma = getSignal(smaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final Double stdDev = getSignal(smStdDevName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final Double stDev = getSignal(smStDevName, day.getDate()).getSignal(DoubleSignal.class).getValue();
 		final ListOfDoubleSignal signal = new ListOfDoubleSignal();
-		signal.addDouble(sma - stdDev * K.getValue());
-		signal.addDouble(sma + stdDev * K.getValue());
+		signal.addDouble(sma - stDev * K.getValue());
+		signal.addDouble(sma + stDev * K.getValue());
 		addSignal(day.getDate(), signal);
 	}
 

@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.Input;
-import stsc.algorithms.stock.factors.primitive.SmStdDev;
+import stsc.algorithms.stock.factors.primitive.SmStDev;
 import stsc.algorithms.stock.factors.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -20,10 +20,10 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
-public class SmStdDevTest {
+public class SmStDevTest {
 
 	@Test
-	public void testSmStdDev() throws ParseException, BadAlgorithmException, IOException, BadSignalException {
+	public void testSmStDev() throws ParseException, BadAlgorithmException, IOException, BadSignalException {
 		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
 		stockInit.getSettings().setString("e", "open");
 		final Input inAlgo = new Input(stockInit.getInit());
@@ -34,11 +34,11 @@ public class SmStdDevTest {
 		smaInit.getSettings().addSubExecutionName("testIn");
 		final Sma sma = new Sma(smaInit.getInit());
 
-		final StockAlgoInitHelper smStdDevInit = new StockAlgoInitHelper("testStdDev", "aapl", stockInit.getStorage());
-		smStdDevInit.getSettings().setInteger("N", 7);
-		smStdDevInit.getSettings().setInteger("size", 10000);
-		smStdDevInit.getSettings().addSubExecutionName("testIn").addSubExecutionName("testSma");
-		final SmStdDev smStdDev = new SmStdDev(smStdDevInit.getInit());
+		final StockAlgoInitHelper smStDevInit = new StockAlgoInitHelper("testStDev", "aapl", stockInit.getStorage());
+		smStDevInit.getSettings().setInteger("N", 7);
+		smStDevInit.getSettings().setInteger("size", 10000);
+		smStDevInit.getSettings().addSubExecutionName("testIn").addSubExecutionName("testSma");
+		final SmStDev smStDev = new SmStDev(smStDevInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -48,7 +48,7 @@ public class SmStdDevTest {
 			final Day day = days.get(i);
 			inAlgo.process(day);
 			sma.process(day);
-			smStdDev.process(day);
+			smStDev.process(day);
 		}
 
 		Double sqrSum = 0.0;
@@ -61,9 +61,9 @@ public class SmStdDevTest {
 		}
 
 		final double sqrt = Math.sqrt(sqrSum);
-		final double stdDevValue = smStdDevInit.getStorage().getStockSignal("aapl", "testStdDev", days.get(aaplIndex + 7).getDate())
+		final double stDevValue = smStDevInit.getStorage().getStockSignal("aapl", "testStDev", days.get(aaplIndex + 7).getDate())
 				.getSignal(DoubleSignal.class).getValue();
 
-		Assert.assertEquals(sqrt, stdDevValue, Settings.doubleEpsilon);
+		Assert.assertEquals(sqrt, stDevValue, Settings.doubleEpsilon);
 	}
 }

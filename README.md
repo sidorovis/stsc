@@ -64,7 +64,7 @@ e -> [Double: f (0.0 by default) ]}
 e -> [Integer: size (2 by default), N (5 by default); ]} 
 -> DoubleSignal.
 ```
- * SmStdDev
+ * SmStDev
 ```
 { {1: DoubleSignal, 2: DoubleSignal}, 
 e -> [Integer: size (2 by default), N (5 by default); ]} 

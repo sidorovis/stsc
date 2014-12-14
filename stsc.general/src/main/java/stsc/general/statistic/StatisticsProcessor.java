@@ -42,7 +42,7 @@ public final class StatisticsProcessor {
 		return commision;
 	}
 
-	public static double calculateStdDev(double summ, List<Double> elements) {
+	public static double calculateStDev(double summ, List<Double> elements) {
 		double result = 0.0;
 		int size = elements.size();
 		double average = summ / size;

@@ -47,12 +47,12 @@ public class Statistics {
 		public double sharpeRatio = 0.0;
 
 		public double startMonthAvGain = 0.0;
-		public double startMonthStdDevGain = 0.0;
+		public double startMonthStDevGain = 0.0;
 		public double startMonthMin = 0.0;
 		public double startMonthMax = 0.0;
 
 		public double month12AvGain = 0.0;
-		public double month12StdDevGain = 0.0;
+		public double month12StDevGain = 0.0;
 		public double month12Min = 0.0;
 		public double month12Max = 0.0;
 
@@ -103,12 +103,12 @@ public class Statistics {
 	private double sharpeRatio = 0.0;
 
 	private double startMonthAvGain = 0.0;
-	private double startMonthStdDevGain = 0.0;
+	private double startMonthStDevGain = 0.0;
 	private double startMonthMax = 0.0;
 	private double startMonthMin = 0.0;
 
 	private double month12AvGain = 0.0;
-	private double month12StdDevGain = 0.0;
+	private double month12StDevGain = 0.0;
 	private double month12Min = 0.0;
 	private double month12Max = 0.0;
 
@@ -169,8 +169,8 @@ public class Statistics {
 			case "getStartMonthAvGain":
 				setStartMonthAvGain(i.getValue());
 				break;
-			case "getStartMonthStdDevGain":
-				setStartMonthStdDevGain(i.getValue());
+			case "getStartMonthStDevGain":
+				setStartMonthStDevGain(i.getValue());
 				break;
 			case "getStartMonthMax":
 				setStartMonthMax(i.getValue());
@@ -181,8 +181,8 @@ public class Statistics {
 			case "getMonth12AvGain":
 				setMonth12AvGain(i.getValue());
 				break;
-			case "getMonth12StdDevGain":
-				setMonth12StdDevGain(i.getValue());
+			case "getMonth12StDevGain":
+				setMonth12StDevGain(i.getValue());
 				break;
 			case "getMonth12Min":
 				setMonth12Min(i.getValue());
@@ -231,12 +231,12 @@ public class Statistics {
 		sharpeRatio = init.sharpeRatio;
 
 		startMonthAvGain = init.startMonthAvGain;
-		startMonthStdDevGain = init.startMonthStdDevGain;
+		startMonthStDevGain = init.startMonthStDevGain;
 		startMonthMax = init.startMonthMax;
 		startMonthMin = init.startMonthMin;
 
 		month12AvGain = init.month12AvGain;
-		month12StdDevGain = init.month12StdDevGain;
+		month12StDevGain = init.month12StDevGain;
 		month12Max = init.month12Max;
 		month12Min = init.month12Min;
 
@@ -307,8 +307,8 @@ public class Statistics {
 	}
 
 	@PublicMethod
-	public double getStartMonthStdDevGain() {
-		return startMonthStdDevGain;
+	public double getStartMonthStDevGain() {
+		return startMonthStDevGain;
 	}
 
 	@PublicMethod
@@ -327,8 +327,8 @@ public class Statistics {
 	}
 
 	@PublicMethod
-	public double getMonth12StdDevGain() {
-		return month12StdDevGain;
+	public double getMonth12StDevGain() {
+		return month12StDevGain;
 	}
 
 	@PublicMethod
@@ -415,8 +415,8 @@ public class Statistics {
 		startMonthAvGain = value;
 	}
 
-	private void setStartMonthStdDevGain(Double value) {
-		startMonthStdDevGain = value;
+	private void setStartMonthStDevGain(Double value) {
+		startMonthStDevGain = value;
 	}
 
 	private void setStartMonthMax(Double value) {
@@ -431,8 +431,8 @@ public class Statistics {
 		month12AvGain = value;
 	}
 
-	private void setMonth12StdDevGain(Double value) {
-		month12StdDevGain = value;
+	private void setMonth12StDevGain(Double value) {
+		month12StDevGain = value;
 	}
 
 	private void setMonth12Min(Double value) {

@@ -61,7 +61,7 @@ public class ListOfDoubleAdapterTest {
 
 		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getSignal(DoubleSignal.class)
 				.getValue();
-		final Double stdDevValue = bbInit.getStorage().getStockSignal("aapl", "BB_StdDev_bb", lastDay.getDate())
+		final Double stDevValue = bbInit.getStorage().getStockSignal("aapl", "BB_StDev_bb", lastDay.getDate())
 				.getSignal(DoubleSignal.class).getValue();
 
 		final Double bbLowValue = adapterInit.getStorage().getStockSignal("aapl", "adapter", lastDay.getDate())
@@ -70,8 +70,8 @@ public class ListOfDoubleAdapterTest {
 		final Double bbHighValue = adapterHighInit.getStorage().getStockSignal("aapl", "adapterHigh", lastDay.getDate())
 				.getSignal(DoubleSignal.class).getValue();
 
-		Assert.assertEquals(smaValue - 1.4 * stdDevValue, bbLowValue, Settings.doubleEpsilon);
-		Assert.assertEquals(smaValue + 1.4 * stdDevValue, bbHighValue, Settings.doubleEpsilon);
+		Assert.assertEquals(smaValue - 1.4 * stDevValue, bbLowValue, Settings.doubleEpsilon);
+		Assert.assertEquals(smaValue + 1.4 * stDevValue, bbHighValue, Settings.doubleEpsilon);
 	}
 
 }

@@ -322,7 +322,7 @@ final class EquityProcessor {
 				init.month12Min = diff;
 		}
 		init.month12AvGain = rollingWindow12MonthSum / rollingWindow12Month.size();
-		init.month12StdDevGain = StatisticsProcessor.calculateStdDev(rollingWindow12MonthSum, rollingWindow12Month);
+		init.month12StDevGain = StatisticsProcessor.calculateStDev(rollingWindow12MonthSum, rollingWindow12Month);
 	}
 
 	private void calculateStartMonthsStatistics() {
@@ -337,7 +337,7 @@ final class EquityProcessor {
 			lastValue = nextValue;
 		}
 		init.startMonthAvGain = sumOfStartMonths / elementsInStartMonths.size();
-		init.startMonthStdDevGain = StatisticsProcessor.calculateStdDev(sumOfStartMonths, elementsInStartMonths);
+		init.startMonthStDevGain = StatisticsProcessor.calculateStDev(sumOfStartMonths, elementsInStartMonths);
 	}
 
 	private void processMonthInStartMonths(double moneyDiff) {
@@ -390,8 +390,8 @@ final class EquityProcessor {
 		final double RISK_PERCENTS = 5.0;
 		final double MONTHS_PER_YEAR = 12.0;
 		final double sharpeAnnualReturn = (MONTHS_PER_YEAR / monthsDifferents.size()) * monthsCapitalsSum;
-		final double sharpeStdDev = Math.sqrt(MONTHS_PER_YEAR) * StatisticsProcessor.calculateStdDev(monthsCapitalsSum, monthsDifferents);
+		final double sharpeStDev = Math.sqrt(MONTHS_PER_YEAR) * StatisticsProcessor.calculateStDev(monthsCapitalsSum, monthsDifferents);
 
-		init.sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStdDev;
+		init.sharpeRatio = (sharpeAnnualReturn - RISK_PERCENTS) / sharpeStDev;
 	}
 }

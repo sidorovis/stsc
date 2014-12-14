@@ -237,12 +237,12 @@ public class StatisticsProcessorTest {
 		Assert.assertEquals(-0.765763, stats.getSharpeRatio(), Settings.doubleEpsilon);
 
 		Assert.assertEquals(-0.668416, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(4.930223, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(4.930223, stats.getStartMonthStDevGain(), Settings.doubleEpsilon);
 		Assert.assertEquals(15.162020, stats.getStartMonthMax(), Settings.doubleEpsilon);
 		Assert.assertEquals(-7.577820, stats.getStartMonthMin(), Settings.doubleEpsilon);
 
 		Assert.assertEquals(-21.378450, stats.getMonth12AvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(9.683782, stats.getMonth12StdDevGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(9.683782, stats.getMonth12StDevGain(), Settings.doubleEpsilon);
 		Assert.assertEquals(0.0, stats.getMonth12Max(), Settings.doubleEpsilon);
 		Assert.assertEquals(-34.239761, stats.getMonth12Min(), Settings.doubleEpsilon);
 
@@ -265,12 +265,12 @@ public class StatisticsProcessorTest {
 		Assert.assertEquals(-0.611352, stats.getSharpeRatio(), Settings.doubleEpsilon);
 
 		Assert.assertEquals(-0.779237, stats.getStartMonthAvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(6.554998, stats.getStartMonthStdDevGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(6.554998, stats.getStartMonthStDevGain(), Settings.doubleEpsilon);
 		Assert.assertEquals(17.914611, stats.getStartMonthMax(), Settings.doubleEpsilon);
 		Assert.assertEquals(-6.845838, stats.getStartMonthMin(), Settings.doubleEpsilon);
 
 		Assert.assertEquals(-9.350847, stats.getMonth12AvGain(), Settings.doubleEpsilon);
-		Assert.assertEquals(0.0, stats.getMonth12StdDevGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0, stats.getMonth12StDevGain(), Settings.doubleEpsilon);
 		Assert.assertEquals(0.0, stats.getMonth12Max(), Settings.doubleEpsilon);
 		Assert.assertEquals(-9.350847, stats.getMonth12Min(), Settings.doubleEpsilon);
 
@@ -288,7 +288,7 @@ public class StatisticsProcessorTest {
 		Assert.assertEquals(0.0, stats.getDdValueMax(), Settings.doubleEpsilon);
 		final File file = new File("./test/out.csv");
 		Assert.assertTrue(file.exists());
-		Assert.assertEquals(458.0, file.length(), Settings.doubleEpsilon);
+		Assert.assertEquals(456.0, file.length(), Settings.doubleEpsilon);
 		file.delete();
 	}
 

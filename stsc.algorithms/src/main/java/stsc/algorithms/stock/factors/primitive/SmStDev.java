@@ -14,7 +14,7 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class SmStdDev extends StockAlgorithm {
+public class SmStDev extends StockAlgorithm {
 
 	private final String subAlgoName;
 	private final String subAlgoNameSma;
@@ -23,7 +23,7 @@ public class SmStdDev extends StockAlgorithm {
 	private final LinkedList<Double> elements = new LinkedList<>();
 	private Double sum = 0.0;
 
-	public SmStdDev(final StockAlgorithmInit init) throws BadAlgorithmException {
+	public SmStDev(final StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		N = init.getSettings().getIntegerSetting("N", 5);
 		final List<String> subExecutionNames = init.getSettings().getSubExecutions();
