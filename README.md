@@ -157,6 +157,12 @@ e -> [Integer: size (2 by default), TM (26 by default), TS (9 by default) ]}
 e -> [Integer: size (2 by default), TM (26 by default), TS (9 by default) ]}
 -> DoubleSignal.
 ```
+ * IkhSenkauB
+```
+{ {no_input}, 
+e -> [Integer: size (2 by default), TM (26 by default), TL (52 by default) ]}
+-> DoubleSignal.
+```
  * IkhTenkan
 ```
 { {no_input}, 
