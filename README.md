@@ -81,7 +81,14 @@ e -> [Double: P (0.2 by default); ] }
  * Cci
 ```
 { {no_input}, 
-e -> [Integer: size (2 by default), K (by default 1.0/0.015), N (5 by default)] } 
+e -> [Integer: size (2 by default); ]
+e -> [Double: K (by default 1.0/0.015), N (5 by default)] } 
+-> DoubleSignal.
+```
+ * MaxForNDays
+```
+{ {1: DoubleSignal;}, 
+e -> [Integer: size (2 by default), P (5 by default), SP (5 by default)] } 
 -> DoubleSignal.
 ```
  * Trix
