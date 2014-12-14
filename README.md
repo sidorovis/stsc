@@ -145,6 +145,18 @@ e -> [Double: K (2.0 by default) ]}
 e -> [Integer: size (2 by default), TM (26 by default) ]}
 -> DoubleSignal.
 ```
+ * IkhPrototype
+```
+{ {no_input}, 
+e -> [Integer: size (2 by default), TM (26 by default), TS (9 by default) ]}
+-> DoubleSignal.
+```
+ * IkhSenkauA
+```
+{ {no_input}, 
+e -> [Integer: size (2 by default), TM (26 by default), TS (9 by default) ]}
+-> DoubleSignal.
+```
  * IkhTenkan
 ```
 { {no_input}, 

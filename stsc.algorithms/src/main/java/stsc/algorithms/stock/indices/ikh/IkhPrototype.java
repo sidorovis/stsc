@@ -26,7 +26,7 @@ public class IkhPrototype extends StockAlgorithm {
 	private final PriorityQueue<Double> lows = new PriorityQueue<>((c1, c2) -> {
 		return Double.compare(c1, c2);
 	});
-	
+
 	private final LinkedList<Double> lowAtPeriod = new LinkedList<>();
 	private final LinkedList<Double> highAtPeriod = new LinkedList<>();
 
@@ -47,8 +47,9 @@ public class IkhPrototype extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		if (signalIndex < tm ) {
+		if (signalIndex < tm) {
 			addLowHighToBefore(day);
+			addSignal(day.getDate(), new DoubleSignal((day.getPrices().getLow() + day.getPrices().getHigh()) / 2.0));
 		} else if (signalIndex < tm + ts) {
 			addLowHighToBefore(day);
 			copyLastToAtPeriod();
