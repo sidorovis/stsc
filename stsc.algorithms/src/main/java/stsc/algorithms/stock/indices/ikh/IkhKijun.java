@@ -11,16 +11,16 @@ import stsc.common.signals.StockSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class IkhTenkan extends StockAlgorithm {
+public class IkhKijun extends StockAlgorithm {
 
 	private final String prototypeName;
 	private final IkhPrototype prototype;
 
-	public IkhTenkan(StockAlgorithmInit init) throws BadAlgorithmException {
+	public IkhKijun(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		this.prototypeName = init.getExecutionName() + "_IhkPrototype";
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
-		settings.setInteger("TS", init.getSettings().getIntegerSetting("TS", 9).getValue());
+		settings.setInteger("TS", init.getSettings().getIntegerSetting("TM", 26).getValue());
 		settings.setInteger("TM", 0);
 		this.prototype = new IkhPrototype(init.createInit(prototypeName, settings));
 	}
@@ -37,4 +37,5 @@ public class IkhTenkan extends StockAlgorithm {
 		final DoubleSignal v = getSignal(prototypeName, day.getDate()).getSignal(DoubleSignal.class);
 		addSignal(day.getDate(), v);
 	}
+
 }

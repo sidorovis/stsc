@@ -139,6 +139,12 @@ e -> [Double: K (2.0 by default) ]}
 -> ListOfDoubleSignal.
 ```
 ##### stsc.algorithms.stock.indices.ikh
+ * IkhKejun
+```
+{ {no_input}, 
+e -> [Integer: size (2 by default), TM (26 by default) ]}
+-> DoubleSignal.
+```
  * IkhTenkan
 ```
 { {no_input}, 
