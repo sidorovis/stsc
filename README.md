@@ -84,6 +84,12 @@ e -> [Double: P (0.2 by default); ] }
 e -> [Integer: size (2 by default); ] } 
 -> DoubleSignal.
 ```
+ * TypicalPrice
+```
+{ {no_input},
+e -> [Integer: size (2 by default) ]}
+-> DoubleSignal.
+```
 
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.indices.adx
@@ -177,12 +183,6 @@ e -> [Integer: size (2 by default), TS (9 by default) ]}
 ```
 
 ##### stsc.algorithms.stock.indices.mfi
- * MfiTypicalPrice
-```
-{ {no_input},
-e -> [Integer: size (2 by default) ]}
--> DoubleSignal.
-```
  * MfiMoneyFlow 
 ```
 { {no_input},
