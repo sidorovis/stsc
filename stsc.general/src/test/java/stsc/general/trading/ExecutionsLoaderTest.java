@@ -62,7 +62,7 @@ public class ExecutionsLoaderTest {
 		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_load_line2.ini"), "bad algorithm load line: INPUT)");
 		throwTesthelper(
 				new File("./test_data/executions_loader_tests/algs_bad_load_line3.ini"),
-				"Exception while loading algo: stsc.algorithms.stock.factors.primitive.Sma( AlgDefine ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
+				"Exception while loading algo: stsc.algorithms.stock.indices.primitive.Sma( AlgDefine ) , exception: stsc.common.algorithms.BadAlgorithmException: Sma algorithm should receive at least one sub algorithm");
 	}
 
 	@Test
