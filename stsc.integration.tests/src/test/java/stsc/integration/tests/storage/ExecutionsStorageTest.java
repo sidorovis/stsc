@@ -3,7 +3,7 @@ package stsc.integration.tests.storage;
 import java.text.ParseException;
 
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
-import stsc.algorithms.stock.factors.primitive.Sma;
+import stsc.algorithms.stock.indices.primitive.Sma;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;

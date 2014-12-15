@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import stsc.algorithms.Input;
 import stsc.algorithms.eod.primitive.OpenWhileSignalAlgorithm;
-import stsc.algorithms.stock.factors.primitive.Level;
+import stsc.algorithms.stock.indices.primitive.Level;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;

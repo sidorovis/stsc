@@ -1,8 +1,8 @@
 package stsc.algorithms.stock.indices;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
-import stsc.algorithms.stock.factors.primitive.SmStDev;
-import stsc.algorithms.stock.factors.primitive.Sma;
+import stsc.algorithms.stock.indices.primitive.SmStDev;
+import stsc.algorithms.stock.indices.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;

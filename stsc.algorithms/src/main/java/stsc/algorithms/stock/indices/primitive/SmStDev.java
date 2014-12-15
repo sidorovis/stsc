@@ -1,4 +1,4 @@
-package stsc.algorithms.stock.factors.primitive;
+package stsc.algorithms.stock.indices.primitive;
 
 import java.util.LinkedList;
 import java.util.List;

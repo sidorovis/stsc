@@ -1,4 +1,4 @@
-package stsc.algorithms.stock.factors.primitive;
+package stsc.algorithms.stock.indices.primitive;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;

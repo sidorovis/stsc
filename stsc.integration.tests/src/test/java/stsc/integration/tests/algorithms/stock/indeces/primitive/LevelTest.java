@@ -1,4 +1,4 @@
-package stsc.integration.tests.algorithms.stock.factors.primitive;
+package stsc.integration.tests.algorithms.stock.indeces.primitive;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.Input;
-import stsc.algorithms.stock.factors.primitive.Level;
+import stsc.algorithms.stock.indices.primitive.Level;
 import stsc.common.Day;
 import stsc.common.stocks.Stock;
 import stsc.common.stocks.UnitedFormatStock;

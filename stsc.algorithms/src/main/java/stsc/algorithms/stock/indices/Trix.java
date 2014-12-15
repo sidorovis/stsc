@@ -1,6 +1,6 @@
 package stsc.algorithms.stock.indices;
 
-import stsc.algorithms.stock.factors.primitive.Tma;
+import stsc.algorithms.stock.indices.primitive.Tma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;

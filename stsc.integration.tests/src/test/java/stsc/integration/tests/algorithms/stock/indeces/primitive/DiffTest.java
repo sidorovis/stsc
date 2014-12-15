@@ -1,4 +1,4 @@
-package stsc.integration.tests.algorithms.stock.factors.primitive;
+package stsc.integration.tests.algorithms.stock.indeces.primitive;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,9 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.Input;
-import stsc.algorithms.stock.factors.primitive.Diff;
-import stsc.algorithms.stock.factors.primitive.Ema;
-import stsc.algorithms.stock.factors.primitive.Sma;
+import stsc.algorithms.stock.indices.primitive.Diff;
+import stsc.algorithms.stock.indices.primitive.Ema;
+import stsc.algorithms.stock.indices.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Settings;
