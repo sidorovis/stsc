@@ -6,8 +6,6 @@ import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
-
 import stsc.algorithms.stock.indices.adi.AdiClv;
 import stsc.common.Day;
 import stsc.common.Settings;
