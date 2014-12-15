@@ -103,6 +103,12 @@ e -> [Integer: size (2 by default), P (5 by default), SP (5 by default)] }
 e -> [Integer: size (2 by default), N (5 by default)] } 
 -> DoubleSignal.
 ```
+ * OnBalanceVolume
+```
+{ {1: DoubleSignal;}, 
+e -> [Integer: size (2 by default), N (5 by default)] } 
+-> DoubleSignal.
+```
  * RateOfChange
 ```
 { {1: DoubleSignal;}, 
