@@ -1,4 +1,4 @@
-package stsc.integration.tests.algorithms.stock.indeces.primitive;
+package stsc.integration.tests.algorithms.stock.indices.primitive;
 
 import java.io.IOException;
 import java.text.ParseException;
