@@ -20,6 +20,9 @@ import stsc.signals.series.LimitSignalsSerie;
  * 1) setting for P: EMA[x+1] = PRICE_VALUE * P + EMA[x] * (1 - P); (0.2 by default);
  * 2) size setting that limit result serie; (2 by default);
  * 3) sub on-stock algorithm name (for example In(e=open)).
+ * 
+ * Translating P to N (days): N = (2 / P) - 1
+ * P = 2 / ( N + 1 )
  */
 //@formatter:on
 public class Ema extends StockAlgorithm {

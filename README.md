@@ -239,6 +239,13 @@ e -> [Integer: size (2 by default), TM (26 by default), TL (52 by default) ]}
 e -> [Integer: size (2 by default), TS (9 by default) ]}
 -> DoubleSignal.
 ```
+##### stsc.algorithms.stock.indices.macd
+ * MacdMacd 
+```
+{ {1: DoubleSignal},
+e -> [Integer: size (2 by default), S (12 by default), L (26 by default) ]}
+-> DoubleSignal.
+```
 
 ##### stsc.algorithms.stock.indices.mfi
  * MfiMoneyFlow 
