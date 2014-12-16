@@ -33,6 +33,10 @@ public class MacdSignal extends StockAlgorithm {
 		this.smaName = init.getExecutionName() + "_Sma";
 		this.sma = createSma(init);
 	}
+	
+	public String getMacdName() {
+		return macdMacdName;
+	}
 
 	private MacdMacd createMacd(StockAlgorithmInit init) throws BadAlgorithmException {
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
