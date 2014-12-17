@@ -25,32 +25,32 @@ public class VisualTestCurvesViewPane extends Application {
 		yfss.waitForLoad();
 		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-2015");
 
-//		final Stock aapl = yfss.getStock("aapl");
-//		{
-//			final TradeProcessorInit init = new TradeProcessorInit(yfss, period,
-//					"EodExecutions = a1\na1.loadLine = OpenWhileSignalAlgorithm( Level( f = 0.75d, Diff(Input(e=close), Input(e=open)) ) )\n");
-//			final List<String> executionsName = init.generateOutForStocks();
-//			final SimulatorSettings settings = new SimulatorSettings(0, init);
-//
-//			final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { "aapl" }));
-//			final Simulator simulator = new Simulator(settings, stockNames);
-//			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
-//
-//			final Dialog dialog = new Dialog(parent, "ForOnStockAlgorithm");
-//			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForOnStockAlgorithm(parent, aapl, period, executionsName,
-//					signalsStorage);
-//			dialog.setContent(stockViewPane.getMainPane());
-//			dialog.show();
-//		}
-//		{
-//			final Dialog dialog = new Dialog(parent, "ForAdjectiveClose");
-//			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForAdjectiveClose(parent, aapl, period);
-//			dialog.setContent(stockViewPane.getMainPane());
-//			dialog.show();
-//		}
+		final Stock aapl = yfss.getStock("aapl");
+		{
+			final TradeProcessorInit init = new TradeProcessorInit(yfss, period,
+					"EodExecutions = a1\na1.loadLine = OpenWhileSignalAlgorithm( Level( f = 0.75d, Diff(Input(e=close), Input(e=open)) ) )\n");
+			final List<String> executionsName = init.generateOutForStocks();
+			final SimulatorSettings settings = new SimulatorSettings(0, init);
+
+			final Set<String> stockNames = new HashSet<String>(Arrays.asList(new String[] { "aapl" }));
+			final Simulator simulator = new Simulator(settings, stockNames);
+			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
+
+			final Dialog dialog = new Dialog(parent, "ForOnStockAlgorithm");
+			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForOnStockAlgorithm(parent, aapl, period, executionsName,
+					signalsStorage);
+			dialog.setContent(stockViewPane.getMainPane());
+			dialog.show();
+		}
+		{
+			final Dialog dialog = new Dialog(parent, "ForAdjectiveClose");
+			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForAdjectiveClose(parent, aapl, period);
+			dialog.setContent(stockViewPane.getMainPane());
+			dialog.show();
+		}
 		{
 			final TradeProcessorInit init = new TradeProcessorInit(yfss, period, "EodExecutions = a1\na1.loadLine = AdlAdl()\n");
-			final List<String> executionsName = init.generateOutForStocks();
+			final List<String> executionsName = init.generateOutForEods();
 			final SimulatorSettings settings = new SimulatorSettings(0, init);
 			final Simulator simulator = new Simulator(settings);
 			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
