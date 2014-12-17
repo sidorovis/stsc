@@ -32,8 +32,10 @@ import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
 import stsc.frontend.zozka.panes.CurvesViewPane;
+import stsc.frontend.zozka.panes.EquityPane;
 import stsc.general.simulator.Simulator;
 import stsc.general.simulator.SimulatorSettings;
+import stsc.general.statistic.Statistics;
 import stsc.general.trading.TradeProcessorInit;
 
 public class ZozkaStrategyVisualiser extends Application {
@@ -62,12 +64,22 @@ public class ZozkaStrategyVisualiser extends Application {
 			}
 		});
 
+		final Button calculateOnEodSeries = new Button("Calculate On Eod Series");
+		calculateOnEodSeries.setOnAction(e -> {
+			try {
+				calculateOnEodSeries();
+			} catch (Exception exc) {
+				Dialogs.create().showException(exc);
+			}
+		});
+
 		final Button calculateEquityButton = new Button("Calculate Equity");
 		calculateEquityButton.setOnAction(e -> {
 			calculateEquity();
 		});
 
 		hbox.getChildren().add(calculateSeries);
+		hbox.getChildren().add(calculateOnEodSeries);
 		hbox.getChildren().add(calculateEquityButton);
 
 		hbox.setAlignment(Pos.CENTER);
@@ -83,6 +95,12 @@ public class ZozkaStrategyVisualiser extends Application {
 	private void calculateSeries() throws InterruptedException {
 		periodAndDatafeedController.loadStockStorage(h -> {
 			calculateSeries(periodAndDatafeedController.getStockStorage());
+		});
+	}
+
+	private void calculateOnEodSeries() throws InterruptedException {
+		periodAndDatafeedController.loadStockStorage(h -> {
+			calculateOnEodSeries(periodAndDatafeedController.getStockStorage());
 		});
 	}
 
@@ -104,6 +122,13 @@ public class ZozkaStrategyVisualiser extends Application {
 		}
 		final Stock stock = stockStorage.getStock(stockName.get());
 		addSeriesForStock(stockStorage, stock);
+	}
+
+	private void calculateOnEodSeries(final StockStorage stockStorage) {
+		if (stockStorage == null) {
+			return;
+		}
+		addSeriesForEod(stockStorage);
 	}
 
 	private void addSeriesForStock(StockStorage stockStorage, Stock stock) {
@@ -131,6 +156,29 @@ public class ZozkaStrategyVisualiser extends Application {
 		}
 	}
 
+	private void addSeriesForEod(StockStorage stockStorage) {
+		try {
+			final FromToPeriod period = periodAndDatafeedController.getPeriod();
+
+			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, textArea.getText());
+			final List<String> executionsName = init.generateOutForEods();
+			final SimulatorSettings settings = new SimulatorSettings(0, init);
+
+			final Simulator simulator = new Simulator(settings);
+			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
+
+			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForOnEodAlgorithm(owner, period, executionsName, signalsStorage);
+			final Tab tab = new Tab();
+			tab.setText("EC: " + tabPane.getTabs().size());
+			tab.setContent(stockViewPane.getMainPane());
+			tabPane.getTabs().add(tab);
+			tabPane.getSelectionModel().select(tab);
+
+		} catch (Exception e) {
+			Dialogs.create().showException(e);
+		}
+	}
+
 	private void calculateEquity() {
 		periodAndDatafeedController.loadStockStorage(h -> {
 			calculateEquity(periodAndDatafeedController.getStockStorage());
@@ -145,25 +193,22 @@ public class ZozkaStrategyVisualiser extends Application {
 			final FromToPeriod period = periodAndDatafeedController.getPeriod();
 
 			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, textArea.getText());
-			final List<String> executionsName = init.generateOutForEods();
 			final SimulatorSettings settings = new SimulatorSettings(0, init);
 
 			final Simulator simulator = new Simulator(settings);
-			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
 
-			addStockOnEodTab(simulator, period, executionsName, signalsStorage);
+			addStockOnEodTab(simulator, period, simulator.getStatistics());
 		} catch (BadAlgorithmException | BadSignalException | IOException e) {
 			Dialogs.create().showException(e);
 		}
 	}
 
-	private void addStockOnEodTab(Simulator simulator, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage)
-			throws IOException {
-		final CurvesViewPane curvesViewPane = CurvesViewPane.createPaneForOnEodAlgorithm(owner, period, executionsName, signalsStorage);
+	private void addStockOnEodTab(Simulator simulator, FromToPeriod period, Statistics statistics) throws IOException {
+		final EquityPane equityPane = new EquityPane(owner, statistics, period);
 		final Tab tab = new Tab();
 		final int size = tabPane.getTabs().size();
-		tab.setText("CE:" + size);
-		tab.setContent(curvesViewPane.getMainPane());
+		tab.setText("E:" + size);
+		tab.setContent(equityPane.getMainPane());
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 	}
