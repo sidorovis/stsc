@@ -53,6 +53,10 @@ public class EodAlgorithmInit {
 		return signalsStorage.getSignalsSize(executionName);
 	}
 
+	public final String getExecutionName() {
+		return executionName;
+	}
+
 	public final AlgorithmSettings getSettings() {
 		return settings;
 	}

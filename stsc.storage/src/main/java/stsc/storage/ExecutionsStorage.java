@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
+import stsc.algorithms.EodOutput;
 import stsc.algorithms.Output;
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -101,6 +102,19 @@ public class ExecutionsStorage implements Cloneable {
 			as.addSubExecutionName(executionName);
 			names.add(executionName);
 			stockExecutions.add(new StockExecution(outNameFor(executionName), Output.class, as));
+		}
+		return names;
+	}
+
+	public List<String> generateOutForEods() {
+		final ArrayList<String> names = new ArrayList<>();
+		final ArrayList<EodExecution> initialList = new ArrayList<>(getEodExecutions());
+		for (EodExecution eodExecution : initialList) {
+			final AlgorithmSettingsImpl as = new AlgorithmSettingsImpl(eodExecution.getSettings().getPeriod());
+			final String executionName = eodExecution.getExecutionName();
+			as.addSubExecutionName(executionName);
+			names.add(executionName);
+			eodExecutions.add(new EodExecution(outNameFor(executionName), EodOutput.class, as));
 		}
 		return names;
 	}

@@ -24,12 +24,32 @@ public abstract class EodAlgorithm {
 		init.addSignal(date, signal);
 	}
 
+	protected final Signal<? extends EodSignal> getSignal(Date date) {
+		return init.getSignal(init.getExecutionName(), date);
+	}
+
+	protected final Signal<? extends EodSignal> getSignal(int index) {
+		return init.getSignal(init.getExecutionName(), index);
+	}
+
+	protected final Signal<? extends EodSignal> getSignal(String executionName, Date date) {
+		return init.getSignal(executionName, date);
+	}
+
+	protected final Signal<? extends EodSignal> getSignal(String executionName, int index) {
+		return init.getSignal(executionName, index);
+	}
+
 	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
 		return init.getSignal(stockName, executionName, date);
 	}
 
 	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
 		return init.getSignal(stockName, executionName, index);
+	}
+	
+	protected final int getCurrentIndex() {
+		return init.getSignalsSize();
 	}
 
 	protected Broker broker() {

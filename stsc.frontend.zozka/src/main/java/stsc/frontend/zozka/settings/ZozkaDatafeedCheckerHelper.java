@@ -22,7 +22,7 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
-import stsc.frontend.zozka.panes.StockViewPane;
+import stsc.frontend.zozka.panes.CurvesViewPane;
 import stsc.yahoo.YahooFileStockStorage;
 import stsc.yahoo.downloader.YahooDownloadHelper;
 import stsc.yahoo.liquiditator.StockFilter;
@@ -62,11 +62,11 @@ public class ZozkaDatafeedCheckerHelper {
 			splitPane.setOrientation(Orientation.VERTICAL);
 
 			if (data != null) {
-				final StockViewPane dataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, data);
+				final CurvesViewPane dataStockViewPane = CurvesViewPane.createPaneForAdjectiveClose(owner, data);
 				splitPane.getItems().add(dataStockViewPane.getMainPane());
 			}
 			if (filtered != null) {
-				final StockViewPane filteredDataStockViewPane = StockViewPane.createPaneForAdjectiveClose(owner, filtered);
+				final CurvesViewPane filteredDataStockViewPane = CurvesViewPane.createPaneForAdjectiveClose(owner, filtered);
 				splitPane.getItems().add(filteredDataStockViewPane.getMainPane());
 			}
 			borderPane.setCenter(splitPane);

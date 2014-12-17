@@ -3,16 +3,6 @@ package stsc.frontend.zozka.panes;
 import java.io.IOException;
 import java.net.URL;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-
-import stsc.common.FromToPeriod;
-import stsc.general.statistic.EquityCurve;
-import stsc.general.statistic.Statistics;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -25,6 +15,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+
+import stsc.common.FromToPeriod;
+import stsc.general.statistic.EquityCurve;
+import stsc.general.statistic.Statistics;
 
 public class EquityPane {
 
@@ -46,11 +47,13 @@ public class EquityPane {
 		}
 	}
 
+	private JFreeChart chart;
+
 	private final Parent gui;
 	@FXML
 	private BorderPane chartPane;
 
-	ObservableList<StatisticElement> tableModel = FXCollections.observableArrayList();
+	private final ObservableList<StatisticElement> statisticsTableModel = FXCollections.observableArrayList();
 	@FXML
 	private TableView<StatisticElement> statisticsTable;
 	@FXML
@@ -65,21 +68,21 @@ public class EquityPane {
 		this.gui = loader.load();
 
 		initialize();
-		loadTableModel(statistics);
+		loadStatisticsTableModel(statistics);
 		setChartPane(statistics);
 	}
 
 	private void initialize() {
 		validateGui();
-		statisticsTable.setItems(tableModel);
+		statisticsTable.setItems(statisticsTableModel);
 		statisticName.setCellValueFactory(cellData -> cellData.getValue().propertyName());
 		statisticValue.setCellValueFactory(cellData -> cellData.getValue().propertyValue());
 	}
 
-	private void loadTableModel(Statistics statistics) {
+	private void loadStatisticsTableModel(Statistics statistics) {
 		for (String methodName : Statistics.getStatisticsMethods()) {
 			final Double result = Statistics.invokeMethod(statistics, methodName);
-			tableModel.add(new StatisticElement(methodName, result.toString()));
+			statisticsTableModel.add(new StatisticElement(methodName, result.toString()));
 		}
 	}
 
@@ -102,7 +105,7 @@ public class EquityPane {
 		}
 		dataset.addSeries(ts);
 
-		final JFreeChart chart = ChartFactory.createTimeSeriesChart("", "Time", "Value", dataset, false, false, false);
+		this.chart = ChartFactory.createTimeSeriesChart("", "Time", "Value", dataset, false, false, false);
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setMouseWheelEnabled(true);
 		chartPanel.setFillZoomRectangle(false);

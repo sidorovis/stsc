@@ -112,4 +112,8 @@ public class TradeProcessorInit implements Cloneable {
 	public List<String> generateOutForStocks() {
 		return getExecutionsStorage().generateOutForStocks();
 	}
+
+	public List<String> generateOutForEods() {
+		return getExecutionsStorage().generateOutForEods();
+	}
 }

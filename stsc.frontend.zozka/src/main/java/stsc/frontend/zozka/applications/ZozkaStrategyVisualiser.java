@@ -9,19 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.controlsfx.dialog.Dialogs;
-import stsc.common.BadSignalException;
-import stsc.common.FromToPeriod;
-import stsc.common.algorithms.BadAlgorithmException;
-import stsc.common.stocks.Stock;
-import stsc.common.storage.SignalsStorage;
-import stsc.common.storage.StockStorage;
-import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
-import stsc.frontend.zozka.panes.EquityPane;
-import stsc.frontend.zozka.panes.StockViewPane;
-import stsc.general.simulator.Simulator;
-import stsc.general.simulator.SimulatorSettings;
-import stsc.general.trading.TradeProcessorInit;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -34,6 +21,20 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import org.controlsfx.dialog.Dialogs;
+
+import stsc.common.BadSignalException;
+import stsc.common.FromToPeriod;
+import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.stocks.Stock;
+import stsc.common.storage.SignalsStorage;
+import stsc.common.storage.StockStorage;
+import stsc.frontend.zozka.controllers.PeriodAndDatafeedController;
+import stsc.frontend.zozka.panes.CurvesViewPane;
+import stsc.general.simulator.Simulator;
+import stsc.general.simulator.SimulatorSettings;
+import stsc.general.trading.TradeProcessorInit;
 
 public class ZozkaStrategyVisualiser extends Application {
 
@@ -117,7 +118,7 @@ public class ZozkaStrategyVisualiser extends Application {
 			final Simulator simulator = new Simulator(settings, stockNames);
 			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
 
-			final StockViewPane stockViewPane = StockViewPane.createPaneForOnStockAlgorithm(owner, stock, period, executionsName,
+			final CurvesViewPane stockViewPane = CurvesViewPane.createPaneForOnStockAlgorithm(owner, stock, period, executionsName,
 					signalsStorage);
 			final Tab tab = new Tab();
 			tab.setText(stock.getName());
@@ -144,20 +145,25 @@ public class ZozkaStrategyVisualiser extends Application {
 			final FromToPeriod period = periodAndDatafeedController.getPeriod();
 
 			final TradeProcessorInit init = new TradeProcessorInit(stockStorage, period, textArea.getText());
+			final List<String> executionsName = init.generateOutForEods();
 			final SimulatorSettings settings = new SimulatorSettings(0, init);
 
 			final Simulator simulator = new Simulator(settings);
-			addEquityTab(simulator, period);
+			final SignalsStorage signalsStorage = simulator.getSignalsStorage();
+
+			addStockOnEodTab(simulator, period, executionsName, signalsStorage);
 		} catch (BadAlgorithmException | BadSignalException | IOException e) {
 			Dialogs.create().showException(e);
 		}
 	}
 
-	private void addEquityTab(Simulator simulator, FromToPeriod period) throws IOException {
-		final EquityPane equityPane = new EquityPane(owner, simulator.getStatistics(), period);
+	private void addStockOnEodTab(Simulator simulator, FromToPeriod period, List<String> executionsName, SignalsStorage signalsStorage)
+			throws IOException {
+		final CurvesViewPane curvesViewPane = CurvesViewPane.createPaneForOnEodAlgorithm(owner, period, executionsName, signalsStorage);
 		final Tab tab = new Tab();
-		tab.setText("S:" + simulator.getStatistics().getAvGain());
-		tab.setContent(equityPane.getMainPane());
+		final int size = tabPane.getTabs().size();
+		tab.setText("CE:" + size);
+		tab.setContent(curvesViewPane.getMainPane());
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 	}
