@@ -29,12 +29,12 @@ public abstract class StockAlgorithm {
 		return init.getSignal(date);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(final String executionName, final Date date) {
-		return init.getSignal(executionName, date);
-	}
-
 	protected final Signal<? extends StockSignal> getSignal(final int index) {
 		return init.getSignal(index);
+	}
+
+	protected final Signal<? extends StockSignal> getSignal(final String executionName, final Date date) {
+		return init.getSignal(executionName, date);
 	}
 
 	protected final Signal<? extends StockSignal> getSignal(final String executionName, final int index) {

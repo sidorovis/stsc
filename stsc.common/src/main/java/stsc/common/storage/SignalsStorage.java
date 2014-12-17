@@ -28,6 +28,6 @@ public interface SignalsStorage {
 
 	public abstract Signal<? extends EodSignal> getEodSignal(String executionName, int index);
 
-	public abstract int getSignalsSize(String executionName);
+	public abstract int getIndexSize(String executionName);
 
 }

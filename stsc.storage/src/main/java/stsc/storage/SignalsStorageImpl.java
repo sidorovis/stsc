@@ -127,7 +127,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public int getSignalsSize(final String executionName) {
+	public int getIndexSize(final String executionName) {
 		SignalsSerie<EodSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);

@@ -49,7 +49,7 @@ public abstract class EodAlgorithm {
 	}
 	
 	protected final int getCurrentIndex() {
-		return init.getSignalsSize();
+		return init.getIndexSize();
 	}
 
 	protected Broker broker() {

@@ -49,8 +49,8 @@ public class EodAlgorithmInit {
 		signalsStorage.addEodSignal(executionName, date, signal);
 	}
 
-	protected final int getSignalsSize() {
-		return signalsStorage.getSignalsSize(executionName);
+	protected final int getIndexSize() {
+		return signalsStorage.getIndexSize(executionName);
 	}
 
 	public final String getExecutionName() {

@@ -105,7 +105,7 @@ public class CurveTimeSerieSetting extends CurveChartSetting {
 	private TimeSeries createOnEodTimeSeries(String title, SignalsStorage signalsStorage) {
 		final TimeSeries timeSeries = new TimeSeries(title);
 		final String outName = ExecutionsStorage.outNameFor(title);
-		final int size = signalsStorage.getSignalsSize(outName);
+		final int size = signalsStorage.getIndexSize(outName);
 		for (int i = 0; i < size; ++i) {
 			final Signal<? extends EodSignal> s = signalsStorage.getEodSignal(outName, i);
 			timeSeries.add(new Day(s.getDate()), s.getSignal(EodDoubleSignal.class).getValue());
