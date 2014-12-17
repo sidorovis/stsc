@@ -197,17 +197,16 @@ public class ZozkaStrategyVisualiser extends Application {
 
 			final Simulator simulator = new Simulator(settings);
 
-			addStockOnEodTab(simulator, period, simulator.getStatistics());
+			addEquityPaneTab(simulator, period, simulator.getStatistics());
 		} catch (BadAlgorithmException | BadSignalException | IOException e) {
 			Dialogs.create().showException(e);
 		}
 	}
 
-	private void addStockOnEodTab(Simulator simulator, FromToPeriod period, Statistics statistics) throws IOException {
+	private void addEquityPaneTab(Simulator simulator, FromToPeriod period, Statistics statistics) throws IOException {
 		final EquityPane equityPane = new EquityPane(owner, statistics, period);
 		final Tab tab = new Tab();
-		final int size = tabPane.getTabs().size();
-		tab.setText("E:" + size);
+		tab.setText("E:" + tabPane.getTabs().size() + " " + String.format("%.3f", statistics.getAvGain()));
 		tab.setContent(equityPane.getMainPane());
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
