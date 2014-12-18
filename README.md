@@ -29,6 +29,13 @@ e -> [Integer: I - index of double into list 0 by default]}
 e -> [-SubAlgoName-]}
 -> DoubleSignal.
 ```
+##### stsc.algorithms.eod.indices.adl
+```
+{ {no_input},
+e -> [Integer: size (2 by default)]}
+-> DoubleSignal.
+```
+
 ##### stsc.algorithms.eod.primitive
 TODO End of day primitive (test-like) algortihms (with positions and auto monitoring).
 ##### stsc.algorithms.stock.factors.primitive
