@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.eod.indices.adl.AdlAdl;
+import stsc.algorithms.eod.indices.adl.AdlAdln;
+import stsc.algorithms.eod.indices.adl.AdlAdlt;
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.storage.StockStorage;
@@ -24,14 +26,6 @@ public class AdlAdlTest {
 		return d.getPrices().getClose();
 	}
 
-	private int compare(double priceDifference) {
-		if (priceDifference >= 0.0) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-
 	@Test
 	public void testAdlAdl() throws Exception {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
@@ -45,30 +39,70 @@ public class AdlAdlTest {
 
 		final EodAlgoInitHelper adlInit = new EodAlgoInitHelper("adl", signalsStorage, broker);
 		final AdlAdl adl = new AdlAdl(adlInit.getInit());
+		final EodAlgoInitHelper adlnInit = new EodAlgoInitHelper("adln", signalsStorage, broker);
+		final AdlAdln adln = new AdlAdln(adlnInit.getInit());
+		final EodAlgoInitHelper adltInit = new EodAlgoInitHelper("adlt", signalsStorage, broker);
+		final AdlAdlt adlt = new AdlAdlt(adltInit.getInit());
 
-		int previosAdl = 0;
+		double previosAdl = 0;
+		double previosAdln = 0;
+		double previosAdlt = 0;
 
 		for (int i = 0; i < 400; ++i) {
-			final HashMap<String, Day> dataset = new HashMap<>();
+			final HashMap<String, Day> datafeed = new HashMap<>();
 			final Day d1 = stockStorage.getStock("aapl").getDays().get(aaplIndex + i);
 			final Day d2 = stockStorage.getStock("adm").getDays().get(admIndex + i);
 			final Day d3 = stockStorage.getStock("spy").getDays().get(spyIndex + i);
 
-			dataset.put("aapl", d1);
-			dataset.put("adm", d2);
-			dataset.put("spy", d3);
+			datafeed.put("aapl", d1);
+			datafeed.put("adm", d2);
+			datafeed.put("spy", d3);
 
-			adl.process(d1.getDate(), dataset);
+			adl.process(d1.getDate(), datafeed);
+			adln.process(d1.getDate(), datafeed);
+			adlt.process(d1.getDate(), datafeed);
 
 			if (i > 0) {
 				double aaplP = p("aapl", aaplIndex + i) - p("aapl", aaplIndex + i - 1);
 				double admP = p("adm", admIndex + i) - p("adm", admIndex + i - 1);
 				double spyP = p("spy", spyIndex + i) - p("spy", spyIndex + i - 1);
-				previosAdl += compare(aaplP) + compare(admP) + compare(spyP);
+
+				double at = 0.0;
+				double dt = 0.0;
+				double ut = 0.0;
+
+				if (aaplP > 0.0) {
+					at += 1.0;
+				} else if (aaplP < 0.0) {
+					dt += 1.0;
+				} else {
+					ut += 1.0;
+				}
+				if (admP > 0.0) {
+					at += 1.0;
+				} else if (admP < 0.0) {
+					dt += 1.0;
+				} else {
+					ut += 1.0;
+				}
+				if (spyP > 0.0) {
+					at += 1.0;
+				} else if (spyP < 0.0) {
+					dt += 1.0;
+				} else {
+					ut += 1.0;
+				}
+				previosAdl += at - dt + ut;
+				previosAdln += (at + ut - dt) / (at + ut + dt);
+				previosAdlt += (at - dt) / (at + ut + dt);
 
 				final double signalValue = signalsStorage.getEodSignal("adl", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
+				final double signalValueN = signalsStorage.getEodSignal("adln", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
+				final double signalValueT = signalsStorage.getEodSignal("adlt", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
 
-				Assert.assertEquals(Double.valueOf(previosAdl), signalValue, Settings.doubleEpsilon);
+				Assert.assertEquals(previosAdl, signalValue, Settings.doubleEpsilon);
+				Assert.assertEquals(previosAdln, signalValueN, Settings.doubleEpsilon);
+				Assert.assertEquals(previosAdlt, signalValueT, Settings.doubleEpsilon);
 			}
 		}
 	}

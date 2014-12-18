@@ -54,10 +54,9 @@ public class AdlAdln extends EodAlgorithm {
 			if (Double.compare(at + dt, 0.0) == 0) {
 				addSignal(date, new EodDoubleSignal(getSignal(index - 1).getSignal(EodDoubleSignal.class).getValue()));
 			} else {
-
+				final double newAdditional = (at - dt) / (at + dt);
+				addSignal(date, new EodDoubleSignal(newAdditional + getSignal(index - 1).getSignal(EodDoubleSignal.class).getValue()));
 			}
-			final double newAdditional = (at - dt) + (at + dt);
-			addSignal(date, new EodDoubleSignal(newAdditional + getSignal(index - 1).getSignal(EodDoubleSignal.class).getValue()));
 		}
 	}
 
