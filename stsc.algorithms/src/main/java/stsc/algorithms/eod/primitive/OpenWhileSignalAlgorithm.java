@@ -13,7 +13,7 @@ import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.SideSignal;
 
 public class OpenWhileSignalAlgorithm extends EodAlgorithm {
@@ -33,7 +33,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		return null;
 	}
 
@@ -42,7 +42,7 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			final String stockName = i.getKey();
-			final Signal<? extends StockSignal> isSignal = getSignal(stockName, sideSignalAlgoName, date);
+			final Signal<? extends SerieSignal> isSignal = getSignal(stockName, sideSignalAlgoName, date);
 			if (isSignal == null) {
 				if (shortPositions.containsKey(stockName)) {
 					broker().sell(stockName, Side.SHORT, shortPositions.get(stockName).getSharedAmount());

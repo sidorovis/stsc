@@ -11,7 +11,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
@@ -24,7 +24,7 @@ public class AdlAdlt extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
 		return new LimitSignalsSerie<>(DoubleSignal.class, size);
 	}

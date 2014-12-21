@@ -6,7 +6,7 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 
 public abstract class StockAlgorithm {
 
@@ -21,23 +21,23 @@ public abstract class StockAlgorithm {
 		init.signalsStorage.registerStockAlgorithmSerie(init.getStockName(), init.getExecutionName(), registerSignalsClass(init));
 	}
 
-	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
+	protected final void addSignal(Date date, SerieSignal signal) throws BadSignalException {
 		init.addSignal(date, signal);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(final Date date) {
+	protected final Signal<? extends SerieSignal> getSignal(final Date date) {
 		return init.getSignal(date);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(final int index) {
+	protected final Signal<? extends SerieSignal> getSignal(final int index) {
 		return init.getSignal(index);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(final String executionName, final Date date) {
+	protected final Signal<? extends SerieSignal> getSignal(final String executionName, final Date date) {
 		return init.getSignal(executionName, date);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(final String executionName, final int index) {
+	protected final Signal<? extends SerieSignal> getSignal(final String executionName, final int index) {
 		return init.getSignal(executionName, index);
 	}
 
@@ -49,7 +49,7 @@ public abstract class StockAlgorithm {
 		return init.getIndexSize(stockName);
 	}
 
-	public abstract SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException;
+	public abstract SignalsSerie<SerieSignal> registerSignalsClass(final StockAlgorithmInit initialize) throws BadAlgorithmException;
 
 	public abstract void process(Day day) throws BadSignalException;
 

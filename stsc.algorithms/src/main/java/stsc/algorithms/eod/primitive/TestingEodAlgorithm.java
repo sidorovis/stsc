@@ -12,7 +12,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
@@ -24,9 +24,9 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<StockSignal>(TestingEodAlgorithmSignal.class, size);
+		return new LimitSignalsSerie<SerieSignal>(TestingEodAlgorithmSignal.class, size);
 	}
 
 	@Override

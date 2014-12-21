@@ -5,7 +5,7 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.series.CommonSignalsSerie;
 
 public final class TestingStockAlgorithm extends StockAlgorithm {
@@ -15,7 +15,7 @@ public final class TestingStockAlgorithm extends StockAlgorithm {
 	}
 
 	@Override
-	public CommonSignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit init) {
+	public CommonSignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit init) {
 		return null;
 	}
 

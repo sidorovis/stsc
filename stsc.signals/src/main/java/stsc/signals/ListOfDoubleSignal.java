@@ -3,9 +3,9 @@ package stsc.signals;
 import java.util.ArrayList;
 import java.util.List;
 
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 
-public class ListOfDoubleSignal extends StockSignal {
+public class ListOfDoubleSignal extends SerieSignal {
 
 	final private List<Double> values = new ArrayList<>();
 

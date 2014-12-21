@@ -1,9 +1,9 @@
 package stsc.signals;
 
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 
 
-public class IntegerSignal extends StockSignal {
+public class IntegerSignal extends SerieSignal {
 
 	final public Integer value;
 

@@ -1,9 +1,9 @@
 package stsc.signals;
 
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 
 
-public class BooleanSignal extends StockSignal {
+public class BooleanSignal extends SerieSignal {
 
 	final public Boolean value;
 

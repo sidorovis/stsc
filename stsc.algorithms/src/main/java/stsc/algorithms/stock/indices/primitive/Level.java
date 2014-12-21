@@ -7,7 +7,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.SideSignal;
 import stsc.signals.series.LimitSignalsSerie;
@@ -24,8 +24,8 @@ public class Level extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
-		return new LimitSignalsSerie<StockSignal>(SideSignal.class);
+	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+		return new LimitSignalsSerie<SerieSignal>(SideSignal.class);
 	}
 
 	@Override

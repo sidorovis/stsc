@@ -9,7 +9,7 @@ import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
 import stsc.signals.IntegerSignal;
 import stsc.signals.SideSignal;
@@ -28,16 +28,16 @@ public class Output extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<StockSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
-		return new CommonSignalsSerie<StockSignal>(DoubleSignal.class);
+	public SignalsSerie<SerieSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
+		return new CommonSignalsSerie<SerieSignal>(DoubleSignal.class);
 	}
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		Signal<? extends StockSignal> signalHandler = getSignal(fromExecution, day.getDate());
+		Signal<? extends SerieSignal> signalHandler = getSignal(fromExecution, day.getDate());
 		if (signalHandler == null)
 			return;
-		final StockSignal signal = signalHandler.getValue();
+		final SerieSignal signal = signalHandler.getValue();
 		if (signal == null)
 			return;
 		if (signal instanceof DoubleSignal) {

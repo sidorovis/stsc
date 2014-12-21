@@ -1,9 +1,9 @@
 package stsc.signals;
 
 import stsc.common.Side;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 
-public class SideSignal extends StockSignal {
+public class SideSignal extends SerieSignal {
 
 	private final Side side;
 	private final Double value;

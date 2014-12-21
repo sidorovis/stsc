@@ -10,7 +10,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
 import stsc.signals.series.LimitSignalsSerie;
 
@@ -23,13 +23,13 @@ public final class EodAlgorithmTest extends TestCase {
 		}
 
 		@Override
-		public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
-			return new LimitSignalsSerie<>(StockSignal.class);
+		public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+			return new LimitSignalsSerie<>(SerieSignal.class);
 		}
 
 		@Override
 		public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
-			addSignal(date, new StockSignal());
+			addSignal(date, new SerieSignal());
 		}
 
 	}
@@ -39,6 +39,6 @@ public final class EodAlgorithmTest extends TestCase {
 		EodAlgorithmHelper eah = new EodAlgorithmHelper(init.getInit());
 		final Date theDate = new Date();
 		eah.process(new Date(), new HashMap<String, Day>());
-		assertEquals(StockSignal.class, init.getStorage().getEodSignal("a", theDate).getSignal(StockSignal.class).getClass());
+		assertEquals(SerieSignal.class, init.getStorage().getEodSignal("a", theDate).getSignal(SerieSignal.class).getClass());
 	}
 }

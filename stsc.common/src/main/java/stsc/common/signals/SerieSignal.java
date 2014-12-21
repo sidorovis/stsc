@@ -1,5 +1,5 @@
 package stsc.common.signals;
 
-public class StockSignal {
+public class SerieSignal {
 
 }

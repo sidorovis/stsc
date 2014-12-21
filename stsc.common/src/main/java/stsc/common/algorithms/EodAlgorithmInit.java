@@ -5,7 +5,7 @@ import java.util.Date;
 import stsc.common.BadSignalException;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.trading.Broker;
 
@@ -24,27 +24,27 @@ public class EodAlgorithmInit {
 		this.broker = broker;
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(String executionName, Date date) {
+	protected final Signal<? extends SerieSignal> getSignal(String executionName, Date date) {
 		return signalsStorage.getEodSignal(executionName, date);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(String executionName, int index) {
+	protected final Signal<? extends SerieSignal> getSignal(String executionName, int index) {
 		return signalsStorage.getEodSignal(executionName, index);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, Date date) {
+	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, Date date) {
 		return signalsStorage.getStockSignal(stockName, executionName, date);
 	}
 
-	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
+	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 
-	protected final void registerEodSignalsType(SignalsSerie<StockSignal> serie) {
+	protected final void registerEodSignalsType(SignalsSerie<SerieSignal> serie) {
 		signalsStorage.registerEodAlgorithmSerie(executionName, serie);
 	}
 
-	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
+	protected final void addSignal(Date date, SerieSignal signal) throws BadSignalException {
 		signalsStorage.addEodSignal(executionName, date, signal);
 	}
 

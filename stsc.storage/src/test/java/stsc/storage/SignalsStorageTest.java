@@ -8,13 +8,13 @@ import org.junit.Test;
 
 import stsc.common.BadSignalException;
 import stsc.common.signals.Signal;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
 import stsc.signals.series.CommonSignalsSerie;
 
 public class SignalsStorageTest {
 
-	static public class TestEodSignal extends StockSignal {
+	static public class TestEodSignal extends SerieSignal {
 		public final int id;
 
 		public TestEodSignal(int id) {
@@ -25,10 +25,10 @@ public class SignalsStorageTest {
 	@Test
 	public void testSignalsStorage() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorageImpl();
-		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<StockSignal>(TestEodSignal.class));
+		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<SerieSignal>(TestEodSignal.class));
 		final Date d = new LocalDate(2010, 10, 20).toDate();
 		signalsStorage.addEodSignal("e1", d, new TestEodSignal(12));
-		final Signal<? extends StockSignal> ts = signalsStorage.getEodSignal("e1", d);
+		final Signal<? extends SerieSignal> ts = signalsStorage.getEodSignal("e1", d);
 		Assert.assertEquals(12, ts.getSignal(TestEodSignal.class).id);
 		Assert.assertEquals(0, ts.getIndex());
 		Assert.assertEquals(d, ts.getDate());
@@ -37,7 +37,7 @@ public class SignalsStorageTest {
 	@Test
 	public void testSignalsStorageGetByIndex() throws BadSignalException {
 		SignalsStorage signalsStorage = new SignalsStorageImpl();
-		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<StockSignal>(TestEodSignal.class));
+		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<SerieSignal>(TestEodSignal.class));
 
 		final LocalDate d = new LocalDate(2010, 10, 20);
 		signalsStorage.addEodSignal("e1", d.toDate(), new TestEodSignal(12));

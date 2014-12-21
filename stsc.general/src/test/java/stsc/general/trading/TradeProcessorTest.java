@@ -13,7 +13,7 @@ import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.EodExecution;
-import stsc.common.signals.StockSignal;
+import stsc.common.signals.SerieSignal;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
@@ -62,21 +62,21 @@ public final class TradeProcessorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		final SignalsStorage signalsStorage = tradeProcessor.getExecutionStorage().getSignalsStorage();
-		final StockSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(StockSignal.class);
+		final SerieSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(SerieSignal.class);
 		assertTrue(e1s1.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingEodAlgorithmSignal) e1s1).dateRepresentation);
 
-		final StockSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(
+		final SerieSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(
 				TestingEodAlgorithmSignal.class);
 		assertTrue(e1s2.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingEodAlgorithmSignal) e1s2).dateRepresentation);
 
-		final StockSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(
+		final SerieSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(
 				TestingEodAlgorithmSignal.class);
 		assertTrue(e1s3.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingEodAlgorithmSignal) e1s3).dateRepresentation);
 
-		final StockSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 04).toDate()).getSignal(StockSignal.class);
+		final SerieSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 04).toDate()).getSignal(SerieSignal.class);
 		assertTrue(e1s6.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-04", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 
