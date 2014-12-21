@@ -94,12 +94,17 @@ public class SimulatorSettingsGridFactory extends SimulatorSettingsFactory<Simul
 		return result;
 	}
 
-	// TODO - method is experimental, see tests it is not finished
 	public SimulatorSettingsGridCopyList getCopyList() {
-		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(getStockStorage(), getPeriod(), stockInitializers,
-				eodInitializers, finished);
-		stockInitializers = new ArrayList<>();
-		eodInitializers = new ArrayList<>();
+		final List<GridExecutionInitializer> stockInitCopy = new ArrayList<>(stockInitializers.size());
+		for (GridExecutionInitializer i : stockInitializers) {
+			stockInitCopy.add(i.clone());
+		}
+		final List<GridExecutionInitializer> eodInitCopy = new ArrayList<>(eodInitializers.size());
+		for (GridExecutionInitializer i : eodInitializers) {
+			eodInitCopy.add(i.clone());
+		}
+		final SimulatorSettingsGridCopyList result = new SimulatorSettingsGridCopyList(getStockStorage(), getPeriod(), stockInitCopy,
+				eodInitCopy, finished);
 		return result;
 	}
 
