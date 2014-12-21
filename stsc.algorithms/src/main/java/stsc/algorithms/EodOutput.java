@@ -9,10 +9,10 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
-import stsc.signals.eod.EodDoubleSignal;
+import stsc.common.signals.StockSignal;
+import stsc.signals.DoubleSignal;
 import stsc.signals.series.CommonSignalsSerie;
 
 public class EodOutput extends EodAlgorithm {
@@ -28,19 +28,19 @@ public class EodOutput extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException {
-		return new CommonSignalsSerie<>(EodDoubleSignal.class);
+	public SignalsSerie<StockSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException {
+		return new CommonSignalsSerie<>(DoubleSignal.class);
 	}
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
-		Signal<? extends EodSignal> signalHandler = getSignal(fromExecution, date);
+		Signal<? extends StockSignal> signalHandler = getSignal(fromExecution, date);
 		if (signalHandler == null)
 			return;
-		final EodSignal signal = signalHandler.getValue();
+		final StockSignal signal = signalHandler.getValue();
 		if (signal == null)
 			return;
-		if (signal instanceof EodDoubleSignal) {
+		if (signal instanceof DoubleSignal) {
 			addSignal(date, signal);
 		}
 	}

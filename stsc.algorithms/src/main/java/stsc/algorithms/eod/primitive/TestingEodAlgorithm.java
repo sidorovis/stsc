@@ -1,7 +1,7 @@
 package stsc.algorithms.eod.primitive;
 
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.SignalsSerie;
+import stsc.common.signals.StockSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
 public class TestingEodAlgorithm extends EodAlgorithm {
@@ -24,9 +24,9 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<EodSignal>(TestingEodAlgorithmSignal.class, size);
+		return new LimitSignalsSerie<StockSignal>(TestingEodAlgorithmSignal.class, size);
 	}
 
 	@Override

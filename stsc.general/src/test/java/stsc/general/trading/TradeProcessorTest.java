@@ -3,9 +3,9 @@ package stsc.general.trading;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.joda.time.LocalDate;
+import junit.framework.TestCase;
 
-import com.google.common.collect.Sets;
+import org.joda.time.LocalDate;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
@@ -13,17 +13,16 @@ import stsc.algorithms.eod.primitive.TestingEodAlgorithmSignal;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.EodExecution;
-import stsc.common.signals.EodSignal;
+import stsc.common.signals.StockSignal;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.common.storage.SignalsStorage;
 import stsc.common.storage.StockStorage;
-import stsc.general.trading.TradeProcessor;
-import stsc.general.trading.TradeProcessorInit;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.StockStorageFactory;
 import stsc.storage.ThreadSafeStockStorage;
-import junit.framework.TestCase;
+
+import com.google.common.collect.Sets;
 
 public final class TradeProcessorTest extends TestCase {
 	private void csvReaderHelper(StockStorage ss, String stockName) throws IOException, ParseException {
@@ -63,19 +62,21 @@ public final class TradeProcessorTest extends TestCase {
 			assertEquals(expectedDatafeedSizes[i], ta.datafeeds.get(i).size());
 
 		final SignalsStorage signalsStorage = tradeProcessor.getExecutionStorage().getSignalsStorage();
-		final EodSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(EodSignal.class);
+		final StockSignal e1s1 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 30).toDate()).getSignal(StockSignal.class);
 		assertTrue(e1s1.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-30", ((TestingEodAlgorithmSignal) e1s1).dateRepresentation);
 
-		final EodSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(TestingEodAlgorithmSignal.class);
+		final StockSignal e1s2 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 10, 31).toDate()).getSignal(
+				TestingEodAlgorithmSignal.class);
 		assertTrue(e1s2.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-10-31", ((TestingEodAlgorithmSignal) e1s2).dateRepresentation);
 
-		final EodSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(TestingEodAlgorithmSignal.class);
+		final StockSignal e1s3 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 01).toDate()).getSignal(
+				TestingEodAlgorithmSignal.class);
 		assertTrue(e1s3.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-01", ((TestingEodAlgorithmSignal) e1s3).dateRepresentation);
 
-		final EodSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 04).toDate()).getSignal(EodSignal.class);
+		final StockSignal e1s6 = signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 04).toDate()).getSignal(StockSignal.class);
 		assertTrue(e1s6.getClass() == TestingEodAlgorithmSignal.class);
 		assertEquals("2013-11-04", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 
@@ -85,7 +86,8 @@ public final class TradeProcessorTest extends TestCase {
 	}
 
 	public void testTradeProcessorWithStatistics() throws Exception {
-		final StockStorage ss = StockStorageFactory.createStockStorage(Sets.newHashSet(new String[] { "aapl", "adm", "spy" }), "./test_data/");
+		final StockStorage ss = StockStorageFactory.createStockStorage(Sets.newHashSet(new String[] { "aapl", "adm", "spy" }),
+				"./test_data/");
 		final FromToPeriod period = new FromToPeriod("02-09-2013", "06-11-2013");
 		final ExecutionsStorage executionsStorage = new ExecutionsStorage();
 		final AlgorithmSettings algoSettings = new AlgorithmSettingsImpl(period);

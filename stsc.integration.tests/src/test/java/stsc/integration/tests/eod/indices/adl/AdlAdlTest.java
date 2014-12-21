@@ -14,7 +14,7 @@ import stsc.common.Settings;
 import stsc.common.storage.StockStorage;
 import stsc.general.trading.BrokerImpl;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
-import stsc.signals.eod.EodDoubleSignal;
+import stsc.signals.DoubleSignal;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.mocks.StockStorageMock;
 
@@ -96,9 +96,9 @@ public class AdlAdlTest {
 				previosAdln += (at + ut - dt) / (at + ut + dt);
 				previosAdlt += (at - dt) / (at + ut + dt);
 
-				final double signalValue = signalsStorage.getEodSignal("adl", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
-				final double signalValueN = signalsStorage.getEodSignal("adln", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
-				final double signalValueT = signalsStorage.getEodSignal("adlt", d1.getDate()).getSignal(EodDoubleSignal.class).getValue();
+				final double signalValue = signalsStorage.getEodSignal("adl", d1.getDate()).getSignal(DoubleSignal.class).getValue();
+				final double signalValueN = signalsStorage.getEodSignal("adln", d1.getDate()).getSignal(DoubleSignal.class).getValue();
+				final double signalValueT = signalsStorage.getEodSignal("adlt", d1.getDate()).getSignal(DoubleSignal.class).getValue();
 
 				Assert.assertEquals(previosAdl, signalValue, Settings.doubleEpsilon);
 				Assert.assertEquals(previosAdln, signalValueN, Settings.doubleEpsilon);

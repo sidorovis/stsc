@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.StockSignal;
@@ -18,7 +17,7 @@ import stsc.common.storage.SignalsStorage;
 public class SignalsStorageImpl implements SignalsStorage {
 
 	private HashMap<String, SignalsSerie<StockSignal>> stockSignals = new HashMap<>();
-	private HashMap<String, SignalsSerie<EodSignal>> eodSignals = new HashMap<>();
+	private HashMap<String, SignalsSerie<StockSignal>> eodSignals = new HashMap<>();
 
 	public SignalsStorageImpl() {
 	}
@@ -85,7 +84,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	// EOD
 
 	@Override
-	public void registerEodAlgorithmSerie(String executionName, SignalsSerie<EodSignal> serie) {
+	public void registerEodAlgorithmSerie(String executionName, SignalsSerie<StockSignal> serie) {
 		if (serie != null) {
 			synchronized (eodSignals) {
 				eodSignals.put(executionName, serie);
@@ -94,9 +93,9 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public void addEodSignal(final String executionName, final Date date, EodSignal signal) throws BadSignalException {
+	public void addEodSignal(final String executionName, final Date date, StockSignal signal) throws BadSignalException {
 		synchronized (eodSignals) {
-			final SignalsSerie<EodSignal> s = eodSignals.get(executionName);
+			final SignalsSerie<StockSignal> s = eodSignals.get(executionName);
 			if (s != null)
 				eodSignals.get(executionName).addSignal(date, signal);
 			else
@@ -105,8 +104,8 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends EodSignal> getEodSignal(final String executionName, final Date date) {
-		SignalsSerie<EodSignal> ess = null;
+	public Signal<? extends StockSignal> getEodSignal(final String executionName, final Date date) {
+		SignalsSerie<StockSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
@@ -116,8 +115,8 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends EodSignal> getEodSignal(final String executionName, final int index) {
-		SignalsSerie<EodSignal> ess = null;
+	public Signal<? extends StockSignal> getEodSignal(final String executionName, final int index) {
+		SignalsSerie<StockSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}
@@ -128,7 +127,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 
 	@Override
 	public int getIndexSize(final String executionName) {
-		SignalsSerie<EodSignal> ess = null;
+		SignalsSerie<StockSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
 		}

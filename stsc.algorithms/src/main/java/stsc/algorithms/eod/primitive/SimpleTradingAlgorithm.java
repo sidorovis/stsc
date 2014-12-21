@@ -1,7 +1,7 @@
 package stsc.algorithms.eod.primitive;
 
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -16,8 +16,8 @@ import stsc.common.Side;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.SignalsSerie;
+import stsc.common.signals.StockSignal;
 
 public class SimpleTradingAlgorithm extends EodAlgorithm {
 
@@ -77,7 +77,7 @@ public class SimpleTradingAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		return null;
 	}
 

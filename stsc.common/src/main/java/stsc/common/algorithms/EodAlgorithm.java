@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.Signal;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.StockSignal;
@@ -20,23 +19,23 @@ public abstract class EodAlgorithm {
 		init.registerEodSignalsType(registerSignalsClass(init));
 	}
 
-	protected final void addSignal(Date date, EodSignal signal) throws BadSignalException {
+	protected final void addSignal(Date date, StockSignal signal) throws BadSignalException {
 		init.addSignal(date, signal);
 	}
 
-	protected final Signal<? extends EodSignal> getSignal(Date date) {
+	protected final Signal<? extends StockSignal> getSignal(Date date) {
 		return init.getSignal(init.getExecutionName(), date);
 	}
 
-	protected final Signal<? extends EodSignal> getSignal(int index) {
+	protected final Signal<? extends StockSignal> getSignal(int index) {
 		return init.getSignal(init.getExecutionName(), index);
 	}
 
-	protected final Signal<? extends EodSignal> getSignal(String executionName, Date date) {
+	protected final Signal<? extends StockSignal> getSignal(String executionName, Date date) {
 		return init.getSignal(executionName, date);
 	}
 
-	protected final Signal<? extends EodSignal> getSignal(String executionName, int index) {
+	protected final Signal<? extends StockSignal> getSignal(String executionName, int index) {
 		return init.getSignal(executionName, index);
 	}
 
@@ -47,7 +46,7 @@ public abstract class EodAlgorithm {
 	protected final Signal<? extends StockSignal> getSignal(String stockName, String executionName, int index) {
 		return init.getSignal(stockName, executionName, index);
 	}
-	
+
 	protected final int getCurrentIndex() {
 		return init.getIndexSize();
 	}
@@ -56,7 +55,7 @@ public abstract class EodAlgorithm {
 		return init.getBroker();
 	}
 
-	public abstract SignalsSerie<EodSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException;
+	public abstract SignalsSerie<StockSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException;
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 

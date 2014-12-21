@@ -50,7 +50,7 @@ public class TestGridSimulatorSettings {
 
 	public static void fillSmallFactory(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep, int nSide,
 			int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
-		settings.addStock("in", algoStockName("In"), "e", openTypes);
+		settings.addStock("in", algoStockName("Input"), "e", openTypes);
 		settings.addStock("ema", algoStockName("Ema"),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.7)).add(new MpSubExecution("", "in")));
 		settings.addStock(

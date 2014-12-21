@@ -10,9 +10,9 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.SignalsSerie;
-import stsc.signals.eod.EodDoubleSignal;
+import stsc.common.signals.StockSignal;
+import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
 public class AdlAdln extends EodAlgorithm {
@@ -24,9 +24,9 @@ public class AdlAdln extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<EodSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public SignalsSerie<StockSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(EodDoubleSignal.class, size);
+		return new LimitSignalsSerie<>(DoubleSignal.class, size);
 	}
 
 	@Override
@@ -49,13 +49,13 @@ public class AdlAdln extends EodAlgorithm {
 		}
 		final int index = getCurrentIndex();
 		if (index == 0) {
-			addSignal(date, new EodDoubleSignal(0.0));
+			addSignal(date, new DoubleSignal(0.0));
 		} else {
 			if (Double.compare(at + dt, 0.0) == 0) {
-				addSignal(date, new EodDoubleSignal(getSignal(index - 1).getSignal(EodDoubleSignal.class).getValue()));
+				addSignal(date, new DoubleSignal(getSignal(index - 1).getSignal(DoubleSignal.class).getValue()));
 			} else {
 				final double newAdditional = (at - dt) / (at + dt);
-				addSignal(date, new EodDoubleSignal(newAdditional + getSignal(index - 1).getSignal(EodDoubleSignal.class).getValue()));
+				addSignal(date, new DoubleSignal(newAdditional + getSignal(index - 1).getSignal(DoubleSignal.class).getValue()));
 			}
 		}
 	}

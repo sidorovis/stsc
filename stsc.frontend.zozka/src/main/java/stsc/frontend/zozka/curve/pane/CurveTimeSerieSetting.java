@@ -10,14 +10,12 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 import stsc.common.FromToPeriod;
-import stsc.common.signals.EodSignal;
 import stsc.common.signals.Signal;
 import stsc.common.signals.StockSignal;
 import stsc.common.stocks.Stock;
 import stsc.common.storage.SignalsStorage;
 import stsc.frontend.zozka.gui.models.SerieXYToolTipGenerator;
 import stsc.signals.DoubleSignal;
-import stsc.signals.eod.EodDoubleSignal;
 import stsc.storage.ExecutionsStorage;
 
 public class CurveTimeSerieSetting extends CurveChartSetting {
@@ -107,8 +105,8 @@ public class CurveTimeSerieSetting extends CurveChartSetting {
 		final String outName = ExecutionsStorage.outNameFor(title);
 		final int size = signalsStorage.getIndexSize(outName);
 		for (int i = 0; i < size; ++i) {
-			final Signal<? extends EodSignal> s = signalsStorage.getEodSignal(outName, i);
-			timeSeries.add(new Day(s.getDate()), s.getSignal(EodDoubleSignal.class).getValue());
+			final Signal<? extends StockSignal> s = signalsStorage.getEodSignal(outName, i);
+			timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).getValue());
 		}
 		return timeSeries;
 	}
