@@ -7,8 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.eod.indices.adl.AdlAdl;
-import stsc.algorithms.eod.indices.adl.AdlAdln;
-import stsc.algorithms.eod.indices.adl.AdlAdlt;
+import stsc.algorithms.eod.indices.adl.Adln;
+import stsc.algorithms.eod.indices.adl.Adlt;
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.storage.StockStorage;
@@ -18,7 +18,7 @@ import stsc.signals.DoubleSignal;
 import stsc.storage.SignalsStorageImpl;
 import stsc.storage.mocks.StockStorageMock;
 
-public class AdlAdlTest {
+public class AdlTest {
 
 	private double p(String stockName, int index) {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
@@ -40,9 +40,9 @@ public class AdlAdlTest {
 		final EodAlgoInitHelper adlInit = new EodAlgoInitHelper("adl", signalsStorage, broker);
 		final AdlAdl adl = new AdlAdl(adlInit.getInit());
 		final EodAlgoInitHelper adlnInit = new EodAlgoInitHelper("adln", signalsStorage, broker);
-		final AdlAdln adln = new AdlAdln(adlnInit.getInit());
+		final Adln adln = new Adln(adlnInit.getInit());
 		final EodAlgoInitHelper adltInit = new EodAlgoInitHelper("adlt", signalsStorage, broker);
-		final AdlAdlt adlt = new AdlAdlt(adltInit.getInit());
+		final Adlt adlt = new Adlt(adltInit.getInit());
 
 		double previosAdl = 0;
 		double previosAdln = 0;
