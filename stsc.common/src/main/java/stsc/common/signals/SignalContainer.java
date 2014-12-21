@@ -2,12 +2,12 @@ package stsc.common.signals;
 
 import java.util.Date;
 
-public final class Signal<SignalType> {
+public final class SignalContainer<SignalType> {
 	final int index;
 	final Date date;
 	final SignalType signal;
 
-	public Signal(final int index, final Date date, final SignalType signal) {
+	public SignalContainer(final int index, final Date date, final SignalType signal) {
 		this.index = index;
 		this.date = date;
 		this.signal = signal;

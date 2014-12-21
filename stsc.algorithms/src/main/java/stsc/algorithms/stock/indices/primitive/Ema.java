@@ -8,7 +8,7 @@ import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
@@ -52,7 +52,7 @@ public class Ema extends StockAlgorithm {
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(price));
 		} else {
-			final Signal<? extends SerieSignal> previousEmaSignal = getSignal(signalIndex - 1);
+			final SignalContainer<? extends SerieSignal> previousEmaSignal = getSignal(signalIndex - 1);
 			if (previousEmaSignal != null) {
 				final double previousEmaValue = previousEmaSignal.getSignal(DoubleSignal.class).getValue();
 				final double value = P.getValue() * price + (1.0 - P.getValue()) * previousEmaValue;

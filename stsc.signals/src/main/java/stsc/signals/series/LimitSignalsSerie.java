@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 
 public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
@@ -15,8 +15,8 @@ public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType
 	private final int limit;
 	private int index;
 
-	private final Queue<Signal<? extends SignalType>> signalList = new LinkedList<>();
-	private final HashMap<Date, Signal<? extends SignalType>> signalMap = new HashMap<>();
+	private final Queue<SignalContainer<? extends SignalType>> signalList = new LinkedList<>();
+	private final HashMap<Date, SignalContainer<? extends SignalType>> signalMap = new HashMap<>();
 
 	public LimitSignalsSerie(final Class<? extends SignalType> signalClass, final int limit) {
 		super(signalClass);
@@ -33,13 +33,13 @@ public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType
 	}
 
 	@Override
-	public Signal<? extends SignalType> getSignal(Date date) {
+	public SignalContainer<? extends SignalType> getSignal(Date date) {
 		return signalMap.get(date);
 	}
 
 	@Override
-	public Signal<? extends SignalType> getSignal(int index) {
-		for (Signal<? extends SignalType> i : signalList) {
+	public SignalContainer<? extends SignalType> getSignal(int index) {
+		for (SignalContainer<? extends SignalType> i : signalList) {
 			if (i.getIndex() == index)
 				return i;
 		}
@@ -57,7 +57,7 @@ public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType
 
 	private synchronized void checkedAddSignal(Date date, SignalType signal) {
 		final int newIndex = index++;
-		Signal<SignalType> newSignal = new Signal<SignalType>(newIndex, date, signal);
+		SignalContainer<SignalType> newSignal = new SignalContainer<SignalType>(newIndex, date, signal);
 
 		if (signalList.size() > limit) {
 			Date signalDate = signalList.poll().getDate();

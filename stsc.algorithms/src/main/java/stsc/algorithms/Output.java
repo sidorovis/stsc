@@ -7,7 +7,7 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
@@ -34,7 +34,7 @@ public class Output extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		Signal<? extends SerieSignal> signalHandler = getSignal(fromExecution, day.getDate());
+		SignalContainer<? extends SerieSignal> signalHandler = getSignal(fromExecution, day.getDate());
 		if (signalHandler == null)
 			return;
 		final SerieSignal signal = signalHandler.getValue();

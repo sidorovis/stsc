@@ -9,7 +9,7 @@ import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
@@ -34,7 +34,7 @@ public class EodOutput extends EodAlgorithm {
 
 	@Override
 	public void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException {
-		Signal<? extends SerieSignal> signalHandler = getSignal(fromExecution, date);
+		SignalContainer<? extends SerieSignal> signalHandler = getSignal(fromExecution, date);
 		if (signalHandler == null)
 			return;
 		final SerieSignal signal = signalHandler.getValue();

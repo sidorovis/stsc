@@ -18,7 +18,7 @@ import stsc.common.algorithms.AlgorithmSetting;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
 import stsc.common.algorithms.EodAlgorithmInit;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.signals.DoubleSignal;
@@ -94,7 +94,7 @@ public class PositionNDayMStocks extends EodAlgorithm {
 		final ArrayList<Factor> sortedStocks = new ArrayList<>();
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
 			String stockName = i.getKey();
-			Signal<? extends SerieSignal> signal = getSignal(stockName, factorExecutionName, date);
+			SignalContainer<? extends SerieSignal> signal = getSignal(stockName, factorExecutionName, date);
 			if (signal != null && signal.getSignal(DoubleSignal.class) != null)
 				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).getValue(), stockName));
 		}

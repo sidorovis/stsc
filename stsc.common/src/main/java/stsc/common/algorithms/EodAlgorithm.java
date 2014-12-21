@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.common.trading.Broker;
@@ -23,27 +23,27 @@ public abstract class EodAlgorithm {
 		init.addSignal(date, signal);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(Date date) {
 		return init.getSignal(init.getExecutionName(), date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(int index) {
 		return init.getSignal(init.getExecutionName(), index);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String executionName, Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String executionName, Date date) {
 		return init.getSignal(executionName, date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String executionName, int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String executionName, int index) {
 		return init.getSignal(executionName, index);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, Date date) {
 		return init.getSignal(stockName, executionName, date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
 		return init.getSignal(stockName, executionName, index);
 	}
 

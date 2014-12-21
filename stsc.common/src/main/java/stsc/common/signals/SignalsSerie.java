@@ -17,9 +17,9 @@ public abstract class SignalsSerie<SignalType> {
 		return signalClass;
 	}
 
-	public abstract Signal<? extends SignalType> getSignal(Date date);
+	public abstract SignalContainer<? extends SignalType> getSignal(Date date);
 
-	public abstract Signal<? extends SignalType> getSignal(int index);
+	public abstract SignalContainer<? extends SignalType> getSignal(int index);
 
 	public abstract void addSignal(Date date, SignalType signal) throws BadSignalException;
 

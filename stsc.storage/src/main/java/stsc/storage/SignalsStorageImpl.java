@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
@@ -42,7 +42,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends SerieSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
+	public SignalContainer<? extends SerieSignal> getStockSignal(final String stockName, final String executionName, final Date date) {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		SignalsSerie<SerieSignal> ess;
 		synchronized (stockSignals) {
@@ -54,7 +54,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends SerieSignal> getStockSignal(final String stockName, final String executionName, final int index) {
+	public SignalContainer<? extends SerieSignal> getStockSignal(final String stockName, final String executionName, final int index) {
 		final String key = stockAlgorithmKey(stockName, executionName);
 		SignalsSerie<SerieSignal> ess;
 		synchronized (stockSignals) {
@@ -104,7 +104,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends SerieSignal> getEodSignal(final String executionName, final Date date) {
+	public SignalContainer<? extends SerieSignal> getEodSignal(final String executionName, final Date date) {
 		SignalsSerie<SerieSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);
@@ -115,7 +115,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public Signal<? extends SerieSignal> getEodSignal(final String executionName, final int index) {
+	public SignalContainer<? extends SerieSignal> getEodSignal(final String executionName, final int index) {
 		SignalsSerie<SerieSignal> ess = null;
 		synchronized (eodSignals) {
 			ess = eodSignals.get(executionName);

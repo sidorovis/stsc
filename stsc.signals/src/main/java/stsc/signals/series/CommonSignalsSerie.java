@@ -5,25 +5,25 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 
 public final class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
 
-	private final ArrayList<Signal<? extends SignalType>> signalList = new ArrayList<>();
-	private final HashMap<Date, Signal<? extends SignalType>> signalMap = new HashMap<>();
+	private final ArrayList<SignalContainer<? extends SignalType>> signalList = new ArrayList<>();
+	private final HashMap<Date, SignalContainer<? extends SignalType>> signalMap = new HashMap<>();
 
 	public CommonSignalsSerie(final Class<? extends SignalType> signalClass) {
 		super(signalClass);
 	}
 
 	@Override
-	public synchronized Signal<? extends SignalType> getSignal(final Date date) {
+	public synchronized SignalContainer<? extends SignalType> getSignal(final Date date) {
 		return signalMap.get(date);
 	}
 
 	@Override
-	public synchronized Signal<? extends SignalType> getSignal(final int index) {
+	public synchronized SignalContainer<? extends SignalType> getSignal(final int index) {
 		return signalList.get(index);
 	}
 
@@ -38,7 +38,7 @@ public final class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalTyp
 
 	private synchronized void checkedAddSignal(Date date, SignalType signal) {
 		final int newIndex = signalList.size();
-		Signal<SignalType> newSignal = new Signal<SignalType>(newIndex, date, signal);
+		SignalContainer<SignalType> newSignal = new SignalContainer<SignalType>(newIndex, date, signal);
 		signalList.add(newSignal);
 		signalMap.put(date, newSignal);
 	}

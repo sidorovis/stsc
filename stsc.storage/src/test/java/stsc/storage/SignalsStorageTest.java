@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
 import stsc.signals.series.CommonSignalsSerie;
@@ -28,7 +28,7 @@ public class SignalsStorageTest {
 		signalsStorage.registerEodAlgorithmSerie("e1", new CommonSignalsSerie<SerieSignal>(TestEodSignal.class));
 		final Date d = new LocalDate(2010, 10, 20).toDate();
 		signalsStorage.addEodSignal("e1", d, new TestEodSignal(12));
-		final Signal<? extends SerieSignal> ts = signalsStorage.getEodSignal("e1", d);
+		final SignalContainer<? extends SerieSignal> ts = signalsStorage.getEodSignal("e1", d);
 		Assert.assertEquals(12, ts.getSignal(TestEodSignal.class).id);
 		Assert.assertEquals(0, ts.getIndex());
 		Assert.assertEquals(d, ts.getDate());

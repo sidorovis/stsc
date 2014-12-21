@@ -4,7 +4,7 @@ import java.util.Date;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 
@@ -25,19 +25,19 @@ public abstract class StockAlgorithm {
 		init.addSignal(date, signal);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(final Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(final Date date) {
 		return init.getSignal(date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(final int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(final int index) {
 		return init.getSignal(index);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(final String executionName, final Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(final String executionName, final Date date) {
 		return init.getSignal(executionName, date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(final String executionName, final int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(final String executionName, final int index) {
 		return init.getSignal(executionName, index);
 	}
 

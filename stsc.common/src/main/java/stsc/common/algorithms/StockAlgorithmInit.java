@@ -3,7 +3,7 @@ package stsc.common.algorithms;
 import java.util.Date;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
 
@@ -49,19 +49,19 @@ public class StockAlgorithmInit {
 		signalsStorage.addStockSignal(stockName, executionName, date, signal);
 	}
 
-	final Signal<? extends SerieSignal> getSignal(final Date date) {
+	final SignalContainer<? extends SerieSignal> getSignal(final Date date) {
 		return signalsStorage.getStockSignal(stockName, executionName, date);
 	}
 
-	final Signal<? extends SerieSignal> getSignal(final String executionName, final Date date) {
+	final SignalContainer<? extends SerieSignal> getSignal(final String executionName, final Date date) {
 		return signalsStorage.getStockSignal(stockName, executionName, date);
 	}
 
-	final Signal<? extends SerieSignal> getSignal(final int index) {
+	final SignalContainer<? extends SerieSignal> getSignal(final int index) {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 
-	final Signal<? extends SerieSignal> getSignal(final String executionName, final int index) {
+	final SignalContainer<? extends SerieSignal> getSignal(final String executionName, final int index) {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 

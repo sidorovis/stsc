@@ -3,7 +3,7 @@ package stsc.common.algorithms;
 import java.util.Date;
 
 import stsc.common.BadSignalException;
-import stsc.common.signals.Signal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.common.signals.SerieSignal;
 import stsc.common.storage.SignalsStorage;
@@ -24,19 +24,19 @@ public class EodAlgorithmInit {
 		this.broker = broker;
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String executionName, Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String executionName, Date date) {
 		return signalsStorage.getEodSignal(executionName, date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String executionName, int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String executionName, int index) {
 		return signalsStorage.getEodSignal(executionName, index);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, Date date) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, Date date) {
 		return signalsStorage.getStockSignal(stockName, executionName, date);
 	}
 
-	protected final Signal<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 
