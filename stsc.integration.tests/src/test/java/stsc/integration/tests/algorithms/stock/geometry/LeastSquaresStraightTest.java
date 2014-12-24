@@ -58,7 +58,6 @@ public class LeastSquaresStraightTest {
 				final double a1 = (5 * sumXY - sumY * sumX) / divider;
 				Assert.assertEquals(a0, values.get(0), Settings.doubleEpsilon);
 				Assert.assertEquals(a1, values.get(1), Settings.doubleEpsilon);
-			} else {
 			}
 		}
 	}

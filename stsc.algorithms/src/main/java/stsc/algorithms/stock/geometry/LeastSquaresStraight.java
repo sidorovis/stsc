@@ -47,7 +47,7 @@ public class LeastSquaresStraight extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		final double yValue = getSignal(subExecutionName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		y.add(yValue);
+		y.addLast(yValue);
 
 		sumY += yValue;
 		sumSqrX += (currentX * currentX);
@@ -71,7 +71,7 @@ public class LeastSquaresStraight extends StockAlgorithm {
 		final ListOfDoubleSignal signal = new ListOfDoubleSignal();
 		final double divider = (N * sumSqrX - (sumX * sumX));
 		if (Double.compare(divider, 0.0) == 0) {
-			signal.add(0.0);
+			signal.add(y.getLast());
 			signal.add(0.0);
 			addSignal(day.getDate(), signal);
 		} else {

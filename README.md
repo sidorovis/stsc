@@ -58,6 +58,12 @@ TODO End of day primitive (test-like) algortihms (with positions and auto monito
 e -> [Integer: size (2 by default), N (5 by default) ]} 
 -> ListOfDoubleSignal.
 ```
+ * LeastSquaresStraightStdDev
+```
+{ {1: DoubleSignal}, 
+e -> [Integer: size (2 by default), N (5 by default) ]} 
+-> DoubleSignal.
+```
 
 ##### stsc.algorithms.stock.factors.primitive
  * Diff
