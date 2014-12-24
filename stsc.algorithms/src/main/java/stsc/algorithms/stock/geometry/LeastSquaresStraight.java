@@ -54,31 +54,32 @@ public class LeastSquaresStraight extends StockAlgorithm {
 		sumX += currentX;
 		sumXY += currentX * yValue;
 
-		final ListOfDoubleSignal signal = new ListOfDoubleSignal();
-		if (currentX > N) {
-			final double oldX = currentX - N + 1;
+		calculateSignal(day);
+
+		if (currentX >= N) {
+			final double oldX = currentX - N;
 			final double oldY = y.pollFirst();
 			sumY -= oldY;
 			sumX -= oldX;
 			sumSqrX -= (oldX * oldX);
 			sumXY -= (oldX * oldY);
-			final double divider = (N * sumSqrX - (sumX * sumX));
-			if (Double.compare(divider, 0.0) == 0) {
-				signal.add(0.0);
-				signal.add(0.0);
-				addSignal(day.getDate(), signal);
-			} else {
-				final double a0 = (sumY * sumSqrX - sumX * sumXY) / divider;
-				final double a1 = (N * sumXY - sumY * sumX) / divider;
-				signal.add(a0);
-				signal.add(a1);
-				addSignal(day.getDate(), signal);
-			}
-		} else {
+		}
+		currentX += 1;
+	}
+
+	private void calculateSignal(Day day) throws BadSignalException {
+		final ListOfDoubleSignal signal = new ListOfDoubleSignal();
+		final double divider = (N * sumSqrX - (sumX * sumX));
+		if (Double.compare(divider, 0.0) == 0) {
 			signal.add(0.0);
 			signal.add(0.0);
 			addSignal(day.getDate(), signal);
+		} else {
+			final double a0 = (sumY * sumSqrX - sumX * sumXY) / divider;
+			final double a1 = (N * sumXY - sumY * sumX) / divider;
+			signal.add(a0);
+			signal.add(a1);
+			addSignal(day.getDate(), signal);
 		}
-		currentX += 1;
 	}
 }

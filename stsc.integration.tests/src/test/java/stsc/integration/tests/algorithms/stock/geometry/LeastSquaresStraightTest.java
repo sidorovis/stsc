@@ -32,38 +32,36 @@ public class LeastSquaresStraightTest {
 		final ArrayList<Day> days = aapl.getDays();
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
+			System.out.print("0 " + days.get(i).getPrices().getOpen());
 			final Day day = days.get(i);
 			in.process(day);
 			lss.process(day);
 
-			if (i - aaplIndex < 5) {
-				final List<Double> values = init.getStorage().getStockSignal("aapl", "lss", day.getDate())
-						.getSignal(ListOfDoubleSignal.class).getValues();
-				Assert.assertEquals(2, values.size());
-				Assert.assertEquals(0.0, values.get(0), Settings.doubleEpsilon);
-				Assert.assertEquals(0.0, values.get(1), Settings.doubleEpsilon);
-			} else {
-				final List<Double> values = init.getStorage().getStockSignal("aapl", "lss", day.getDate())
-						.getSignal(ListOfDoubleSignal.class).getValues();
-				Assert.assertEquals(2, values.size());
+			final List<Double> values = init.getStorage().getStockSignal("aapl", "lss", day.getDate()).getSignal(ListOfDoubleSignal.class)
+					.getValues();
+			Assert.assertEquals(2, values.size());
 
-				double sumX = 0.0;
-				double sumY = 0.0;
-				double sumXY = 0.0;
-				double sumXX = 0.0;
-				for (int u = i - 4; i <= u; ++u) {
-					final double x = (u - i);
-					final double y = days.get(u).getPrices().getOpen();
-					sumX += x;
-					sumY += y;
-					sumXY += x * y;
-					sumXX += x * x;
-					final double divider = (5 * sumXX - (sumX * sumX));
-					final double a0 = (sumY * sumXX - sumX * sumXY) / divider;
-					final double a1 = (5 * sumXY - sumY * sumX) / divider;
-					Assert.assertEquals(a0, values.get(0), Settings.doubleEpsilon);
-					Assert.assertEquals(a1, values.get(1), Settings.doubleEpsilon);
-				}
+			double sumX = 0.0;
+			double sumY = 0.0;
+			double sumXY = 0.0;
+			double sumXX = 0.0;
+			for (int u = i - Math.min(5, i - aaplIndex); i + 1 > u; ++u) {
+				final double x = (u - aaplIndex);
+				final double y = days.get(u).getPrices().getOpen();
+				sumX += x;
+				sumY += y;
+				sumXY += x * y;
+				sumXX += x * x;
+			}
+			final double divider = (5 * sumXX - (sumX * sumX));
+			if (Double.compare(divider, 0.0) != 0) {
+				final double a0 = (sumY * sumXX - sumX * sumXY) / divider;
+				final double a1 = (5 * sumXY - sumY * sumX) / divider;
+				Assert.assertEquals(a0, values.get(0), Settings.doubleEpsilon);
+				Assert.assertEquals(a1, values.get(1), Settings.doubleEpsilon);
+				System.out.println(" " + a0 + " " + a1);
+			} else {
+				System.out.println();
 			}
 		}
 	}
