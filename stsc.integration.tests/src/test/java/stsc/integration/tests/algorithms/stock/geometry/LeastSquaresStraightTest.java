@@ -32,7 +32,6 @@ public class LeastSquaresStraightTest {
 		final ArrayList<Day> days = aapl.getDays();
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
-			System.out.print("0 " + days.get(i).getPrices().getOpen());
 			final Day day = days.get(i);
 			in.process(day);
 			lss.process(day);
@@ -59,9 +58,7 @@ public class LeastSquaresStraightTest {
 				final double a1 = (5 * sumXY - sumY * sumX) / divider;
 				Assert.assertEquals(a0, values.get(0), Settings.doubleEpsilon);
 				Assert.assertEquals(a1, values.get(1), Settings.doubleEpsilon);
-				System.out.println(" " + a0 + " " + a1);
 			} else {
-				System.out.println();
 			}
 		}
 	}
