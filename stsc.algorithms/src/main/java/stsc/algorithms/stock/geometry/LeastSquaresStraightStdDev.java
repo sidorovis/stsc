@@ -30,7 +30,7 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 		super(init);
 		this.N = init.getSettings().getIntegerSetting("N", 5).getValue();
 		if (init.getSettings().getSubExecutions().size() < 1) {
-			throw new BadAlgorithmException(LeastSquaresStraightValue.class + " algorithm require at least one sub algorithms.");
+			throw new BadAlgorithmException(LeastSquaresStraightStdDev.class + " algorithm require at least one sub algorithms.");
 		}
 		this.subExecutionName = init.getSettings().getSubExecutions().get(0);
 

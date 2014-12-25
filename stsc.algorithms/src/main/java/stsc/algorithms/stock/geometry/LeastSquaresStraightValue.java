@@ -42,7 +42,7 @@ public class LeastSquaresStraightValue extends StockAlgorithm {
 	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
 		return new LimitSignalsSerie<>(ListOfDoubleSignal.class, size);
-		// y = a0 + a1 * x + et
+		// y = a0 + a1 * x
 		// double get by index 0 -> a0
 		// double get by index 1 -> a1
 	}
