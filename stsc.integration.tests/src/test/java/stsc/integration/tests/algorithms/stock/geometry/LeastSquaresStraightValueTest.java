@@ -3,6 +3,7 @@ package stsc.integration.tests.algorithms.stock.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ejml.factory.SingularMatrixException;
 import org.ejml.simple.SimpleMatrix;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.ListOfDoubleSignal;
 
-public class LeastSquaresStraightTest {
+public class LeastSquaresStraightValueTest {
 
 	@Test
 	public void testMatrixLinearCalculation() {
@@ -37,7 +38,7 @@ public class LeastSquaresStraightTest {
 	}
 
 	@Test
-	public void testLeastSquaresStraight() throws Exception {
+	public void testLeastSquaresStraightValue() throws Exception {
 		final StockAlgoInitHelper init = new StockAlgoInitHelper("in", "aapl");
 		final Input in = new Input(init.getInit());
 
@@ -62,7 +63,7 @@ public class LeastSquaresStraightTest {
 			double sumY = 0.0;
 			double sumXY = 0.0;
 			double sumXX = 0.0;
-			for (int u = i - Math.min(5, i - aaplIndex); i + 1 > u; ++u) {
+			for (int u = i - Math.min(4, i - aaplIndex); i + 1 > u; ++u) {
 				final double x = (u - aaplIndex);
 				final double y = days.get(u).getPrices().getOpen();
 				sumX += x;
@@ -72,7 +73,7 @@ public class LeastSquaresStraightTest {
 			}
 			final double divider = (5 * sumXX - (sumX * sumX));
 			if (Double.compare(divider, 0.0) != 0) {
-				calculateKoefficients(sumXX, sumX, sumXY, sumY, Math.min(5, i - aaplIndex) + 1, values);
+				calculateKoefficients(sumXX, sumX, sumXY, sumY, Math.min(4, i - aaplIndex) + 1, values);
 			}
 		}
 	}
@@ -88,9 +89,12 @@ public class LeastSquaresStraightTest {
 		b.set(0, 0, sumXY);
 		b.set(1, 0, sumY);
 
-		final SimpleMatrix x = A.solve(b);
-
-		Assert.assertEquals(x.get(1, 0), values.get(0), Settings.doubleEpsilon);
-		Assert.assertEquals(x.get(0, 0), values.get(1), Settings.doubleEpsilon);
+		try {
+			SimpleMatrix x = A.solve(b);
+			Assert.assertEquals(x.get(1, 0), values.get(0), Settings.doubleEpsilon);
+			Assert.assertEquals(x.get(0, 0), values.get(1), Settings.doubleEpsilon);
+		} catch (SingularMatrixException sme) {
+			Assert.assertEquals(0.0, values.get(0), Settings.doubleEpsilon);
+		}
 	}
 }
