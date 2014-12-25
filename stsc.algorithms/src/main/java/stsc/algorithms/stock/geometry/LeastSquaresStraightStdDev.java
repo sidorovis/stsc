@@ -21,7 +21,7 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 	private final String subExecutionName;
 
 	private final String lssName;
-	private final LeastSquaresStraight lss;
+	private final LeastSquaresStraightValue lss;
 
 	private double currentX = 0.0;
 	private final LinkedList<Double> y = new LinkedList<>();
@@ -30,7 +30,7 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 		super(init);
 		this.N = init.getSettings().getIntegerSetting("N", 5).getValue();
 		if (init.getSettings().getSubExecutions().size() < 1) {
-			throw new BadAlgorithmException(LeastSquaresStraight.class + " algorithm require at least one sub algorithms.");
+			throw new BadAlgorithmException(LeastSquaresStraightValue.class + " algorithm require at least one sub algorithms.");
 		}
 		this.subExecutionName = init.getSettings().getSubExecutions().get(0);
 
@@ -39,7 +39,7 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 		settings.setInteger("N", N);
 		settings.getSubExecutions().addAll(init.getSettings().getSubExecutions());
 		StockAlgorithmInit lssInit = init.createInit(lssName, settings);
-		this.lss = new LeastSquaresStraight(lssInit);
+		this.lss = new LeastSquaresStraightValue(lssInit);
 	}
 
 	@Override

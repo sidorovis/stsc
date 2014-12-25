@@ -63,12 +63,16 @@
 		<artifactId>joda-time</artifactId>
 		<version>2.3</version>
 	</dependency>            
-
 	<dependency>
 		<groupId>org.apache.commons</groupId>
 		<artifactId>commons-lang3</artifactId>
 		<version>3.3.1</version>
 	</dependency>
+<dependency>
+	<groupId>com.googlecode.efficient-java-matrix-library</groupId>
+	<artifactId>ejml</artifactId>
+	<version>0.25</version>
+</dependency>
   </dependencies>
   <description>Stsc common is a common classes for stsc project.</description>
 </project>
