@@ -52,6 +52,7 @@ public class ZozkaStrategyVisualiser extends Application {
 		periodAndDatafeedController = new PeriodAndDatafeedController(owner);
 		pane.setTop(periodAndDatafeedController.getGui());
 		pane.setCenter(textArea);
+		textArea.setText("StockExecutions = a1\na1.loadLine=Input()\n");
 
 		final HBox hbox = new HBox();
 

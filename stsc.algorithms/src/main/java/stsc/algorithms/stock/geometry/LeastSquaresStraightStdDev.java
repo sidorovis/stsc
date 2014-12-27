@@ -10,6 +10,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.signals.SerieSignal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.signals.DoubleSignal;
 import stsc.signals.ListOfDoubleSignal;
@@ -51,8 +52,13 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		lss.process(day);
-		y.addLast(getSignal(subExecutionName, day.getDate()).getSignal(DoubleSignal.class).getValue());
-		final ListOfDoubleSignal coefficients = getSignal(lssName, day.getDate()).getSignal(ListOfDoubleSignal.class);
+		final SignalContainer<? extends SerieSignal> subSerieValue = getSignal(subExecutionName, day.getDate());
+		final SignalContainer<? extends SerieSignal> lssValue = getSignal(lssName, day.getDate());
+		if (subSerieValue == null || lssValue == null) {
+			return;
+		}
+		y.addLast(subSerieValue.getSignal(DoubleSignal.class).getValue());
+		final ListOfDoubleSignal coefficients = lssValue.getSignal(ListOfDoubleSignal.class);
 		final double a0 = coefficients.getValues().get(0);
 		final double a1 = coefficients.getValues().get(1);
 

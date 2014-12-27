@@ -11,6 +11,7 @@ import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
 import stsc.common.signals.SerieSignal;
+import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 import stsc.signals.DoubleSignal;
 import stsc.signals.ListOfDoubleSignal;
@@ -45,7 +46,11 @@ public class LeastSquaresQuadraticValue extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final double yValue = getSignal(subExecutionName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final SignalContainer<? extends SerieSignal> signal = getSignal(subExecutionName, day.getDate());
+		if (signal == null) {
+			return;
+		}
+		final double yValue = signal.getSignal(DoubleSignal.class).getValue();
 		y.addLast(yValue);
 		if (currentX >= N) {
 			y.pollFirst();
