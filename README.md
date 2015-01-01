@@ -77,7 +77,7 @@ e -> [Integer: size (2 by default), N (5 by default) ]}
 -> DoubleSignal.
 ```
 
-##### stsc.algorithms.stock.factors.primitive
+##### stsc.algorithms.stock.indices.primitive
  * Diff
 ```
 { {1: DoubleSignal, 2: DoubleSignal}, 
@@ -103,6 +103,18 @@ e -> [Double: P (0.2 by default); ] }
 { {1: DoubleSignal}, 
 e -> [Double: f (0.0 by default) ]} 
 -> SideSignal.
+```
+ * SeveralLastMax
+```
+{ {1: DoubleSignal}, 
+e -> [Integer: size (2 by default), N (9 by default); ]} 
+-> DoubleSignal.
+```
+ * SeveralLastMin
+```
+{ {1: DoubleSignal}, 
+e -> [Integer: size (2 by default), N (9 by default); ]} 
+-> DoubleSignal.
 ```
  * Sma
 ```

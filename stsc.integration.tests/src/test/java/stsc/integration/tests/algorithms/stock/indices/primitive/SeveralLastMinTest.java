@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.algorithms.Input;
-import stsc.algorithms.stock.indices.primitive.SeveralLastMax;
+import stsc.algorithms.stock.indices.primitive.SeveralLastMin;
 import stsc.common.Day;
 import stsc.common.Settings;
 import stsc.common.stocks.Stock;
@@ -16,7 +16,7 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
-public class SeveralLastMaxTest {
+public class SeveralLastMinTest {
 
 	@Test
 	public void testDifferentSortOrder() {
@@ -49,7 +49,7 @@ public class SeveralLastMaxTest {
 
 		final StockAlgoInitHelper init = new StockAlgoInitHelper("slm", "aapl", stockInit.getStorage());
 		init.getSettings().addSubExecutionName("testIn");
-		final SeveralLastMax slm = new SeveralLastMax(init.getInit());
+		final SeveralLastMin slm = new SeveralLastMin(init.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
@@ -66,12 +66,12 @@ public class SeveralLastMaxTest {
 
 			final double v = stockInit.getStorage().getStockSignal("aapl", "slm", day.getDate()).getSignal(DoubleSignal.class).getValue();
 
-			double max = Double.MIN_VALUE;
+			double min = Double.MAX_VALUE;
 			for (int u = i - Math.min(9, i - aaplIndex + 1) + 1; u <= i; ++u) {
-				max = Math.max(max, days.get(u).getPrices().getOpen());
+				min = Math.min(min, days.get(u).getPrices().getOpen());
 			}
 
-			Assert.assertEquals(max, v, Settings.doubleEpsilon);
+			Assert.assertEquals(min, v, Settings.doubleEpsilon);
 		}
 	}
 }
