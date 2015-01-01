@@ -14,23 +14,23 @@ import stsc.common.signals.SignalsSerie;
 import stsc.signals.DoubleSignal;
 import stsc.signals.series.LimitSignalsSerie;
 
-public class SeveralLastMax extends StockAlgorithm {
+public class SeveralLastMin extends StockAlgorithm {
 
 	private int currentIndex = 0;
 	private final Map<Integer, Double> connections = new HashMap<Integer, Double>();
 	private final TreeSet<Double> values = new TreeSet<>((c1, c2) -> {
-		return Double.compare(c2, c1);
+		return Double.compare(c1, c2);
 	});
 	private Double lastValue;
 
 	private final Integer N;
 	private final String subExecutionName;
 
-	public SeveralLastMax(StockAlgorithmInit init) throws BadAlgorithmException {
+	public SeveralLastMin(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		this.N = init.getSettings().getIntegerSetting("N", 9).getValue();
 		if (init.getSettings().getSubExecutions().size() < 1) {
-			throw new BadAlgorithmException(SeveralLastMax.class + " algorithm require at least one sub algorithms.");
+			throw new BadAlgorithmException(SeveralLastMin.class + " algorithm require at least one sub algorithms.");
 		}
 		this.subExecutionName = init.getSettings().getSubExecutions().get(0);
 	}
