@@ -2,7 +2,7 @@ package stsc.algorithms.stock.indices.primitive;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -18,7 +18,7 @@ public class SeveralLastMax extends StockAlgorithm {
 
 	private int currentIndex = 0;
 	private final Map<Integer, Double> connections = new HashMap<Integer, Double>();
-	private final TreeSet<Double> values = new TreeSet<>((c1, c2) -> {
+	private final TreeMap<Double, Integer> values = new TreeMap<>((c1, c2) -> {
 		return Double.compare(c2, c1);
 	});
 	private Double lastValue;
@@ -48,17 +48,35 @@ public class SeveralLastMax extends StockAlgorithm {
 			lastValue = v;
 			addSignal(day.getDate(), new DoubleSignal(lastValue));
 		}
-		values.add(v);
-		connections.put(currentIndex, v);
+		addValue(v);
 		if (currentIndex - N >= 0) {
-			final Double value = connections.remove(currentIndex - N);
-			values.remove(value);
+			removeValue();
 		}
-		final double smallestValue = values.first();
+		final double smallestValue = values.firstEntry().getKey();
 		if (smallestValue != lastValue) {
 			lastValue = smallestValue;
 			addSignal(day.getDate(), new DoubleSignal(lastValue));
 		}
 		currentIndex += 1;
+	}
+
+	private void removeValue() {
+		final Double value = connections.remove(currentIndex - N);
+		final Integer i = values.get(value);
+		if (i == 1) {
+			values.remove(value);
+		} else {
+			values.put(value, i - 1);
+		}
+	}
+
+	private void addValue(Double v) {
+		connections.put(currentIndex, v);
+		final Integer i = values.get(v);
+		if (i == null) {
+			values.put(v, 1);
+		} else {
+			values.put(v, i + 1);
+		}
 	}
 }

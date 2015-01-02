@@ -44,30 +44,32 @@ public class SeveralLastMaxTest {
 
 	@Test
 	public void testSeveralLastMax() throws Exception {
-		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aapl");
+		final StockAlgoInitHelper stockInit = new StockAlgoInitHelper("testIn", "aa");
 		final Input inAlgo = new Input(stockInit.getInit());
 
-		final StockAlgoInitHelper init = new StockAlgoInitHelper("slm", "aapl", stockInit.getStorage());
+		final StockAlgoInitHelper init = new StockAlgoInitHelper("slm", "aa", stockInit.getStorage());
+		init.getSettings().setInteger("N", 2);
 		init.getSettings().addSubExecutionName("testIn");
 		final SeveralLastMax slm = new SeveralLastMax(init.getInit());
 
-		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
+		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aa.uf");
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(2011, 9, 4).toDate());
 		final ArrayList<Day> days = aapl.getDays();
 
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
 			inAlgo.process(day);
+
 			slm.process(day);
 
-			if (stockInit.getStorage().getStockSignal("aapl", "slm", day.getDate()) == null) {
+			if (stockInit.getStorage().getStockSignal("aa", "slm", day.getDate()) == null) {
 				continue;
 			}
 
-			final double v = stockInit.getStorage().getStockSignal("aapl", "slm", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aa", "slm", day.getDate()).getSignal(DoubleSignal.class).getValue();
 
 			double max = Double.MIN_VALUE;
-			for (int u = i - Math.min(9, i - aaplIndex + 1) + 1; u <= i; ++u) {
+			for (int u = i - Math.min(2, i - aaplIndex + 1) + 1; u <= i; ++u) {
 				max = Math.max(max, days.get(u).getPrices().getOpen());
 			}
 
