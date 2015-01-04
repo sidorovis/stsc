@@ -33,6 +33,12 @@ public class WedgePattern extends StockAlgorithm {
 
 	private final Double acceptableLineLevel;
 
+	private final Double acceptableXfrom;
+	private final Double acceptableXto;
+
+	private final Double acceptableShortTrendCoefficient;
+	private final Double acceptableLongTrendCoefficient;
+
 	public WedgePattern(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		if (init.getSettings().getSubExecutions().size() < 2) {
@@ -47,6 +53,12 @@ public class WedgePattern extends StockAlgorithm {
 		this.minLine = createLsqStdDev(init, minSubExecutionName, minLineName);
 
 		this.acceptableLineLevel = init.getSettings().getDoubleSetting("L", 0.5).getValue();
+
+		this.acceptableXfrom = init.getSettings().getDoubleSetting("XF", 2.0).getValue();
+		this.acceptableXto = init.getSettings().getDoubleSetting("XT", 5.0).getValue();
+
+		this.acceptableShortTrendCoefficient = init.getSettings().getDoubleSetting("STC", -0.05).getValue();
+		this.acceptableLongTrendCoefficient = init.getSettings().getDoubleSetting("LTC", 0.05).getValue();
 	}
 
 	private LeastSquaresStraightStdDev createLsqStdDev(StockAlgorithmInit init, String subExecutionName, String name)
@@ -78,16 +90,34 @@ public class WedgePattern extends StockAlgorithm {
 		if (maxStdDev >= acceptableLineLevel || minStdDev >= acceptableLineLevel) {
 			return;
 		}
+		// y = a0 + a1 * x ; move to:
 		// maximum line: y = a1 * x + b1
 		// minimum line: y = a2 * x + b2
 		final List<Double> maxLineCoef = getSignal(maxLine.getLssName(), day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
 		final List<Double> minLineCoef = getSignal(minLine.getLssName(), day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
-		final double a1 = maxLineCoef.get(0);
-		final double a2 = minLineCoef.get(0);
-		final double b1 = maxLineCoef.get(1);
-		final double b2 = minLineCoef.get(1);
+		final double a1 = maxLineCoef.get(1);
+		final double a2 = minLineCoef.get(1);
+		final double b1 = maxLineCoef.get(0);
+		final double b2 = minLineCoef.get(0);
 
-		final double crossX = getCrossXY(a1, b1, a2, b2).get(0);
+		final double currentX = maxLine.getCurrentX();
+
+		final List<Double> xyCross = getCrossXY(a1, b1, a2, b2);
+		final Double crossX = xyCross.get(0);
+
+		if (crossX.isNaN() || !(currentX + acceptableXfrom <= crossX && crossX < currentX + acceptableXto)) {
+			return;
+		}
+
+		if (a1 < 0 && a2 < 0) {
+			if (a2 < acceptableShortTrendCoefficient) {
+				addSignal(day.getDate(), new ListOfDoubleSignal().add(-1.0).add(xyCross.get(0)).add(xyCross.get(1)));
+			}
+		} else if (a1 > 0 && a2 > 0) {
+			if (a1 > acceptableLongTrendCoefficient) {
+				addSignal(day.getDate(), new ListOfDoubleSignal().add(1.0).add(xyCross.get(0)).add(xyCross.get(1)));
+			}
+		}
 	}
 
 	public static List<Double> getCrossXY(double a1, double b1, double a2, double b2) {

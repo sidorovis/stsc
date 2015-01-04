@@ -47,6 +47,10 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 		return lssName;
 	}
 
+	public double getCurrentX() {
+		return currentX;
+	}
+
 	@Override
 	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
