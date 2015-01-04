@@ -43,6 +43,10 @@ public class LeastSquaresStraightStdDev extends StockAlgorithm {
 		this.lss = new LeastSquaresStraightValue(lssInit);
 	}
 
+	public String getLssName() {
+		return lssName;
+	}
+
 	@Override
 	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
