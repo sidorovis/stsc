@@ -43,6 +43,10 @@ public class LeastSquaresQuadraticStdDev extends StockAlgorithm {
 		this.lsq = new LeastSquaresQuadraticValue(lsqInit);
 	}
 
+	public String getLsqName() {
+		return lsqName;
+	}
+
 	@Override
 	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
@@ -76,8 +80,6 @@ public class LeastSquaresQuadraticStdDev extends StockAlgorithm {
 		if (currentX >= N) {
 			y.pollFirst();
 		}
-
 		currentX += 1;
 	}
-
 }
