@@ -4,7 +4,7 @@
 
   <groupId>stsc</groupId>
   <artifactId>stsc.frontend.zozka</artifactId>
-  <version>0.0.12-PATTERNS</version>
+  <version>0.0.13-NEWS</version>
   <packaging>jar</packaging>
 
   <name>stsc.frontend.zozka</name>
