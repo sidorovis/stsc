@@ -54,8 +54,8 @@ public class WedgePattern extends StockAlgorithm {
 
 		this.acceptableLineLevel = init.getSettings().getDoubleSetting("L", 0.5).getValue();
 
-		this.acceptableXfrom = init.getSettings().getDoubleSetting("XF", 2.0).getValue();
-		this.acceptableXto = init.getSettings().getDoubleSetting("XT", 5.0).getValue();
+		this.acceptableXfrom = init.getSettings().getDoubleSetting("XF", 1.0).getValue();
+		this.acceptableXto = init.getSettings().getDoubleSetting("XT", 2.0).getValue();
 
 		this.acceptableShortTrendCoefficient = init.getSettings().getDoubleSetting("STC", -0.05).getValue();
 		this.acceptableLongTrendCoefficient = init.getSettings().getDoubleSetting("LTC", 0.05).getValue();
@@ -86,7 +86,7 @@ public class WedgePattern extends StockAlgorithm {
 			return;
 		}
 		final double maxStdDev = maxSignal.getSignal(DoubleSignal.class).getValue();
-		final double minStdDev = maxSignal.getSignal(DoubleSignal.class).getValue();
+		final double minStdDev = minSignal.getSignal(DoubleSignal.class).getValue();
 		if (maxStdDev >= acceptableLineLevel || minStdDev >= acceptableLineLevel) {
 			return;
 		}
