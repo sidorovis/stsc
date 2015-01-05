@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.feedzila</artifactId>
+  <artifactId>stsc.news.feedzila</artifactId>
   <version>0.0.13-NEWS</version>
   <packaging>jar</packaging>
 
-  <name>stsc.feedzila</name>
+  <name>stsc.news.feedzila</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
