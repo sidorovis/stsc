@@ -33,6 +33,7 @@ public class TrianglePatternTest {
 		final StockAlgoInitHelper tpInit = new StockAlgoInitHelper("tp", sn, iniLow.getStorage());
 		tpInit.getSettings().addSubExecutionName("inh");
 		tpInit.getSettings().addSubExecutionName("inl");
+		tpInit.getSettings().setInteger("N", 9);
 		final TrianglePattern tp = new TrianglePattern(tpInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/" + sn + ".uf");
@@ -74,9 +75,9 @@ public class TrianglePatternTest {
 
 			if (v.get(0) < 0.0) {
 				Assert.assertTrue(lcMax.get(1) < -0.05);
-				Assert.assertTrue(lcMin.get(1) < -0.05);
+				Assert.assertTrue(lcMin.get(1) > -0.03);
 			} else {
-				Assert.assertTrue(lcMax.get(1) > 0.05);
+				Assert.assertTrue(lcMax.get(1) < 0.03);
 				Assert.assertTrue(lcMin.get(1) > 0.05);
 			}
 		}

@@ -58,6 +58,7 @@ public abstract class GeometryTriangleStockAlgorithmBase extends StockAlgorithm 
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
 		settings.addSubExecutionName(subExecutionName);
 		final StockAlgorithmInit newInit = new StockAlgorithmInit(name, init, settings);
+		settings.setInteger("N", init.getSettings().getIntegerSetting("N", 9).getValue());
 		final LeastSquaresStraightStdDev lsqStdDev = new LeastSquaresStraightStdDev(newInit);
 		return lsqStdDev;
 	}

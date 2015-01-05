@@ -16,11 +16,15 @@ public class TrianglePattern extends GeometryTriangleStockAlgorithmBase {
 	private final Double acceptableShortTrendCoefficient;
 	private final Double acceptableLongTrendCoefficient;
 
+	private final Double acceptableLineCoef;
+
 	public TrianglePattern(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 
 		this.acceptableShortTrendCoefficient = init.getSettings().getDoubleSetting("STC", -0.05).getValue();
 		this.acceptableLongTrendCoefficient = init.getSettings().getDoubleSetting("LTC", 0.05).getValue();
+
+		this.acceptableLineCoef = init.getSettings().getDoubleSetting("SLC", 0.03).getValue();
 	}
 
 	@Override
@@ -45,15 +49,10 @@ public class TrianglePattern extends GeometryTriangleStockAlgorithmBase {
 		final double x = values.get(4);
 		final double y = values.get(5);
 
-		if (a1 < 0 && a2 < 0) {
-			if (a2 < acceptableShortTrendCoefficient) {
-				addSignal(day.getDate(), new ListOfDoubleSignal().add(-1.0).add(x).add(y));
-			}
-		} else if (a1 > 0 && a2 > 0) {
-			if (a1 > acceptableLongTrendCoefficient) {
-				addSignal(day.getDate(), new ListOfDoubleSignal().add(1.0).add(x).add(y));
-			}
+		if (a1 < 0 && Math.abs(a2) < acceptableLineCoef && a1 < acceptableShortTrendCoefficient) {
+			addSignal(day.getDate(), new ListOfDoubleSignal().add(-1.0).add(x).add(y));
+		} else if (a2 > 0 && Math.abs(a1) < acceptableLineCoef && a2 > acceptableLongTrendCoefficient) {
+			addSignal(day.getDate(), new ListOfDoubleSignal().add(1.0).add(x).add(y));
 		}
 	}
-
 }
