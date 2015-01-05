@@ -332,7 +332,7 @@ e -> [Integer: N (14 be default), size (2 by default) ]}
 ##### stsc.algorithms.stock.indices.msi
  * McClellanOscillator
 ```
-{1: DoubleSignal},
+{ {1: DoubleSignal},
 e -> [Integer: size (2 by default) ],
 e -> [Double: slowP (0.1 by default), fastP (0.05 by default) ]}
 -> DoubleSignal.
@@ -355,6 +355,13 @@ e -> [Double: P (0.3 by default) ]}
 ```
 { {no_input},
 e -> [Integer: size (2 by default) ]}
+-> DoubleSignal.
+```
+##### stsc.algorithms.stock.patterns
+```
+{ {1: DoubleSignal, 2: DoubleSignal},
+e -> [Integer: size (2 by default)],
+e -> [Double: L (0.5 by default), XF (2.0 by default), XT (5.0 by default), STC (-0.05 by default), LTC (0.05 by default)] }
 -> DoubleSignal.
 ```
 
