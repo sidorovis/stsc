@@ -1,30 +1,28 @@
 package stsc.news.feedzilla.downloader;
 
-import java.io.IOException;
-
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
 /**
- * {@link FeedDataDownloder} is a class that download newses from FeedZilla and
+ * {@link FeedDataDownloader} is a class that download newses from FeedZilla and
  * categories them.
  */
-final class FeedDataDownloder {
+final class FeedDataDownloader {
 
-	FeedDataDownloder() {
+	FeedDataDownloader() {
 
 	}
 
 	public static void main(String[] args) {
 		try {
-			new FeedDataDownloder();
+			new FeedDataDownloader();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public FeedDataDownloder() {
+	public void gFeedDataDownloader2() {
 		FeedZilla feed = new FeedZilla();
 
 		for (Subcategory s : feed.getSubcategories()) {

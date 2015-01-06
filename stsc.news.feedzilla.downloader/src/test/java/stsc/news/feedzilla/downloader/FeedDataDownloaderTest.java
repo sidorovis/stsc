@@ -3,13 +3,13 @@ package stsc.news.feedzilla.downloader;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.news.feedzilla.downloader.FeedDataDownloder;
+import stsc.news.feedzilla.downloader.FeedDataDownloader;
 
-public class FeedzilaNewsDatafeedTest {
+public class FeedDataDownloaderTest {
 
 	@Test
 	public void testFeedzilaNewsDatafeed() {
-		FeedDataDownloder fz = new FeedDataDownloder();
+		FeedDataDownloader fz = new FeedDataDownloader();
 		Assert.assertNotNull(fz);
 	}
 }
