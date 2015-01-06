@@ -3,10 +3,10 @@ package stsc.news.feedzilla;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FeedzillaFileFeedStorageTest {
+public class FeedzillaFileStorageTest {
 	@Test
 	public void testFeedzillaFileFeedStorage() {
-		final FeedzillaFileFeedStorage fffs = new FeedzillaFileFeedStorage();
+		final FeedzillaFileStorage fffs = new FeedzillaFileStorage("./test_data");
 		Assert.assertNotNull(fffs);
 	}
 }

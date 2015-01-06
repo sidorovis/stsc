@@ -11,11 +11,11 @@ import org.joda.time.DateTime;
 import stsc.common.feeds.Feed;
 import stsc.common.storage.FeedStorage;
 
-public class FeedzillaFileFeedStorage implements FeedStorage {
+public class FeedzillaFileStorage implements FeedStorage {
 
 	private Map<DateTime, List<Feed>> datafeed = Collections.synchronizedMap(new HashMap<>());
 
-	public FeedzillaFileFeedStorage(String feedFolder) {
+	public FeedzillaFileStorage(String feedFolder) {
 		readFeedzillaData();
 	}
 
