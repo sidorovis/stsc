@@ -2,7 +2,9 @@ language: java
 jdk:
   - oraclejdk8
 before_install:
-  - mkdir 3rdparty/feedzilla
-  - cd 3rdparty/feedzilla
+  - mkdir 3rdparty
+  - cd 3rdparty
+  - mkdir feedzilla
+  - cd feedzilla
   - git clone https://github.com/sidorovis/feedzilla-java.git ./
   - mvn install
