@@ -1,4 +1,4 @@
-package stsc.news.feedzila;
+package stsc.news.feedzilla;
 
 import org.junit.Assert;
 import org.junit.Test;

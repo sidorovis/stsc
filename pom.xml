@@ -41,7 +41,8 @@
 	<module>stsc.performance</module>
 	<module>stsc.distributed.hadoop</module>
 	<module>stsc.frontend.zozka</module>
-	<module>stsc.news.feedzila</module>
+	<module>stsc.news.feedzilla</module>
+	<module>stsc.news.feedzilla.downloader</module>
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>

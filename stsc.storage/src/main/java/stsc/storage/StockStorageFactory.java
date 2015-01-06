@@ -32,7 +32,7 @@ public class StockStorageFactory {
 			IOException, InterruptedException {
 		StockStorage stockStorage = new ThreadSafeStockStorage();
 		for (String name : stockNames) {
-			final String path = filterDataFolderPath + name + ".uf";
+			final String path = filterDataFolderPath + name + UnitedFormatStock.EXTENSION;
 			stockStorage.updateStock(UnitedFormatStock.readFromUniteFormatFile(path));
 		}
 		return stockStorage;
