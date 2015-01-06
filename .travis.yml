@@ -8,3 +8,6 @@ before_install:
   - cd feedzilla
   - git clone https://github.com/sidorovis/feedzilla-java.git ./
   - mvn install
+  - cd ../../
+
+
