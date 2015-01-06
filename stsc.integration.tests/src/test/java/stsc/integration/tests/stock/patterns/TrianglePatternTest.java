@@ -36,7 +36,7 @@ public class TrianglePatternTest {
 		tpInit.getSettings().setInteger("N", 9);
 		final TrianglePattern tp = new TrianglePattern(tpInit.getInit());
 
-		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/" + sn + ".uf");
+		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/" + sn + UnitedFormatStock.EXTENSION);
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(1990, 9, 4).toDate());
 		final ArrayList<Day> days = aapl.getDays();
 

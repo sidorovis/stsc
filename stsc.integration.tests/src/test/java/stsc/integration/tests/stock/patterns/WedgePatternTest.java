@@ -35,7 +35,7 @@ public class WedgePatternTest {
 		wpInit.getSettings().addSubExecutionName("inl");
 		final WedgePattern wp = new WedgePattern(wpInit.getInit());
 
-		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/" + sn + ".uf");
+		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/" + sn + UnitedFormatStock.EXTENSION);
 		final int aaplIndex = aapl.findDayIndex(new LocalDate(1990, 9, 4).toDate());
 		final ArrayList<Day> days = aapl.getDays();
 
