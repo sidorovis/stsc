@@ -1,5 +1,11 @@
 package stsc.news.feedzilla.downloader;
 
+import java.util.Collection;
+import java.util.List;
+
+import graef.feedzillajava.Articles;
+import graef.feedzillajava.Category;
+import graef.feedzillajava.Culture;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
@@ -10,6 +16,34 @@ import graef.feedzillajava.Subcategory;
 final class FeedDataDownloader {
 
 	FeedDataDownloader() {
+		FeedZilla feed = new FeedZilla();
+		int i = 0;
+		final List<Category> categories = feed.getCategories();
+		final List<Subcategory> subcategories = feed.getSubcategories();
+		final Collection<Culture> cultures = feed.getCultures();
+		for (Category cgr : categories) {
+			for (Subcategory scgr : subcategories) {
+//				for (Culture cltr : cultures) {
+					i++;
+//					try {
+//						final Articles articles = feed.query().category(cgr).subcategory(scgr).culture(cltr).articles();
+//						if (articles == null) {
+//							continue;
+//						}
+//						System.out.println(i++ + " " + articles.getDescription());
+//					} catch (Exception e) {
+//						System.err.println(i++ + " " + e.getMessage());
+//					}
+//					try {
+//						Thread.sleep(100);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+				}
+			}
+//		}
+		System.out.println(i);
 
 	}
 
@@ -19,45 +53,5 @@ final class FeedDataDownloader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	public void gFeedDataDownloader2() {
-		FeedZilla feed = new FeedZilla();
-
-		for (Subcategory s : feed.getSubcategories()) {
-			System.out.println(s.getUrlName());
-		}
-
-		// for (Category c : feed.getCategories()) {
-		// try {
-		// System.out.print(c + ": ");
-		// System.out.println(feed.query().since(new DateTime(1950, 1, 1, 0,
-		// 0)).category(c).articles().getArticles().size());
-		// } catch (Exception e) {
-		// System.out.println("E!: " + e.getMessage());
-		// }
-		// }
-
-		// Articles articles = feed.query().category(28).count(5).articles();
-		// articles.getArticles().get(0).
-		//
-		// for (Article a : articles.getArticles()) {
-		// System.out.println(a.getTitle());
-		// }
-		// System.out.println();
-
-		// for (Subcategory c : feed.getSubcategories()) {
-		// System.out.println(c);
-		// }
-		// Articles articles = feed.getCategories();
-		// query().count(10).articles();
-		//
-		// for (Article a : articles.getArticles()) {
-		// System.out.println(a.getAuthor());
-		// System.out.println(a.getSource());
-		// System.out.println(a.getSummary());
-		// System.out.println(a.getPublishDate());
-		// }
 	}
 }

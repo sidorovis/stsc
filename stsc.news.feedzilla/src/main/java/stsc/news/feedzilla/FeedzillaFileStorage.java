@@ -15,6 +15,8 @@ public class FeedzillaFileStorage implements FeedStorage {
 
 	private Map<DateTime, List<Feed>> datafeed = Collections.synchronizedMap(new HashMap<>());
 
+	private final List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<>());
+
 	public FeedzillaFileStorage(String feedFolder) {
 		readFeedzillaData();
 	}
@@ -22,6 +24,16 @@ public class FeedzillaFileStorage implements FeedStorage {
 	private void readFeedzillaData() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void addReceiver(LoadFeedReceiver receiver) {
+		receivers.add(receiver);
+	}
+
+	private void updateReceivers(final Feed feed) {
+		for (LoadFeedReceiver loadFeedReceiver : receivers) {
+			loadFeedReceiver.newFeed(feed);
+		}
 	}
 
 	public void addFeed(final Feed newFeed) {
