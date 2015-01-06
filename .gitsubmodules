@@ -1,3 +1,0 @@
-[submodule "feedzilla"]
-    path = include/feedzilla
-    url = https://github.com/sidorovis/feedzilla-java.git
