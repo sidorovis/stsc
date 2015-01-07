@@ -1,13 +1,17 @@
 package stsc.news.feedzilla.downloader;
 
-import java.util.Collection;
-import java.util.List;
-
+import graef.feedzillajava.Article;
 import graef.feedzillajava.Articles;
 import graef.feedzillajava.Category;
 import graef.feedzillajava.Culture;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.joda.time.DateTime;
 
 /**
  * {@link FeedDataDownloader} is a class that download newses from FeedZilla and
@@ -15,34 +19,45 @@ import graef.feedzillajava.Subcategory;
  */
 final class FeedDataDownloader {
 
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
+
+	private void pause() {
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	FeedDataDownloader() {
-		FeedZilla feed = new FeedZilla();
+		DateTime startOfDay = DateTime.now();
+		startOfDay = startOfDay.minusYears(15);
+		startOfDay = startOfDay.withTimeAtStartOfDay();
+		final FeedZilla feed = new FeedZilla();
 		int i = 0;
 		final List<Category> categories = feed.getCategories();
-		final List<Subcategory> subcategories = feed.getSubcategories();
-		final Collection<Culture> cultures = feed.getCultures();
 		for (Category cgr : categories) {
-			for (Subcategory scgr : subcategories) {
-//				for (Culture cltr : cultures) {
-					i++;
-//					try {
-//						final Articles articles = feed.query().category(cgr).subcategory(scgr).culture(cltr).articles();
-//						if (articles == null) {
-//							continue;
-//						}
-//						System.out.println(i++ + " " + articles.getDescription());
-//					} catch (Exception e) {
-//						System.err.println(i++ + " " + e.getMessage());
-//					}
-//					try {
-//						Thread.sleep(100);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+			try {
+				final Articles articles = feed.query().category(cgr).since(startOfDay).count(100).articles();
+				i++;
+				if (articles == null) {
+
+				} else {
+					for (Article article : articles.getArticles()) {
+						System.out.println(article.getPublishDate());
+						// System.out.println(article.getSummary());
+						pause();
+					}
+
 				}
+			} catch (Exception e) {
+				System.err.println(i++ + " " + e.getMessage());
 			}
-//		}
+		}
+		// }
 		System.out.println(i);
 
 	}
