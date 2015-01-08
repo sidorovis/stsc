@@ -6,6 +6,7 @@
 *.war
 *.ear
 
+**/bin/
 target
 /data/*.uf
 /filtered_data/*.uf
