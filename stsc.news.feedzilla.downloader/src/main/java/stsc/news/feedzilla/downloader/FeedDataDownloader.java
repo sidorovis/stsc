@@ -3,11 +3,10 @@ package stsc.news.feedzilla.downloader;
 import graef.feedzillajava.Article;
 import graef.feedzillajava.Articles;
 import graef.feedzillajava.Category;
-import graef.feedzillajava.Culture;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -25,10 +24,8 @@ final class FeedDataDownloader {
 
 	private void pause() {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
@@ -38,27 +35,35 @@ final class FeedDataDownloader {
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
 		int i = 0;
+		final HashMap<String, Article> map = new HashMap<>();
 		final List<Category> categories = feed.getCategories();
-		for (Category cgr : categories) {
-			try {
-				final Articles articles = feed.query().category(cgr).since(startOfDay).count(100).articles();
-				i++;
-				if (articles == null) {
-
-				} else {
-					for (Article article : articles.getArticles()) {
-						System.out.println(article.getPublishDate());
-						// System.out.println(article.getSummary());
-						pause();
-					}
-
-				}
-			} catch (Exception e) {
-				System.err.println(i++ + " " + e.getMessage());
-			}
+		for (Category c : categories) {
+			final List<Subcategory> subcategories = feed.getSubcategories(c);
+			System.out.println(" - " + subcategories.size());
+			pause();
+			// for (Subcategory s : subcategories) {
+			// try {
+			// final Articles articles =
+			// feed.query().category(c).subcategory(s).since(startOfDay).count(100).articles();
+			// if (articles == null) {
+			// System.out.println("--------- -------------");
+			// } else {
+			// System.out.println("Size: " + articles.getArticles().size());
+			// // for (Article article : articles.getArticles()) {
+			// // i++;
+			// // map.put(article.getTitle(), article);
+			// // pause();
+			// // if (i % 1000 == 0) {
+			// // System.out.println("articles " + i);
+			// // }
+			// // }
+			// }
+			// } catch (Exception e) {
+			// System.err.println(i++ + " " + e.getMessage());
+			// }
+			// }
 		}
-		// }
-		System.out.println(i);
+		System.out.println("Size is: " + i + " by map: " + map.size());
 
 	}
 

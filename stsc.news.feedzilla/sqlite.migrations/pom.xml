@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>stsc</groupId>
+	<artifactId>stsc.news.feedzilla.sqlite.migrations</artifactId>
+	<version>0.0.13-NEWS</version>
+	<packaging>jar</packaging>
+
+	<name>stsc.news.feedzilla.sqlite.migrations</name>
+	<url>https://github.com/sidorovis/stsc</url>
+
+	<properties>
+		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<defaultGoal>compile</defaultGoal>
+		<plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>3.1</version>
+<!--                <configuration>
+                    <url>jdbc:sqlite:./../test_data/news_feedzilla.s3db</url>
+                </configuration> -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.3.170</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+	</build>
+	<description>Stsc news feedzilla sqlite migrations tool.</description>
+</project>

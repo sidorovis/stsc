@@ -1,22 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>stsc</groupId>
-  <artifactId>stsc.news.feedzilla</artifactId>
-  <version>0.0.13-NEWS</version>
-  <packaging>jar</packaging>
+	<groupId>stsc</groupId>
+	<artifactId>stsc.news.feedzilla</artifactId>
+	<version>0.0.13-NEWS</version>
+	<packaging>pom</packaging>
 
-  <name>stsc.news.feedzilla</name>
-  <url>https://github.com/sidorovis/stsc</url>
+	<name>stsc.news.feedzilla</name>
+	<url>https://github.com/sidorovis/stsc</url>
 
-  <properties>
-    <project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
-  </properties>
-
+	<properties>
+		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
+	</properties>
   <build>
 	<defaultGoal>compile</defaultGoal>
-
 	<plugins>
 	<plugin>
  		<groupId>org.apache.maven.plugins</groupId>
@@ -33,30 +31,9 @@
 	</plugin>
 	</plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.general</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-<dependency>
-        <groupId>graef</groupId>
-        <artifactId>feedzilla-java</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-  </dependencies>
-  <description>Stsc common is a common classes for stsc project.</description>
+	<modules>
+		<module>sqlite.migrations</module>
+		<module>storage</module>
+	</modules>
+	<description>Stsc common is a common classes for stsc project.</description>
 </project>
