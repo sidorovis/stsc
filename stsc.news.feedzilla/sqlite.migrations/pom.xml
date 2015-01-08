@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
 	</properties>
 	<build>
-		<defaultGoal>liquibase:status</defaultGoal>
+		<defaultGoal>compile</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.liquibase</groupId>

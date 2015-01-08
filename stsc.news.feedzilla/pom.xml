@@ -33,7 +33,7 @@
   </build>
 	<modules>
 		<module>downloader</module>
-		<module>sqlite.migrations</module>
+<!--		<module>sqlite.migrations</module> -->
 		<module>storage</module>
 	</modules>
 	<description>Stsc common is a common classes for stsc project.</description>
