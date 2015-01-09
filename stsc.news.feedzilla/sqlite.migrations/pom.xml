@@ -19,12 +19,12 @@
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.2.0</version>
 				<configuration>
 					<changeLogFile>src/main/resources/liquibase/db.changelog.xml</changeLogFile>
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 					<driver>org.sqlite.JDBC</driver>
-					<url>jdbc:sqlite:${project.basedir}/../test_data/feedzilla_developer.s3db</url>
+					<url>jdbc:sqlite:./../test_data/feedzilla_developer.s3db</url>
 				</configuration>
 				<executions>
 					<execution>
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.8.7</version>
+			<version>3.7.2</version>
 		</dependency>
 	</dependencies>
 	<description>Stsc news feedzilla sqlite migrations tool.</description>

@@ -7,5 +7,5 @@
 		<dbms type="sqlite" />
 	</preConditions>
 
-	<include file="liquibase/0.0.13.news/db.changelog-0.0.13.xml" />
+	<include file="src/main/resources/liquibase/0.0.13.news/db.changelog-0.0.13.xml" />
 </databaseChangeLog> 
