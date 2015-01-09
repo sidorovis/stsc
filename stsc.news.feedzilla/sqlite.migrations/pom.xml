@@ -24,7 +24,7 @@
 					<changeLogFile>src/main/resources/liquibase/db.changelog.xml</changeLogFile>
 					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 					<driver>org.sqlite.JDBC</driver>
-					<url>jdbc:sqlite:./../test_data/feedzilla_developer.s3db</url>
+					<url>jdbc:sqlite:${basedir}/../test_data/feedzilla_developer.s3db</url>
 				</configuration>
 				<executions>
 					<execution>

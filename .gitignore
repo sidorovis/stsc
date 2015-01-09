@@ -6,6 +6,8 @@
 *.war
 *.ear
 
+3rdparty
+
 **/bin/
 target
 /data/*.uf
