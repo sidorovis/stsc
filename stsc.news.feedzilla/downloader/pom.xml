@@ -58,5 +58,5 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	<description>Stsc common is a common classes for stsc project.</description>
+	<description>Stsc news feedzilla downloader. This project is for download feedzilla news datafeed.</description>
 </project>
