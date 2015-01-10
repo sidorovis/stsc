@@ -39,23 +39,16 @@ final class FeedDataDownloader {
 
 		final List<Category> categories = feed.getCategories();
 		for (Category category : categories) {
-			final Articles articles = feed.query().category(category).since(startOfDay).articles();
-			for (Article a : articles.getArticles()) {
-				if (a.getEnclosures() != null) {
-					maxDsn = Math.max(maxDsn, a.getEnclosures().size());
-				}
-			}
-			break;
+			// Categ
+			// Category
+			stsc.news.feedzilla.schema.Category c = new stsc.news.feedzilla.schema.Category();
+			c.set("display_category_name", category.getDisplayName());
+			c.set("english_category_name", category.getEnglishName());
+			c.saveIt();
 		}
 		System.out.println("-----------");
 		System.out.println(maxDsn);
 
-		// for (Category c : categories) {
-		// System.out.println(c.getId());
-		// System.out.println(c.getDisplayName());
-		// System.out.println(c.getEnglishName());
-		// System.out.println(c.getUrlName());
-		// }
 		// final List<Subcategory> subcategories = feed.getSubcategories(c);
 		// System.out.println(" - " + subcategories.size());
 		// pause();
@@ -74,14 +67,6 @@ final class FeedDataDownloader {
 		// // if (i % 1000 == 0) {
 		// // System.out.println("articles " + i);
 		// // }
-		// // }
-		// }
-		// } catch (Exception e) {
-		// System.err.println(i++ + " " + e.getMessage());
-		// }
-		// }
-		// }
-		// System.out.println("Size is: " + i + " by map: " + map.size());
 
 	}
 
