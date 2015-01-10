@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import stsc.common.storage.FeedStorage;
 import stsc.news.feedzilla.schema.FeedZillaArticle;
 import stsc.news.feedzilla.schema.FeedZillaCategory;
 import stsc.news.feedzilla.schema.FeedZillaSubcategory;
@@ -15,7 +16,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
-public class FeedzillaFileStorage {
+public class FeedzillaStorage implements FeedStorage {
 
 	// private static Logger logger =
 	// LogManager.getLogger(FeedzillaFileStorage.class);
@@ -26,11 +27,11 @@ public class FeedzillaFileStorage {
 	private final Dao<FeedZillaSubcategory, Integer> subcategories;
 	private final Dao<FeedZillaArticle, Integer> articles;
 
-	public FeedzillaFileStorage() throws SQLException, IOException {
+	public FeedzillaStorage() throws SQLException, IOException {
 		this("feedzilla_developer.properties");
 	}
 
-	public FeedzillaFileStorage(String propertiesFileName) throws SQLException, IOException {
+	public FeedzillaStorage(String propertiesFileName) throws SQLException, IOException {
 		this.source = getConnectionSource(propertiesFileName);
 		this.categories = DaoManager.createDao(source, FeedZillaCategory.class);
 		this.subcategories = DaoManager.createDao(source, FeedZillaSubcategory.class);

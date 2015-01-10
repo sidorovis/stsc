@@ -1,9 +1,14 @@
 package stsc.news.feedzilla.downloader;
 
+import graef.feedzillajava.Article;
+import graef.feedzillajava.Articles;
 import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
+import graef.feedzillajava.Subcategory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.joda.time.DateTime;
@@ -12,7 +17,7 @@ import org.joda.time.DateTime;
 //import org.joda.time.DateTime;
 
 /**
- * {@link FeedDataDownloader} is a class that download newses from FeedZilla and
+ * {@link FeedDataDownloader} is a class that download feed's from FeedZilla and
  * categories them.
  */
 final class FeedDataDownloader {
@@ -20,61 +25,66 @@ final class FeedDataDownloader {
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
-
-	private void pause() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
+	
+	void pause() {
+		try{
+			Thread.sleep(100);
+		} catch (Exception e) {
+			
 		}
 	}
 
-	private void openDatabase() {
-//		Base.open("org.sqlite.JDBC", "jdbc:sqlite:./../test_data/feedzilla_developer.s3db", "", "");
+	String getHashCode(Article a) {
+		return new String(a.getAuthor()).hashCode() + " " + new String(a.getSource()).hashCode() + " "
+				+ new String(a.getSummary()).hashCode() + " " + new String(a.getTitle()).hashCode();
 	}
 
 	FeedDataDownloader() {
-
-//		openDatabase();
+		Set<String> hashCodes = new HashSet<>();
 
 		DateTime startOfDay = DateTime.now();
-		startOfDay = startOfDay.minusDays(200);
+		startOfDay = startOfDay.minusYears(20);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
 
-		int maxDsn = 0;
-
 		final List<Category> categories = feed.getCategories();
-//		Base.openTransaction();
+
+		int i = 0;
+
 		for (Category category : categories) {
-//			stsc.news.feedzilla.schema.Category c = new stsc.news.feedzilla.schema.Category();
-//			c.set("display_category_name", category.getDisplayName());
-//			c.set("english_category_name", category.getEnglishName());
-//			c.saveIt();
+			try {
+				pause();
+				final List<Subcategory> subcategories = feed.getSubcategories(category);
+				for (Subcategory subcategory : subcategories) {
+					try {
+						pause();
+						final Articles articles = feed.query().subcategory(subcategory).since(startOfDay).count(100)
+								.articles();
+						if (articles == null)
+							break;
+						final List<Article> articlesList = articles.getArticles();
+						for (Article article : articlesList) {
+							i++;
+							final String hashCode = getHashCode(article);
+							if (hashCodes.contains(hashCode)) {
+								System.err.println("Repeat: " + article.getPublishDate() + " " + article.getTitle());
+							} else {
+								hashCodes.add(hashCode);
+							}
+							if (i % 500 == 0) {
+								System.out.println("Processed: " + i + " articles");
+							}
+							pause();
+						}
+					} catch (Exception e) {
+						System.err.println(e.getMessage());
+					}
+				}
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
 		}
-//		Base.commitTransaction();
-//		Base.close();
-		System.out.println("-----------");
-		System.out.println(maxDsn);
-
-		// final List<Subcategory> subcategories = feed.getSubcategories(c);
-		// System.out.println(" - " + subcategories.size());
-		// pause();
-		// for (Subcategory s : subcategories) {
-		// try {
-		// final Articles articles =
-		// feed.query().category(c).subcategory(s).since(startOfDay).count(100).articles();
-		// if (articles == null) {
-		// System.out.println("--------- -------------");
-		// } else {
-		// System.out.println("Size: " + articles.getArticles().size());
-		// // for (Article article : articles.getArticles()) {
-		// // i++;
-		// // map.put(article.getTitle(), article);
-		// // pause();
-		// // if (i % 1000 == 0) {
-		// // System.out.println("articles " + i);
-		// // }
-
+		System.out.println("Size: " + hashCodes.size());
 	}
 
 	public static void main(String[] args) {

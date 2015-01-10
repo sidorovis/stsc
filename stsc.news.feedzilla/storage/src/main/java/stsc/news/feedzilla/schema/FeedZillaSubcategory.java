@@ -2,12 +2,14 @@ package stsc.news.feedzilla.schema;
 
 import java.util.Date;
 
+import stsc.common.feeds.FeedSubcategory;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "subcategories")
-public class FeedZillaSubcategory {
+public class FeedZillaSubcategory implements FeedSubcategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -16,13 +18,13 @@ public class FeedZillaSubcategory {
 	private FeedZillaCategory category;
 
 	@DatabaseField(columnName = "display_subcategory_name", useGetSet = true)
-	private String displayCategoryName;
+	private String displaySubcategoryName;
 
 	@DatabaseField(columnName = "english_subcategory_name", useGetSet = true)
-	private String englishCategoryName;
+	private String englishSubcategoryName;
 
 	@DatabaseField(columnName = "url_subcategory_name", useGetSet = true)
-	private String urlCategoryName;
+	private String urlSubcategoryName;
 
 	@DatabaseField(columnName = "created_at", dataType = DataType.DATE_STRING)
 	private Date createdAt;
@@ -37,9 +39,9 @@ public class FeedZillaSubcategory {
 
 	public FeedZillaSubcategory(FeedZillaCategory category, String displayCategoryName, String englishCategoryName, String urlCategoryName) {
 		this.category = category;
-		this.displayCategoryName = displayCategoryName;
-		this.englishCategoryName = englishCategoryName;
-		this.urlCategoryName = urlCategoryName;
+		this.displaySubcategoryName = displayCategoryName;
+		this.englishSubcategoryName = englishCategoryName;
+		this.urlSubcategoryName = urlCategoryName;
 		this.createdAt = new Date();
 		this.updatedAt = new Date();
 	}
@@ -48,32 +50,36 @@ public class FeedZillaSubcategory {
 		return id;
 	}
 
+	@Override
 	public FeedZillaCategory getCategory() {
 		return category;
 	}
 
-	public String getDisplayCategoryName() {
-		return displayCategoryName;
+	@Override
+	public String getDisplaySubcategoryName() {
+		return displaySubcategoryName;
 	}
 
 	public void setDisplayCategoryName(String displayCategoryName) {
-		this.displayCategoryName = displayCategoryName;
+		this.displaySubcategoryName = displayCategoryName;
 	}
 
-	public String getEnglishCategoryName() {
-		return englishCategoryName;
+	@Override
+	public String getEnglishSubcategoryName() {
+		return englishSubcategoryName;
 	}
 
 	public void setEnglishCategoryName(String englishCategoryName) {
-		this.englishCategoryName = englishCategoryName;
+		this.englishSubcategoryName = englishCategoryName;
 	}
 
-	public String getUrlCategoryName() {
-		return urlCategoryName;
+	@Override
+	public String getUrlSubcategoryName() {
+		return urlSubcategoryName;
 	}
 
 	public void setUrlCategoryName(String urlCategoryName) {
-		this.urlCategoryName = urlCategoryName;
+		this.urlSubcategoryName = urlCategoryName;
 	}
 
 }

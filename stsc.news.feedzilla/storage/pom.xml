@@ -40,6 +40,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>stsc</groupId>
+			<artifactId>stsc.common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>stsc</groupId>
 			<artifactId>stsc.news.feedzilla.sqlite.migrations</artifactId>
 			<version>${project.version}</version>
 		</dependency>

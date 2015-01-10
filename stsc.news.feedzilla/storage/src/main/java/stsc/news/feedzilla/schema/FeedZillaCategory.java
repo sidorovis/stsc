@@ -2,12 +2,14 @@ package stsc.news.feedzilla.schema;
 
 import java.util.Date;
 
+import stsc.common.feeds.FeedCategory;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "categories")
-public class FeedZillaCategory {
+public class FeedZillaCategory implements FeedCategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -44,6 +46,7 @@ public class FeedZillaCategory {
 		return id;
 	}
 
+	@Override
 	public String getDisplayCategoryName() {
 		return displayCategoryName;
 	}
@@ -52,6 +55,7 @@ public class FeedZillaCategory {
 		this.displayCategoryName = displayCategoryName;
 	}
 
+	@Override
 	public String getEnglishCategoryName() {
 		return englishCategoryName;
 	}
@@ -60,6 +64,7 @@ public class FeedZillaCategory {
 		this.englishCategoryName = englishCategoryName;
 	}
 
+	@Override
 	public String getUrlCategoryName() {
 		return urlCategoryName;
 	}

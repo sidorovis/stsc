@@ -2,12 +2,14 @@ package stsc.news.feedzilla.schema;
 
 import java.util.Date;
 
+import stsc.common.feeds.FeedArticle;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "articles")
-public class FeedZillaArticle {
+public class FeedZillaArticle implements FeedArticle {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -63,6 +65,17 @@ public class FeedZillaArticle {
 		return id;
 	}
 
+	@Override
+	public FeedZillaCategory getCategory() {
+		return category;
+	}
+
+	@Override
+	public FeedZillaSubcategory getSubcategory() {
+		return subcategory;
+	}
+
+	@Override
 	public String getAuthor() {
 		return author;
 	}
@@ -71,6 +84,7 @@ public class FeedZillaArticle {
 		this.author = author;
 	}
 
+	@Override
 	public String getSource() {
 		return source;
 	}
@@ -79,6 +93,7 @@ public class FeedZillaArticle {
 		this.source = source;
 	}
 
+	@Override
 	public String getSourceUrl() {
 		return sourceUrl;
 	}
@@ -87,6 +102,7 @@ public class FeedZillaArticle {
 		this.sourceUrl = sourceUrl;
 	}
 
+	@Override
 	public String getSummary() {
 		return summary;
 	}
@@ -95,6 +111,7 @@ public class FeedZillaArticle {
 		this.summary = summary;
 	}
 
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -103,6 +120,7 @@ public class FeedZillaArticle {
 		this.title = title;
 	}
 
+	@Override
 	public String getUrl() {
 		return url;
 	}
@@ -111,14 +129,7 @@ public class FeedZillaArticle {
 		this.url = url;
 	}
 
-	public FeedZillaCategory getCategory() {
-		return category;
-	}
-
-	public FeedZillaSubcategory getSubcategory() {
-		return subcategory;
-	}
-
+	@Override
 	public Date getPublishDate() {
 		return publishDate;
 	}
