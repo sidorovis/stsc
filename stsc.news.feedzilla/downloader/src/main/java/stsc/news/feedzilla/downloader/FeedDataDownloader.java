@@ -30,28 +30,25 @@ final class FeedDataDownloader {
 	}
 
 	FeedDataDownloader() {
-		// DateTime startOfDay = DateTime.now();
-		// startOfDay = startOfDay.minusYears(15);
-		// startOfDay = startOfDay.withTimeAtStartOfDay();
+		DateTime startOfDay = DateTime.now();
+		startOfDay = startOfDay.minusDays(200);
+		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
-		// int i = 0;
-		// final HashMap<String, Article> map = new HashMap<>();
 
 		int maxDsn = 0;
-		int maxEsn = 0;
-		int maxUsn = 0;
 
-		final List<Subcategory> categories = feed.getSubcategories();
-		for (Subcategory subcategory : categories) {
-			System.out.println(subcategory.getParentId());
-			maxDsn = Math.max(maxDsn, subcategory.getDisplayName().length());
-			maxEsn = Math.max(maxDsn, subcategory.getEnglishName().length());
-			maxUsn = Math.max(maxDsn, subcategory.getUrlName().length());
+		final List<Category> categories = feed.getCategories();
+		for (Category category : categories) {
+			final Articles articles = feed.query().category(category).since(startOfDay).articles();
+			for (Article a : articles.getArticles()) {
+				if (a.getEnclosures() != null) {
+					maxDsn = Math.max(maxDsn, a.getEnclosures().size());
+				}
+			}
+			break;
 		}
 		System.out.println("-----------");
 		System.out.println(maxDsn);
-		System.out.println(maxEsn);
-		System.out.println(maxUsn);
 
 		// for (Category c : categories) {
 		// System.out.println(c.getId());

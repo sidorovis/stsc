@@ -29,5 +29,26 @@
 		</createTable>
 	</changeSet>
 
+	<changeSet id="01_00_00__10_01_2015" author="ivan.sidarau@gmail.com">
+		<createTable tableName="article">
+			<column name="id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="category_id" type="int(11)" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="subcategory_id" type="int(11)" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="author" type="varchar(255)" />
+			<column name="publish_date_str" type="varchar(255)" />
+			<column name="source" type="varchar(255)" />
+			<column name="source_url" type="varchar(255)" />
+			<column name="summary" type="varchar(2047)" />
+			<column name="title" type="varchar(255)" />
+			<column name="url" type="varchar(255)" />			
+		</createTable>
+	</changeSet>
+
 </databaseChangeLog>
 
