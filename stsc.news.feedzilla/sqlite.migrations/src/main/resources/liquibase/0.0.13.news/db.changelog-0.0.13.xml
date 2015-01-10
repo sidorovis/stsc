@@ -41,7 +41,7 @@
 				<constraints nullable="false"/>
 			</column>
 			<column name="author" type="varchar(255)" />
-			<column name="publish_date_str" type="varchar(255)" />
+			<column name="publish_date_str" type="text" />
 			<column name="source" type="varchar(255)" />
 			<column name="source_url" type="varchar(255)" />
 			<column name="summary" type="varchar(2047)" />

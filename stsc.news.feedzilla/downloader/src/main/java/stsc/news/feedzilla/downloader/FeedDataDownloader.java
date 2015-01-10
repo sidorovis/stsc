@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.javalite.activejdbc.Base;
 import org.joda.time.DateTime;
 
 /**
@@ -29,7 +30,14 @@ final class FeedDataDownloader {
 		}
 	}
 
+	private void openDatabase() {
+		Base.open("org.sqlite.JDBC", "jdbc:sqlite:./../test_data/feedzilla_developer.s3db", "", "");
+	}
+
 	FeedDataDownloader() {
+
+		openDatabase();
+
 		DateTime startOfDay = DateTime.now();
 		startOfDay = startOfDay.minusDays(200);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
@@ -38,14 +46,15 @@ final class FeedDataDownloader {
 		int maxDsn = 0;
 
 		final List<Category> categories = feed.getCategories();
+		Base.openTransaction();
 		for (Category category : categories) {
-			// Categ
-			// Category
 			stsc.news.feedzilla.schema.Category c = new stsc.news.feedzilla.schema.Category();
 			c.set("display_category_name", category.getDisplayName());
 			c.set("english_category_name", category.getEnglishName());
 			c.saveIt();
 		}
+		Base.commitTransaction();
+		Base.close();
 		System.out.println("-----------");
 		System.out.println(maxDsn);
 
