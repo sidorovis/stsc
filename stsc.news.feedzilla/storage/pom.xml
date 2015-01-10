@@ -10,29 +10,18 @@
 	<name>stsc.news.feedzilla.storage</name>
 	<url>https://github.com/sidorovis/stsc</url>
 
+	<repositories>
+		<repository>
+			<id>hibernatesqlite-maven</id>
+			<url>https://hibernate-sqlite.googlecode.com/svn/trunk/mavenrepo</url>
+		</repository>
+	</repositories>
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
-			<plugin>
-                <groupId>org.javalite</groupId>
-                <artifactId>activejdbc-instrumentation</artifactId>
-                <version>1.4.9</version>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
-				<configuration>
-					<driver>org.sqlite.JDBC</driver>
-					<url>jdbc:sqlite:${basedir}/../test_data/feedzilla_developer.s3db</url>
-				</configuration>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -47,17 +36,11 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>stsc</groupId>
-			<artifactId>stsc.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.general</artifactId>
+			<artifactId>stsc.news.feedzilla.sqlite.migrations</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -67,26 +50,20 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>graef</groupId>
-			<artifactId>feedzilla-java</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.j256.ormlite</groupId>
+			<artifactId>ormlite-core</artifactId>
+			<version>4.47</version>
 		</dependency>
 		<dependency>
-	<groupId>org.javalite</groupId>
-	<artifactId>activejdbc</artifactId>
-	<version>1.4.9</version>
+			<groupId>com.j256.ormlite</groupId>
+			<artifactId>ormlite-jdbc</artifactId>
+			<version>4.47</version>
 		</dependency>
-		<dependency>
-            <groupId>org.javalite</groupId>
-            <artifactId>activejdbc-instrumentation</artifactId>
-            <version>1.4.9</version>
-        </dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.7.2</version>
 		</dependency>
-
 	</dependencies>
-	<description>Stsc common is a common classes for stsc project.</description>
+	<description>Stsc news feedzilla storage project, possibility to store news datafeed (from feedzilla).</description>
 </project>

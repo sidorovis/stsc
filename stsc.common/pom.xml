@@ -56,12 +56,12 @@
 			<artifactId>ejml</artifactId>
 			<version>0.25</version>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>graef</groupId>
 			<artifactId>feedzilla-java</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
+-->
 	</dependencies>
 	<description>Stsc common is a common classes for stsc project.</description>
 </project>

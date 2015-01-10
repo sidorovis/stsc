@@ -7,6 +7,7 @@
 *.ear
 
 3rdparty
+**/*.s3db
 
 **/bin/
 target
