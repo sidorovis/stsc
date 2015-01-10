@@ -7,7 +7,7 @@
 	<changeSet id="23_38_00__09_01_2015" author="ivan.sidarau@gmail.com">
 		<createTable tableName="categories">
 			<column name="id" type="int(11)" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="display_category_name" type="varchar(255)" />
 			<column name="english_category_name" type="varchar(255)" />
@@ -21,10 +21,10 @@
 	<changeSet id="00_39_00__10_01_2015" author="ivan.sidarau@gmail.com">
 		<createTable tableName="subcategories">
 			<column name="id" type="int(11)" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="category_id" type="int(11)" >
-				<constraints nullable="false"/>
+			<column name="category_id" type="int(11)">
+				<constraints nullable="false" foreignKeyName="fk_subcategories_categories" references="categories(id)"/>
 			</column>
 			<column name="display_subcategory_name" type="varchar(255)" />
 			<column name="english_subcategory_name" type="varchar(255)" />
@@ -33,26 +33,31 @@
 			<column name="created_at" type="DATETIME" />
 			<column name="updated_at" type="DATETIME" />
 		</createTable>
+		<!-- SQLITE not support foreign key
+			addForeignKeyConstraint baseColumnNames="category_id"
+			baseTableName="subcategories" constraintName="fk_category_subcategories"
+			onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id"
+			referencedTableName="categories" /-->
 	</changeSet>
 
 	<changeSet id="01_00_00__10_01_2015" author="ivan.sidarau@gmail.com">
 		<createTable tableName="articles">
 			<column name="id" type="int(11)" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="category_id" type="int(11)" >
-				<constraints nullable="false"/>
+			<column name="category_id" type="int(11)">
+				<constraints nullable="false" foreignKeyName="fk_articles_categories" references="categories(id)" />
 			</column>
-			<column name="subcategory_id" type="int(11)" >
-				<constraints nullable="false"/>
+			<column name="subcategory_id" type="int(11)">
+				<constraints nullable="false" foreignKeyName="fk_articles_subcategories" references="subcategories(id)" />
 			</column>
 			<column name="author" type="varchar(255)" />
-			<column name="publish_date_str" type="text" />
+			<column name="publish_date" type="DATETIME" />
 			<column name="source" type="varchar(255)" />
 			<column name="source_url" type="varchar(255)" />
 			<column name="summary" type="varchar(2047)" />
 			<column name="title" type="varchar(255)" />
-			<column name="url" type="varchar(255)" />			
+			<column name="url" type="varchar(255)" />
 
 			<column name="created_at" type="DATETIME" />
 			<column name="updated_at" type="DATETIME" />
