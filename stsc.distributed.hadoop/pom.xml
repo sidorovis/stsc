@@ -93,7 +93,7 @@
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo</artifactId>
+      <artifactId>stsc.stocks.yahoo.core</artifactId>
       <version>${project.version}</version>
     </dependency>
 

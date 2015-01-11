@@ -62,17 +62,17 @@
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo</artifactId>
+      <artifactId>stsc.stocks.yahoo.core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo.downloader</artifactId>
+      <artifactId>stsc.stocks.yahoo.downloader</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo.liquidator</artifactId>
+      <artifactId>stsc.stocks.yahoo.liquidator</artifactId>
       <version>${project.version}</version>
     </dependency>
 
