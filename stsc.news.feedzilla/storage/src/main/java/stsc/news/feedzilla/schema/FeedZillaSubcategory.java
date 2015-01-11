@@ -60,8 +60,8 @@ public class FeedZillaSubcategory implements FeedSubcategory {
 		return displaySubcategoryName;
 	}
 
-	public void setDisplayCategoryName(String displayCategoryName) {
-		this.displaySubcategoryName = displayCategoryName;
+	public void setDisplaySubcategoryName(String displaySubcategoryName) {
+		this.displaySubcategoryName = displaySubcategoryName;
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class FeedZillaSubcategory implements FeedSubcategory {
 		return englishSubcategoryName;
 	}
 
-	public void setEnglishCategoryName(String englishCategoryName) {
-		this.englishSubcategoryName = englishCategoryName;
+	public void setEnglishSubcategoryName(String englishSubcategoryName) {
+		this.englishSubcategoryName = englishSubcategoryName;
 	}
 
 	@Override
@@ -78,8 +78,8 @@ public class FeedZillaSubcategory implements FeedSubcategory {
 		return urlSubcategoryName;
 	}
 
-	public void setUrlCategoryName(String urlCategoryName) {
-		this.urlSubcategoryName = urlCategoryName;
+	public void setUrlSubcategoryName(String urlSubcategoryName) {
+		this.urlSubcategoryName = urlSubcategoryName;
 	}
 
 }

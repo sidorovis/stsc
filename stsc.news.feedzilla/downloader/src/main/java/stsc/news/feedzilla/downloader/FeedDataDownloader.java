@@ -25,12 +25,12 @@ final class FeedDataDownloader {
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
-	
+
 	void pause() {
-		try{
+		try {
 			Thread.sleep(100);
 		} catch (Exception e) {
-			
+
 		}
 	}
 
@@ -43,7 +43,7 @@ final class FeedDataDownloader {
 		Set<String> hashCodes = new HashSet<>();
 
 		DateTime startOfDay = DateTime.now();
-		startOfDay = startOfDay.minusYears(20);
+		startOfDay = startOfDay.minusYears(1);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
 
@@ -58,8 +58,7 @@ final class FeedDataDownloader {
 				for (Subcategory subcategory : subcategories) {
 					try {
 						pause();
-						final Articles articles = feed.query().subcategory(subcategory).since(startOfDay).count(100)
-								.articles();
+						final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay).count(100).articles();
 						if (articles == null)
 							break;
 						final List<Article> articlesList = articles.getArticles();
@@ -74,10 +73,8 @@ final class FeedDataDownloader {
 							if (i % 500 == 0) {
 								System.out.println("Processed: " + i + " articles");
 							}
-							pause();
 						}
 					} catch (Exception e) {
-						System.err.println(e.getMessage());
 					}
 				}
 			} catch (Exception e) {
