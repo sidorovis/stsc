@@ -12,9 +12,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.joda.time.DateTime;
-//
-//import org.javalite.activejdbc.Base;
-//import org.joda.time.DateTime;
 
 /**
  * {@link FeedDataDownloader} is a class that download feed's from FeedZilla and
@@ -22,34 +19,46 @@ import org.joda.time.DateTime;
  */
 final class FeedDataDownloader {
 
+	public static long PAUSE_SLEEP_TIME = 100;
+
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	void pause() {
+	private void pause() {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(PAUSE_SLEEP_TIME);
 		} catch (Exception e) {
-
 		}
 	}
 
-	String getHashCode(Article a) {
+	private static String getHashCode(Article a) {
 		return new String(a.getAuthor()).hashCode() + " " + new String(a.getSource()).hashCode() + " "
 				+ new String(a.getSummary()).hashCode() + " " + new String(a.getTitle()).hashCode();
 	}
 
 	FeedDataDownloader() {
-		Set<String> hashCodes = new HashSet<>();
+		this(100);
+	}
 
-		DateTime startOfDay = DateTime.now();
-		startOfDay = startOfDay.minusYears(1);
-		startOfDay = startOfDay.withTimeAtStartOfDay();
+	FeedDataDownloader(int count) {
+		this(356 * 20, count);
+	}
+
+	FeedDataDownloader(int lastNdays, int count) {
+		downloadLastNdays(lastNdays, count);
+	}
+
+	private void downloadLastNdays(int N, int count) {
+		final Set<String> hashCodes = new HashSet<>();
 		final FeedZilla feed = new FeedZilla();
 
-		final List<Category> categories = feed.getCategories();
+		DateTime startOfDay = DateTime.now();
+		startOfDay = startOfDay.minusDays(N);
+		startOfDay = startOfDay.withTimeAtStartOfDay();
 
-		int i = 0;
+		final List<Category> categories = feed.getCategories();
+		int amountOfProcessedArticles = 0;
 
 		for (Category category : categories) {
 			try {
@@ -58,37 +67,39 @@ final class FeedDataDownloader {
 				for (Subcategory subcategory : subcategories) {
 					try {
 						pause();
-						final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay).count(100).articles();
-						if (articles == null)
-							break;
-						final List<Article> articlesList = articles.getArticles();
-						for (Article article : articlesList) {
-							i++;
-							final String hashCode = getHashCode(article);
-							if (hashCodes.contains(hashCode)) {
-								System.err.println("Repeat: " + article.getPublishDate() + " " + article.getTitle());
-							} else {
-								hashCodes.add(hashCode);
-							}
-							if (i % 500 == 0) {
-								System.out.println("Processed: " + i + " articles");
-							}
-						}
+						amountOfProcessedArticles += getArticles(feed, hashCodes, category, subcategory, startOfDay, count);
 					} catch (Exception e) {
+						System.err.println(e.getMessage());
 					}
 				}
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
 			}
 		}
-		System.out.println("Size: " + hashCodes.size());
+		System.out.println("Size: (" + amountOfProcessedArticles + ") from " + hashCodes.size());
 	}
 
-	public static void main(String[] args) {
-		try {
-			new FeedDataDownloader();
-		} catch (Exception e) {
-			e.printStackTrace();
+	public static int getArticles(FeedZilla feed, Set<String> hashCodes, Category category, Subcategory subcategory, DateTime startOfDay,
+			int count) {
+		final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay).count(count)
+				.articles();
+		if (articles == null)
+			return 0;
+		final List<Article> articlesList = articles.getArticles();
+		for (Article article : articlesList) {
+			final String hashCode = getHashCode(article);
+			if (!hashCodes.contains(hashCode)) {
+				hashCodes.add(hashCode);
+			}
 		}
+		return articlesList.size();
 	}
+//
+//	public static void main(String[] args) {
+//		try {
+//			new FeedDataDownloader(1, 1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }
