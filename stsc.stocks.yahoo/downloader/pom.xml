@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.yahoo.liquidator</artifactId>
+  <artifactId>stsc.stocks.yahoo.downloader</artifactId>
   <version>0.0.13-NEWS</version>
   <packaging>jar</packaging>
 
-  <name>stsc.yahoo.liquidator</name>
+  <name>stsc.stocks.yahoo.downloader</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -40,13 +40,13 @@
             </descriptorRefs>
      		<archive>
         		<manifest>
-          			<mainClass>stsc.yahoo.liquiditator.DownloadedStockFilter</mainClass>
+          			<mainClass>stsc.yahoo.downloader.MarketDataDownloader</mainClass>
         		</manifest>
       		</archive>
         </configuration>
     	<executions>
       		<execution>
-        		<id>stsc-yahoo-liquidator</id>
+        		<id>stsc-yahoo-downloader</id>
         		<phase>package</phase>
         		<goals>
           			<goal>single</goal>
@@ -72,17 +72,21 @@
 
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo</artifactId>
+      <artifactId>stsc.stocks.yahoo.core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.yahoo.liquidator</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-
-  </dependencies>
-  <description>Stsc common is a common classes for stsc project.</description>
+   </dependencies>
+  <description>Stsc yahoo downloader - you can download yahoo stock datafeed by that.</description>
 </project>
