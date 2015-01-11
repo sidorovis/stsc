@@ -77,7 +77,7 @@
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.yahoo.liquidator</artifactId>
+      <artifactId>stsc.stocks.yahoo.liquidator</artifactId>
       <version>${project.version}</version>
     </dependency>
 
