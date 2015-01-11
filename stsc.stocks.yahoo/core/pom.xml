@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>stsc</groupId>
-  <artifactId>stsc.yahoo</artifactId>
+  <artifactId>stsc.stocks.yahoo.core</artifactId>
   <version>0.0.13-NEWS</version>
   <packaging>jar</packaging>
 
-  <name>stsc.yahoo</name>
+  <name>stsc.stocks.yahoo.core</name>
   <url>https://github.com/sidorovis/stsc</url>
 
   <properties>
@@ -27,8 +27,8 @@
    		<artifactId>maven-compiler-plugin</artifactId>
    		<version>2.0.2</version>
    		<configuration>
-       		<source>1.7</source>
-       		<target>1.7</target>
+       		<source>1.8</source>
+       		<target>1.8</target>
    		</configuration>
 	</plugin>
 	</plugins>
@@ -54,5 +54,5 @@
     </dependency>
 
   </dependencies>
-  <description>Stsc common is a common classes for stsc project.</description>
+  <description>Stsc yahoo core module.</description>
 </project>
