@@ -18,7 +18,6 @@ public class FeedDataDownloaderTest {
 		public void newArticle(Category category, Subcategory subcategory, Article article) {
 			sum += 1;
 		}
-
 	}
 
 	@Test

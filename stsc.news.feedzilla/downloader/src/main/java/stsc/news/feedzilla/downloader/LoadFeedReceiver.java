@@ -5,7 +5,5 @@ import graef.feedzillajava.Category;
 import graef.feedzillajava.Subcategory;
 
 interface LoadFeedReceiver {
-
 	public void newArticle(Category category, Subcategory subcategory, Article article);
-
 }
