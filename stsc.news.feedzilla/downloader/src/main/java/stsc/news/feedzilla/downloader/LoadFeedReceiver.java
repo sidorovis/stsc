@@ -1,10 +1,11 @@
 package stsc.news.feedzilla.downloader;
 
-public interface LoadFeedReceiver<FeedCategoryType, FeedSubcategoryType, FeedArticleType> {
+import graef.feedzillajava.Article;
+import graef.feedzillajava.Category;
+import graef.feedzillajava.Subcategory;
 
-	public void newFeedCategory(FeedCategoryType feedCategoryType);
+interface LoadFeedReceiver {
 
-	public void newFeedSubcategory(FeedSubcategoryType feedSubcategoryType);
+	public void newArticle(Category category, Subcategory subcategory, Article article);
 
-	public void newFeedArticle(FeedArticleType feedArticleType);
 }

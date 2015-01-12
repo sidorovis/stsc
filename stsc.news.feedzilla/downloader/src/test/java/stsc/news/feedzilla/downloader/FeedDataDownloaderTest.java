@@ -1,15 +1,41 @@
 package stsc.news.feedzilla.downloader;
 
+import graef.feedzillajava.Article;
+import graef.feedzillajava.Category;
+import graef.feedzillajava.FeedZilla;
+import graef.feedzillajava.Subcategory;
+
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.news.feedzilla.downloader.FeedDataDownloader;
-
 public class FeedDataDownloaderTest {
 
+	private class ReceiverTestHelper implements LoadFeedReceiver {
+		public int sum = 0;
+
+		@Override
+		public void newArticle(Category category, Subcategory subcategory, Article article) {
+			sum += 1;
+		}
+
+	}
+
 	@Test
-	public void testFeedzilaNewsDatafeed() {
-//		FeedDataDownloader fz = new FeedDataDownloader(1, 1);
-//		Assert.assertNotNull(fz);
+	public void testFeedDataDownloaderGetArticle() {
+		DateTime startOfDay = DateTime.now();
+		startOfDay = startOfDay.minusDays(1);
+		startOfDay = startOfDay.withTimeAtStartOfDay();
+		final FeedZilla feed = new FeedZilla();
+		final Category category = feed.getCategories().get(0);
+
+		final Subcategory subcategory = feed.getSubcategories(category).get(0);
+		final ReceiverTestHelper receiver = new ReceiverTestHelper();
+		final FeedDataDownloader downloader = new FeedDataDownloader(10, 1);
+		downloader.addReceiver(receiver);
+
+		final int articles = downloader.getArticles(category, subcategory, startOfDay);
+		Assert.assertEquals(1, articles);
+		Assert.assertEquals(1, receiver.sum);
 	}
 }
