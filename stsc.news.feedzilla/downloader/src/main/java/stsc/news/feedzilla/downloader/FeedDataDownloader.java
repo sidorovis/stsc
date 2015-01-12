@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 /**
@@ -20,6 +22,8 @@ import org.joda.time.DateTime;
  * categories them.
  */
 final class FeedDataDownloader {
+
+	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
 
 	public static long PAUSE_SLEEP_TIME = 100;
 
@@ -59,6 +63,7 @@ final class FeedDataDownloader {
 		final List<Category> categories = feed.getCategories();
 		int amountOfProcessedArticles = 0;
 
+		logger.debug("Downloading process started");
 		for (Category category : categories) {
 			try {
 				pause();
@@ -68,14 +73,14 @@ final class FeedDataDownloader {
 						pause();
 						amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
 					} catch (Exception e) {
-						System.err.println(e.getMessage());
+						logger.warn("getArticles returns", e);
 					}
 				}
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				logger.warn("getSubcategories returns", e);
 			}
 		}
-		System.out.println("Size: (" + amountOfProcessedArticles + ") from " + hashCodes.size());
+		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
 	}
 
 	int getArticles(Category category, Subcategory subcategory, DateTime startOfDay) {
