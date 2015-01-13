@@ -9,16 +9,16 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "articles")
-public class FeedZillaArticle implements FeedArticle {
+public class FeedzillaArticle implements FeedArticle {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_id", canBeNull = false)
-	private FeedZillaCategory category;
+	private FeedzillaCategory category;
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "subcategory_id", canBeNull = false)
-	private FeedZillaSubcategory subcategory;
+	private FeedzillaSubcategory subcategory;
 
 	@DatabaseField(columnName = "author", useGetSet = true)
 	private String author;
@@ -48,11 +48,11 @@ public class FeedZillaArticle implements FeedArticle {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedZillaArticle() {
+	private FeedzillaArticle() {
 		// for ormlite
 	}
 
-	public FeedZillaArticle(FeedZillaSubcategory subcategory, String author, Date publishDate) {
+	public FeedzillaArticle(FeedzillaSubcategory subcategory, String author, Date publishDate) {
 		this.category = subcategory.getCategory();
 		this.subcategory = subcategory;
 		this.author = author;
@@ -66,12 +66,12 @@ public class FeedZillaArticle implements FeedArticle {
 	}
 
 	@Override
-	public FeedZillaCategory getCategory() {
+	public FeedzillaCategory getCategory() {
 		return category;
 	}
 
 	@Override
-	public FeedZillaSubcategory getSubcategory() {
+	public FeedzillaSubcategory getSubcategory() {
 		return subcategory;
 	}
 

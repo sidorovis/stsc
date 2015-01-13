@@ -9,7 +9,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "categories")
-public class FeedZillaCategory implements FeedCategory {
+public class FeedzillaCategory implements FeedCategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -30,11 +30,11 @@ public class FeedZillaCategory implements FeedCategory {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedZillaCategory() {
+	private FeedzillaCategory() {
 		// for ormlite
 	}
 
-	public FeedZillaCategory(String displayCategoryName, String englishCategoryName, String urlCategoryName) {
+	public FeedzillaCategory(String displayCategoryName, String englishCategoryName, String urlCategoryName) {
 		this.displayCategoryName = displayCategoryName;
 		this.englishCategoryName = englishCategoryName;
 		this.urlCategoryName = urlCategoryName;

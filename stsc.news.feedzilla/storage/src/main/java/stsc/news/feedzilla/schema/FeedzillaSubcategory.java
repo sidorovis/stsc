@@ -9,13 +9,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "subcategories")
-public class FeedZillaSubcategory implements FeedSubcategory {
+public class FeedzillaSubcategory implements FeedSubcategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_id", canBeNull = false)
-	private FeedZillaCategory category;
+	private FeedzillaCategory category;
 
 	@DatabaseField(columnName = "display_subcategory_name", useGetSet = true)
 	private String displaySubcategoryName;
@@ -33,11 +33,11 @@ public class FeedZillaSubcategory implements FeedSubcategory {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedZillaSubcategory() {
+	private FeedzillaSubcategory() {
 		// for ormlite
 	}
 
-	public FeedZillaSubcategory(FeedZillaCategory category, String displayCategoryName, String englishCategoryName, String urlCategoryName) {
+	public FeedzillaSubcategory(FeedzillaCategory category, String displayCategoryName, String englishCategoryName, String urlCategoryName) {
 		this.category = category;
 		this.displaySubcategoryName = displayCategoryName;
 		this.englishSubcategoryName = englishCategoryName;
@@ -51,7 +51,7 @@ public class FeedZillaSubcategory implements FeedSubcategory {
 	}
 
 	@Override
-	public FeedZillaCategory getCategory() {
+	public FeedzillaCategory getCategory() {
 		return category;
 	}
 

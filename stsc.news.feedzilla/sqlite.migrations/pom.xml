@@ -53,6 +53,16 @@
 	</build>
 	<profiles>
         <profile>
+            <id>production</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <liquibase.url>jdbc:sqlite:${basedir}/../test_data/feedzilla_production.s3db</liquibase.url>
+                <liquibase.driver>org.sqlite.JDBC</liquibase.driver>
+            </properties>
+        </profile>
+        <profile>
             <id>developer</id>
             <activation>
                 <activeByDefault>true</activeByDefault>

@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.joda.time.DateTime;
 
 /**
@@ -23,16 +24,22 @@ import org.joda.time.DateTime;
  */
 final class FeedDataDownloader {
 
+	static {
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
+	}
+
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
 
 	public static long PAUSE_SLEEP_TIME = 100;
 
-	private final int daysToDownload;
+	private int daysToDownload;
 	private final int amountOfArticlesPerRequest;
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
+
+	private volatile boolean stopped = false;
 
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -51,6 +58,14 @@ final class FeedDataDownloader {
 		downloadLastNdays();
 	}
 
+	public void setDaysToDownload(int daysToDownload) {
+		this.daysToDownload = daysToDownload;
+	}
+
+	public void stopDownload() {
+		stopped = true;
+	}
+
 	void addReceiver(LoadFeedReceiver receiver) {
 		receivers.add(receiver);
 	}
@@ -59,26 +74,38 @@ final class FeedDataDownloader {
 		DateTime startOfDay = DateTime.now();
 		startOfDay = startOfDay.minusDays(daysToDownload);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
-
-		final List<Category> categories = feed.getCategories();
 		int amountOfProcessedArticles = 0;
+		try {
 
-		logger.debug("Downloading process started");
-		for (Category category : categories) {
-			try {
-				pause();
-				final List<Subcategory> subcategories = feed.getSubcategories(category);
-				for (Subcategory subcategory : subcategories) {
-					try {
-						pause();
-						amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
-					} catch (Exception e) {
-						logger.warn("getArticles returns", e);
+			final List<Category> categories = feed.getCategories();
+
+			logger.debug("Downloading process started");
+			for (Category category : categories) {
+				try {
+					logger.debug("We start download category: " + category.getDisplayName());
+					pause();
+					final List<Subcategory> subcategories = feed.getSubcategories(category);
+					for (Subcategory subcategory : subcategories) {
+						try {
+							logger.debug("We start download subcategory: " + subcategory.getDisplayName());
+							pause();
+							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
+						} catch (Exception e) {
+							logger.warn("getArticles returns", e);
+						}
+						if (stopped) {
+							break;
+						}
 					}
+				} catch (Exception e) {
+					logger.warn("getSubcategories returns", e);
 				}
-			} catch (Exception e) {
-				logger.warn("getSubcategories returns", e);
+				if (stopped) {
+					break;
+				}
 			}
+		} catch (Exception e) {
+			logger.warn("getCategories returns", e);
 		}
 		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
 	}
@@ -88,14 +115,24 @@ final class FeedDataDownloader {
 				.count(amountOfArticlesPerRequest).articles();
 		if (articles == null)
 			return 0;
+		int articlesCount = 0;
 		final List<Article> articlesList = articles.getArticles();
+		logger.debug("We will download " + articlesList.size() + " articles for " + category.getDisplayName() + " category and "
+				+ subcategory.getDisplayName() + " subcategory.");
 		for (Article article : articlesList) {
 			final String hashCode = getHashCode(article);
 			if (!hashCodes.contains(hashCode)) {
 				hashCodes.add(hashCode);
 				for (LoadFeedReceiver receiver : receivers) {
 					receiver.newArticle(category, subcategory, article);
+					articlesCount += 1;
+					if (!stopped) {
+						return articlesCount;
+					}
 				}
+			}
+			if (!stopped) {
+				return articlesCount;
 			}
 		}
 		return articlesList.size();

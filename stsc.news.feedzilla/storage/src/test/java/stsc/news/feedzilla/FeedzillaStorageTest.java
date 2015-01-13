@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.news.feedzilla.schema.FeedZillaArticle;
-import stsc.news.feedzilla.schema.FeedZillaCategory;
-import stsc.news.feedzilla.schema.FeedZillaSubcategory;
+import stsc.news.feedzilla.schema.FeedzillaArticle;
+import stsc.news.feedzilla.schema.FeedzillaCategory;
+import stsc.news.feedzilla.schema.FeedzillaSubcategory;
 
 public class FeedzillaStorageTest {
 
@@ -21,13 +21,13 @@ public class FeedzillaStorageTest {
 	}
 
 	@Test
-	public void testFeedZillaCategory() throws IOException, SQLException {
+	public void testFeedzillaCategory() throws IOException, SQLException {
 		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
-		fffs.createOrUpdateCategory(new FeedZillaCategory("display", "english", null));
-		fffs.createOrUpdateCategory(new FeedZillaCategory("hellow", "deutch", "url"));
-		fffs.createOrUpdateCategory(new FeedZillaCategory(null, "russian", null));
+		fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null));
+		fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url"));
+		fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null));
 
-		final List<FeedZillaCategory> categories = fffs.getCategories();
+		final List<FeedzillaCategory> categories = fffs.getCategories();
 		Assert.assertEquals(3, categories.size());
 		Assert.assertEquals("display", categories.get(0).getDisplayCategoryName());
 		Assert.assertEquals("english", categories.get(0).getEnglishCategoryName());
@@ -45,21 +45,21 @@ public class FeedzillaStorageTest {
 	}
 
 	@Test
-	public void testFeedZillaSubcategory() throws IOException, SQLException {
+	public void testFeedzillaSubcategory() throws IOException, SQLException {
 		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
-		final FeedZillaCategory category = new FeedZillaCategory("display", "english", null);
-		final FeedZillaSubcategory subcategory = new FeedZillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
+		final FeedzillaCategory category = new FeedzillaCategory("display", "english", null);
+		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
 		fffs.createOrUpdateCategory(category);
 		fffs.createOrUpdateSubcategory(subcategory);
 		fffs.dropAllCategories();
 	}
 
 	@Test
-	public void testFeedZillaArticle() throws IOException, SQLException {
+	public void testFeedzillaArticle() throws IOException, SQLException {
 		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
-		final FeedZillaCategory category = new FeedZillaCategory("display", "english", null);
-		final FeedZillaSubcategory subcategory = new FeedZillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
-		final FeedZillaArticle article = new FeedZillaArticle(subcategory, "author", new Date());
+		final FeedzillaCategory category = new FeedzillaCategory("display", "english", null);
+		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
+		final FeedzillaArticle article = new FeedzillaArticle(subcategory, "author", new Date());
 		article.setSummary("Summary");
 		fffs.createOrUpdateCategory(category);
 		fffs.createOrUpdateSubcategory(subcategory);

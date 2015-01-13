@@ -8,7 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 
-class FeedZillaMigrationTestHelper {
+class FeedzillaMigrationTestHelper {
 
 	private static final FeedzillaDatafeedSettings settings;
 
@@ -16,7 +16,7 @@ class FeedZillaMigrationTestHelper {
 		settings = getFeedzillaDatafeedSettings();
 	}
 
-	private FeedZillaMigrationTestHelper() {
+	private FeedzillaMigrationTestHelper() {
 	}
 
 	private static FeedzillaDatafeedSettings getFeedzillaDatafeedSettings() {
@@ -29,7 +29,7 @@ class FeedZillaMigrationTestHelper {
 	}
 
 	public static void migrate() throws IOException, LiquibaseException {
-		final String filePath = FeedZillaMigrationTestHelper.class.getResource("../../../liquibase/db.changelog.xml").getPath();
+		final String filePath = FeedzillaMigrationTestHelper.class.getResource("../../../liquibase/db.changelog.xml").getPath();
 		final Database database = DatabaseFactory.getInstance().openDatabase(settings.getJdbcUrl(), "", "",
 				new FileSystemResourceAccessor());
 		final Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
@@ -37,7 +37,7 @@ class FeedZillaMigrationTestHelper {
 	}
 
 	public static void dropAll() throws IOException, LiquibaseException {
-		final String filePath = FeedZillaMigrationTestHelper.class.getResource("../../../liquibase/db.changelog.xml").getPath();
+		final String filePath = FeedzillaMigrationTestHelper.class.getResource("../../../liquibase/db.changelog.xml").getPath();
 		final Database database = DatabaseFactory.getInstance().openDatabase(settings.getJdbcUrl(), "", "",
 				new FileSystemResourceAccessor());
 		final Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);

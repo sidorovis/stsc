@@ -5,10 +5,14 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+
 import stsc.common.storage.FeedStorage;
-import stsc.news.feedzilla.schema.FeedZillaArticle;
-import stsc.news.feedzilla.schema.FeedZillaCategory;
-import stsc.news.feedzilla.schema.FeedZillaSubcategory;
+import stsc.news.feedzilla.schema.FeedzillaArticle;
+import stsc.news.feedzilla.schema.FeedzillaCategory;
+import stsc.news.feedzilla.schema.FeedzillaSubcategory;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
@@ -18,24 +22,27 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class FeedzillaStorage implements FeedStorage {
 
-	// private static Logger logger =
-	// LogManager.getLogger(FeedzillaFileStorage.class);
-	// private static final Logger
+	static {
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
+	}
+
+	private static Logger logger = LogManager.getLogger(FeedzillaStorage.class);
 
 	private final ConnectionSource source;
-	private final Dao<FeedZillaCategory, Integer> categories;
-	private final Dao<FeedZillaSubcategory, Integer> subcategories;
-	private final Dao<FeedZillaArticle, Integer> articles;
+	private final Dao<FeedzillaCategory, Integer> categories;
+	private final Dao<FeedzillaSubcategory, Integer> subcategories;
+	private final Dao<FeedzillaArticle, Integer> articles;
 
 	public FeedzillaStorage() throws SQLException, IOException {
 		this("feedzilla_developer.properties");
 	}
 
-	public FeedzillaStorage(String propertiesFileName) throws SQLException, IOException {
+	public FeedzillaStorage(final String propertiesFileName) throws SQLException, IOException {
+		logger.debug(FeedzillaStorage.class + " was loaded from: " + propertiesFileName);
 		this.source = getConnectionSource(propertiesFileName);
-		this.categories = DaoManager.createDao(source, FeedZillaCategory.class);
-		this.subcategories = DaoManager.createDao(source, FeedZillaSubcategory.class);
-		this.articles = DaoManager.createDao(source, FeedZillaArticle.class);
+		this.categories = DaoManager.createDao(source, FeedzillaCategory.class);
+		this.subcategories = DaoManager.createDao(source, FeedzillaSubcategory.class);
+		this.articles = DaoManager.createDao(source, FeedzillaArticle.class);
 	}
 
 	private ConnectionSource getConnectionSource(String propertiesFileName) throws IOException, SQLException {
@@ -43,7 +50,7 @@ public class FeedzillaStorage implements FeedStorage {
 		return new JdbcConnectionSource(settings.getJdbcUrl());
 	}
 
-	public List<FeedZillaCategory> getCategories() {
+	public List<FeedzillaCategory> getCategories() {
 		try {
 			return categories.queryBuilder().orderBy("id", true).query();
 		} catch (SQLException e) {
@@ -51,7 +58,7 @@ public class FeedzillaStorage implements FeedStorage {
 		}
 	}
 
-	public CreateOrUpdateStatus createOrUpdateCategory(FeedZillaCategory newCategory) {
+	public CreateOrUpdateStatus createOrUpdateCategory(FeedzillaCategory newCategory) {
 		try {
 			return categories.createOrUpdate(newCategory);
 		} catch (SQLException e) {
@@ -59,7 +66,15 @@ public class FeedzillaStorage implements FeedStorage {
 		}
 	}
 
-	public CreateOrUpdateStatus createOrUpdateSubcategory(FeedZillaSubcategory newSubcategory) {
+	public List<FeedzillaSubcategory> getSubcategories() {
+		try {
+			return subcategories.queryBuilder().orderBy("id", true).query();
+		} catch (SQLException e) {
+			return Collections.emptyList();
+		}
+	}
+
+	public CreateOrUpdateStatus createOrUpdateSubcategory(FeedzillaSubcategory newSubcategory) {
 		try {
 			return subcategories.createOrUpdate(newSubcategory);
 		} catch (SQLException e) {
@@ -67,7 +82,15 @@ public class FeedzillaStorage implements FeedStorage {
 		}
 	}
 
-	public CreateOrUpdateStatus createOrUpdateArticle(FeedZillaArticle newArticle) {
+	public List<FeedzillaArticle> getArticles() {
+		try {
+			return articles.queryBuilder().orderBy("id", true).query();
+		} catch (SQLException e) {
+			return Collections.emptyList();
+		}
+	}
+
+	public CreateOrUpdateStatus createOrUpdateArticle(FeedzillaArticle newArticle) {
 		try {
 			return articles.createOrUpdate(newArticle);
 		} catch (SQLException e) {
@@ -100,35 +123,5 @@ public class FeedzillaStorage implements FeedStorage {
 			// do nothing
 		}
 	}
-	//
-	// public void addReceiver(LoadFeedReceiver receiver) {
-	// receivers.add(receiver);
-	// }
-	//
-	// private void updateReceivers(final Feed feed) {
-	// for (LoadFeedReceiver loadFeedReceiver : receivers) {
-	// loadFeedReceiver.newFeed(feed);
-	// }
-	// }
-	//
-	// public void addFeed(final Feed newFeed) {
-	// // final DateTime publishDate = newFeed.getArticle().getPublishDate();
-	// // final List<Feed> feedList = datafeed.get(publishDate);
-	// // synchronized (datafeed) {
-	// // if (feedList == null) {
-	// // final List<Feed> newFeedList = Collections.synchronizedList(new
-	// // ArrayList<>());
-	// // newFeedList.add(newFeed);
-	// // datafeed.put(publishDate, newFeedList);
-	// // } else {
-	// // feedList.add(newFeed);
-	// // }
-	// // }
-	// }
-	//
-	// @Override
-	// public List<Feed> getFeeds(final DateTime dateTime) {
-	// return datafeed.get(dateTime);
-	// }
 
 }
