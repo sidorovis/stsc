@@ -134,9 +134,16 @@ final class FeedDataDownloader {
 		final FutureTask<Articles> futureArticles = new FutureTask<>(new Callable<Articles>() {
 			@Override
 			public Articles call() throws Exception {
-				final Articles result = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
-						.count(amountOfArticlesPerRequest).articles();
-				return result;
+				try {
+					final Articles result = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
+							.count(amountOfArticlesPerRequest).articles();
+					return result;
+				} catch (Exception e) {
+					logger.error("article hashcode create: "
+							+ feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
+									.count(amountOfArticlesPerRequest).articles());
+				}
+				return null;
 			}
 		});
 		executor.execute(futureArticles);
