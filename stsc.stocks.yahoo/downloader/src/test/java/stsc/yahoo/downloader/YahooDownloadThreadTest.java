@@ -3,16 +3,18 @@ package stsc.yahoo.downloader;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.common.stocks.Stock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
-import stsc.yahoo.downloader.DownloadYahooStockThread;
 
 import com.google.common.io.Files;
 
-import junit.framework.TestCase;
+public class YahooDownloadThreadTest {
 
-public class YahooDownloadThreadTest extends TestCase {
+	@Test
 	public void testDownloadThread() throws InterruptedException, IOException, ClassNotFoundException {
 		final YahooSettings settings = YahooUtils.createSettings("./test/", "./test/");
 		Files.copy(new File("./test_data/aaoi.uf"), new File("./test/aaoi.uf"));
@@ -27,7 +29,7 @@ public class YahooDownloadThreadTest extends TestCase {
 		{
 			Stock s = settings.getStockFromFileSystem("aaoi");
 			beforeDownload = s.getDays().size();
-			assertEquals(104, s.getDays().size());
+			Assert.assertEquals(104, s.getDays().size());
 		}
 		settings.addTask("aaoi");
 		{
@@ -43,7 +45,7 @@ public class YahooDownloadThreadTest extends TestCase {
 		}
 		{
 			Stock s = settings.getStockFromFileSystem("aaoi");
-			assertEquals(true, beforeDownload < s.getDays().size());
+			Assert.assertEquals(true, beforeDownload < s.getDays().size());
 		}
 		new File("./test/a.uf").delete();
 		new File("./test/aaoi.uf").delete();

@@ -66,6 +66,10 @@ final class FeedDataDownloader {
 		stopped = true;
 	}
 
+	public boolean isStopped() {
+		return stopped;
+	}
+
 	void addReceiver(LoadFeedReceiver receiver) {
 		receivers.add(receiver);
 	}

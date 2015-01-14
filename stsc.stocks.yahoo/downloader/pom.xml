@@ -46,7 +46,7 @@
         </configuration>
     	<executions>
       		<execution>
-        		<id>stsc-yahoo-downloader</id>
+        		<id>stsc-stocks-yahoo-downloader</id>
         		<phase>package</phase>
         		<goals>
           			<goal>single</goal>
@@ -64,17 +64,7 @@
       <artifactId>stsc.common</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.general</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
-    <dependency>
-      <groupId>stsc</groupId>
-      <artifactId>stsc.stocks.yahoo.core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.stocks.yahoo.liquidator</artifactId>
@@ -84,9 +74,9 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
    </dependencies>
-  <description>Stsc yahoo downloader - you can download yahoo stock datafeed by that.</description>
+  <description>Stsc stock yahoo downloader - you can download yahoo stock datafeed by that.</description>
 </project>

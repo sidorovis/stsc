@@ -57,6 +57,9 @@ class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	void startDownload() {
 		downloader.startDownload();
 		for (int i = 200; i > 1; --i) {
+			if (downloader.isStopped()) {
+				break;
+			}
 			logger.debug("We start to download " + i + " days ago.");
 			downloader.setDaysToDownload(i);
 			downloader.startDownload();
