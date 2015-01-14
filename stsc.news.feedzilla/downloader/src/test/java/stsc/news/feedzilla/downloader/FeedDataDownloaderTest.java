@@ -1,8 +1,5 @@
 package stsc.news.feedzilla.downloader;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 import graef.feedzillajava.Article;
 import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
@@ -24,7 +21,7 @@ public class FeedDataDownloaderTest {
 	}
 
 	@Test
-	public void testFeedDataDownloaderGetArticle() throws InterruptedException, ExecutionException, TimeoutException {
+	public void testFeedDataDownloaderGetArticle() throws Exception {
 		DateTime startOfDay = DateTime.now();
 		startOfDay = startOfDay.minusDays(1);
 		startOfDay = startOfDay.withTimeAtStartOfDay();

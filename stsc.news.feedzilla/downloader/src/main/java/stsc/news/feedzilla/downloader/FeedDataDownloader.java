@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -104,7 +103,6 @@ final class FeedDataDownloader {
 							logger.debug("We start download subcategory: " + subcategory.getDisplayName());
 							pause();
 							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
-
 						} catch (TimeoutException e) {
 							logger.error("getArticles returns TimeoutException:" + e.getMessage());
 						} catch (ForbiddenException e) {
@@ -129,8 +127,7 @@ final class FeedDataDownloader {
 		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
 	}
 
-	int getArticles(Category category, Subcategory subcategory, DateTime startOfDay) throws InterruptedException, ExecutionException,
-			TimeoutException {
+	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
 		final FutureTask<Articles> futureArticles = new FutureTask<>(new Callable<Articles>() {
 			@Override
 			public Articles call() throws Exception {
@@ -139,16 +136,14 @@ final class FeedDataDownloader {
 							.count(amountOfArticlesPerRequest).articles();
 					return result;
 				} catch (Exception e) {
-					logger.error("article hashcode create: "
-							+ feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
-									.count(amountOfArticlesPerRequest).articles());
+					logger.error("article hashcode create: " + category.getId() + " subcategory " + subcategory.getId() + "");
 				}
 				return null;
 			}
 		});
 		executor.execute(futureArticles);
 		final Articles articles = futureArticles.get(5, TimeUnit.SECONDS);
-		if (articles == null)
+		if (articles == null || stopped)
 			return 0;
 		int articlesCount = 0;
 		final List<Article> articlesList = articles.getArticles();
