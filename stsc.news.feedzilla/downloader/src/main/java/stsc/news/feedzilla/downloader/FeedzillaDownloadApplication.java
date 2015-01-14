@@ -23,7 +23,7 @@ import stsc.news.feedzilla.schema.FeedzillaArticle;
 import stsc.news.feedzilla.schema.FeedzillaCategory;
 import stsc.news.feedzilla.schema.FeedzillaSubcategory;
 
-class FeedzillaDownloadApplication implements LoadFeedReceiver {
+final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.ws.rs.ForbiddenException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -30,7 +32,7 @@ final class FeedDataDownloader {
 
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
 
-	public static long PAUSE_SLEEP_TIME = 100;
+	public static long PAUSE_SLEEP_TIME = 200;
 
 	private int daysToDownload;
 	private final int amountOfArticlesPerRequest;
@@ -94,22 +96,24 @@ final class FeedDataDownloader {
 							logger.debug("We start download subcategory: " + subcategory.getDisplayName());
 							pause();
 							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
+						} catch (ForbiddenException e) {
+							logger.error("getArticles returns forbidden exception:" + e.getMessage());
 						} catch (Exception e) {
-							logger.warn("getArticles returns", e);
+							logger.error("getArticles returns", e);
 						}
 						if (stopped) {
 							break;
 						}
 					}
 				} catch (Exception e) {
-					logger.warn("getSubcategories returns", e);
+					logger.error("getSubcategories returns", e);
 				}
 				if (stopped) {
 					break;
 				}
 			}
 		} catch (Exception e) {
-			logger.warn("getCategories returns", e);
+			logger.error("getCategories returns", e);
 		}
 		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
 	}
@@ -124,16 +128,20 @@ final class FeedDataDownloader {
 		logger.debug("We will download " + articlesList.size() + " articles for " + category.getDisplayName() + " category and "
 				+ subcategory.getDisplayName() + " subcategory.");
 		for (Article article : articlesList) {
-			final String hashCode = getHashCode(article);
-			if (!hashCodes.contains(hashCode)) {
-				hashCodes.add(hashCode);
-				for (LoadFeedReceiver receiver : receivers) {
-					receiver.newArticle(category, subcategory, article);
-					articlesCount += 1;
-					if (!stopped) {
-						return articlesCount;
+			try {
+				final String hashCode = getHashCode(article);
+				if (!hashCodes.contains(hashCode)) {
+					hashCodes.add(hashCode);
+					for (LoadFeedReceiver receiver : receivers) {
+						receiver.newArticle(category, subcategory, article);
+						articlesCount += 1;
+						if (!stopped) {
+							return articlesCount;
+						}
 					}
 				}
+			} catch (Exception e) {
+				logger.error("article hashcode create: " + article.toString(), e);
 			}
 			if (!stopped) {
 				return articlesCount;
@@ -150,8 +158,15 @@ final class FeedDataDownloader {
 	}
 
 	private static String getHashCode(Article a) {
-		return new String(a.getAuthor()).hashCode() + " " + new String(a.getSource()).hashCode() + " "
-				+ new String(a.getSummary()).hashCode() + " " + new String(a.getTitle()).hashCode();
+		return "" + s(a.getAuthor()).hashCode() + " " + s(a.getSource()).hashCode() + " " + s(a.getSummary()).hashCode() + " "
+				+ s(a.getTitle()).hashCode();
+	}
+
+	private static String s(String v) {
+		if (v == null) {
+			return "null";
+		}
+		return v;
 	}
 
 }
