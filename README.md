@@ -1,4 +1,4 @@
-![](https://travis-ci.org/sidorovis/stsc.svg?branch=master"")
+![Travis](https://travis-ci.org/sidorovis/stsc.svg?branch=master)
 
 # Simulated Trading Strategies Creator
 
