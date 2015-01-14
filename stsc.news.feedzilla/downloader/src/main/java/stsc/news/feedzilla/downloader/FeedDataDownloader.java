@@ -12,6 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ForbiddenException;
 
@@ -40,6 +47,7 @@ final class FeedDataDownloader {
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
+	private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
 	private volatile boolean stopped = false;
 
@@ -96,8 +104,11 @@ final class FeedDataDownloader {
 							logger.debug("We start download subcategory: " + subcategory.getDisplayName());
 							pause();
 							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
+
+						} catch (TimeoutException e) {
+							logger.error("getArticles returns TimeoutException:" + e.getMessage());
 						} catch (ForbiddenException e) {
-							logger.error("getArticles returns forbidden exception:" + e.getMessage());
+							logger.error("getArticles returns ForbiddenException:" + e.getMessage());
 						} catch (Exception e) {
 							logger.error("getArticles returns", e);
 						}
@@ -118,9 +129,18 @@ final class FeedDataDownloader {
 		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
 	}
 
-	int getArticles(Category category, Subcategory subcategory, DateTime startOfDay) {
-		final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
-				.count(amountOfArticlesPerRequest).articles();
+	int getArticles(Category category, Subcategory subcategory, DateTime startOfDay) throws InterruptedException, ExecutionException,
+			TimeoutException {
+		final FutureTask<Articles> futureArticles = new FutureTask<>(new Callable<Articles>() {
+			@Override
+			public Articles call() throws Exception {
+				final Articles result = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
+						.count(amountOfArticlesPerRequest).articles();
+				return result;
+			}
+		});
+		executor.execute(futureArticles);
+		final Articles articles = futureArticles.get(5, TimeUnit.SECONDS);
 		if (articles == null)
 			return 0;
 		int articlesCount = 0;
