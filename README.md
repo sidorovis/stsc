@@ -48,8 +48,9 @@ equity curve's and statistics for trading strategies in different ways:
 2. comparing dialog with charts and adjective closes;
 3. possibility to simple redownload.
 
+Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). 
 
-Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). Works only for Yahoo EOD datafeed currently.
+Works only for Yahoo EOD datafeed currently.
 
 ## stsc.general
 
@@ -58,11 +59,13 @@ Core functionality for strategy simulating.
 ## stsc.integration.tests
 
 Module for helping other modules to test themself's.
+
 Especially for algorithms to work with all rest modules (datafeed and etc).
 
 ## stsc.news.feedzilla.downloader
 
 This module download feedzilla news feed from feedzilla server. Using hashes (to not store already stored data) and stsc.news.feedzilla.storage as a storage.
+
 It use feedzilla-java project (see https://github.com/sidorovis/feedzilla-java.git for more details).
 
 ## stsc.news.feedzilla.sqlite.migrations
@@ -72,11 +75,13 @@ This module store mechanism to migrate database (currently we use sqlite) with l
 ## stsc.news.feedzilla.storage
 
 This module store and provide access to feedzilla data. Feed divided onto three tables (Categories, Subcategories, Articles).
+
 Access guaranteed using Ormlite.
 
 ## stsc.performance
 
 Generate performance testing results (for example how much time will it take to simulate X strategies from Y stocks with N days in period).
+
 Performance store runnable classes that calculate different time/quality for different processes:
  * performance checker for time for grid search;
  * performance checker for searching ideal genetic algorithm parameters (population size, iteration size, percent amount for mutation and for crossover);
