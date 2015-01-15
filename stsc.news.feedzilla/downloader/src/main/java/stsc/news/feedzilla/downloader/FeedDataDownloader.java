@@ -92,15 +92,12 @@ final class FeedDataDownloader {
 
 			final List<Category> categories = feed.getCategories();
 
-			logger.debug("Downloading process started");
 			for (Category category : categories) {
 				try {
-					logger.debug("We start download category: " + category.getDisplayName());
 					pause();
 					final List<Subcategory> subcategories = feed.getSubcategories(category);
 					for (Subcategory subcategory : subcategories) {
 						try {
-							logger.debug("We start download subcategory: " + subcategory.getDisplayName());
 							pause();
 							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
 						} catch (TimeoutException e) {
@@ -124,7 +121,8 @@ final class FeedDataDownloader {
 		} catch (Exception e) {
 			logger.error("getCategories returns", e);
 		}
-		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size());
+		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
+				+ " --- for date " + startOfDay.toString());
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
@@ -147,8 +145,6 @@ final class FeedDataDownloader {
 			return 0;
 		int articlesCount = 0;
 		final List<Article> articlesList = articles.getArticles();
-		logger.debug("We will download " + articlesList.size() + " articles for " + category.getDisplayName() + " category and "
-				+ subcategory.getDisplayName() + " subcategory.");
 		for (Article article : articlesList) {
 			try {
 				final String hashCode = getHashCode(article);

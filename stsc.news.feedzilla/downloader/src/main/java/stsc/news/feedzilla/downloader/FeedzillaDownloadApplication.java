@@ -60,7 +60,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 			if (downloader.isStopped()) {
 				break;
 			}
-			logger.debug("We start to download " + i + " days ago.");
 			downloader.setDaysToDownload(i);
 			downloader.startDownload();
 		}
@@ -82,26 +81,42 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	}
 
 	private String createHashCode(FeedzillaCategory c) {
-		return String.valueOf(c.getDisplayCategoryName().hashCode()) + " " + String.valueOf(c.getEnglishCategoryName()).hashCode() + " "
-				+ String.valueOf(c.getUrlCategoryName()).hashCode();
+		return s(c.getDisplayCategoryName()).hashCode() + " " + s(c.getEnglishCategoryName()).hashCode() + " "
+				+ s(c.getUrlCategoryName()).hashCode();
 	}
 
 	private String createHashCode(FeedzillaSubcategory c) {
-		return String.valueOf(c.getDisplaySubcategoryName().hashCode()) + " " + String.valueOf(c.getEnglishSubcategoryName()).hashCode()
-				+ " " + String.valueOf(c.getUrlSubcategoryName()).hashCode();
+		return s(c.getDisplaySubcategoryName()).hashCode() + " " + s(c.getEnglishSubcategoryName()).hashCode() + " "
+				+ s(c.getUrlSubcategoryName()).hashCode();
 	}
 
 	private String createHashCode(FeedzillaArticle a) {
-		return String.valueOf(a.getAuthor()) + " " + String.valueOf(a.getTitle()) + " " + String.valueOf(a.getPublishDate())
-				+ String.valueOf(a.getUrl()) + String.valueOf(a.getSummary());
+		return s(a.getAuthor()).hashCode() + " " + s(a.getTitle()).hashCode() + " " + s(a.getPublishDate()) + s(a.getUrl()).hashCode()
+				+ " " + s(a.getSummary()).hashCode();
+	}
+
+	private static <T> String s(T v) {
+		if (v == null) {
+			return "null";
+		}
+		return v.toString();
 	}
 
 	private FeedzillaCategory createFeedzillaCategory(Category from) {
-		return new FeedzillaCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		final FeedzillaCategory result = new FeedzillaCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		if (cacheHave(result)) {
+			return feedzillaCategories.get(createHashCode(result));
+		}
+		return result;
 	}
 
 	private FeedzillaSubcategory createFeedzillaSubcategory(FeedzillaCategory categoryFrom, Subcategory from) {
-		return new FeedzillaSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		final FeedzillaSubcategory result = new FeedzillaSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(),
+				from.getUrlName());
+		if (cacheHave(result)) {
+			return feedzillaSubcategories.get(createHashCode(result));
+		}
+		return result;
 	}
 
 	private FeedzillaArticle createFeedzillaArticle(FeedzillaSubcategory subcategory, Article from) {
@@ -111,6 +126,11 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		to.setSummary(from.getSummary());
 		to.setTitle(from.getTitle());
 		to.setUrl(from.getUrl());
+
+		if (cacheHave(to)) {
+			return feedzillaArticles.get(createHashCode(to));
+		}
+
 		return to;
 	}
 
