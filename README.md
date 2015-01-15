@@ -51,10 +51,6 @@ equity curve's and statistics for trading strategies in different ways:
 
 Also this project have module to fix problems on Datafeed (when datafeed have stocks with big gap ot provide possibility to redownload data). Works only for Yahoo EOD datafeed currently.
 
-## stsc.signals
-
-Signals base (signal is a result when algorithm process time element (day, minute...)).
-
 ## stsc.general
 
 Core functionality for strategy simulating.
@@ -62,6 +58,21 @@ Core functionality for strategy simulating.
 ## stsc.integration.tests
 
 Module for helping other modules to test themself's.
+Especially for algorithms to work with all rest modules (datafeed and etc).
+
+## stsc.news.feedzilla.downloader
+
+This module download feedzilla news feed from feedzilla server. Using hashes (to not store already stored data) and stsc.news.feedzilla.storage as a storage.
+It use feedzilla-java project (see https://github.com/sidorovis/feedzilla-java.git for more details).
+
+## stsc.news.feedzilla.sqlite.migrations
+
+This module store mechanism to migrate database (currently we use sqlite) with liquibase migrate tool to "work" state.
+
+## stsc.news.feedzilla.storage
+
+This module store and provide access to feedzilla data. Feed divided onto three tables (Categories, Subcategories, Articles).
+Access guaranteed using Ormlite.
 
 ## stsc.performance
 
@@ -77,20 +88,19 @@ Store types of signals (basic: Boolean, Double, Integer, Side) and series (basic
  * CommonSignalsSerie: store signals for all history at HashMap for getting signal by Date and ArrayList for getting signal by index.
  * LimitSignalsSerie: store signals like CommonSignalsSerie do but have limit and restrict amount of elements at serie.
 
-## stsc.storage
-
-Have all storages for Algorithms, Executions, Stocks.
-
-
-## stsc.yahoo
+## stsc.stocks.yahoo.core
 
 Yahoo related core classes - Yahoo StockStorage realisation, Yahoo stock storage multithread EOD stock data reader.
 
-## stsc.yahoo.downloader
+## stsc.stocks.yahoo.downloader
 
 Download EOD Yahoo market data.
 
-## stsc.yahoo.liquidator
+## stsc.stocks.yahoo.liquidator
 
 Filter liquid EOD market data from Yahoo.
+
+## stsc.storage
+
+Have all storages for Algorithms, Executions, Stocks.
 
