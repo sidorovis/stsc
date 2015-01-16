@@ -34,6 +34,7 @@ final class FeedDataDownloader {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
@@ -46,7 +47,7 @@ final class FeedDataDownloader {
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
-	private final ExecutorService executor = Executors.newFixedThreadPool(2);
+	private final ExecutorService executor = Executors.newFixedThreadPool(100);
 
 	private volatile boolean stopped = false;
 
@@ -71,8 +72,10 @@ final class FeedDataDownloader {
 		this.daysToDownload = daysToDownload;
 	}
 
-	public void stopDownload() {
+	public void stopDownload() throws InterruptedException {
 		stopped = true;
+		executor.shutdown();
+		executor.awaitTermination(5, TimeUnit.SECONDS);
 	}
 
 	public boolean isStopped() {
@@ -141,6 +144,8 @@ final class FeedDataDownloader {
 		});
 		executor.execute(futureArticles);
 		final Articles articles = futureArticles.get(5, TimeUnit.SECONDS);
+		executor.shutdown();
+		executor.awaitTermination(5, TimeUnit.SECONDS);
 		if (articles == null || stopped)
 			return 0;
 		int articlesCount = 0;

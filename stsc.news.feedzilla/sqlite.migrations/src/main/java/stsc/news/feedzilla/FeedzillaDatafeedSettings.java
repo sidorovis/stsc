@@ -1,7 +1,8 @@
 package stsc.news.feedzilla;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 class FeedzillaDatafeedSettings {
@@ -14,7 +15,7 @@ class FeedzillaDatafeedSettings {
 	}
 
 	public FeedzillaDatafeedSettings(String propertyFileName) throws IOException {
-		try (InputStream inputStream = FeedzillaDatafeedSettings.class.getResourceAsStream(propertyFileName)) {
+		try (DataInputStream inputStream = new DataInputStream(new FileInputStream("./config/" + propertyFileName))) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
 			jdbcDriver = properties.getProperty("jdbc.driver");

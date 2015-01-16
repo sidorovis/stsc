@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
 	private static Logger logger = LogManager.getLogger(FeedzillaDownloadApplication.class);
@@ -50,13 +52,15 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	FeedzillaDownloadApplication(String propertyFile) throws SQLException, IOException {
 		this.feedzillaStorage = new FeedzillaStorage(propertyFile);
 		this.downloader = new FeedDataDownloader(1, 100);
+		logger.debug("going to creating hashes");
 		createHashMap();
+		logger.debug("hashes created: " + feedzillaCategories.size() + " " + feedzillaSubcategories.size() + " " + feedzillaArticles.size());
 		downloader.addReceiver(this);
 	}
 
 	void startDownload() {
 		downloader.startDownload();
-		for (int i = 200; i > 1; --i) {
+		for (int i = 3650; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
 			}
@@ -134,7 +138,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		return to;
 	}
 
-	private void stop() {
+	private void stop() throws InterruptedException {
 		downloader.stopDownload();
 	}
 
@@ -226,26 +230,30 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	private static void addExitHook(final CountDownLatch waitForEnding) {
 		try {
-			final InputStreamReader fileInputStream = new InputStreamReader(System.in);
-			final BufferedReader bufferedReader = new BufferedReader(fileInputStream);
+			try {
+				final InputStreamReader fileInputStream = new InputStreamReader(System.in);
+				final BufferedReader bufferedReader = new BufferedReader(fileInputStream);
 
-			while (true) {
-				if (bufferedReader.ready()) {
-					final String s = bufferedReader.readLine();
-					if (s.equals("e")) {
+				while (true) {
+					if (bufferedReader.ready()) {
+						final String s = bufferedReader.readLine();
+						if (s.equals("e")) {
+							downloadApplication.stop();
+							break;
+						}
+					}
+					if (waitForEnding.getCount() == 0) {
 						downloadApplication.stop();
 						break;
 					}
 				}
-				if (waitForEnding.getCount() == 0) {
-					downloadApplication.stop();
-					break;
-				}
+				bufferedReader.close();
+			} catch (Exception e) {
+				logger.error("Error on exit hook. ", e);
+				downloadApplication.stop();
 			}
-			bufferedReader.close();
-		} catch (IOException e) {
-			logger.error("Error on exit hook. ", e);
-			downloadApplication.stop();
+		} catch (Exception e) {
+			logger.error("Error on exit hook with non stop. ", e);
 		}
 	}
 }

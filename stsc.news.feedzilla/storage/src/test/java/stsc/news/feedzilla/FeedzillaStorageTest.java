@@ -23,9 +23,9 @@ public class FeedzillaStorageTest {
 	@Test
 	public void testFeedzillaCategory() throws IOException, SQLException {
 		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
-		fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null));
-		fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url"));
-		fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null));
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null)).getNumLinesChanged());
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url")).getNumLinesChanged());
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null)).getNumLinesChanged());
 
 		final List<FeedzillaCategory> categories = fffs.getCategories();
 		Assert.assertEquals(3, categories.size());
