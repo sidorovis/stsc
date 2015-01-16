@@ -18,8 +18,8 @@ Actually you could draw
 
 Also code include example of application with different search algorithms and providing results in the very convinient way.
 
- [ZozkaStrategySelector](https://github.com/sidorovis/stsc/wiki/ZozkaStrategySelector-Examples)
- [ZozkaStrategyVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaStrategyVisualizer-Examples)
+ * [ZozkaStrategySelector](https://github.com/sidorovis/stsc/wiki/ZozkaStrategySelector-Examples)
+ * [ZozkaStrategyVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaStrategyVisualizer-Examples)
 
  [Modules list](https://github.com/sidorovis/stsc/wiki/Modules-List)
 
