@@ -8,6 +8,20 @@ public final class SignalContainer<SignalType extends SerieSignal> {
 	final Date date;
 	final Optional<SignalType> signal;
 
+	public static <T extends SerieSignal> SignalContainer<T> empty(Date date) {
+		return new SignalContainer<T>(0, date);
+	}
+
+	public static <T extends SerieSignal> SignalContainer<T> empty(final int index) {
+		return new SignalContainer<T>(index, new Date());
+	}
+
+	public SignalContainer(final int index, final Date date) {
+		this.index = index;
+		this.date = date;
+		this.signal = Optional.empty();
+	}
+
 	public SignalContainer(final int index, final Date date, final SignalType signal) {
 		this.index = index;
 		this.date = date;
@@ -30,6 +44,10 @@ public final class SignalContainer<SignalType extends SerieSignal> {
 			return false;
 		}
 		return expectedClass.isInstance(signal.get());
+	}
+	
+	public boolean isPresent() {
+		return signal.isPresent();
 	}
 
 	public Optional<SignalType> getValue() {

@@ -50,7 +50,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 		if (ess != null)
 			return ess.getSignal(date);
-		return null;
+		return SignalContainer.empty(date);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 		if (ess != null)
 			return ess.getSignal(index);
-		return null;
+		return SignalContainer.empty(index);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 		if (ess != null)
 			return ess.getSignal(date);
-		return null;
+		return SignalContainer.empty(date);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class SignalsStorageImpl implements SignalsStorage {
 		}
 		if (ess != null)
 			return ess.getSignal(index);
-		return null;
+		return SignalContainer.empty(index);
 	}
 
 	@Override

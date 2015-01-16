@@ -81,7 +81,7 @@ public final class TradeProcessorTest extends TestCase {
 		assertEquals("2013-11-04", ((TestingEodAlgorithmSignal) e1s6).dateRepresentation);
 
 		assertNull(signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 6).toDate()));
-		assertNull(signalsStorage.getEodSignal("e2", new LocalDate(2013, 11, 3).toDate()));
+		assertFalse(signalsStorage.getEodSignal("e2", new LocalDate(2013, 11, 3).toDate()).isPresent());
 		assertNull(signalsStorage.getEodSignal("e1", new LocalDate(2013, 11, 29).toDate()));
 	}
 
