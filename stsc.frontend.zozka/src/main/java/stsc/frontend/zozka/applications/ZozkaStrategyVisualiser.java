@@ -117,11 +117,15 @@ public class ZozkaStrategyVisualiser extends Application {
 		if (stockStorage == null) {
 			return;
 		}
-		final Optional<String> stockName = chooseStock(stockStorage);
-		if (!stockName.isPresent()) {
+		final Optional<String> stockNamePtr = chooseStock(stockStorage);
+		if (!stockNamePtr.isPresent()) {
 			return;
 		}
-		final Stock stock = stockStorage.getStock(stockName.get());
+		final Optional<Stock> stockPtr = stockStorage.getStock(stockNamePtr.get());
+		if (!stockPtr.isPresent()) {
+			return;
+		}
+		final Stock stock = stockStorage.getStock(stockNamePtr.get()).get();
 		addSeriesForStock(stockStorage, stock);
 	}
 

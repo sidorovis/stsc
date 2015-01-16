@@ -3,6 +3,7 @@ package stsc.general.trading;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -14,6 +15,7 @@ import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
+import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 import stsc.general.statistic.Statistics;
 import stsc.general.statistic.StatisticsProcessor;
@@ -69,7 +71,8 @@ public class TradeProcessor {
 						datafeed.put(stockName, stockDay);
 					} else {
 						logger.error("Bad day returned for stock " + stockName + " for day " + today);
-						throw new RuntimeException("Test exception"); // TODO delete me i'm for testing
+						// TODO delete me i'm for testing
+						throw new RuntimeException("Test exception");
 					}
 				}
 			}
@@ -86,7 +89,7 @@ public class TradeProcessor {
 		final StockStorage stockStorage = broker.getStockStorage();
 		for (String i : stockStorage.getStockNames()) {
 			if (stockNames.contains(i)) {
-				stocks.add(stockStorage.getStock(i));
+				addStock(stockStorage.getStock(i));
 			}
 		}
 	}
@@ -94,7 +97,13 @@ public class TradeProcessor {
 	private void collectStocksFromStorage() {
 		final StockStorage stockStorage = broker.getStockStorage();
 		for (String i : stockStorage.getStockNames()) {
-			stocks.add(stockStorage.getStock(i));
+			addStock(stockStorage.getStock(i));
+		}
+	}
+
+	private void addStock(Optional<Stock> stock) {
+		if (stock.isPresent()) {
+			stocks.add(stock.get());
 		}
 	}
 

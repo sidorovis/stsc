@@ -1,5 +1,8 @@
 package stsc.frontend.zozka.dialogs;
 
+import java.util.Optional;
+
+import stsc.common.stocks.Stock;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.yahoo.YahooFileStockStorage;
 import javafx.application.Application;
@@ -14,7 +17,10 @@ public class VisualTestStockListDialog extends Application {
 		final StockListDialog dialog = new StockListDialog(parent, "StockList");
 		int index = 0;
 		for (String stockName : ss.getStockNames()) {
-			dialog.getModel().add(new StockDescription(index++, ss.getStock(stockName)));
+			final Optional<Stock> stock = ss.getStock(stockName);
+			if (stock.isPresent()) {
+				dialog.getModel().add(new StockDescription(index++, stock.get()));
+			}
 		}
 		dialog.setOnMouseDoubleClicked(stockDescription -> {
 			new TextAreaDialog(parent, "Temp Dialog", stockDescription.toString()).show();

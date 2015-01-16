@@ -30,8 +30,8 @@ public class StatisticsProcessorTest {
 	@Test
 	public void testStatistics() throws Exception {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
-		final Stock aapl = stockStorage.getStock("aapl");
-		final Stock adm = stockStorage.getStock("adm");
+		final Stock aapl = stockStorage.getStock("aapl").get();
+		final Stock adm = stockStorage.getStock("adm").get();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -87,8 +87,8 @@ public class StatisticsProcessorTest {
 	@Test
 	public void testReverseStatistics() throws Exception {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
-		final Stock aapl = stockStorage.getStock("aapl");
-		final Stock adm = stockStorage.getStock("adm");
+		final Stock aapl = stockStorage.getStock("aapl").get();
+		final Stock adm = stockStorage.getStock("adm").get();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -144,9 +144,9 @@ public class StatisticsProcessorTest {
 	@Test
 	public void testProbabilityStatistics() throws IOException {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
-		final Stock aapl = stockStorage.getStock("aapl");
-		final Stock adm = stockStorage.getStock("adm");
-		final Stock spy = stockStorage.getStock("spy");
+		final Stock aapl = stockStorage.getStock("aapl").get();
+		final Stock adm = stockStorage.getStock("adm").get();
+		final Stock spy = stockStorage.getStock("spy").get();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2013, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2013, 9, 4).toDate());
@@ -294,9 +294,9 @@ public class StatisticsProcessorTest {
 
 	private Statistics testTradingHelper(int daysCount, boolean closeOnExit) throws IOException {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
-		final Stock aapl = stockStorage.getStock("aapl");
-		final Stock adm = stockStorage.getStock("adm");
-		final Stock spy = stockStorage.getStock("spy");
+		final Stock aapl = stockStorage.getStock("aapl").get();
+		final Stock adm = stockStorage.getStock("adm").get();
+		final Stock spy = stockStorage.getStock("spy").get();
 
 		int aaplIndex = aapl.findDayIndex(new LocalDate(2008, 9, 4).toDate());
 		int admIndex = adm.findDayIndex(new LocalDate(2008, 9, 4).toDate());

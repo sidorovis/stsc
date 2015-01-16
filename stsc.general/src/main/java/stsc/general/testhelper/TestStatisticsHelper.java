@@ -53,8 +53,8 @@ public class TestStatisticsHelper {
 	public static Statistics getStatistics(int applSize, int admSize, Date date, boolean debug) {
 		Statistics statisticsData = null;
 		try {
-			Stock aapl = StockStorageMock.getStockStorage().getStock("aapl");
-			Stock adm = StockStorageMock.getStockStorage().getStock("adm");
+			Stock aapl = StockStorageMock.getStockStorage().getStock("aapl").get();
+			Stock adm = StockStorageMock.getStockStorage().getStock("adm").get();
 
 			int aaplIndex = aapl.findDayIndex(date);
 			int admIndex = adm.findDayIndex(date);

@@ -9,8 +9,8 @@ import javafx.beans.property.StringProperty;
 import stsc.common.stocks.Stock;
 import stsc.frontend.zozka.settings.ZozkaDatafeedCheckerHelper;
 
-public final class StockDescription {
 
+public final class StockDescription {
 	private final IntegerProperty id;
 	private final StringProperty name;
 	private final BooleanProperty liquid;

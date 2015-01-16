@@ -1,5 +1,6 @@
 package stsc.storage;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,12 +16,12 @@ public class ThreadSafeStockStorage implements StockStorage {
 	}
 
 	@Override
-	public Stock getStock(String name) {
+	public Optional<Stock> getStock(String name) {
 		StockLock stockLock = datafeed.get(name);
 		if (stockLock == null)
-			return null;
+			return Optional.empty();
 		Stock stock = stockLock.getStock();
-		return stock;
+		return Optional.of(stock);
 	}
 
 	@Override

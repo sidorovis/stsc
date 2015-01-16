@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.panes;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.controlsfx.dialog.Dialogs;
@@ -22,11 +23,11 @@ public class VisualTestStockDatafeedListPane extends Application {
 			Dialogs.create().title("Finished").masthead(null).message("Download Finished").showInformation();
 			return null;
 		}, null);
-		mainPane.setOnMouseDoubleClick(new Function<StockDescription, Void>() {
+		mainPane.setOnMouseDoubleClick(new Function<StockDescription, Optional<Void>>() {
 			@Override
-			public Void apply(StockDescription sd) {
+			public Optional<Void> apply(StockDescription sd) {
 				new TextAreaDialog(parent, sd.getStock().getName(), sd.toString()).show();
-				return null;
+				return Optional.empty();
 			}
 		});
 	}

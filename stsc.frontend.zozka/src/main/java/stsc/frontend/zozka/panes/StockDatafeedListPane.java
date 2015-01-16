@@ -3,6 +3,7 @@ package stsc.frontend.zozka.panes;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -168,7 +169,7 @@ public class StockDatafeedListPane extends BorderPane {
 		});
 	}
 
-	public void setOnMouseDoubleClick(final Function<StockDescription, Void> function) {
+	public void setOnMouseDoubleClick(final Function<StockDescription, Optional<Void>> function) {
 		table.setOnMouseClicked(eh -> {
 			if (eh.getButton() == MouseButton.PRIMARY && eh.getClickCount() == 2) {
 				final StockDescription sd = table.getSelectionModel().getSelectedItem();

@@ -1,5 +1,6 @@
 package stsc.frontend.zozka.dialogs;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import javafx.collections.FXCollections;
@@ -72,7 +73,7 @@ public class StockListDialog extends Dialog {
 		return model;
 	}
 
-	public void setOnMouseDoubleClicked(final Function<StockDescription, Void> function) {
+	public void setOnMouseDoubleClicked(final Function<StockDescription, Optional<Void>> function) {
 		table.setOnMouseClicked(eh -> {
 			if (eh.getButton().equals(MouseButton.PRIMARY) && eh.getClickCount() == 2) {
 				final StockDescription selectedItem = table.getSelectionModel().getSelectedItem();

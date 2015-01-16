@@ -84,7 +84,7 @@ public class ZozkaDatafeedChecker extends Application {
 		borderPane.setTop(datafeedPathLabel);
 		final Scene scene = new Scene(borderPane);
 		final SplitPane splitPane = new SplitPane();
-		splitPane.setOrientation(Orientation.HORIZONTAL);		
+		splitPane.setOrientation(Orientation.HORIZONTAL);
 		dataStockList = new StockDatafeedListPane(owner, getNameForLeftTable());
 		addData(splitPane, dataStockList);
 		setOnDoubleClickTableAction(dataStockList);
@@ -102,20 +102,22 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void setOnDoubleClickTableAction(StockDatafeedListPane listPane) {
-		listPane.setOnMouseDoubleClick(new Function<StockDescription, Void>() {
+		listPane.setOnMouseDoubleClick(new Function<StockDescription, Optional<Void>>() {
 			@Override
-			public Void apply(StockDescription sd) {
+			public Optional<Void> apply(StockDescription sd) {
 				try {
 					final String stockName = sd.getStock().getName();
-					final Stock data = dataStockList.getStockStorage().getStock(stockName);
-					final Stock filtered = filteredStockDataList.getStockStorage().getStock(stockName);
+					final Optional<Stock> data = dataStockList.getStockStorage().getStock(stockName);
+					final Optional<Stock> filtered = filteredStockDataList.getStockStorage().getStock(stockName);
 					final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList,
 							filteredStockDataList, null);
-					helper.checkStockAndAskForUser(sd.getStock(), data, filtered, owner);
+					if (data.isPresent() && filtered.isPresent()) {
+						helper.checkStockAndAskForUser(sd.getStock(), data.get(), filtered.get(), owner);
+					}
 				} catch (Exception e) {
 					Dialogs.create().owner(owner).showException(e);
 				}
-				return null;
+				return Optional.empty();
 			}
 		});
 
@@ -221,17 +223,21 @@ public class ZozkaDatafeedChecker extends Application {
 				"List of Stocks which have different days size at data and filtered data.");
 		stockListDialog.setOnMouseDoubleClicked(sd -> {
 			final String stockName = sd.getStock().getName();
-			final Stock data = dataStockStorage.getStock(stockName);
-			final Stock filtered = filteredDataStockStorage.getStock(stockName);
+			final Optional<Stock> data = dataStockStorage.getStock(stockName);
+			final Optional<Stock> filtered = filteredDataStockStorage.getStock(stockName);
 			final ZozkaDatafeedCheckerHelper helper = new ZozkaDatafeedCheckerHelper(datafeedPath, dataStockList, filteredStockDataList,
 					stockListDialog.getModel());
-			helper.checkStockAndAskForUser(sd.getStock(), data, filtered, owner);
-			return null;
+			if (data.isPresent() && filtered.isPresent()) {
+				helper.checkStockAndAskForUser(sd.getStock(), data.get(), filtered.get(), owner);
+			}
+			return Optional.empty();
 		});
 		int index = 0;
 		for (String stockName : notEqualStockList) {
-			final Stock s = dataStockStorage.getStock(stockName);
-			stockListDialog.getModel().add(new StockDescription(index++, s));
+			final Optional<Stock> stockPtr = dataStockStorage.getStock(stockName);
+			if (!stockPtr.isPresent()) {
+				stockListDialog.getModel().add(new StockDescription(index++, stockPtr.get()));
+			}
 		}
 		stockListDialog.show();
 	}

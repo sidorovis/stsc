@@ -11,6 +11,7 @@ import stsc.algorithms.eod.indices.adl.Adln;
 import stsc.algorithms.eod.indices.adl.Adlt;
 import stsc.common.Day;
 import stsc.common.Settings;
+import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 import stsc.general.trading.BrokerImpl;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
@@ -20,9 +21,13 @@ import stsc.storage.mocks.StockStorageMock;
 
 public class AdlTest {
 
-	private double p(String stockName, int index) {
+	private Stock getStock(String stockName) {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
-		final Day d = stockStorage.getStock(stockName).getDays().get(index);
+		return stockStorage.getStock(stockName).get();
+	}
+
+	private double p(String stockName, int index) {
+		final Day d = getStock(stockName).getDays().get(index);
 		return d.getPrices().getClose();
 	}
 
@@ -30,9 +35,9 @@ public class AdlTest {
 	public void testAdlAdl() throws Exception {
 		final StockStorage stockStorage = StockStorageMock.getStockStorage();
 
-		final int aaplIndex = stockStorage.getStock("aapl").findDayIndex(new LocalDate(2011, 9, 4).toDate());
-		final int admIndex = stockStorage.getStock("adm").findDayIndex(new LocalDate(2011, 9, 4).toDate());
-		final int spyIndex = stockStorage.getStock("spy").findDayIndex(new LocalDate(2011, 9, 4).toDate());
+		final int aaplIndex = getStock("aapl").findDayIndex(new LocalDate(2011, 9, 4).toDate());
+		final int admIndex = getStock("adm").findDayIndex(new LocalDate(2011, 9, 4).toDate());
+		final int spyIndex = getStock("spy").findDayIndex(new LocalDate(2011, 9, 4).toDate());
 
 		final BrokerImpl broker = new BrokerImpl(stockStorage);
 		final SignalsStorageImpl signalsStorage = new SignalsStorageImpl();
@@ -50,9 +55,9 @@ public class AdlTest {
 
 		for (int i = 0; i < 400; ++i) {
 			final HashMap<String, Day> datafeed = new HashMap<>();
-			final Day d1 = stockStorage.getStock("aapl").getDays().get(aaplIndex + i);
-			final Day d2 = stockStorage.getStock("adm").getDays().get(admIndex + i);
-			final Day d3 = stockStorage.getStock("spy").getDays().get(spyIndex + i);
+			final Day d1 = getStock("aapl").getDays().get(aaplIndex + i);
+			final Day d2 = getStock("adm").getDays().get(admIndex + i);
+			final Day d3 = getStock("spy").getDays().get(spyIndex + i);
 
 			datafeed.put("aapl", d1);
 			datafeed.put("adm", d2);

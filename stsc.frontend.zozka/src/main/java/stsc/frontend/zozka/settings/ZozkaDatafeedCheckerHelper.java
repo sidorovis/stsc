@@ -2,6 +2,7 @@ package stsc.frontend.zozka.settings;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javafx.collections.ObservableList;
@@ -177,7 +178,11 @@ public class ZozkaDatafeedCheckerHelper {
 	private boolean redownloadStock(Stage owner, String stockName) {
 		try {
 			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
-			final boolean isSave = showStockRepresentation(owner, s, dataStockList.getStockStorage().getStock(stockName), true);
+			final Optional<Stock> stockPtr = dataStockList.getStockStorage().getStock(stockName);
+			if (!stockPtr.isPresent()) {
+				return false;
+			}
+			final boolean isSave = showStockRepresentation(owner, s, stockPtr.get(), true);
 			if (isSave) {
 				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);
 				dataStockList.updateStock(s);
@@ -209,13 +214,18 @@ public class ZozkaDatafeedCheckerHelper {
 		final Set<String> notEqualStockList = new HashSet<>();
 		for (String stockName : allList) {
 			if (filteredList.contains(stockName)) {
-				final Stock dataStock = dataStockStorage.getStock(stockName);
-				final Stock filteredDataStock = filteredDataStockStorage.getStock(stockName);
-				if (dataStock.getDays().size() != filteredDataStock.getDays().size()) {
+				final Optional<Stock> dataStockPtr = dataStockStorage.getStock(stockName);
+				final Optional<Stock> filteredDataStockPtr = filteredDataStockStorage.getStock(stockName);
+				if (!dataStockPtr.isPresent() || !filteredDataStockPtr.isPresent()) {
+					return notEqualStockList;
+				}
+				if (dataStockPtr.get().getDays().size() != filteredDataStockPtr.get().getDays().size()) {
 					notEqualStockList.add(stockName);
-				} else if (ZozkaDatafeedCheckerHelper.isLiquid(dataStock) != ZozkaDatafeedCheckerHelper.isLiquid(filteredDataStock)) {
+				} else if (ZozkaDatafeedCheckerHelper.isLiquid(dataStockPtr.get()) != ZozkaDatafeedCheckerHelper
+						.isLiquid(filteredDataStockPtr.get())) {
 					notEqualStockList.add(stockName);
-				} else if (ZozkaDatafeedCheckerHelper.isValid(dataStock) != ZozkaDatafeedCheckerHelper.isValid(filteredDataStock)) {
+				} else if (ZozkaDatafeedCheckerHelper.isValid(dataStockPtr.get()) != ZozkaDatafeedCheckerHelper
+						.isValid(filteredDataStockPtr.get())) {
 					notEqualStockList.add(stockName);
 				}
 			}

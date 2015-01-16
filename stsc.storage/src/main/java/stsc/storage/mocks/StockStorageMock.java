@@ -1,6 +1,7 @@
 package stsc.storage.mocks;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -13,8 +14,8 @@ import stsc.storage.ThreadSafeStockStorage;
 public class StockStorageMock implements StockStorage {
 
 	@Override
-	public Stock getStock(String name) {
-		return null;
+	public Optional<Stock> getStock(String name) {
+		return Optional.empty();
 	}
 
 	@Override

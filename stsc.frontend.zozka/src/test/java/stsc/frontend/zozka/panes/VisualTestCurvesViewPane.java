@@ -3,6 +3,7 @@ package stsc.frontend.zozka.panes;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.controlsfx.dialog.Dialog;
@@ -25,7 +26,11 @@ public class VisualTestCurvesViewPane extends Application {
 		yfss.waitForLoad();
 		final FromToPeriod period = new FromToPeriod("01-01-1990", "31-12-2015");
 
-		final Stock aapl = yfss.getStock("aapl");
+		final Optional<Stock> stockPtr = yfss.getStock("aapl");
+		if (!stockPtr.isPresent()) {
+			return;
+		}
+		final Stock aapl = stockPtr.get();
 		{
 			final TradeProcessorInit init = new TradeProcessorInit(yfss, period,
 					"EodExecutions = a1\na1.loadLine = OpenWhileSignalAlgorithm( Level( f = 0.75d, Diff(Input(e=close), Input(e=open)) ) )\n");

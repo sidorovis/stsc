@@ -24,8 +24,8 @@ public class YahooFileStockStorageTest extends TestCase {
 		assertNotNull(stockStorage);
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
-		assertNull(stockStorage.getStock("anse"));
-		assertEquals(7430, stockStorage.getStock("aapl").getDays().size());
+		assertFalse(stockStorage.getStock("anse").isPresent());
+		assertEquals(7430, stockStorage.getStock("aapl").get().getDays().size());
 	}
 
 	public void testLiqudityStorageReader() throws Exception {
@@ -33,6 +33,6 @@ public class YahooFileStockStorageTest extends TestCase {
 		assertNotNull(stockStorage);
 		assertNotNull(stockStorage.getStock("aaae"));
 		assertNotNull(stockStorage.getStock("aapl"));
-		assertNull(stockStorage.getStock("noexistsstock"));
+		assertFalse(stockStorage.getStock("noexistsstock").isPresent());
 	}
 }

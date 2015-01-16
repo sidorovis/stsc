@@ -10,15 +10,16 @@ import stsc.common.stocks.Stock;
 import stsc.common.storage.StockStorage;
 
 public class ThreadSafeStockStorageTest {
-	
+
 	@Test
 	public void testThreadSafeMemoryStoskStorage() throws ClassNotFoundException, IOException, InterruptedException {
 		StockStorage stockStorage = new ThreadSafeStockStorage();
 		Stock stock = new MemoryStock("aapl");
 		stockStorage.updateStock(stock);
-		
-		Assert.assertNull(stockStorage.getStock("nostock"));
-		Assert.assertNotNull(stockStorage.getStock("aapl"));
+
+		Assert.assertFalse(stockStorage.getStock("nostock").isPresent());
+		Assert.assertTrue(stockStorage.getStock("aapl").isPresent());
+		Assert.assertNotNull(stockStorage.getStock("aapl").get());
 	}
 
 }

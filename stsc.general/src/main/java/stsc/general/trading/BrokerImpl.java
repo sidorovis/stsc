@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import stsc.common.Day;
 import stsc.common.Side;
@@ -153,10 +154,13 @@ public class BrokerImpl implements Broker {
 	}
 
 	private boolean dataExist(String stockName) {
-		final Stock stock = stockStorage.getStock(stockName);
+		final Optional<Stock> stockPtr = stockStorage.getStock(stockName);
+		if (!stockPtr.isPresent()) {
+			return false;
+		}
+		final Stock stock = stockPtr.get();
 		final ArrayList<Day> days = stock.getDays();
 		final int index = Collections.binarySearch(days, new Day(today));
 		return index >= 0 && index < days.size();
 	}
-
 }
