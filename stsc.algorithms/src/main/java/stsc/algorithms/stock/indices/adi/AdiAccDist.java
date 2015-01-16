@@ -36,7 +36,7 @@ public class AdiAccDist extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		adiClv.process(day);
-		final double clv = getSignal(adiClvName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double clv = getSignal(adiClvName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		value += clv * day.getVolume() * koefficient;
 		addSignal(day.getDate(), new DoubleSignal(value));
 	}

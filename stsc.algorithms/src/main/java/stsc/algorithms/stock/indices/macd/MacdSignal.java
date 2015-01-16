@@ -33,7 +33,7 @@ public class MacdSignal extends StockAlgorithm {
 		this.smaName = init.getExecutionName() + "_Sma";
 		this.sma = createSma(init);
 	}
-	
+
 	public String getMacdName() {
 		return macdMacdName;
 	}
@@ -64,6 +64,6 @@ public class MacdSignal extends StockAlgorithm {
 		macd.process(day);
 		sma.process(day);
 
-		addSignal(day.getDate(), getSignal(smaName, day.getDate()).getValue());
+		addSignal(day.getDate(), getSignal(smaName, day.getDate()).getValue().get());
 	}
 }

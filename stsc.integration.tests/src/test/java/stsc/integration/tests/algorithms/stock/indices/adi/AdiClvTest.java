@@ -34,7 +34,7 @@ public class AdiClvTest {
 			final Prices p = day.getPrices();
 			final double denominator = p.getHigh() - p.getLow();
 			final double expected = ((p.getClose() - p.getLow() - (p.getHigh() - p.getClose()))) / (denominator);
-			Assert.assertEquals(expected, stockInit.getStorage().getStockSignal("aapl", "clv", day.getDate()).getSignal(DoubleSignal.class)
+			Assert.assertEquals(expected, stockInit.getStorage().getStockSignal("aapl", "clv", day.getDate()).getContent(DoubleSignal.class)
 					.getValue(), Settings.doubleEpsilon);
 		}
 	}

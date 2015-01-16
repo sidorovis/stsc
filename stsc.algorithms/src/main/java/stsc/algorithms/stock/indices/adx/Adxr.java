@@ -40,12 +40,12 @@ public class Adxr extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		adxAdx.process(day);
-		final double current = getSignal(adxAdxName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double current = getSignal(adxAdxName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		double previous = 0.0;
 		if (currentIndex <= N) {
-			previous = getSignal(adxAdxName, 0).getSignal(DoubleSignal.class).getValue();
+			previous = getSignal(adxAdxName, 0).getContent(DoubleSignal.class).getValue();
 		} else {
-			previous = getSignal(adxAdxName, currentIndex - N).getSignal(DoubleSignal.class).getValue();
+			previous = getSignal(adxAdxName, currentIndex - N).getContent(DoubleSignal.class).getValue();
 		}
 		currentIndex += 1;
 		addSignal(day.getDate(), new DoubleSignal((current - previous) / 2.0));

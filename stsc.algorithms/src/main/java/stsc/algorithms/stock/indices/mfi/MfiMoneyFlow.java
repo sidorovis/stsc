@@ -36,7 +36,7 @@ public class MfiMoneyFlow extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		mfiTp.process(day);
-		final double tpValue = getSignal(mfiTpName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double tpValue = getSignal(mfiTpName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		addSignal(day.getDate(), new DoubleSignal(tpValue * day.getVolume()));
 	}
 

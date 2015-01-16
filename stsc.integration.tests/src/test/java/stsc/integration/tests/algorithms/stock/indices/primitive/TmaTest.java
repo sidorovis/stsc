@@ -42,13 +42,13 @@ public class TmaTest {
 			tma.process(day);
 
 			if (i == aaplIndex) {
-				final double open = inInit.getStorage().getStockSignal("aapl", "testIn", day.getDate()).getSignal(DoubleSignal.class)
+				final double open = inInit.getStorage().getStockSignal("aapl", "testIn", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				final double emaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma_Ema", day.getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double dmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double dmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
-				final double tmaV = inInit.getStorage().getStockSignal("aapl", "testTma", day.getDate()).getSignal(DoubleSignal.class)
+				final double tmaV = inInit.getStorage().getStockSignal("aapl", "testTma", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 
 				Assert.assertEquals(open, emaV, Settings.doubleEpsilon);
@@ -56,21 +56,21 @@ public class TmaTest {
 				Assert.assertEquals(open, tmaV, Settings.doubleEpsilon);
 
 			} else {
-				final double open = inInit.getStorage().getStockSignal("aapl", "testIn", day.getDate()).getSignal(DoubleSignal.class)
+				final double open = inInit.getStorage().getStockSignal("aapl", "testIn", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 
 				final double pEmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma_Ema", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 				final double pDmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 				final double pTmaV = inInit.getStorage().getStockSignal("aapl", "testTma", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 
 				final double emaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma_Ema", day.getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double dmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double dmaV = inInit.getStorage().getStockSignal("aapl", "testTma_Dma", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
-				final double tmaV = inInit.getStorage().getStockSignal("aapl", "testTma", day.getDate()).getSignal(DoubleSignal.class)
+				final double tmaV = inInit.getStorage().getStockSignal("aapl", "testTma", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 
 				Assert.assertEquals(pEmaV * 0.7 + 0.3 * open, emaV, Settings.doubleEpsilon);

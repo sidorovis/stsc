@@ -54,7 +54,7 @@ public class LeastSquaresStraightValue extends StockAlgorithm {
 		if (signal == null) {
 			return;
 		}
-		final double yValue = signal.getSignal(DoubleSignal.class).getValue();
+		final double yValue = signal.getContent(DoubleSignal.class).getValue();
 		y.addLast(yValue);
 		addValues(currentX, yValue);
 		if (currentX >= N) {

@@ -38,12 +38,12 @@ public class AdxDi extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		adxTrueRange.process(day);
 		adxDm.process(day);
-		final double trueRangeValue = getSignal(adxTrueRangeName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double trueRangeValue = getSignal(adxTrueRangeName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (Double.compare(trueRangeValue, 0.0) == 0) {
 			addSignal(day.getDate(), new ListOfDoubleSignal().add(0.0).add(0.0));
 		} else {
-			final double dmMinus = getSignal(adxDmName, day.getDate()).getSignal(ListOfDoubleSignal.class).getValues().get(0);
-			final double dmPlus = getSignal(adxDmName, day.getDate()).getSignal(ListOfDoubleSignal.class).getValues().get(1);
+			final double dmMinus = getSignal(adxDmName, day.getDate()).getContent(ListOfDoubleSignal.class).getValues().get(0);
+			final double dmPlus = getSignal(adxDmName, day.getDate()).getContent(ListOfDoubleSignal.class).getValues().get(1);
 			addSignal(day.getDate(), new ListOfDoubleSignal().add(dmMinus / trueRangeValue).add(dmPlus / trueRangeValue));
 		}
 	}

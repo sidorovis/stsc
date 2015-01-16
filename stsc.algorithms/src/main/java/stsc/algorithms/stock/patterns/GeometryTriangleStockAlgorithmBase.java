@@ -82,16 +82,16 @@ public abstract class GeometryTriangleStockAlgorithmBase extends StockAlgorithm 
 		if (maxSignal == null || minSignal == null) {
 			return Collections.emptyList();
 		}
-		final double maxStdDev = maxSignal.getSignal(DoubleSignal.class).getValue();
-		final double minStdDev = minSignal.getSignal(DoubleSignal.class).getValue();
+		final double maxStdDev = maxSignal.getContent(DoubleSignal.class).getValue();
+		final double minStdDev = minSignal.getContent(DoubleSignal.class).getValue();
 		if (maxStdDev >= acceptableLineLevel || minStdDev >= acceptableLineLevel) {
 			return Collections.emptyList();
 		}
 		// y = a0 + a1 * x ; move to:
 		// maximum line: y = a1 * x + b1
 		// minimum line: y = a2 * x + b2
-		final List<Double> maxLineCoef = getSignal(maxLine.getLssName(), day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
-		final List<Double> minLineCoef = getSignal(minLine.getLssName(), day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
+		final List<Double> maxLineCoef = getSignal(maxLine.getLssName(), day.getDate()).getContent(ListOfDoubleSignal.class).getValues();
+		final List<Double> minLineCoef = getSignal(minLine.getLssName(), day.getDate()).getContent(ListOfDoubleSignal.class).getValues();
 		final double a1 = maxLineCoef.get(1);
 		final double a2 = minLineCoef.get(1);
 		final double b1 = maxLineCoef.get(0);

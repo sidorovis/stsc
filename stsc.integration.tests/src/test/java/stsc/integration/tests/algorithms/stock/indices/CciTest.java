@@ -31,13 +31,13 @@ public class CciTest {
 			final Day day = days.get(i);
 			cci.process(day);
 
-			final double tp = init.getStorage().getStockSignal("aapl", "cci_TypicalPrice", day.getDate()).getSignal(DoubleSignal.class)
+			final double tp = init.getStorage().getStockSignal("aapl", "cci_TypicalPrice", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
-			final double sma = init.getStorage().getStockSignal("aapl", "cci_Sma", day.getDate()).getSignal(DoubleSignal.class).getValue();
-			final double stdev = init.getStorage().getStockSignal("aapl", "cci_SmStDev", day.getDate()).getSignal(DoubleSignal.class)
+			final double sma = init.getStorage().getStockSignal("aapl", "cci_Sma", day.getDate()).getContent(DoubleSignal.class).getValue();
+			final double stdev = init.getStorage().getStockSignal("aapl", "cci_SmStDev", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 
-			final double v = init.getStorage().getStockSignal("aapl", "cci", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = init.getStorage().getStockSignal("aapl", "cci", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			if (Double.compare(stdev, 0.0) == 0) {
 				Assert.assertEquals(0.0, v, Settings.doubleEpsilon);

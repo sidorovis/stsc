@@ -66,9 +66,9 @@ public class Cci extends StockAlgorithm {
 		typicalPrice.process(day);
 		sma.process(day);
 		stDev.process(day);
-		final double tpV = getSignal(typicalPriceName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double smaV = getSignal(smaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double stDevV = getSignal(stDevName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double tpV = getSignal(typicalPriceName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double smaV = getSignal(smaName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double stDevV = getSignal(stDevName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (Double.compare(stDevV, 0.0) != 0) {
 			final double v = K * (tpV - smaV) / stDevV;
 			addSignal(day.getDate(), new DoubleSignal(v));

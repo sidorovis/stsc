@@ -43,9 +43,9 @@ public class RsiURsiDTest {
 			rsiu.process(day);
 
 			if (i > aaplIndex) {
-				final double rsidValue = stockInit.getStorage().getStockSignal("aapl", "rsiD", i - aaplIndex).getSignal(DoubleSignal.class)
+				final double rsidValue = stockInit.getStorage().getStockSignal("aapl", "rsiD", i - aaplIndex).getContent(DoubleSignal.class)
 						.getValue();
-				final double rsiuValue = stockInit.getStorage().getStockSignal("aapl", "rsiU", i - aaplIndex).getSignal(DoubleSignal.class)
+				final double rsiuValue = stockInit.getStorage().getStockSignal("aapl", "rsiU", i - aaplIndex).getContent(DoubleSignal.class)
 						.getValue();
 
 				final double closeNow = day.getPrices().getClose();

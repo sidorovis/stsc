@@ -37,7 +37,7 @@ public class AtrAtr extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		atrTr.process(day);
-		final double atrTrValue = getSignal(atrTrName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double atrTrValue = getSignal(atrTrName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (index < N) {
 			sum += atrTrValue;
 			prevoiusValue = sum / (index + 1);

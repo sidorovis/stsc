@@ -45,7 +45,7 @@ public class IkhTenkanTest {
 				highMax = Math.max(highMax, days.get(u).getPrices().getHigh());
 				lowMin = Math.min(lowMin, days.get(u).getPrices().getLow());
 			}
-			final double v = stockInit.getStorage().getStockSignal("aapl", "tenkah", day.getDate()).getSignal(DoubleSignal.class)
+			final double v = stockInit.getStorage().getStockSignal("aapl", "tenkah", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 			Assert.assertEquals((highMax + lowMin) / 2.0, v, Settings.doubleEpsilon);
 		}

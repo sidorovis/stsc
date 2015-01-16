@@ -39,11 +39,11 @@ public class MacdMacdTest {
 			in.process(day);
 			macd.process(day);
 
-			final double s = stockInit.getStorage().getStockSignal("aapl", "macd_EmaS", day.getDate()).getSignal(DoubleSignal.class)
+			final double s = stockInit.getStorage().getStockSignal("aapl", "macd_EmaS", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
-			final double l = stockInit.getStorage().getStockSignal("aapl", "macd_EmaL", day.getDate()).getSignal(DoubleSignal.class)
+			final double l = stockInit.getStorage().getStockSignal("aapl", "macd_EmaL", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
-			final double v = stockInit.getStorage().getStockSignal("aapl", "macd", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aapl", "macd", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			Assert.assertEquals(s - l, v, Settings.doubleEpsilon);
 		}

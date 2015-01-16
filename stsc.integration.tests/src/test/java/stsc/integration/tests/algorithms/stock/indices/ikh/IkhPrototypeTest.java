@@ -104,7 +104,7 @@ public class IkhPrototypeTest {
 					lowMin = Math.min(lowMin, days.get(u).getPrices().getLow());
 				}
 				final double vSenkou = stockInit.getStorage().getStockSignal("aapl", "senkouA", day.getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 				Assert.assertEquals((highMax + lowMin) / 2.0, vSenkou, Settings.doubleEpsilon);
 			}
 		}
@@ -138,8 +138,8 @@ public class IkhPrototypeTest {
 			tenkan.process(day);
 			if (i - tm - ts >= aaplIndex) {
 				final double vPrototype = stockInit.getStorage().getStockSignal("aapl", "prototype", day.getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double vTenkan = stockInit.getStorage().getStockSignal("aapl", "tenkan", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double vTenkan = stockInit.getStorage().getStockSignal("aapl", "tenkan", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				Assert.assertEquals(vTenkan, vPrototype, Settings.doubleEpsilon);
 			}

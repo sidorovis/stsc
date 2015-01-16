@@ -51,8 +51,8 @@ public class McClellanOscillator extends StockAlgorithm {
 		slowEma.process(day);
 		fastEma.process(day);
 
-		final double slowV = getSignal(slowEmaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double fastV = getSignal(fastEmaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double slowV = getSignal(slowEmaName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double fastV = getSignal(fastEmaName, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 		addSignal(day.getDate(), new DoubleSignal(slowV - fastV));
 	}

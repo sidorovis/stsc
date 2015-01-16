@@ -38,31 +38,31 @@ public class AdxDiTest {
 			adi.process(day);
 		}
 
-		final double trValue0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxTrueRange", 0).getSignal(DoubleSignal.class).getValue();
-		final double trValue1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxTrueRange", 1).getSignal(DoubleSignal.class).getValue();
+		final double trValue0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxTrueRange", 0).getContent(DoubleSignal.class).getValue();
+		final double trValue1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxTrueRange", 1).getContent(DoubleSignal.class).getValue();
 
-		final double adxDmValueMinus0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 0).getSignal(ListOfDoubleSignal.class).getValues()
+		final double adxDmValueMinus0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 0).getContent(ListOfDoubleSignal.class).getValues()
 				.get(0);
-		final double adxDmValuePlus0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 0).getSignal(ListOfDoubleSignal.class).getValues()
+		final double adxDmValuePlus0 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 0).getContent(ListOfDoubleSignal.class).getValues()
 				.get(1);
 
-		final double adxDmValueMinus1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 1).getSignal(ListOfDoubleSignal.class).getValues()
+		final double adxDmValueMinus1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 1).getContent(ListOfDoubleSignal.class).getValues()
 				.get(0);
-		final double adxDmValuePlus1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 1).getSignal(ListOfDoubleSignal.class).getValues()
+		final double adxDmValuePlus1 = adiInit.getStorage().getStockSignal("aapl", "adi_AdxDm", 1).getContent(ListOfDoubleSignal.class).getValues()
 				.get(1);
 
 		Assert.assertEquals(adxDmValueMinus0 / trValue0,
-				adiInit.getStorage().getStockSignal("aapl", "adi", 0).getSignal(ListOfDoubleSignal.class).getValues().get(0),
+				adiInit.getStorage().getStockSignal("aapl", "adi", 0).getContent(ListOfDoubleSignal.class).getValues().get(0),
 				Settings.doubleEpsilon);
 		Assert.assertEquals(adxDmValuePlus0 / trValue0,
-				adiInit.getStorage().getStockSignal("aapl", "adi", 0).getSignal(ListOfDoubleSignal.class).getValues().get(1),
+				adiInit.getStorage().getStockSignal("aapl", "adi", 0).getContent(ListOfDoubleSignal.class).getValues().get(1),
 				Settings.doubleEpsilon);
 
 		Assert.assertEquals(adxDmValueMinus1 / trValue1,
-				adiInit.getStorage().getStockSignal("aapl", "adi", 1).getSignal(ListOfDoubleSignal.class).getValues().get(0),
+				adiInit.getStorage().getStockSignal("aapl", "adi", 1).getContent(ListOfDoubleSignal.class).getValues().get(0),
 				Settings.doubleEpsilon);
 		Assert.assertEquals(adxDmValuePlus1 / trValue1,
-				adiInit.getStorage().getStockSignal("aapl", "adi", 1).getSignal(ListOfDoubleSignal.class).getValues().get(1),
+				adiInit.getStorage().getStockSignal("aapl", "adi", 1).getContent(ListOfDoubleSignal.class).getValues().get(1),
 				Settings.doubleEpsilon);
 	}
 

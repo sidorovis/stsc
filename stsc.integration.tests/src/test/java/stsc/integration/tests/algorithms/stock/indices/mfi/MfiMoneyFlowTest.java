@@ -36,11 +36,11 @@ public class MfiMoneyFlowTest {
 			final Day day = days.get(i);
 			mfiMf.process(day);
 
-			final double tp = stockInit.getStorage().getStockSignal("aapl", "mfiMf_mfiTp", day.getDate()).getSignal(DoubleSignal.class)
+			final double tp = stockInit.getStorage().getStockSignal("aapl", "mfiMf_mfiTp", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 
 			Assert.assertEquals(tp * day.getVolume(),
-					mfiMfInit.getStorage().getStockSignal("aapl", "mfiMf", day.getDate()).getSignal(DoubleSignal.class).getValue(),
+					mfiMfInit.getStorage().getStockSignal("aapl", "mfiMf", day.getDate()).getContent(DoubleSignal.class).getValue(),
 					Settings.doubleEpsilon);
 		}
 	}

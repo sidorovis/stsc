@@ -66,7 +66,7 @@ public class SeveralLastMaxTest {
 				continue;
 			}
 
-			final double v = stockInit.getStorage().getStockSignal("aa", "slm", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aa", "slm", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			double max = Double.MIN_VALUE;
 			for (int u = i - Math.min(2, i - aaplIndex + 1) + 1; u <= i; ++u) {

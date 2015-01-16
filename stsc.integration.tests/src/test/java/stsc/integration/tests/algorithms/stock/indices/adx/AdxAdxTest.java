@@ -38,10 +38,10 @@ public class AdxAdxTest {
 			final Day day = days.get(i);
 			adx.process(day);
 
-			final double dxiV = adxInit.getStorage().getStockSignal("aapl", "adx_adxDxi", day.getDate()).getSignal(DoubleSignal.class)
+			final double dxiV = adxInit.getStorage().getStockSignal("aapl", "adx_adxDxi", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 			sum += dxiV;
-			final double adxV = adxInit.getStorage().getStockSignal("aapl", "adx", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double adxV = adxInit.getStorage().getStockSignal("aapl", "adx", day.getDate()).getContent(DoubleSignal.class).getValue();
 			Assert.assertEquals(sum / (i - aaplIndex + 1), adxV, Settings.doubleEpsilon);
 		}
 	}

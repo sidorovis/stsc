@@ -68,8 +68,8 @@ public class RsiRsi extends StockAlgorithm {
 		rsiD.process(day);
 		emaD.process(day);
 
-		final double emaNu = getSignal(emaUname, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double emaNd = getSignal(emaDname, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double emaNu = getSignal(emaUname, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double emaNd = getSignal(emaDname, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 		if (Double.compare(0.0, emaNd) == 0) {
 			addSignal(day.getDate(), new DoubleSignal(0.0));

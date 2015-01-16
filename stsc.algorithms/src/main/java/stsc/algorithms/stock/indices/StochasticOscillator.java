@@ -83,8 +83,8 @@ public class StochasticOscillator extends StockAlgorithm {
 		hnInput.process(day);
 		hn.process(day);
 		final double ctValue = day.getPrices().getClose();
-		final double lnValue = getSignal(lnName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double hnValue = getSignal(hnName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double lnValue = getSignal(lnName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double hnValue = getSignal(hnName, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 		if (Double.compare(hnValue, lnValue) == 0) {
 			addSignal(day.getDate(), new DoubleSignal(50.0));

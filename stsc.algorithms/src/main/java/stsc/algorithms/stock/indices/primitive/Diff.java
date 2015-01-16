@@ -38,8 +38,8 @@ public class Diff extends StockAlgorithm {
 		SignalContainer<? extends SerieSignal> from = getSignal(fromExecution, day.getDate());
 		SignalContainer<? extends SerieSignal> to = getSignal(toExecution, day.getDate());
 		if (from != null && to != null) {
-			final double fromValue = from.getSignal(DoubleSignal.class).getValue();
-			final double toValue = to.getSignal(DoubleSignal.class).getValue();
+			final double fromValue = from.getContent(DoubleSignal.class).getValue();
+			final double toValue = to.getContent(DoubleSignal.class).getValue();
 			addSignal(day.getDate(), new DoubleSignal(fromValue - toValue));
 		}
 	}

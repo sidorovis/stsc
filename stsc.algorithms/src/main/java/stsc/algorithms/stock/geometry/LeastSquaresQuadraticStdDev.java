@@ -61,8 +61,8 @@ public class LeastSquaresQuadraticStdDev extends StockAlgorithm {
 		if (subSerieValue == null || lsqValue == null) {
 			return;
 		}
-		y.addLast(subSerieValue.getSignal(DoubleSignal.class).getValue());
-		final ListOfDoubleSignal coefficients = lsqValue.getSignal(ListOfDoubleSignal.class);
+		y.addLast(subSerieValue.getContent(DoubleSignal.class).getValue());
+		final ListOfDoubleSignal coefficients = lsqValue.getContent(ListOfDoubleSignal.class);
 		final double a0 = coefficients.getValues().get(0);
 		final double a1 = coefficients.getValues().get(1);
 		final double a2 = coefficients.getValues().get(2);

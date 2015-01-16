@@ -40,13 +40,13 @@ public class McClellanOscillatorTest {
 			inAlgo.process(day);
 			msi.process(day);
 
-			final double slow = stockInit.getStorage().getStockSignal("aapl", "msi_SlowEma", day.getDate()).getSignal(DoubleSignal.class)
+			final double slow = stockInit.getStorage().getStockSignal("aapl", "msi_SlowEma", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
-			final double fast = stockInit.getStorage().getStockSignal("aapl", "msi_FastEma", day.getDate()).getSignal(DoubleSignal.class)
+			final double fast = stockInit.getStorage().getStockSignal("aapl", "msi_FastEma", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 
 			Assert.assertEquals(slow - fast,
-					stockInit.getStorage().getStockSignal("aapl", "msi", day.getDate()).getSignal(DoubleSignal.class).getValue(),
+					stockInit.getStorage().getStockSignal("aapl", "msi", day.getDate()).getContent(DoubleSignal.class).getValue(),
 					Settings.doubleEpsilon);
 		}
 	}

@@ -6,10 +6,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import stsc.common.BadSignalException;
+import stsc.common.signals.SerieSignal;
 import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 
-public final class LimitSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
+public final class LimitSignalsSerie<SignalType extends SerieSignal> extends SignalsSerie<SignalType> {
 
 	private final static int DEFAULT_LIMIT = 1;
 	private final int limit;

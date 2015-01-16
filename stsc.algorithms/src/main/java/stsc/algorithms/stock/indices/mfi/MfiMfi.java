@@ -49,10 +49,10 @@ public class MfiMfi extends StockAlgorithm {
 			previousDay = day;
 		}
 		{
-			final double previousTp = getSignal(mfiTpName, previousDay.getDate()).getSignal(DoubleSignal.class).getValue();
-			final double nowTp = getSignal(mfiTpName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double previousTp = getSignal(mfiTpName, previousDay.getDate()).getContent(DoubleSignal.class).getValue();
+			final double nowTp = getSignal(mfiTpName, day.getDate()).getContent(DoubleSignal.class).getValue();
 
-			final double nowMf = getSignal(mfiMfName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double nowMf = getSignal(mfiMfName, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			if (nowTp >= previousTp) {
 				positiveSum += nowMf;
@@ -61,10 +61,10 @@ public class MfiMfi extends StockAlgorithm {
 			}
 		}
 		if (currentIndex > N) {
-			final double previousOldMTp = getSignal(mfiTpName, currentIndex - N - 1).getSignal(DoubleSignal.class).getValue();
-			final double oldTp = getSignal(mfiTpName, currentIndex - N).getSignal(DoubleSignal.class).getValue();
+			final double previousOldMTp = getSignal(mfiTpName, currentIndex - N - 1).getContent(DoubleSignal.class).getValue();
+			final double oldTp = getSignal(mfiTpName, currentIndex - N).getContent(DoubleSignal.class).getValue();
 
-			final double oldMf = getSignal(mfiMfName, currentIndex - N).getSignal(DoubleSignal.class).getValue();
+			final double oldMf = getSignal(mfiMfName, currentIndex - N).getContent(DoubleSignal.class).getValue();
 
 			if (oldTp >= previousOldMTp) {
 				positiveSum -= oldMf;

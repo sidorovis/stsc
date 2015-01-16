@@ -3,6 +3,7 @@ package stsc.algorithms;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -37,11 +38,11 @@ public class EodOutput extends EodAlgorithm {
 		SignalContainer<? extends SerieSignal> signalHandler = getSignal(fromExecution, date);
 		if (signalHandler == null)
 			return;
-		final SerieSignal signal = signalHandler.getValue();
-		if (signal == null)
+		final Optional<? extends SerieSignal> signal = signalHandler.getValue();
+		if (!signal.isPresent())
 			return;
-		if (signal instanceof DoubleSignal) {
-			addSignal(date, signal);
+		if (signal.get() instanceof DoubleSignal) {
+			addSignal(date, signal.get());
 		}
 	}
 }

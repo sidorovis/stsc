@@ -36,9 +36,9 @@ public class LeastSquaresStraightStdDevTest {
 			in.process(day);
 			lssp.process(day);
 
-			final double a0 = init.getStorage().getStockSignal("aapl", "lssp_Lss", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double a0 = init.getStorage().getStockSignal("aapl", "lssp_Lss", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(0);
-			final double a1 = init.getStorage().getStockSignal("aapl", "lssp_Lss", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double a1 = init.getStorage().getStockSignal("aapl", "lssp_Lss", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(1);
 			double diffSum = 0.0;
 			double x = i - Math.min(5, i - aaplIndex);
@@ -47,7 +47,7 @@ public class LeastSquaresStraightStdDevTest {
 				x += 1.0;
 			}
 
-			final double v = init.getStorage().getStockSignal("aapl", "lssp", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = init.getStorage().getStockSignal("aapl", "lssp", day.getDate()).getContent(DoubleSignal.class).getValue();
 			Assert.assertEquals(diffSum, v, Settings.doubleEpsilon);
 		}
 	}
