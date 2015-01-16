@@ -35,11 +35,11 @@ public class ExecutionsStorageTest extends TestCase {
 		assertNotNull(es.getStockAlgorithm("t2", "adm"));
 		assertNotNull(es.getStockAlgorithm("t2", "spy"));
 
-		assertNull(es.getStockAlgorithm("t1", "aapl"));
-		assertNull(es.getStockAlgorithm("t1", "adm"));
-		assertNull(es.getStockAlgorithm("t1", "spy"));
+		assertFalse(es.getStockAlgorithm("t1", "aapl").isPresent());
+		assertFalse(es.getStockAlgorithm("t1", "adm").isPresent());
+		assertFalse(es.getStockAlgorithm("t1", "spy").isPresent());
 
-		assertNull(es.getStockAlgorithm("t2", "non"));
+		assertFalse(es.getStockAlgorithm("t2", "non").isPresent());
 	}
 
 	public void testExceptionOnInit() throws BadAlgorithmException, ParseException {
