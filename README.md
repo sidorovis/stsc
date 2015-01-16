@@ -21,5 +21,5 @@ Also code include example of application with different search algorithms and pr
  * [ZozkaStrategySelector](https://github.com/sidorovis/stsc/wiki/ZozkaStrategySelector-Examples)
  * [ZozkaStrategyVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaStrategyVisualizer-Examples)
 
- [Modules list](https://github.com/sidorovis/stsc/wiki/Modules-List)
+##### Please feel free to read some information about [modules list](https://github.com/sidorovis/stsc/wiki/Modules-List)
 
