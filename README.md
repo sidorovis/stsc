@@ -6,6 +6,7 @@ A platform for simulate in history trading strategies using stock price informat
 Platform provide possibility to generate a lot of strategies, select best of them.
 
 Datafeed example that used into platform: yahoo eod.
+ * also there is a GUI application to define and if possible correct (redownload) broken/not liquid stocks. [ZozkaDatafeedChecker](https://github.com/sidorovis/stsc/wiki/ZozkaDatafeedChecker-Examples).
 Newsfeed example that used into platform: feedzilla.
 Mechanisms to distribute calculation: hadoop.
 
@@ -16,6 +17,9 @@ Actually you could draw
  * final equity curve;
 
 Also code include example of application with different search algorithms and providing results in the very convinient way.
+
+[ZozkaStrategySelector](https://github.com/sidorovis/stsc/wiki/ZozkaStrategySelector-Examples)
+[ZozkaStrategyVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaStrategyVisualizer-Examples)
 
 [Modules list](https://github.com/sidorovis/stsc/wiki/Modules-List)
 
