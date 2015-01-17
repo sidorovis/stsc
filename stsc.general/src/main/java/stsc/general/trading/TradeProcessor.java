@@ -62,8 +62,9 @@ public class TradeProcessor {
 			broker.setToday(today);
 			for (Entry<String, DayIterator> stock : stocks) {
 				final DayIterator stockIterator = stock.getValue();
-				final Day stockDay = stockIterator.getCurrentDayAndNext(currentDay);
-				if (stockDay != null) {
+				final Optional<Day> stockDayPtr = stockIterator.getCurrentDayAndNext(currentDay);
+				if (stockDayPtr.isPresent()) {
+					final Day stockDay = stockDayPtr.get();
 					final String stockName = stock.getKey();
 					if (stockDay.compareTo(currentDay) == 0) {
 						statisticsProcessor.setStockDay(stockName, stockDay);

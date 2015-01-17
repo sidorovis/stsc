@@ -3,6 +3,7 @@ package stsc.general.trading;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import stsc.common.Day;
 import stsc.common.stocks.Stock;
@@ -37,13 +38,13 @@ final class DayIterator {
 		return currentIterator < days.size();
 	}
 
-	Day getCurrentDayAndNext(Day currentDay) {
+	Optional<Day> getCurrentDayAndNext(Day currentDay) {
 		if (currentIterator < days.size()) {
 			final Day day = days.get(currentIterator);
 			final int dayCompare = day.compareTo(currentDay);
 			if (dayCompare == 0) {
 				currentIterator++;
-				return day;
+				return Optional.of(day);
 			} else if (dayCompare < 0) {
 				currentIterator = Collections.binarySearch(days, currentDay);
 				if (currentIterator < 0) {
@@ -54,11 +55,11 @@ final class DayIterator {
 					return null;
 				}
 				if (currentIterator >= 0) {
-					return days.get(currentIterator);
+					return Optional.of(days.get(currentIterator));
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
