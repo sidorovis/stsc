@@ -24,9 +24,9 @@ final class SimulatorCalulatingTask implements Callable<Boolean> {
 	public Boolean call() throws Exception {
 		boolean result = false;
 		try {
-			final Statistics statistics = simulate();
-			if (statistics != null) {
-				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
+			final Optional<Statistics> statistics = simulate();
+			if (statistics.isPresent()) {
+				final TradingStrategy strategy = new TradingStrategy(settings, statistics.get());
 				final Optional<TradingStrategy> addedToStatistics = searcher.selector.addStrategy(strategy);
 				if (addedToStatistics.isPresent()) {
 					searcher.population.add(strategy);
@@ -40,15 +40,15 @@ final class SimulatorCalulatingTask implements Callable<Boolean> {
 		return result;
 	}
 
-	private Statistics simulate() {
+	private Optional<Statistics> simulate() {
 		Simulator simulator = null;
 		try {
 			simulator = new Simulator(settings);
 		} catch (Exception e) {
 			StrategyGeneticSearcher.logger.error("Error while calculating statistics: " + e.getMessage());
-			return null;
+			return Optional.empty();
 		}
-		return simulator.getStatistics();
+		return Optional.of(simulator.getStatistics());
 	}
 
 }
