@@ -3,27 +3,31 @@ package stsc.general.statistic.cost.comparator;
 import java.text.ParseException;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class CostWeightedSumComparatorTest extends TestCase {
+public class CostWeightedSumComparatorTest {
+
+	@Test
 	public void testCostWeightedSumComparator() throws ParseException {
 		final Statistics stat = TestStatisticsHelper.getStatistics();
 
 		final CostWeightedSumComparator comparator = new CostWeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
 
-		assertEquals(0, comparator.compare(stat, stat));
+		Assert.assertEquals(0, comparator.compare(stat, stat));
 
 		final Statistics newStat = TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, 1));
-		assertEquals(0, comparator.compare(newStat, newStat));
+		Assert.assertEquals(0, comparator.compare(newStat, newStat));
 
-		assertEquals(-1, comparator.compare(stat, newStat));
-		assertEquals(1, comparator.compare(newStat, stat));
+		Assert.assertEquals(-1, comparator.compare(stat, newStat));
+		Assert.assertEquals(1, comparator.compare(newStat, stat));
 	}
 
+	@Test
 	public void testCostWeightedSumComparatorOnSeveralStatistics() {
 		final CostWeightedSumComparator comparator = new CostWeightedSumComparator();
 		comparator.addParameter("getKelly", 0.8);
@@ -36,7 +40,7 @@ public class CostWeightedSumComparatorTest extends TestCase {
 					final Statistics rightStat = TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, u));
 					final int r = comparator.compare(leftStat, rightStat) * comparator.compare(rightStat, leftStat);
 					if (r != 0)
-						assertEquals(-1, r);
+						Assert.assertEquals(-1, r);
 				}
 			}
 		}

@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -13,18 +16,17 @@ import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
-import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class AlgorithmSettingsGridIteratorTest extends TestCase {
+public class AlgorithmSettingsGridIteratorTest {
 
 	private void testHelperNlmParameters(Integer n, String l, Integer m, AlgorithmSettings s) {
-		assertEquals(n, s.getInteger("n"));
-		assertEquals(m, s.getInteger("m"));
-		assertEquals(l, s.getString("l"));
+		Assert.assertEquals(n, s.getInteger("n"));
+		Assert.assertEquals(m, s.getInteger("m"));
+		Assert.assertEquals(l, s.getString("l"));
 	}
 
+	@Test
 	public void testAlgorithmSettingsGridSearcher() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
@@ -38,7 +40,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		for (AlgorithmSettings se : mas) {
 			settings.add(se);
 		}
-		assertEquals(8, settings.size());
+		Assert.assertEquals(8, settings.size());
 		testHelperNlmParameters(1, "asd", -4, settings.get(0));
 		testHelperNlmParameters(2, "asd", -4, settings.get(1));
 		testHelperNlmParameters(1, "asd", -2, settings.get(2));
@@ -49,6 +51,7 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		testHelperNlmParameters(2, "ibm", -2, settings.get(7));
 	}
 
+	@Test
 	public void testStockExecutionGridSearcherALotOfParameters() throws ParseException, BadParameterException, BadAlgorithmException {
 		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(period);
@@ -58,7 +61,8 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		factory.add(new MpDouble("s", -100.0, 101.0, 25.0));
 		factory.add(new MpString("z", Arrays.asList(new String[] { "asd", "ibm", "yhoo" })));
 		factory.add(new MpString("z", Arrays.asList(new String[] { "vokrug", "fileName" })));
-		factory.add(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423", "234535-23424", "35345-234234135", "24454-65462245" })));
+		factory.add(new MpSubExecution("p", Arrays.asList(new String[] { "12313-432423", "234535-23424", "35345-234234135",
+				"24454-65462245" })));
 		final AlgorithmSettingsGridIterator mas = factory.getGridIterator();
 
 		final ArrayList<AlgorithmSettings> settings = new ArrayList<>();
@@ -69,17 +73,18 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 			i.next();
 			sum += 1;
 		}
-		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, sum);
+		Assert.assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, sum);
 
 		i.reset();
 
 		for (AlgorithmSettings se : mas) {
-			assertNotNull(se);
+			Assert.assertNotNull(se);
 			settings.add(se);
 		}
-		assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
+		Assert.assertEquals(5 * 5 * 15 * 9 * 3 * 2 * 4, settings.size());
 	}
 
+	@Test
 	public void testGridSearcherStockWithStrings() throws BadParameterException {
 		final FromToPeriod period = TestStatisticsHelper.getPeriod();
 		final String[] arr = new String[] { "asd", "ibm" };
@@ -91,10 +96,10 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 		int sum = 0;
 		while (i.hasNext()) {
 			AlgorithmSettings as = i.next();
-			assertEquals(as.getString("z"), arr[sum]);
+			Assert.assertEquals(as.getString("z"), arr[sum]);
 			sum += 1;
 		}
-		assertEquals(2, sum);
+		Assert.assertEquals(2, sum);
 		i.reset();
 
 		factory.add(new MpString("y", Arrays.asList(new String[] { "asd", "ibm", "yhoo" })));
@@ -105,6 +110,6 @@ public class AlgorithmSettingsGridIteratorTest extends TestCase {
 			i.next();
 			sum += 1;
 		}
-		assertEquals(8, sum);
+		Assert.assertEquals(8, sum);
 	}
 }

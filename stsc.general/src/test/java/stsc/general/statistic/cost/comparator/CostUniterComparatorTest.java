@@ -1,12 +1,15 @@
 package stsc.general.statistic.cost.comparator;
 
 import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.general.statistic.Statistics;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class CostUniterComparatorTest extends TestCase {
+public class CostUniterComparatorTest {
+
+	@Test
 	public void testCostUniterComparator() {
 		final CostUniterComparator cu = new CostUniterComparator();
 		cu.addComparator(new CostWeightedSumComparator(), 0.5);
@@ -19,7 +22,7 @@ public class CostUniterComparatorTest extends TestCase {
 					final Statistics rightStat = TestStatisticsHelper.getStatistics(50, 150, new LocalDate(2013, 5, u));
 					final int r = cu.compare(leftStat, rightStat) * cu.compare(rightStat, leftStat);
 					if (r != 0)
-						assertEquals(-1, r);
+						Assert.assertEquals(-1, r);
 				}
 			}
 		}

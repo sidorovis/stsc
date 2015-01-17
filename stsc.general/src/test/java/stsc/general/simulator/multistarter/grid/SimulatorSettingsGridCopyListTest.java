@@ -23,7 +23,6 @@ public class SimulatorSettingsGridCopyListTest {
 		final SimulatorSettingsGridList listExternal = factory.getCopyList();
 
 		int count = 0;
-
 		for (SimulatorSettings ssExternal : listExternal) {
 			Assert.assertNotNull(ssExternal);
 			final SimulatorSettingsGridList listInternal = factory.getCopyList();
@@ -32,7 +31,6 @@ public class SimulatorSettingsGridCopyListTest {
 				Assert.assertNotNull(ssInternal);
 			}
 		}
-
 		Assert.assertEquals(factory.size() * factory.size(), count);
 	}
 }

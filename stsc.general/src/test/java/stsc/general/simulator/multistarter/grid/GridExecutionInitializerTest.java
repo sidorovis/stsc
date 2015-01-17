@@ -2,6 +2,9 @@ package stsc.general.simulator.multistarter.grid;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.common.algorithms.AlgorithmSettings;
 import stsc.general.simulator.multistarter.AlgorithmSettingsIteratorFactory;
 import stsc.general.simulator.multistarter.BadParameterException;
@@ -9,12 +12,11 @@ import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
 import stsc.general.simulator.multistarter.MpSubExecution;
-import stsc.general.simulator.multistarter.grid.AlgorithmSettingsGridIterator;
-import stsc.general.simulator.multistarter.grid.GridExecutionInitializer;
 import stsc.general.testhelper.TestStatisticsHelper;
-import junit.framework.TestCase;
 
-public class GridExecutionInitializerTest extends TestCase {
+public class GridExecutionInitializerTest {
+
+	@Test
 	public void testExecutionInitializer() throws BadParameterException {
 		AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpInteger("n", 1, 10, 2));
@@ -23,29 +25,30 @@ public class GridExecutionInitializerTest extends TestCase {
 		final GridExecutionInitializer ei = new GridExecutionInitializer("e", "a", mas);
 		int count = 0;
 		for (AlgorithmSettings algorithmSettings : ei) {
-			assertNotNull(algorithmSettings);
+			Assert.assertNotNull(algorithmSettings);
 			count += 1;
 		}
-		assertEquals(25, count);
+		Assert.assertEquals(25, count);
 		ei.reset();
 		for (AlgorithmSettings algorithmSettings : ei) {
-			assertNotNull(algorithmSettings);
+			Assert.assertNotNull(algorithmSettings);
 			count += 1;
 		}
-		assertEquals(50, count);
+		Assert.assertEquals(50, count);
 		ei.reset();
 		while (ei.hasNext()) {
 			count += 1;
 			ei.next();
 		}
-		assertEquals(75, count);
+		Assert.assertEquals(75, count);
 		while (ei.hasNext()) {
 			count += 1;
 			ei.next();
 		}
-		assertEquals(75, count);
+		Assert.assertEquals(75, count);
 	}
 
+	@Test
 	public void testExecutionInitializerWithStrings() throws BadParameterException {
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
@@ -58,9 +61,10 @@ public class GridExecutionInitializerTest extends TestCase {
 			count += 1;
 			ei.next();
 		}
-		assertEquals(12, count);
+		Assert.assertEquals(12, count);
 	}
 
+	@Test
 	public void testExecutionInitializerWithEverything() throws BadParameterException {
 		final AlgorithmSettingsIteratorFactory factory = new AlgorithmSettingsIteratorFactory(TestStatisticsHelper.getPeriod());
 		factory.add(new MpString("n", Arrays.asList(new String[] { "asd" })));
@@ -74,6 +78,6 @@ public class GridExecutionInitializerTest extends TestCase {
 			count += 1;
 			ei.next();
 		}
-		assertEquals(48, count);
+		Assert.assertEquals(48, count);
 	}
 }

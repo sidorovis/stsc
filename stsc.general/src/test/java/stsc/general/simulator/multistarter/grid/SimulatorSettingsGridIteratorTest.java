@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.common.FromToPeriod;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodAlgorithm;
@@ -15,18 +18,16 @@ import stsc.general.simulator.multistarter.BadParameterException;
 import stsc.general.simulator.multistarter.MpDouble;
 import stsc.general.simulator.multistarter.MpInteger;
 import stsc.general.simulator.multistarter.MpString;
-import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridFactory;
-import stsc.general.simulator.multistarter.grid.SimulatorSettingsGridList;
-import stsc.general.testhelper.TestStatisticsHelper;
 import stsc.general.testhelper.TestGridSimulatorSettings;
+import stsc.general.testhelper.TestStatisticsHelper;
 import stsc.general.trading.BrokerImpl;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.mocks.StockStorageMock;
-import junit.framework.TestCase;
 
-public class SimulatorSettingsGridIteratorTest extends TestCase {
+public class SimulatorSettingsGridIteratorTest {
 
+	@Test
 	public void testEmptySimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageMock();
 		final FromToPeriod period = TestStatisticsHelper.getPeriod();
@@ -36,11 +37,12 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 		int count = 0;
 		for (SimulatorSettings simulatorSettings : ssFactory.getList()) {
 			count += 1;
-			assertNotNull(simulatorSettings);
+			Assert.assertNotNull(simulatorSettings);
 		}
-		assertEquals(0, count);
+		Assert.assertEquals(0, count);
 	}
 
+	@Test
 	public void testSimulatorSettingsGridIterator() throws BadAlgorithmException, BadParameterException {
 		final StockStorage stockStorage = new StockStorageMock();
 
@@ -55,14 +57,15 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 			final StockAlgorithm saema = executionStarter.getStockAlgorithm("ema", "aapl").get();
 			final StockAlgorithm salevel = executionStarter.getStockAlgorithm("level", "aapl").get();
 			final EodAlgorithm saone = executionStarter.getEodAlgorithm("os");
-			assertNotNull(sain);
-			assertNotNull(saema);
-			assertNotNull(salevel);
-			assertNotNull(saone);
+			Assert.assertNotNull(sain);
+			Assert.assertNotNull(saema);
+			Assert.assertNotNull(salevel);
+			Assert.assertNotNull(saone);
 		}
-		assertEquals(30720, count);
+		Assert.assertEquals(30720, count);
 	}
 
+	@Test
 	public void testSimulatorSettingsGridIteratorHashCode() throws BadParameterException, BadAlgorithmException {
 		final StockStorage stockStorage = new StockStorageMock();
 		final SimulatorSettingsGridFactory ssFactory = new SimulatorSettingsGridFactory(stockStorage, TestStatisticsHelper.getPeriod());
@@ -84,8 +87,7 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 			allSize += 1;
 		}
 
-		assertEquals(4096, allSize);
-		assertEquals(256, hashes.size());
-
+		Assert.assertEquals(4096, allSize);
+		Assert.assertEquals(256, hashes.size());
 	}
 }
