@@ -5,6 +5,7 @@ import java.rmi.UnexpectedException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.controlsfx.dialog.Dialogs;
 import org.jfree.chart.JFreeChart;
@@ -92,16 +93,16 @@ public class StrategiesPane extends BorderPane {
 		setupControlPane(startCalculation(period, model, stockStorage, simulationType));
 	}
 
-	private void setupControlPane(StrategySearcher ss) throws UnexpectedException {
-		if (ss == null) {
+	private void setupControlPane(Optional<StrategySearcher> ss) throws UnexpectedException {
+		if (!ss.isPresent()) {
 			throw new UnexpectedException("Calculations are not started, problem on StrategySearch creation phaze.");
 		}
 		controlPane.setOnStopButtonAction(() -> {
-			if (ss != null) {
-				ss.stopSearch();
+			if (ss.isPresent()) {
+				ss.get().stopSearch();
 			}
 		});
-		ss.addIndicatorProgress(new IndicatorProgressListener() {
+		ss.get().addIndicatorProgress(new IndicatorProgressListener() {
 			@Override
 			public void processed(double percent) {
 				Platform.runLater(() -> {
@@ -187,8 +188,8 @@ public class StrategiesPane extends BorderPane {
 		chart.getXYPlot().setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 	}
 
-	private StrategySearcher startCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage,
-			SimulationType simulationType) throws BadAlgorithmException, InterruptedException {
+	private Optional<StrategySearcher> startCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel,
+			StockStorage stockStorage, SimulationType simulationType) throws BadAlgorithmException, InterruptedException {
 		if (simulationType.equals(SimulationType.GRID)) {
 			return startGridCalculation(period, settingsModel, stockStorage);
 		} else {
@@ -196,23 +197,23 @@ public class StrategiesPane extends BorderPane {
 		}
 	}
 
-	private StrategySearcher startGridCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
-			throws BadAlgorithmException {
+	private Optional<StrategySearcher> startGridCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel,
+			StockStorage stockStorage) throws BadAlgorithmException {
 		try {
 			final SimulatorSettingsGridList list = settingsModel.generateGridSettings(stockStorage, period);
 			checkCorrectSize(list.size());
 			final ObservableStrategySelector selector = createSelector();
 
 			addListenerOnChanged(selector.getStrategyList());
-			return new StrategyGridSearcher(list, selector, 4);
+			return Optional.of(new StrategyGridSearcher(list, selector, 4));
 		} catch (BadParameterException e1) {
 			Dialogs.create().owner(owner).showException(e1);
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	private StrategySearcher startGeneticCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel, StockStorage stockStorage)
-			throws BadAlgorithmException, InterruptedException {
+	private Optional<StrategySearcher> startGeneticCalculation(FromToPeriod period, SimulatorSettingsModel settingsModel,
+			StockStorage stockStorage) throws BadAlgorithmException, InterruptedException {
 		try {
 			final SimulatorSettingsGeneticList list = settingsModel.generateGeneticSettings(stockStorage, period);
 			final ObservableStrategySelector selector = createSelector();
@@ -227,11 +228,11 @@ public class StrategiesPane extends BorderPane {
 					Dialogs.create().owner(owner).showException(e);
 				}
 			}).start();
-			return sgs;
+			return Optional.of(sgs);
 		} catch (BadParameterException badParameterException) {
 			Dialogs.create().owner(owner).showException(badParameterException);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private ObservableStrategySelector createSelector() {
