@@ -39,7 +39,8 @@ class CallableArticlesDownload implements Callable<Optional<Articles>> {
 					.count(amountOfArticlesPerRequest).articles();
 			return Optional.of(result);
 		} catch (Exception e) {
-			logger.error("download failed at article hashcode create: " + category.getId() + " subcategory " + subcategory.getId() + "");
+			logger.error("download failed at article hashcode create: " + category.getId() + " subcategory " + subcategory.getId() + " "
+					+ e.getMessage());
 		}
 		return Optional.empty();
 	}
