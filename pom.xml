@@ -30,8 +30,8 @@
   </build>
   <modules>
 	<module>stsc.common</module>
-<!--
 	<module>stsc.signals</module>
+<!--
 	<module>stsc.algorithms</module>
 	<module>stsc.storage</module>
 	<module>stsc.general</module>

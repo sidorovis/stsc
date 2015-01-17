@@ -1,12 +1,15 @@
 package stsc.signals;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class BooleanSignalTest extends TestCase {
+public class BooleanSignalTest {
+
+	@Test
 	public void testBooleanSignal() {
 		BooleanSignal bsTrue = new BooleanSignal(true);
-		assertEquals(true, bsTrue.value.booleanValue());
+		Assert.assertEquals(true, bsTrue.value.booleanValue());
 		BooleanSignal bsFalse = new BooleanSignal(false);
-		assertEquals(false, bsFalse.value.booleanValue());
+		Assert.assertEquals(false, bsFalse.value.booleanValue());
 	}
 }

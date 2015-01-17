@@ -1,18 +1,23 @@
 package stsc.signals;
 
-import stsc.common.Side;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class SideSignalTest extends TestCase {
+import stsc.common.Side;
+
+public class SideSignalTest {
+
+	@Test
 	public void testSideSignalLong() {
 		SideSignal sideSignal = new SideSignal(Side.LONG, 14.56);
-		assertEquals(Side.LONG, sideSignal.getSide());
-		assertEquals(14.56, sideSignal.getValue(), 0.01);
+		Assert.assertEquals(Side.LONG, sideSignal.getSide());
+		Assert.assertEquals(14.56, sideSignal.getValue(), 0.01);
 	}
 
+	@Test
 	public void testSideSignalShort() {
 		SideSignal sideSignal = new SideSignal(Side.SHORT, -414.56);
-		assertEquals(Side.SHORT, sideSignal.getSide());
-		assertEquals(-414.56, sideSignal.getValue(), 0.01);
+		Assert.assertEquals(Side.SHORT, sideSignal.getSide());
+		Assert.assertEquals(-414.56, sideSignal.getValue(), 0.01);
 	}
 }
