@@ -8,10 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 
@@ -41,10 +37,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	private final FeedzillaOrmliteStorage feedzillaStorage;
 	private final FeedDataDownloader downloader;
 
-	private Map<String, FeedzillaCategory> feedzillaCategories = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, FeedzillaSubcategory> feedzillaSubcategories = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, FeedzillaArticle> feedzillaArticles = Collections.synchronizedMap(new HashMap<>());
-
 	FeedzillaDownloadApplication() throws SQLException, IOException {
 		this(DEVELOPER_FILENAME);
 	}
@@ -53,8 +45,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		this.feedzillaStorage = new FeedzillaOrmliteStorage(propertyFile);
 		this.downloader = new FeedDataDownloader(1, 100);
 		logger.debug("going to creating hashes");
-		createHashMap();
-		logger.debug("hashes created: " + feedzillaCategories.size() + " " + feedzillaSubcategories.size() + " " + feedzillaArticles.size());
 		downloader.addReceiver(this);
 	}
 
@@ -69,58 +59,15 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		}
 	}
 
-	private void createHashMap() {
-		final List<FeedzillaCategory> categories = feedzillaStorage.getCategories();
-		for (FeedzillaCategory category : categories) {
-			addCategory(category);
-		}
-		final List<FeedzillaSubcategory> subcategories = feedzillaStorage.getSubcategories();
-		for (FeedzillaSubcategory subcategory : subcategories) {
-			addSubcategory(subcategory);
-		}
-		final List<FeedzillaArticle> articles = feedzillaStorage.getArticles();
-		for (FeedzillaArticle article : articles) {
-			addArticle(article);
-		}
-	}
-
-	private String createHashCode(FeedzillaCategory c) {
-		return s(c.getDisplayCategoryName()).hashCode() + " " + s(c.getEnglishCategoryName()).hashCode() + " "
-				+ s(c.getUrlCategoryName()).hashCode();
-	}
-
-	private String createHashCode(FeedzillaSubcategory c) {
-		return s(c.getDisplaySubcategoryName()).hashCode() + " " + s(c.getEnglishSubcategoryName()).hashCode() + " "
-				+ s(c.getUrlSubcategoryName()).hashCode();
-	}
-
-	private String createHashCode(FeedzillaArticle a) {
-		return s(a.getAuthor()).hashCode() + " " + s(a.getTitle()).hashCode() + " " + s(a.getPublishDate()) + s(a.getUrl()).hashCode()
-				+ " " + s(a.getSummary()).hashCode();
-	}
-
-	private static <T> String s(T v) {
-		if (v == null) {
-			return "null";
-		}
-		return v.toString();
-	}
-
 	private FeedzillaCategory createFeedzillaCategory(Category from) {
 		final FeedzillaCategory result = new FeedzillaCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
-		if (cacheHave(result)) {
-			return feedzillaCategories.get(createHashCode(result));
-		}
-		return result;
+		return feedzillaStorage.update(result);
 	}
 
 	private FeedzillaSubcategory createFeedzillaSubcategory(FeedzillaCategory categoryFrom, Subcategory from) {
 		final FeedzillaSubcategory result = new FeedzillaSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(),
 				from.getUrlName());
-		if (cacheHave(result)) {
-			return feedzillaSubcategories.get(createHashCode(result));
-		}
-		return result;
+		return feedzillaStorage.update(result);
 	}
 
 	private FeedzillaArticle createFeedzillaArticle(FeedzillaSubcategory subcategory, Article from) {
@@ -131,11 +78,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		to.setTitle(from.getTitle());
 		to.setUrl(from.getUrl());
 
-		if (cacheHave(to)) {
-			return feedzillaArticles.get(createHashCode(to));
-		}
-
-		return to;
+		return feedzillaStorage.update(to);
 	}
 
 	private void stop() throws InterruptedException {
@@ -146,52 +89,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	public void newArticle(Category newCategory, Subcategory newSubcategory, Article newArticle) {
 		final FeedzillaCategory category = createFeedzillaCategory(newCategory);
 		final FeedzillaSubcategory subcategory = createFeedzillaSubcategory(category, newSubcategory);
-		final FeedzillaArticle article = createFeedzillaArticle(subcategory, newArticle);
-		addCategory(category);
-		addSubcategory(subcategory);
-		addArticle(article);
-	}
-
-	private boolean cacheHave(FeedzillaCategory category) {
-		final String hashCode = createHashCode(category);
-		return feedzillaCategories.containsKey(hashCode);
-	}
-
-	private boolean cacheHave(FeedzillaSubcategory subcategory) {
-		final String hashCode = createHashCode(subcategory);
-		return feedzillaSubcategories.containsKey(hashCode);
-	}
-
-	private boolean cacheHave(FeedzillaArticle article) {
-		final String hashCode = createHashCode(article);
-		return feedzillaArticles.containsKey(hashCode);
-	}
-
-	private void addCategory(FeedzillaCategory category) {
-		if (cacheHave(category))
-			return;
-		if (feedzillaStorage.createOrUpdateCategory(category).getNumLinesChanged() != 0) {
-			final String hashCode = createHashCode(category);
-			feedzillaCategories.put(hashCode, category);
-		}
-	}
-
-	private void addSubcategory(FeedzillaSubcategory subcategory) {
-		if (cacheHave(subcategory))
-			return;
-		if (feedzillaStorage.createOrUpdateSubcategory(subcategory).getNumLinesChanged() != 0) {
-			final String hashCode = createHashCode(subcategory);
-			feedzillaSubcategories.put(hashCode, subcategory);
-		}
-	}
-
-	private void addArticle(FeedzillaArticle article) {
-		if (cacheHave(article))
-			return;
-		if (feedzillaStorage.createOrUpdateArticle(article).getNumLinesChanged() != 0) {
-			final String hashCode = createHashCode(article);
-			feedzillaArticles.put(hashCode, article);
-		}
+		createFeedzillaArticle(subcategory, newArticle);
 	}
 
 	public static void main(String[] args) {

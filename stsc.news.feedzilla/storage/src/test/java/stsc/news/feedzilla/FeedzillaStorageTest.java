@@ -23,9 +23,9 @@ public class FeedzillaStorageTest {
 	@Test
 	public void testFeedzillaCategory() throws IOException, SQLException {
 		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
-		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null)).getNumLinesChanged());
-		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url")).getNumLinesChanged());
-		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null)).getNumLinesChanged());
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null)));
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url")));
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null)));
 
 		final List<FeedzillaCategory> categories = fffs.getCategories();
 		Assert.assertEquals(3, categories.size());
@@ -49,8 +49,8 @@ public class FeedzillaStorageTest {
 		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
 		final FeedzillaCategory category = new FeedzillaCategory("display", "english", null);
 		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
-		fffs.createOrUpdateCategory(category);
-		fffs.createOrUpdateSubcategory(subcategory);
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(category));
+		Assert.assertEquals(1, fffs.createOrUpdateSubcategory(subcategory));
 		fffs.dropAllCategories();
 	}
 
@@ -61,9 +61,9 @@ public class FeedzillaStorageTest {
 		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
 		final FeedzillaArticle article = new FeedzillaArticle(subcategory, "author", new Date());
 		article.setSummary("Summary");
-		fffs.createOrUpdateCategory(category);
-		fffs.createOrUpdateSubcategory(subcategory);
-		fffs.createOrUpdateArticle(article);
+		Assert.assertEquals(1, fffs.createOrUpdateCategory(category));
+		Assert.assertEquals(1, fffs.createOrUpdateSubcategory(subcategory));
+		Assert.assertEquals(1, fffs.createOrUpdateArticle(article));
 		fffs.dropAllCategories();
 	}
 }
