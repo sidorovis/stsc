@@ -2,6 +2,9 @@ package stsc.integration.tests.storage;
 
 import java.text.ParseException;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.stock.indices.primitive.Sma;
 import stsc.common.algorithms.AlgorithmSettings;
@@ -13,10 +16,10 @@ import stsc.integration.tests.helper.TestAlgorithmsHelper;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.mocks.StockStorageMock;
-import junit.framework.TestCase;
 
-public class ExecutionsStorageTest extends TestCase {
+public class ExecutionsStorageTest {
 
+	@Test
 	public void testExecutionsStorage() throws BadAlgorithmException {
 		final AlgorithmSettings smaSettings = TestAlgorithmsHelper.getSettings().addSubExecutionName("asd");
 
@@ -26,22 +29,23 @@ public class ExecutionsStorageTest extends TestCase {
 		eStorage.addEodExecution(new EodExecution("t1", TestingEodAlgorithm.class, TestAlgorithmsHelper.getSettings()));
 		ExecutionStarter es = eStorage.initialize(new BrokerImpl(new StockStorageMock()));
 
-		assertEquals(1, es.getEodAlgorithmsSize());
+		Assert.assertEquals(1, es.getEodAlgorithmsSize());
 
-		assertNotNull(es.getEodAlgorithm("t1"));
-		assertNull(es.getEodAlgorithm("t2"));
+		Assert.assertNotNull(es.getEodAlgorithm("t1"));
+		Assert.assertNull(es.getEodAlgorithm("t2"));
 
-		assertNotNull(es.getStockAlgorithm("t2", "aapl"));
-		assertNotNull(es.getStockAlgorithm("t2", "adm"));
-		assertNotNull(es.getStockAlgorithm("t2", "spy"));
+		Assert.assertNotNull(es.getStockAlgorithm("t2", "aapl"));
+		Assert.assertNotNull(es.getStockAlgorithm("t2", "adm"));
+		Assert.assertNotNull(es.getStockAlgorithm("t2", "spy"));
 
-		assertFalse(es.getStockAlgorithm("t1", "aapl").isPresent());
-		assertFalse(es.getStockAlgorithm("t1", "adm").isPresent());
-		assertFalse(es.getStockAlgorithm("t1", "spy").isPresent());
+		Assert.assertFalse(es.getStockAlgorithm("t1", "aapl").isPresent());
+		Assert.assertFalse(es.getStockAlgorithm("t1", "adm").isPresent());
+		Assert.assertFalse(es.getStockAlgorithm("t1", "spy").isPresent());
 
-		assertFalse(es.getStockAlgorithm("t2", "non").isPresent());
+		Assert.assertFalse(es.getStockAlgorithm("t2", "non").isPresent());
 	}
 
+	@Test
 	public void testExceptionOnInit() throws BadAlgorithmException, ParseException {
 		final ExecutionsStorage es = new ExecutionsStorage();
 		es.addStockExecution(new StockExecution("t2", Sma.class, TestAlgorithmsHelper.getSettings()));
@@ -52,7 +56,7 @@ public class ExecutionsStorageTest extends TestCase {
 		} catch (BadAlgorithmException e) {
 			throwed = true;
 		}
-		assertEquals(true, throwed);
+		Assert.assertEquals(true, throwed);
 	}
 
 }

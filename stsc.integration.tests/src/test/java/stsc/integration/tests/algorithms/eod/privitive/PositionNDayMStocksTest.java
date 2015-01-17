@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.Input;
 import stsc.algorithms.eod.primitive.PositionNDayMStocks;
@@ -21,24 +24,26 @@ import stsc.general.statistic.Statistics;
 import stsc.general.trading.TradeProcessorInit;
 import stsc.integration.tests.helper.EodAlgoInitHelper;
 import stsc.storage.mocks.StockStorageMock;
-import junit.framework.TestCase;
 
-public class PositionNDayMStocksTest extends TestCase {
+public class PositionNDayMStocksTest {
+
+	@Test
 	public void testPositionNDayMStocksException() {
 		try {
 			EodAlgoInitHelper init = new EodAlgoInitHelper("eName");
 			new PositionNDayMStocks(init.getInit());
-			fail("PositionNDayMStocks algo ");
+			Assert.fail("PositionNDayMStocks algo ");
 		} catch (Exception e) {
-			assertTrue(e instanceof BadAlgorithmException);
+			Assert.assertTrue(e instanceof BadAlgorithmException);
 		}
 	}
 
+	@Test
 	public void testPositionNDayMStocks() throws Exception {
 		Statistics s = Simulator.fromFile(new File("./test_data/simulator_tests/ndays.ini")).getStatistics();
-		assertNotNull(s);
-		assertEquals(550.0, s.getPeriod());
-		assertEquals(-21.784509, s.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertNotNull(s);
+		Assert.assertEquals(550.0, s.getPeriod(), Settings.doubleEpsilon);
+		Assert.assertEquals(-21.784509, s.getAvGain(), Settings.doubleEpsilon);
 	}
 
 	private void testHelper(String side) throws BadAlgorithmException, BadSignalException, ParseException, IOException {
@@ -61,9 +66,10 @@ public class PositionNDayMStocksTest extends TestCase {
 
 		final Simulator simulator = new Simulator(new SimulatorSettings(0, init));
 		final Statistics s = simulator.getStatistics();
-		assertEquals(0.247656, s.getFreq(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.247656, s.getFreq(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testStaticPositionNDayMStocks() throws ParseException, BadAlgorithmException, BadSignalException, IOException {
 		testHelper("long");
 		testHelper("short");

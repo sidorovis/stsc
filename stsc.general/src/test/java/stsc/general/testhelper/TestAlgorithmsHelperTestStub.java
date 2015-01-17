@@ -1,9 +1,12 @@
 package stsc.general.testhelper;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestAlgorithmsHelperTestStub extends TestCase {
+public class TestAlgorithmsHelperTestStub {
+
+	@Test
 	public void testStub() {
-		assertNotNull(TestStstGeneralHelper.getEodAlgorithmInit());
+		Assert.assertNotNull(TestStstGeneralHelper.getEodAlgorithmInit());
 	}
 }
