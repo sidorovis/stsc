@@ -36,10 +36,10 @@
 	<module>stsc.general</module>
 	<module>stsc.integration.tests</module>
 	<module>stsc.stocks.yahoo</module>
-<!--
 	<module>stsc.performance</module>
 	<module>stsc.distributed.hadoop</module>
 	<module>stsc.frontend.zozka</module> 
+<!--
 	<module>stsc.news.feedzilla</module>
 -->
   </modules>

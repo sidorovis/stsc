@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.DataOutputByteBuffer;
+import org.junit.Assert;
+import org.junit.Test;
 
 import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -15,9 +17,8 @@ import stsc.general.statistic.Statistics;
 import stsc.general.strategy.TradingStrategy;
 import stsc.general.testhelper.TestGeneticSimulatorSettings;
 import stsc.storage.mocks.StockStorageMock;
-import junit.framework.TestCase;
 
-public class TradingStrategyWritableTest extends TestCase {
+public class TradingStrategyWritableTest {
 
 	private SimulatorSettings getSettings() throws BadAlgorithmException {
 		final SimulatorSettingsGeneticList list = TestGeneticSimulatorSettings.getGeneticList();
@@ -32,6 +33,7 @@ public class TradingStrategyWritableTest extends TestCase {
 		return new Statistics(list);
 	}
 
+	@Test
 	public void testTradingStrategyWritable() throws BadAlgorithmException, IOException {
 		final TradingStrategy ts = new TradingStrategy(getSettings(), getStatistics());
 
@@ -47,8 +49,8 @@ public class TradingStrategyWritableTest extends TestCase {
 		tswCopy.readFields(input);
 
 		final TradingStrategy tsCopy = tswCopy.getTradingStrategy(StockStorageMock.getStockStorage());
-		assertEquals(ts.getAvGain(), tsCopy.getAvGain(), Settings.doubleEpsilon);
-		assertEquals(ts.getSettings().stringHashCode(), tsCopy.getSettings().stringHashCode());
-		assertEquals(ts.getStatistics().getPeriod(), tsCopy.getStatistics().getPeriod());
+		Assert.assertEquals(ts.getAvGain(), tsCopy.getAvGain(), Settings.doubleEpsilon);
+		Assert.assertEquals(ts.getSettings().stringHashCode(), tsCopy.getSettings().stringHashCode());
+		Assert.assertEquals(ts.getStatistics().getPeriod(), tsCopy.getStatistics().getPeriod(), Settings.doubleEpsilon);
 	}
 }
