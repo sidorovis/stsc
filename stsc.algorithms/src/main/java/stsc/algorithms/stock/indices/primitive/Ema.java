@@ -48,13 +48,13 @@ public class Ema extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		final int signalIndex = getCurrentIndex();
-		final double price = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double price = getSignal(subAlgoName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(price));
 		} else {
 			final SignalContainer<? extends SerieSignal> previousEmaSignal = getSignal(signalIndex - 1);
 			if (previousEmaSignal != null) {
-				final double previousEmaValue = previousEmaSignal.getSignal(DoubleSignal.class).getValue();
+				final double previousEmaValue = previousEmaSignal.getContent(DoubleSignal.class).getValue();
 				final double value = P.getValue() * price + (1.0 - P.getValue()) * previousEmaValue;
 				addSignal(day.getDate(), new DoubleSignal(value));
 			}

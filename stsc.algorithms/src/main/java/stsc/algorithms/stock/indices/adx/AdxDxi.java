@@ -41,7 +41,7 @@ public class AdxDxi extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		adxSmaDi.process(day);
-		final ListOfDoubleSignal adxSmaDiSignal = getSignal(adxSmaDiName, day.getDate()).getSignal(ListOfDoubleSignal.class);
+		final ListOfDoubleSignal adxSmaDiSignal = getSignal(adxSmaDiName, day.getDate()).getContent(ListOfDoubleSignal.class);
 		final double diMinus = adxSmaDiSignal.getValues().get(0);
 		final double diPlus = adxSmaDiSignal.getValues().get(1);
 		if (Double.compare(diPlus + diMinus, 0.0) == 0) {

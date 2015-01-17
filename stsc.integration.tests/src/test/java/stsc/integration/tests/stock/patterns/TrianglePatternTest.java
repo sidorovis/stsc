@@ -52,7 +52,7 @@ public class TrianglePatternTest {
 			if (sc == null) {
 				continue;
 			}
-			final List<Double> v = sc.getSignal(ListOfDoubleSignal.class).getValues();
+			final List<Double> v = sc.getContent(ListOfDoubleSignal.class).getValues();
 
 			final double x = v.get(1);
 			final double y = v.get(2);
@@ -60,13 +60,13 @@ public class TrianglePatternTest {
 			Assert.assertTrue(x >= (i - aaplIndex + 2));
 			Assert.assertTrue(x <= (i - aaplIndex + 3));
 
-			final double maxLineStdDev = ss.getStockSignal(sn, "tp_Max", day.getDate()).getSignal(DoubleSignal.class).getValue();
-			final double minLineStdDev = ss.getStockSignal(sn, "tp_Min", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double maxLineStdDev = ss.getStockSignal(sn, "tp_Max", day.getDate()).getContent(DoubleSignal.class).getValue();
+			final double minLineStdDev = ss.getStockSignal(sn, "tp_Min", day.getDate()).getContent(DoubleSignal.class).getValue();
 
-			final List<Double> lcMax = ss.getStockSignal(sn, "tp_Max_Lss", day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
+			final List<Double> lcMax = ss.getStockSignal(sn, "tp_Max_Lss", day.getDate()).getContent(ListOfDoubleSignal.class).getValues();
 			final double eY = lcMax.get(0) + lcMax.get(1) * x;
 
-			final List<Double> lcMin = ss.getStockSignal(sn, "tp_Min_Lss", day.getDate()).getSignal(ListOfDoubleSignal.class).getValues();
+			final List<Double> lcMin = ss.getStockSignal(sn, "tp_Min_Lss", day.getDate()).getContent(ListOfDoubleSignal.class).getValues();
 
 			Assert.assertEquals(eY, y, Settings.doubleEpsilon);
 

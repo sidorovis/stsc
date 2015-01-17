@@ -39,6 +39,6 @@ public final class EodAlgorithmTest extends TestCase {
 		EodAlgorithmHelper eah = new EodAlgorithmHelper(init.getInit());
 		final Date theDate = new Date();
 		eah.process(new Date(), new HashMap<String, Day>());
-		assertEquals(SerieSignal.class, init.getStorage().getEodSignal("a", theDate).getSignal(SerieSignal.class).getClass());
+		assertEquals(SerieSignal.class, init.getStorage().getEodSignal("a", theDate).getContent(SerieSignal.class).getClass());
 	}
 }

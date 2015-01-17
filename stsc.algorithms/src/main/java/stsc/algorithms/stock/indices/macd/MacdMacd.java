@@ -58,8 +58,8 @@ public class MacdMacd extends StockAlgorithm {
 		emaS.process(day);
 		emaL.process(day);
 
-		final double sValue = getSignal(emaSname, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double lValue = getSignal(emaLname, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double sValue = getSignal(emaSname, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double lValue = getSignal(emaLname, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 		addSignal(day.getDate(), new DoubleSignal(sValue - lValue));
 	}

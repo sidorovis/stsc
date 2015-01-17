@@ -3,6 +3,7 @@ package stsc.integration.tests.algorithms.stock.indices.adx;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -37,13 +38,17 @@ public class AdxDxiTest {
 			final Day day = days.get(i);
 			adxDxi.process(day);
 
-			final ListOfDoubleSignal s = adxInit.getStorage().getStockSignal("aapl", "adx_adxSmaDiName", day.getDate())
+			final Optional<ListOfDoubleSignal> s = adxInit.getStorage().getStockSignal("aapl", "adx_adxSmaDiName", day.getDate())
 					.getSignal(ListOfDoubleSignal.class);
 
-			final double m = s.getValues().get(0);
-			final double p = s.getValues().get(1);
+			if (!s.isPresent()) {
+				return;
+			}
 
-			final double r = adxInit.getStorage().getStockSignal("aapl", "adx", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double m = s.get().getValues().get(0);
+			final double p = s.get().getValues().get(1);
+
+			final double r = adxInit.getStorage().getStockSignal("aapl", "adx", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			if (Double.compare(p + m, 0.0) == 0) {
 				Assert.assertEquals(100.0, r, Settings.doubleEpsilon);

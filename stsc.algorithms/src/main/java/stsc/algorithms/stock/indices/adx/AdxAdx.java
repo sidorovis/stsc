@@ -59,7 +59,7 @@ public class AdxAdx extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		adxDxi.process(day);
 		adxDxiSma.process(day);
-		addSignal(day.getDate(), getSignal(adxDxiSmaName, day.getDate()).getSignal(DoubleSignal.class));
+		addSignal(day.getDate(), getSignal(adxDxiSmaName, day.getDate()).getContent(DoubleSignal.class));
 	}
 
 }

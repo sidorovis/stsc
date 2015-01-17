@@ -41,15 +41,15 @@ public class MfiMfiTest {
 			mfi.process(day);
 
 			if (i == aaplIndex) {
-				final double mfV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf", day.getDate()).getSignal(DoubleSignal.class)
+				final double mfV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				p += mfV;
 			} else {
 				final double mtVprevious = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf_mfiTp", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 				final double mtV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf_mfiTp", day.getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double mfV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double mfV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				if (mtV >= mtVprevious) {
 					p += mfV;
@@ -58,18 +58,18 @@ public class MfiMfiTest {
 				}
 				if (i - aaplIndex > 5) {
 					final double mtOldPreviousV = stockInit.getStorage()
-							.getStockSignal("aapl", "mfi_mfiMf_mfiTp", days.get(i - 6).getDate()).getSignal(DoubleSignal.class).getValue();
+							.getStockSignal("aapl", "mfi_mfiMf_mfiTp", days.get(i - 6).getDate()).getContent(DoubleSignal.class).getValue();
 					final double mtOldV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf_mfiTp", days.get(i - 5).getDate())
-							.getSignal(DoubleSignal.class).getValue();
+							.getContent(DoubleSignal.class).getValue();
 					final double mfOldV = stockInit.getStorage().getStockSignal("aapl", "mfi_mfiMf", days.get(i - 5).getDate())
-							.getSignal(DoubleSignal.class).getValue();
+							.getContent(DoubleSignal.class).getValue();
 					if (mtOldV >= mtOldPreviousV) {
 						p -= mfOldV;
 					} else {
 						n -= mfOldV;
 					}
 				}
-				final double v = stockInit.getStorage().getStockSignal("aapl", "mfi", day.getDate()).getSignal(DoubleSignal.class)
+				final double v = stockInit.getStorage().getStockSignal("aapl", "mfi", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				if (Double.compare(0.0, n) == 0) {
 					Assert.assertEquals(v, 50.0, Settings.doubleEpsilon);

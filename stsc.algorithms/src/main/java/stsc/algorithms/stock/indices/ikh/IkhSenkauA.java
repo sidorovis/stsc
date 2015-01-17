@@ -49,8 +49,8 @@ public class IkhSenkauA extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		tenkan.process(day);
 		kijun.process(day);
-		final double vTenkan = getSignal(tenkanName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double vKijun = getSignal(kijunName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double vTenkan = getSignal(tenkanName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double vKijun = getSignal(kijunName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		addSignal(day.getDate(), new DoubleSignal((vTenkan + vKijun) / 2.0));
 	}
 }

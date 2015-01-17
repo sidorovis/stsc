@@ -47,7 +47,7 @@ final class FeedDataDownloader {
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
-	private final ExecutorService executor = Executors.newFixedThreadPool(100);
+	private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 	private volatile boolean stopped = false;
 

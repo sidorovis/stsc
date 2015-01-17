@@ -40,10 +40,10 @@ public class MacdDivergenceTest {
 			macdD.process(day);
 
 			final double macdSignal = stockInit.getStorage().getStockSignal("aapl", "macdD_MacdSignal", day.getDate())
-					.getSignal(DoubleSignal.class).getValue();
+					.getContent(DoubleSignal.class).getValue();
 			final double macd = stockInit.getStorage().getStockSignal("aapl", "macdD_MacdSignal_Macd", day.getDate())
-					.getSignal(DoubleSignal.class).getValue();
-			final double v = stockInit.getStorage().getStockSignal("aapl", "macdD", day.getDate()).getSignal(DoubleSignal.class).getValue();
+					.getContent(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aapl", "macdD", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			Assert.assertEquals(macd - macdSignal, v, Settings.doubleEpsilon);
 		}

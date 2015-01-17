@@ -36,11 +36,11 @@ public class LeastSquaresQuadraticStdDevTest {
 			in.process(day);
 			lsqp.process(day);
 
-			final double a0 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double a0 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(0);
-			final double a1 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double a1 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(1);
-			final double a2 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double a2 = init.getStorage().getStockSignal("aapl", "lsqp_Lsq", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(2);
 			double diffSum = 0.0;
 			double x = i - Math.min(5, i - aaplIndex);
@@ -50,7 +50,7 @@ public class LeastSquaresQuadraticStdDevTest {
 				x += 1.0;
 			}
 
-			final double v = init.getStorage().getStockSignal("aapl", "lsqp", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = init.getStorage().getStockSignal("aapl", "lsqp", day.getDate()).getContent(DoubleSignal.class).getValue();
 			Assert.assertEquals(diffSum, v, Settings.doubleEpsilon);
 		}
 	}

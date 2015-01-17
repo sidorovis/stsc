@@ -47,7 +47,7 @@ public class AtrTrueRangeTest {
 			final double v2 = Math.abs(p.getHigh() - pp.getClose());
 			final double v3 = Math.abs(p.getLow() - pp.getClose());
 
-			final double value = stockInit.getStorage().getStockSignal("aapl", "atrTr", day.getDate()).getSignal(DoubleSignal.class)
+			final double value = stockInit.getStorage().getStockSignal("aapl", "atrTr", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 
 			Assert.assertEquals(Math.max(Math.max(v1, v2), v3), value, Settings.doubleEpsilon);

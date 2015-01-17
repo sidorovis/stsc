@@ -34,7 +34,7 @@ public class IkhSenkauB extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		prototype.process(day);
-		final DoubleSignal v = getSignal(prototypeName, day.getDate()).getSignal(DoubleSignal.class);
+		final DoubleSignal v = getSignal(prototypeName, day.getDate()).getContent(DoubleSignal.class);
 		addSignal(day.getDate(), v);
 	}
 }

@@ -33,7 +33,7 @@ public class IkhChikouTest {
 		for (int i = aaplIndex; i < days.size(); ++i) {
 			final Day day = days.get(i);
 			chikou.process(day);
-			final double v = stockInit.getStorage().getStockSignal("aapl", "chikou", day.getDate()).getSignal(DoubleSignal.class)
+			final double v = stockInit.getStorage().getStockSignal("aapl", "chikou", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 			if (i - aaplIndex < tm) {
 				Assert.assertEquals(days.get(aaplIndex).getPrices().getClose(), v, Settings.doubleEpsilon);

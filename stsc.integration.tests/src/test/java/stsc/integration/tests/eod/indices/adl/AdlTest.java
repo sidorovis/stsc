@@ -101,9 +101,9 @@ public class AdlTest {
 				previosAdln += (at + ut - dt) / (at + ut + dt);
 				previosAdlt += (at - dt) / (at + ut + dt);
 
-				final double signalValue = signalsStorage.getEodSignal("adl", d1.getDate()).getSignal(DoubleSignal.class).getValue();
-				final double signalValueN = signalsStorage.getEodSignal("adln", d1.getDate()).getSignal(DoubleSignal.class).getValue();
-				final double signalValueT = signalsStorage.getEodSignal("adlt", d1.getDate()).getSignal(DoubleSignal.class).getValue();
+				final double signalValue = signalsStorage.getEodSignal("adl", d1.getDate()).getContent(DoubleSignal.class).getValue();
+				final double signalValueN = signalsStorage.getEodSignal("adln", d1.getDate()).getContent(DoubleSignal.class).getValue();
+				final double signalValueT = signalsStorage.getEodSignal("adlt", d1.getDate()).getContent(DoubleSignal.class).getValue();
 
 				Assert.assertEquals(previosAdl, signalValue, Settings.doubleEpsilon);
 				Assert.assertEquals(previosAdln, signalValueN, Settings.doubleEpsilon);

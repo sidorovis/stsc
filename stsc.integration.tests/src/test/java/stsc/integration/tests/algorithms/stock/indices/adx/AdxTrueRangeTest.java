@@ -41,7 +41,7 @@ public class AdxTrueRangeTest {
 			final double min = Math.min(days.get(aaplIndex).getPrices().getLow(), days.get(aaplIndex).getPrices().getClose());
 
 			Assert.assertEquals(max - min,
-					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex).getDate()).getSignal(DoubleSignal.class)
+					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex).getDate()).getContent(DoubleSignal.class)
 							.getValue(), Settings.doubleEpsilon);
 		}
 		{
@@ -49,7 +49,7 @@ public class AdxTrueRangeTest {
 			final double min = Math.min(days.get(aaplIndex + 1).getPrices().getLow(), days.get(aaplIndex).getPrices().getClose());
 
 			Assert.assertEquals(max - min,
-					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex + 1).getDate()).getSignal(DoubleSignal.class)
+					atrInit.getStorage().getStockSignal("aapl", "atr", days.get(aaplIndex + 1).getDate()).getContent(DoubleSignal.class)
 							.getValue(), Settings.doubleEpsilon);
 		}
 	}

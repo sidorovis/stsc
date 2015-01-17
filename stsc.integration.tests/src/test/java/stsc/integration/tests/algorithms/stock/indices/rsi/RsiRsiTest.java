@@ -39,12 +39,12 @@ public class RsiRsiTest {
 		}
 		final Day lastDay = days.get(days.size() - 1);
 
-		final double u = stockInit.getStorage().getStockSignal("aapl", "rsi_RsiEmaU", lastDay.getDate()).getSignal(DoubleSignal.class)
+		final double u = stockInit.getStorage().getStockSignal("aapl", "rsi_RsiEmaU", lastDay.getDate()).getContent(DoubleSignal.class)
 				.getValue();
-		final double d = stockInit.getStorage().getStockSignal("aapl", "rsi_RsiEmaD", lastDay.getDate()).getSignal(DoubleSignal.class)
+		final double d = stockInit.getStorage().getStockSignal("aapl", "rsi_RsiEmaD", lastDay.getDate()).getContent(DoubleSignal.class)
 				.getValue();
 
-		final double v = stockInit.getStorage().getStockSignal("aapl", "rsi", lastDay.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double v = stockInit.getStorage().getStockSignal("aapl", "rsi", lastDay.getDate()).getContent(DoubleSignal.class).getValue();
 
 		Assert.assertEquals(100 - 100 / (1 + u / d), v, Settings.doubleEpsilon);
 	}

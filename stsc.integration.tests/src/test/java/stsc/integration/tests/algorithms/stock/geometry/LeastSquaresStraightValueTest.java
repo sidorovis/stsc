@@ -55,7 +55,7 @@ public class LeastSquaresStraightValueTest {
 			in.process(day);
 			lss.process(day);
 
-			final List<Double> values = init.getStorage().getStockSignal("aapl", "lss", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final List<Double> values = init.getStorage().getStockSignal("aapl", "lss", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues();
 			Assert.assertEquals(2, values.size());
 

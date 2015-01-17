@@ -32,12 +32,12 @@ public class Tma extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		dma.process(day);
-		final double dmaValue = getSignal(dmaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double dmaValue = getSignal(dmaName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		final int signalIndex = getCurrentIndex();
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(dmaValue));
 		} else {
-			final double previous = getSignal(signalIndex - 1).getSignal(DoubleSignal.class).getValue();
+			final double previous = getSignal(signalIndex - 1).getContent(DoubleSignal.class).getValue();
 			final double value = P * dmaValue + (1 - P) * previous;
 			addSignal(day.getDate(), new DoubleSignal(value));
 		}

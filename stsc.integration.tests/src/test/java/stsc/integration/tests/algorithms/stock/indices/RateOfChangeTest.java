@@ -35,14 +35,14 @@ public class RateOfChangeTest {
 			in.process(day);
 			roc.process(day);
 			if (i == aaplIndex) {
-				Assert.assertEquals(0.0, init.getStorage().getStockSignal("aapl", "roc", day.getDate()).getSignal(DoubleSignal.class)
+				Assert.assertEquals(0.0, init.getStorage().getStockSignal("aapl", "roc", day.getDate()).getContent(DoubleSignal.class)
 						.getValue(), Settings.doubleEpsilon);
 			} else if (i - aaplIndex < 5) {
 				Assert.assertEquals(days.get(i).getPrices().getOpen() / days.get(aaplIndex).getPrices().getOpen(), init.getStorage()
-						.getStockSignal("aapl", "roc", day.getDate()).getSignal(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
+						.getStockSignal("aapl", "roc", day.getDate()).getContent(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
 			} else {
 				Assert.assertEquals(days.get(i).getPrices().getOpen() / days.get(i - 5).getPrices().getOpen(), init.getStorage()
-						.getStockSignal("aapl", "roc", day.getDate()).getSignal(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
+						.getStockSignal("aapl", "roc", day.getDate()).getContent(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ public class MinForNDaysTest {
 			final Day day = days.get(i);
 			inAlgo.process(day);
 			min4N.process(day);
-			final double v = stockInit.getStorage().getStockSignal("aapl", "min4N", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aapl", "min4N", day.getDate()).getContent(DoubleSignal.class).getValue();
 			if (i - aaplIndex < 5) {
 				Assert.assertEquals(day.getPrices().getHigh(), v, Settings.doubleEpsilon);
 			} else if (i - aaplIndex < 10) {

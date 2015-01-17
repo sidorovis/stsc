@@ -32,9 +32,9 @@ public class StochasticOscillatorTest {
 			so.process(day);
 
 			final double ct = day.getPrices().getClose();
-			final double ln = init.getStorage().getStockSignal("aapl", "so_Ln", day.getDate()).getSignal(DoubleSignal.class).getValue();
-			final double hn = init.getStorage().getStockSignal("aapl", "so_Hn", day.getDate()).getSignal(DoubleSignal.class).getValue();
-			final double v = init.getStorage().getStockSignal("aapl", "so", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double ln = init.getStorage().getStockSignal("aapl", "so_Ln", day.getDate()).getContent(DoubleSignal.class).getValue();
+			final double hn = init.getStorage().getStockSignal("aapl", "so_Hn", day.getDate()).getContent(DoubleSignal.class).getValue();
+			final double v = init.getStorage().getStockSignal("aapl", "so", day.getDate()).getContent(DoubleSignal.class).getValue();
 
 			Assert.assertEquals(100.0 * (ct - ln) / (hn - ln), v, Settings.doubleEpsilon);
 		}

@@ -64,7 +64,7 @@ public class LeastSquaresQuadraticValueTest {
 			in.process(day);
 			lsq.process(day);
 
-			final List<Double> values = init.getStorage().getStockSignal("aapl", "lsq", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final List<Double> values = init.getStorage().getStockSignal("aapl", "lsq", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues();
 			Assert.assertEquals(3, values.size());
 

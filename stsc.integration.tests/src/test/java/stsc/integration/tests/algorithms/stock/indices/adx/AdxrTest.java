@@ -38,12 +38,12 @@ public class AdxrTest {
 		}
 
 		final double previous = adxInit.getStorage().getStockSignal("aapl", "adxr_AdxAdx", days.size() - 15 - aaplIndex)
-				.getSignal(DoubleSignal.class).getValue();
+				.getContent(DoubleSignal.class).getValue();
 		final double current = adxInit.getStorage().getStockSignal("aapl", "adxr_AdxAdx", days.size() - 1 - aaplIndex)
-				.getSignal(DoubleSignal.class).getValue();
+				.getContent(DoubleSignal.class).getValue();
 
 		final double adxrValue = adxInit.getStorage().getStockSignal("aapl", "adxr", days.size() - 1 - aaplIndex)
-				.getSignal(DoubleSignal.class).getValue();
+				.getContent(DoubleSignal.class).getValue();
 
 		Assert.assertEquals((current - previous) / 2.0, adxrValue, Settings.doubleEpsilon);
 	}

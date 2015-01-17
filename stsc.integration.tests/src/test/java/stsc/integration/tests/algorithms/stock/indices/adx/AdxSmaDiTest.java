@@ -38,13 +38,13 @@ public class AdxSmaDiTest {
 			adiSma.process(day);
 
 			final double adxMinusSma = adiInit.getStorage().getStockSignal("aapl", "smadi_AdxDi_MinusAdapter_Sma", day.getDate())
-					.getSignal(DoubleSignal.class).getValue();
+					.getContent(DoubleSignal.class).getValue();
 			final double adxPlusSma = adiInit.getStorage().getStockSignal("aapl", "smadi_AdxDi_PlusAdapter_Sma", day.getDate())
-					.getSignal(DoubleSignal.class).getValue();
+					.getContent(DoubleSignal.class).getValue();
 
-			final double aMinus = adiInit.getStorage().getStockSignal("aapl", "smadi", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double aMinus = adiInit.getStorage().getStockSignal("aapl", "smadi", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(0);
-			final double aPlus = adiInit.getStorage().getStockSignal("aapl", "smadi", day.getDate()).getSignal(ListOfDoubleSignal.class)
+			final double aPlus = adiInit.getStorage().getStockSignal("aapl", "smadi", day.getDate()).getContent(ListOfDoubleSignal.class)
 					.getValues().get(1);
 
 			Assert.assertEquals(adxMinusSma, aMinus, Settings.doubleEpsilon);

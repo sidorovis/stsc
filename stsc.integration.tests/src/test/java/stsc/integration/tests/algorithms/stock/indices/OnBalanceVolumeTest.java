@@ -33,8 +33,8 @@ public class OnBalanceVolumeTest {
 			obv.process(day);
 			if (i - aaplIndex >= 5) {
 				final double oldObValue = init.getStorage().getStockSignal("aapl", "obv", days.get(i - 5).getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double obValue = init.getStorage().getStockSignal("aapl", "obv", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double obValue = init.getStorage().getStockSignal("aapl", "obv", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
 
 				final double vtn = days.get(i - 5).getPrices().getClose();

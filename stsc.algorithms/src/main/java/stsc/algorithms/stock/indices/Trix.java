@@ -35,8 +35,8 @@ public class Trix extends StockAlgorithm {
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(0.0));
 		} else {
-			final double prevoiusTmaValue = getSignal(tmaName, signalIndex - 1).getSignal(DoubleSignal.class).getValue();
-			final double tmaValue = getSignal(tmaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double prevoiusTmaValue = getSignal(tmaName, signalIndex - 1).getContent(DoubleSignal.class).getValue();
+			final double tmaValue = getSignal(tmaName, day.getDate()).getContent(DoubleSignal.class).getValue();
 			if (Double.compare(prevoiusTmaValue, 0.0) == 0) {
 				addSignal(day.getDate(), new DoubleSignal(50.0));
 			} else {

@@ -38,7 +38,7 @@ public class RateOfChange extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final double pt = getSignal(subAlgoName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double pt = getSignal(subAlgoName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		period.addLast(pt);
 		if (index == 0) {
 			addSignal(day.getDate(), new DoubleSignal(0.0));

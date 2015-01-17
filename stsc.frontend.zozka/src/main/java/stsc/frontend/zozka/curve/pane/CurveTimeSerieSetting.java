@@ -107,7 +107,7 @@ public class CurveTimeSerieSetting extends CurveChartSetting {
 		for (int i = 0; i < size; ++i) {
 			final SignalContainer<? extends SerieSignal> s = signalsStorage.getEodSignal(outName, i);
 			if (s != null) {
-				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).getValue());
+				timeSeries.add(new Day(s.getDate()), s.getContent(DoubleSignal.class).getValue());
 			}
 		}
 		return timeSeries;
@@ -120,7 +120,7 @@ public class CurveTimeSerieSetting extends CurveChartSetting {
 		for (int i = 0; i < size; ++i) {
 			final SignalContainer<? extends SerieSignal> s = signalsStorage.getStockSignal(stockName, outName, i);
 			if (s != null) {
-				timeSeries.add(new Day(s.getDate()), s.getSignal(DoubleSignal.class).getValue());
+				timeSeries.add(new Day(s.getDate()), s.getContent(DoubleSignal.class).getValue());
 			}
 		}
 		return timeSeries;

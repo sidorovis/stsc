@@ -36,7 +36,7 @@ public class AdiAccDistTest {
 			final double denominator = p.getHigh() - p.getLow();
 			final double value = ((p.getClose() - p.getLow() - (p.getHigh() - p.getClose()))) / (denominator);
 			sum += value * day.getVolume() * 0.0001;
-			Assert.assertEquals(sum, stockInit.getStorage().getStockSignal("aapl", "accDist", day.getDate()).getSignal(DoubleSignal.class)
+			Assert.assertEquals(sum, stockInit.getStorage().getStockSignal("aapl", "accDist", day.getDate()).getContent(DoubleSignal.class)
 					.getValue(), Settings.doubleEpsilon);
 		}
 	}

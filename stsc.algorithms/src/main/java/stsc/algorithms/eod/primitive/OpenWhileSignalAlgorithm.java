@@ -3,6 +3,7 @@ package stsc.algorithms.eod.primitive;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import stsc.algorithms.EodPosition;
 import stsc.common.BadSignalException;
@@ -52,11 +53,11 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 					longPositions.remove(stockName);
 				}
 			} else {
-				final SideSignal ss = isSignal.getSignal(SideSignal.class);
-				if (ss == null) {
+				final Optional<SideSignal> ss = isSignal.getSignal(SideSignal.class);
+				if (!ss.isPresent()) {
 					return;
 				}
-				final Side signalSide = ss.getSide();
+				final Side signalSide = ss.get().getSide();
 				if (signalSide == Side.LONG && !longPositions.containsKey(stockName)) {
 					final int sharesSize = getSharesSize(i.getValue().getPrices().getOpen());
 					longPositions.put(stockName, new EodPosition(stockName, Side.LONG, sharesSize));

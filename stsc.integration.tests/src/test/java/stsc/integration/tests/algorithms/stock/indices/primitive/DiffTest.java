@@ -60,12 +60,12 @@ public class DiffTest {
 
 		final SignalsStorage ss = stockInit.getStorage();
 		Assert.assertNotNull(ss.getStockSignal("aapl", "diff", 0));
-		Assert.assertEquals(0.0, ss.getStockSignal("aapl", "diff", 0).getSignal(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
+		Assert.assertEquals(0.0, ss.getStockSignal("aapl", "diff", 0).getContent(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
 
-		final double emaValue = ss.getStockSignal("aapl", "ema", 4).getSignal(DoubleSignal.class).getValue();
-		final double smaValue = ss.getStockSignal("aapl", "sma", 4).getSignal(DoubleSignal.class).getValue();
+		final double emaValue = ss.getStockSignal("aapl", "ema", 4).getContent(DoubleSignal.class).getValue();
+		final double smaValue = ss.getStockSignal("aapl", "sma", 4).getContent(DoubleSignal.class).getValue();
 
-		Assert.assertEquals(emaValue - smaValue, ss.getStockSignal("aapl", "diff", 4).getSignal(DoubleSignal.class).getValue(),
+		Assert.assertEquals(emaValue - smaValue, ss.getStockSignal("aapl", "diff", 4).getContent(DoubleSignal.class).getValue(),
 				Settings.doubleEpsilon);
 	}
 }

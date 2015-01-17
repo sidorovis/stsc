@@ -45,14 +45,14 @@ public class BollingerBandsTest {
 
 		final Day lastDay = days.get(days.size() - 1);
 
-		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getSignal(DoubleSignal.class)
+		final Double smaValue = bbInit.getStorage().getStockSignal("aapl", "BB_Sma_bb", lastDay.getDate()).getContent(DoubleSignal.class)
 				.getValue();
 		final Double stDevValue = bbInit.getStorage().getStockSignal("aapl", "BB_StDev_bb", lastDay.getDate())
-				.getSignal(DoubleSignal.class).getValue();
+				.getContent(DoubleSignal.class).getValue();
 
-		final Double bbLowValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class)
+		final Double bbLowValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getContent(ListOfDoubleSignal.class)
 				.getValues().get(0);
-		final Double bbHighValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getSignal(ListOfDoubleSignal.class)
+		final Double bbHighValue = bbInit.getStorage().getStockSignal("aapl", "bb", lastDay.getDate()).getContent(ListOfDoubleSignal.class)
 				.getValues().get(1);
 
 		Assert.assertEquals(smaValue - 2 * stDevValue, bbLowValue, Settings.doubleEpsilon);

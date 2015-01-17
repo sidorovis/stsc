@@ -51,7 +51,7 @@ public class AdlAdl extends EodAlgorithm {
 		if (index == 0) {
 			addSignal(date, new DoubleSignal(0.0));
 		} else {
-			addSignal(date, new DoubleSignal(at - dt + getSignal(index - 1).getSignal(DoubleSignal.class).getValue()));
+			addSignal(date, new DoubleSignal(at - dt + getSignal(index - 1).getContent(DoubleSignal.class).getValue()));
 		}
 	}
 

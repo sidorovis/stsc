@@ -29,7 +29,7 @@ public class SignalsStorageTest {
 		final Date d = new LocalDate(2010, 10, 20).toDate();
 		signalsStorage.addEodSignal("e1", d, new TestEodSignal(12));
 		final SignalContainer<? extends SerieSignal> ts = signalsStorage.getEodSignal("e1", d);
-		Assert.assertEquals(12, ts.getSignal(TestEodSignal.class).id);
+		Assert.assertEquals(12, ts.getContent(TestEodSignal.class).id);
 		Assert.assertEquals(0, ts.getIndex());
 		Assert.assertEquals(d, ts.getDate());
 	}
@@ -53,9 +53,9 @@ public class SignalsStorageTest {
 		}
 		Assert.assertTrue(exception);
 
-		Assert.assertEquals(12, signalsStorage.getEodSignal("e1", 0).getSignal(TestEodSignal.class).id);
-		Assert.assertEquals(13, signalsStorage.getEodSignal("e1", 2).getSignal(TestEodSignal.class).id);
-		Assert.assertEquals(15, signalsStorage.getEodSignal("e1", 1).getSignal(TestEodSignal.class).id);
-		Assert.assertEquals(14, signalsStorage.getEodSignal("e1", 3).getSignal(TestEodSignal.class).id);
+		Assert.assertEquals(12, signalsStorage.getEodSignal("e1", 0).getContent(TestEodSignal.class).id);
+		Assert.assertEquals(13, signalsStorage.getEodSignal("e1", 2).getContent(TestEodSignal.class).id);
+		Assert.assertEquals(15, signalsStorage.getEodSignal("e1", 1).getContent(TestEodSignal.class).id);
+		Assert.assertEquals(14, signalsStorage.getEodSignal("e1", 3).getContent(TestEodSignal.class).id);
 	}
 }

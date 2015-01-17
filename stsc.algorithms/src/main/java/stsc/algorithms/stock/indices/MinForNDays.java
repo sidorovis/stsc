@@ -49,7 +49,7 @@ public class MinForNDays extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final double dayValue = getSignal(subExecutionName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double dayValue = getSignal(subExecutionName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		addLowHighToBefore(dayValue);
 		if (signalIndex < sleepagePeriod) {
 			addSignal(day.getDate(), new DoubleSignal(dayValue));

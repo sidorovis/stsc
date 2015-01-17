@@ -93,10 +93,11 @@ public class PositionNDayMStocks extends EodAlgorithm {
 	private ArrayList<Factor> getSortedStocks(final Date date, final HashMap<String, Day> datafeed) {
 		final ArrayList<Factor> sortedStocks = new ArrayList<>();
 		for (Map.Entry<String, Day> i : datafeed.entrySet()) {
-			String stockName = i.getKey();
-			SignalContainer<? extends SerieSignal> signal = getSignal(stockName, factorExecutionName, date);
-			if (signal != null && signal.getSignal(DoubleSignal.class) != null)
-				sortedStocks.add(new Factor(signal.getSignal(DoubleSignal.class).getValue(), stockName));
+			final String stockName = i.getKey();
+			final SignalContainer<? extends SerieSignal> signal = getSignal(stockName, factorExecutionName, date);
+			if (signal != null && signal.isType(DoubleSignal.class)) {
+				sortedStocks.add(new Factor(signal.getContent(DoubleSignal.class).getValue(), stockName));
+			}
 		}
 		Collections.sort(sortedStocks);
 		return sortedStocks;

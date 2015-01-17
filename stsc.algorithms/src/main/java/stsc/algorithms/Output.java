@@ -1,6 +1,7 @@
 package stsc.algorithms;
 
 import java.util.List;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -37,17 +38,17 @@ public class Output extends StockAlgorithm {
 		SignalContainer<? extends SerieSignal> signalHandler = getSignal(fromExecution, day.getDate());
 		if (signalHandler == null)
 			return;
-		final SerieSignal signal = signalHandler.getValue();
-		if (signal == null)
+		final Optional<? extends SerieSignal> signal = signalHandler.getValue();
+		if (!signal.isPresent())
 			return;
-		if (signal instanceof DoubleSignal) {
-			addSignal(day.getDate(), signal);
-		} else if (signal instanceof SideSignal) {
-			final SideSignal sideSignal = (SideSignal) signal;
+		if (signal.get() instanceof DoubleSignal) {
+			addSignal(day.getDate(), signal.get());
+		} else if (signal.get() instanceof SideSignal) {
+			final SideSignal sideSignal = (SideSignal) signal.get();
 			final DoubleSignal result = new DoubleSignal(sideSignal.getValue() * sideSignal.getSide().value());
 			addSignal(day.getDate(), result);
-		} else if (signal instanceof IntegerSignal) {
-			addSignal(day.getDate(), new DoubleSignal(((IntegerSignal) signal).value));
+		} else if (signal.get() instanceof IntegerSignal) {
+			addSignal(day.getDate(), new DoubleSignal(((IntegerSignal) signal.get()).value));
 		}
 	}
 }

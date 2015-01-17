@@ -5,10 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import stsc.common.BadSignalException;
+import stsc.common.signals.SerieSignal;
 import stsc.common.signals.SignalContainer;
 import stsc.common.signals.SignalsSerie;
 
-public final class CommonSignalsSerie<SignalType> extends SignalsSerie<SignalType> {
+public final class CommonSignalsSerie<SignalType extends SerieSignal> extends SignalsSerie<SignalType> {
 
 	private final ArrayList<SignalContainer<? extends SignalType>> signalList = new ArrayList<>();
 	private final HashMap<Date, SignalContainer<? extends SignalType>> signalMap = new HashMap<>();

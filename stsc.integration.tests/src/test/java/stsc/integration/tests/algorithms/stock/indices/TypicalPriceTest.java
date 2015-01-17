@@ -37,7 +37,7 @@ public class TypicalPriceTest {
 			tp.process(day);
 
 			final double typicalPrice = (day.getPrices().getHigh() + day.getPrices().getLow() + day.getPrices().getClose()) / 3;
-			Assert.assertEquals(typicalPrice, tpInit.getStorage().getStockSignal("aapl", "tp", day.getDate()).getSignal(DoubleSignal.class)
+			Assert.assertEquals(typicalPrice, tpInit.getStorage().getStockSignal("aapl", "tp", day.getDate()).getContent(DoubleSignal.class)
 					.getValue(), Settings.doubleEpsilon);
 		}
 	}

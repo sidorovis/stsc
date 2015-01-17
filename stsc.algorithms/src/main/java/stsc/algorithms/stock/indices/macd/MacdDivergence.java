@@ -38,8 +38,8 @@ public class MacdDivergence extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		macdSignal.process(day);
 
-		final double macd = getSignal(macdName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final double signal = getSignal(macdSignalName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final double macd = getSignal(macdName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final double signal = getSignal(macdSignalName, day.getDate()).getContent(DoubleSignal.class).getValue();
 
 		addSignal(day.getDate(), new DoubleSignal(macd - signal));
 	}

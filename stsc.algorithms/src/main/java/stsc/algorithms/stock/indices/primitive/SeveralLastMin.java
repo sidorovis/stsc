@@ -43,7 +43,7 @@ public class SeveralLastMin extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final Double v = getSignal(subExecutionName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final Double v = getSignal(subExecutionName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (currentIndex == 0) {
 			lastValue = v;
 			addSignal(day.getDate(), new DoubleSignal(lastValue));

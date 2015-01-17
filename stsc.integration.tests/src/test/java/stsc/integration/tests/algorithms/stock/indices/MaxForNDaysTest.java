@@ -38,7 +38,7 @@ public class MaxForNDaysTest {
 			final Day day = days.get(i);
 			inAlgo.process(day);
 			max4N.process(day);
-			final double v = stockInit.getStorage().getStockSignal("aapl", "max4N", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aapl", "max4N", day.getDate()).getContent(DoubleSignal.class).getValue();
 			if (i - aaplIndex < 5) {
 				Assert.assertEquals(day.getPrices().getOpen(), v, Settings.doubleEpsilon);
 			} else if (i - aaplIndex < 10) {

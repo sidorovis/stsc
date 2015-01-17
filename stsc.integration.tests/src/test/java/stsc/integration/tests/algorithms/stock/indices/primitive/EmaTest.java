@@ -43,11 +43,11 @@ public class EmaTest {
 			ema.process(day);
 		}
 		Assert.assertEquals(days.get(aaplIndex).getPrices().getOpen(),
-				emaInit.getStorage().getStockSignal("aapl", "testEma", 0).getSignal(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
+				emaInit.getStorage().getStockSignal("aapl", "testEma", 0).getContent(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
 
 		final double secondValue = days.get(aaplIndex).getPrices().getOpen() * 0.7 + 0.3 * days.get(aaplIndex + 1).getPrices().getOpen();
 		Assert.assertEquals(secondValue,
-				emaInit.getStorage().getStockSignal("aapl", "testEma", 1).getSignal(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
+				emaInit.getStorage().getStockSignal("aapl", "testEma", 1).getContent(DoubleSignal.class).getValue(), Settings.doubleEpsilon);
 
 		double lastValue = 0.0;
 		final int size = emaInit.getStorage().getIndexSize("aapl", "testEma");
@@ -59,7 +59,7 @@ public class EmaTest {
 				lastValue = open * 0.3 + 0.7 * lastValue;
 			}
 		}
-		Assert.assertEquals(lastValue, emaInit.getStorage().getStockSignal("aapl", "testEma", size - 1).getSignal(DoubleSignal.class)
+		Assert.assertEquals(lastValue, emaInit.getStorage().getStockSignal("aapl", "testEma", size - 1).getContent(DoubleSignal.class)
 				.getValue(), Settings.doubleEpsilon);
 	}
 }

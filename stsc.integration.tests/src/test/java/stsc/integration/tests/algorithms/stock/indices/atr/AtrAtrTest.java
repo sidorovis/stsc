@@ -35,8 +35,8 @@ public class AtrAtrTest {
 			atrAtr.process(day);
 
 			final double atrTrValue = stockInit.getStorage().getStockSignal("aapl", "atr_AtrTr", day.getDate())
-					.getSignal(DoubleSignal.class).getValue();
-			final double value = stockInit.getStorage().getStockSignal("aapl", "atr", day.getDate()).getSignal(DoubleSignal.class)
+					.getContent(DoubleSignal.class).getValue();
+			final double value = stockInit.getStorage().getStockSignal("aapl", "atr", day.getDate()).getContent(DoubleSignal.class)
 					.getValue();
 
 			if (i - aaplIndex < 14) {
@@ -44,7 +44,7 @@ public class AtrAtrTest {
 				Assert.assertEquals(sum / (i - aaplIndex + 1), value, Settings.doubleEpsilon);
 			} else {
 				final double previousValue = stockInit.getStorage().getStockSignal("aapl", "atr", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
+						.getContent(DoubleSignal.class).getValue();
 
 				Assert.assertEquals((previousValue * 13 + atrTrValue) / 14, value, Settings.doubleEpsilon);
 			}

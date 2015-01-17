@@ -66,8 +66,8 @@ public class BollingerBands extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		sma.process(day);
 		smStDev.process(day);
-		final Double sma = getSignal(smaName, day.getDate()).getSignal(DoubleSignal.class).getValue();
-		final Double stDev = getSignal(smStDevName, day.getDate()).getSignal(DoubleSignal.class).getValue();
+		final Double sma = getSignal(smaName, day.getDate()).getContent(DoubleSignal.class).getValue();
+		final Double stDev = getSignal(smStDevName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		final ListOfDoubleSignal signal = new ListOfDoubleSignal();
 		signal.addDouble(sma - stDev * K.getValue());
 		signal.addDouble(sma + stDev * K.getValue());

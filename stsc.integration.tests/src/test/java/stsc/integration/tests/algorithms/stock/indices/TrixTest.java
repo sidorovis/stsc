@@ -37,15 +37,15 @@ public class TrixTest {
 			inAlgo.process(day);
 			trix.process(day);
 
-			final double v = stockInit.getStorage().getStockSignal("aapl", "trix", day.getDate()).getSignal(DoubleSignal.class).getValue();
+			final double v = stockInit.getStorage().getStockSignal("aapl", "trix", day.getDate()).getContent(DoubleSignal.class).getValue();
 			if (i == aaplIndex) {
 				Assert.assertEquals(0.0, v, Settings.doubleEpsilon);
 			} else {
 				final double pTmaV = stockInit.getStorage().getStockSignal("aapl", "trix_Tma", days.get(i - 1).getDate())
-						.getSignal(DoubleSignal.class).getValue();
-				final double tmaV = stockInit.getStorage().getStockSignal("aapl", "trix_Tma", day.getDate()).getSignal(DoubleSignal.class)
+						.getContent(DoubleSignal.class).getValue();
+				final double tmaV = stockInit.getStorage().getStockSignal("aapl", "trix_Tma", day.getDate()).getContent(DoubleSignal.class)
 						.getValue();
-				final double p = stockInit.getStorage().getStockSignal("aapl", "trix", days.get(i).getDate()).getSignal(DoubleSignal.class)
+				final double p = stockInit.getStorage().getStockSignal("aapl", "trix", days.get(i).getDate()).getContent(DoubleSignal.class)
 						.getValue();
 				Assert.assertEquals(100.0 * (tmaV - pTmaV) / pTmaV, p, Settings.doubleEpsilon);
 			}
