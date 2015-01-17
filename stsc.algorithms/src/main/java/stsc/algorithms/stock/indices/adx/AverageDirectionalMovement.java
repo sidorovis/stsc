@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.adx;
 
+import java.util.Optional;
+
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -17,8 +19,8 @@ public class AverageDirectionalMovement extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
-		return new LimitSignalsSerie<>(DoubleSignal.class);
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class));
 	}
 
 	@Override

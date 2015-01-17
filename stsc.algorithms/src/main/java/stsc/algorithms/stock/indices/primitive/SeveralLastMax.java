@@ -2,6 +2,7 @@ package stsc.algorithms.stock.indices.primitive;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import stsc.common.BadSignalException;
@@ -36,9 +37,9 @@ public class SeveralLastMax extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(DoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, size));
 	}
 
 	@Override

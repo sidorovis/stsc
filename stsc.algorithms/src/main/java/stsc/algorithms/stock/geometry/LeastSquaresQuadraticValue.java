@@ -1,6 +1,7 @@
 package stsc.algorithms.stock.geometry;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import org.ejml.factory.SingularMatrixException;
 import org.ejml.simple.SimpleMatrix;
@@ -35,9 +36,9 @@ public class LeastSquaresQuadraticValue extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(ListOfDoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(ListOfDoubleSignal.class, size));
 		// y = a0 + a1 * x + a2 * x ^ 2
 		// double get by index 0 -> a0
 		// double get by index 1 -> a1

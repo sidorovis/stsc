@@ -2,6 +2,7 @@ package stsc.algorithms.stock.geometry;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.BadSignalException;
@@ -48,9 +49,9 @@ public class LeastSquaresQuadraticStdDev extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(DoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, size));
 	}
 
 	@Override

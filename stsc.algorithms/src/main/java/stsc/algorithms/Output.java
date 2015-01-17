@@ -29,8 +29,8 @@ public class Output extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
-		return new CommonSignalsSerie<SerieSignal>(DoubleSignal.class);
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
+		return Optional.of(new CommonSignalsSerie<SerieSignal>(DoubleSignal.class));
 	}
 
 	@Override

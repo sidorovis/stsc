@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.primitive;
 
+import java.util.Optional;
+
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.Side;
@@ -24,8 +26,8 @@ public class Level extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
-		return new LimitSignalsSerie<SerieSignal>(SideSignal.class);
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+		return Optional.of(new LimitSignalsSerie<SerieSignal>(SideSignal.class));
 	}
 
 	@Override

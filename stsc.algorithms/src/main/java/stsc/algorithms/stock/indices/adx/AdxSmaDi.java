@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.adx;
 
+import java.util.Optional;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.ListOfDoubleAdapter;
 import stsc.algorithms.stock.indices.primitive.Sma;
@@ -66,9 +68,9 @@ public class AdxSmaDi extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(ListOfDoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(ListOfDoubleSignal.class, size));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package stsc.algorithms.stock.patterns;
 
 import java.util.List;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -24,9 +25,9 @@ public class WedgePattern extends GeometryTriangleStockAlgorithmBase {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(ListOfDoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(ListOfDoubleSignal.class, size));
 	}
 
 	@Override

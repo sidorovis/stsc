@@ -2,6 +2,7 @@ package stsc.storage;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.signals.SignalContainer;
@@ -23,11 +24,11 @@ public class SignalsStorageImpl implements SignalsStorage {
 	}
 
 	@Override
-	public void registerStockAlgorithmSerie(String stockName, String executionName, SignalsSerie<SerieSignal> serie) {
-		if (serie != null) {
+	public void registerStockAlgorithmSerie(String stockName, String executionName, Optional<SignalsSerie<SerieSignal>> serie) {
+		if (serie.isPresent()) {
 			final String key = stockAlgorithmKey(stockName, executionName);
 			synchronized (stockSignals) {
-				stockSignals.put(key, serie);
+				stockSignals.put(key, serie.get());
 			}
 		}
 	}

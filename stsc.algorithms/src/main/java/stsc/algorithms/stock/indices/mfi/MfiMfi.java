@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.mfi;
 
+import java.util.Optional;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -36,10 +38,10 @@ public class MfiMfi extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int n = initialize.getSettings().getIntegerSetting("N", 2).getValue();
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(DoubleSignal.class, Math.max(size + 2, n + 2));
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, Math.max(size + 2, n + 2)));
 	}
 
 	@Override

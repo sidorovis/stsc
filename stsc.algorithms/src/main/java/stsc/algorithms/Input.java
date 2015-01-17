@@ -1,5 +1,7 @@
 package stsc.algorithms;
 
+import java.util.Optional;
+
 import stsc.common.BadSignalException;
 import stsc.common.Day;
 import stsc.common.algorithms.BadAlgorithmException;
@@ -60,8 +62,8 @@ public class Input extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
-		return new LimitSignalsSerie<SerieSignal>(DoubleSignal.class);
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
+		return Optional.of(new LimitSignalsSerie<SerieSignal>(DoubleSignal.class));
 	}
 
 	@Override

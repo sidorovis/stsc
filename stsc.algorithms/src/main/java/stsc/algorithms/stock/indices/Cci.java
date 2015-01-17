@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices;
 
+import java.util.Optional;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.stock.indices.primitive.SmStDev;
 import stsc.algorithms.stock.indices.primitive.Sma;
@@ -56,9 +58,9 @@ public class Cci extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<SerieSignal>(DoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<SerieSignal>(DoubleSignal.class, size));
 	}
 
 	@Override

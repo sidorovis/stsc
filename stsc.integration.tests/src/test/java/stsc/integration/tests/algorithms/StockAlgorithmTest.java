@@ -2,6 +2,7 @@ package stsc.integration.tests.algorithms;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +26,8 @@ public final class StockAlgorithmTest {
 		}
 
 		@Override
-		public SignalsSerie<SerieSignal> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
-			return new LimitSignalsSerie<>(SerieSignal.class);
+		public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
+			return Optional.of(new LimitSignalsSerie<>(SerieSignal.class));
 		}
 
 		@Override

@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.msi;
 
+import java.util.Optional;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.algorithms.stock.indices.primitive.Ema;
 import stsc.common.BadSignalException;
@@ -41,9 +43,9 @@ public class McClellanOscillator extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<>(DoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, size));
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package stsc.algorithms.stock.indices.adx;
 
+import java.util.Optional;
+
 import stsc.algorithms.AlgorithmSettingsImpl;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -32,9 +34,9 @@ public class Adxr extends StockAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(StockAlgorithmInit initialize) throws BadAlgorithmException {
 		final int size = initialize.getSettings().getIntegerSetting("N", 14).getValue().intValue() + 1;
-		return new LimitSignalsSerie<>(DoubleSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, size));
 	}
 
 	@Override
