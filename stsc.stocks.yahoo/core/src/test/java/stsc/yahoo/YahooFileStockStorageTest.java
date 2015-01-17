@@ -2,11 +2,12 @@ package stsc.yahoo;
 
 import java.io.IOException;
 
-import stsc.common.storage.StockStorage;
-import stsc.yahoo.YahooFileStockStorage;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class YahooFileStockStorageTest extends TestCase {
+import stsc.common.storage.StockStorage;
+
+public class YahooFileStockStorageTest {
 
 	private static StockStorage stockStorage = null;
 
@@ -19,20 +20,22 @@ public class YahooFileStockStorageTest extends TestCase {
 		return stockStorage;
 	}
 
+	@Test
 	public void testStockStorage() throws Exception {
 		final StockStorage stockStorage = getStockStorage();
-		assertNotNull(stockStorage);
-		assertNotNull(stockStorage.getStock("aaae"));
-		assertNotNull(stockStorage.getStock("aapl"));
-		assertFalse(stockStorage.getStock("anse").isPresent());
-		assertEquals(7430, stockStorage.getStock("aapl").get().getDays().size());
+		Assert.assertNotNull(stockStorage);
+		Assert.assertNotNull(stockStorage.getStock("aaae"));
+		Assert.assertNotNull(stockStorage.getStock("aapl"));
+		Assert.assertFalse(stockStorage.getStock("anse").isPresent());
+		Assert.assertEquals(7430, stockStorage.getStock("aapl").get().getDays().size());
 	}
 
+	@Test
 	public void testLiqudityStorageReader() throws Exception {
 		final StockStorage stockStorage = getStockStorage();
-		assertNotNull(stockStorage);
-		assertNotNull(stockStorage.getStock("aaae"));
-		assertNotNull(stockStorage.getStock("aapl"));
-		assertFalse(stockStorage.getStock("noexistsstock").isPresent());
+		Assert.assertNotNull(stockStorage);
+		Assert.assertNotNull(stockStorage.getStock("aaae"));
+		Assert.assertNotNull(stockStorage.getStock("aapl"));
+		Assert.assertFalse(stockStorage.getStock("noexistsstock").isPresent());
 	}
 }
