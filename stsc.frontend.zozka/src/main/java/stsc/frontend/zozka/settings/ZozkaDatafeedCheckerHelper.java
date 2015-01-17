@@ -177,11 +177,12 @@ public class ZozkaDatafeedCheckerHelper {
 	 */
 	private boolean redownloadStock(Stage owner, String stockName) {
 		try {
-			final UnitedFormatStock s = YahooDownloadHelper.download(stockName);
+			final Optional<UnitedFormatStock> sPtr = YahooDownloadHelper.download(stockName);
 			final Optional<Stock> stockPtr = dataStockList.getStockStorage().getStock(stockName);
-			if (!stockPtr.isPresent()) {
+			if (!sPtr.isPresent() || !stockPtr.isPresent()) {
 				return false;
 			}
+			final UnitedFormatStock s = sPtr.get();
 			final boolean isSave = showStockRepresentation(owner, s, stockPtr.get(), true);
 			if (isSave) {
 				s.storeUniteFormatToFolder(datafeedPath + YahooFileStockStorage.DATA_FOLDER);

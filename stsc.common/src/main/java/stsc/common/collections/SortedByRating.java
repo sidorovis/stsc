@@ -3,6 +3,7 @@ package stsc.common.collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -39,16 +40,16 @@ public class SortedByRating<T> {
 		return false;
 	}
 
-	public T deleteLast() {
+	public Optional<T> deleteLast() {
 		if (storageByRating.isEmpty()) {
-			return null;
+			return Optional.empty();
 		}
 		final List<T> strategies = storageByRating.get(storageByRating.firstKey());
 		final T result = strategies.remove(strategies.size() - 1);
 		if (strategies.isEmpty()) {
 			storageByRating.remove(storageByRating.firstKey());
 		}
-		return result;
+		return Optional.ofNullable(result);
 	}
 
 	public int size() {

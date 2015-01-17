@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Optional;
 
 import stsc.common.stocks.UnitedFormatStock;
+
 import com.google.common.io.CharStreams;
 
 public final class YahooDownloadHelper {
@@ -14,7 +16,7 @@ public final class YahooDownloadHelper {
 	private static final int waitTriesAmount = 5;
 	private static final int waitTimeBetweenTries = 500;
 
-	public static final UnitedFormatStock download(String stockName) throws InterruptedException {
+	public static final Optional<UnitedFormatStock> download(String stockName) throws InterruptedException {
 		int tries = 0;
 		String error = "";
 		UnitedFormatStock newStock = null;
@@ -24,8 +26,8 @@ public final class YahooDownloadHelper {
 				final String stockContent = CharStreams.toString(new InputStreamReader(url.openStream()));
 				newStock = UnitedFormatStock.newFromString(stockName, stockContent);
 				if (newStock.getDays().isEmpty())
-					return null;
-				return newStock;
+					return Optional.empty();
+				return Optional.of(newStock);
 			} catch (ParseException | IOException e) {
 				error = e.toString();
 			}

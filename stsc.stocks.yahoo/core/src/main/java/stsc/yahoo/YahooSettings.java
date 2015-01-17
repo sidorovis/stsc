@@ -2,6 +2,7 @@ package stsc.yahoo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -44,13 +45,13 @@ public class YahooSettings {
 		return UnitedFormatStock.generatePath(dataFolder, stockName);
 	}
 
-	public UnitedFormatStock getStockFromFileSystem(String stockName) {
+	public Optional<UnitedFormatStock> getStockFromFileSystem(String stockName) {
 		UnitedFormatStock s = null;
 		try {
 			s = UnitedFormatStock.readFromUniteFormatFile(generateUniteFormatPath(stockName));
 		} catch (Exception e) {
 		}
-		return s;
+		return Optional.ofNullable(s);
 	}
 
 	public String getDataFolder() {

@@ -1,5 +1,6 @@
 package stsc.general.simulator.multistarter.genetic;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import stsc.general.simulator.Simulator;
@@ -26,10 +27,12 @@ final class SimulatorCalulatingTask implements Callable<Boolean> {
 			final Statistics statistics = simulate();
 			if (statistics != null) {
 				final TradingStrategy strategy = new TradingStrategy(settings, statistics);
-				final TradingStrategy addedToStatistics = searcher.selector.addStrategy(strategy);
-				searcher.population.add(strategy);
-				searcher.sortedPopulation.put(strategy, addedToStatistics != null);
-				result = true;
+				final Optional<TradingStrategy> addedToStatistics = searcher.selector.addStrategy(strategy);
+				if (addedToStatistics.isPresent()) {
+					searcher.population.add(strategy);
+					searcher.sortedPopulation.put(strategy, addedToStatistics != null);
+					result = true;
+				}
 			}
 		} finally {
 			this.strategyGeneticSearcher.countDownLatch.countDown();

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import stsc.common.Settings;
@@ -95,19 +96,19 @@ public class StatisticsWithDistanceSelector implements StrategySelector {
 	}
 
 	@Override
-	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
+	public synchronized Optional<TradingStrategy> addStrategy(final TradingStrategy strategy) {
 		final ClusterKey clusterKey = new ClusterKey(strategy);
 		final StatisticsByCostSelector sc = clusters.get(clusterKey);
 		if (sc == null) {
 			final StatisticsByCostSelector selector = new StatisticsByCostSelector(elementsInCluster, costFunction);
-			final TradingStrategy ts = selector.addStrategy(strategy);
-			if (strategy != ts) {
+			final Optional<TradingStrategy> ts = selector.addStrategy(strategy);
+			if (!ts.isPresent() || strategy != ts.get()) {
 				clustersByRating.addElement(rating(strategy), clusterKey);
 				clusters.put(clusterKey, selector);
 				checkAndRemoveCluster();
 				return ts;
 			} else
-				return strategy;
+				return Optional.of(strategy);
 		} else {
 			return addStrategyToCluster(sc, clusterKey, strategy);
 		}
@@ -124,28 +125,28 @@ public class StatisticsWithDistanceSelector implements StrategySelector {
 
 	private void checkAndRemoveCluster() {
 		if (clusters.size() > clustersAmount) {
-			final ClusterKey deletedKey = clustersByRating.deleteLast();
-			StatisticsByCostSelector cluster = clusters.remove(deletedKey);
-			if (cluster != null) {
-				for (TradingStrategy ts : cluster.getStrategies()) {
-					clustersByRating.removeElement(rating(ts), new ClusterKey(ts));
+			final Optional<ClusterKey> deletedKeyPtr = clustersByRating.deleteLast();
+			if (deletedKeyPtr.isPresent()) {
+				final StatisticsByCostSelector cluster = clusters.remove(deletedKeyPtr.get());
+				if (cluster != null) {
+					for (TradingStrategy ts : cluster.getStrategies()) {
+						clustersByRating.removeElement(rating(ts), new ClusterKey(ts));
+					}
 				}
 			}
 		}
 	}
 
-	private TradingStrategy addStrategyToCluster(StatisticsByCostSelector sc, ClusterKey clusterKey, TradingStrategy strategy) {
-		final TradingStrategy ts = sc.addStrategy(strategy);
-		if (strategy != ts) {
+	private Optional<TradingStrategy> addStrategyToCluster(StatisticsByCostSelector sc, ClusterKey clusterKey, TradingStrategy strategy) {
+		final Optional<TradingStrategy> ts = sc.addStrategy(strategy);
+		if (ts.isPresent() && strategy != ts.get()) {
 			clustersByRating.addElement(rating(strategy), clusterKey);
-			findClusterAndDelete(ts);
+			findClusterAndDelete(ts.get());
 		}
 		return ts;
 	}
 
 	private void findClusterAndDelete(TradingStrategy ts) {
-		if (ts == null)
-			return;
 		clustersByRating.removeElement(rating(ts), new ClusterKey(ts));
 		final StatisticsByCostSelector scToDelete = clusters.get(new ClusterKey(ts));
 		if (scToDelete != null) {

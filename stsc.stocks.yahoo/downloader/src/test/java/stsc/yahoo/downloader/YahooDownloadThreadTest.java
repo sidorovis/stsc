@@ -2,6 +2,7 @@ package stsc.yahoo.downloader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,9 +28,9 @@ public class YahooDownloadThreadTest {
 		}
 		int beforeDownload = Integer.MAX_VALUE;
 		{
-			Stock s = settings.getStockFromFileSystem("aaoi");
-			beforeDownload = s.getDays().size();
-			Assert.assertEquals(104, s.getDays().size());
+			final Optional<? extends Stock> s = settings.getStockFromFileSystem("aaoi");
+			beforeDownload = s.get().getDays().size();
+			Assert.assertEquals(104, s.get().getDays().size());
 		}
 		settings.addTask("aaoi");
 		{
@@ -44,8 +45,8 @@ public class YahooDownloadThreadTest {
 			th.join();
 		}
 		{
-			Stock s = settings.getStockFromFileSystem("aaoi");
-			Assert.assertEquals(true, beforeDownload < s.getDays().size());
+			final Optional<? extends Stock> s = settings.getStockFromFileSystem("aaoi");
+			Assert.assertEquals(true, beforeDownload < s.get().getDays().size());
 		}
 		new File("./test/a.uf").delete();
 		new File("./test/aaoi.uf").delete();

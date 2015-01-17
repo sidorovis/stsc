@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import stsc.general.statistic.cost.comparator.CostStatisticsComparator;
@@ -35,12 +36,12 @@ public class StatisticsCompareSelector extends BorderedStrategySelector {
 	}
 
 	@Override
-	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
+	public synchronized Optional<TradingStrategy> addStrategy(final TradingStrategy strategy) {
 		select.add(strategy);
 		if (select.size() > size()) {
-			return select.pollLast();
+			return Optional.of(select.pollLast());
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

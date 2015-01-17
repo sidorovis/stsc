@@ -1,6 +1,7 @@
 package stsc.frontend.zozka.gui.models;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,11 +21,11 @@ public class ObservableStrategySelector extends BorderedStrategySelector {
 	}
 
 	@Override
-	public synchronized TradingStrategy addStrategy(TradingStrategy strategy) {
-		final TradingStrategy deleted = selector.addStrategy(strategy);
-		if (deleted != null) {
-			if (!deleted.equals(strategy)) {
-				strategyList.remove(deleted);
+	public synchronized Optional<TradingStrategy> addStrategy(TradingStrategy strategy) {
+		final Optional<TradingStrategy> deleted = selector.addStrategy(strategy);
+		if (deleted.isPresent()) {
+			if (!deleted.get().equals(strategy)) {
+				strategyList.remove(deleted.get());
 				strategyList.add(strategy);
 			}
 		} else {

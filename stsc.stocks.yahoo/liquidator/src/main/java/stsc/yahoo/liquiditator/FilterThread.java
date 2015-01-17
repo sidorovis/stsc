@@ -3,6 +3,7 @@ package stsc.yahoo.liquiditator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +35,8 @@ class FilterThread implements Runnable {
 		String task = settings.getTask();
 		while (task != null) {
 			try {
-				Stock s = settings.getStockFromFileSystem(task);
-				if (s != null && stockFilter.isLiquid(s) && stockFilter.isValid(s)) {
+				Optional<? extends Stock> s = settings.getStockFromFileSystem(task);
+				if (s.isPresent() && stockFilter.isLiquid(s.get()) && stockFilter.isValid(s.get())) {
 					YahooUtils.copyFilteredStockFile(settings.getDataFolder(), settings.getFilteredDataFolder(), task);
 					logger.trace("stock " + task + " liquid");
 				} else {

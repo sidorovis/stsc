@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class YahooFilesystemDatafeedSettingsTest {
-	
+
 	@Test
 	public void testYahooFilesystemDatafeedSettings() throws IOException {
 		YahooSettings settings = new YahooSettings("./test/", "./test/");
@@ -24,6 +24,6 @@ public class YahooFilesystemDatafeedSettingsTest {
 	public void testGetStockFromFileSystem() throws IOException {
 		final YahooSettings settings = new YahooSettings("./test_data/", "./test/");
 		Assert.assertNotNull(settings.getStockFromFileSystem("aapl"));
-		Assert.assertNull(settings.getStockFromFileSystem("a"));
+		Assert.assertFalse(settings.getStockFromFileSystem("a").isPresent());
 	}
 }

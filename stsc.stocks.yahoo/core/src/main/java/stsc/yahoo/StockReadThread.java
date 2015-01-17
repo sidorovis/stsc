@@ -3,6 +3,7 @@ package stsc.yahoo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import stsc.common.stocks.Stock;
 
@@ -27,9 +28,9 @@ class StockReadThread implements Runnable {
 	public void run() {
 		String task = settings.getTask();
 		while (task != null) {
-			Stock s = settings.getStockFromFileSystem(task);
-			if (s != null) {
-				updateReceivers(s);
+			final Optional<? extends Stock> s = settings.getStockFromFileSystem(task);
+			if (s.isPresent()) {
+				updateReceivers(s.get());
 			}
 			task = settings.getTask();
 		}

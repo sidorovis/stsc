@@ -3,6 +3,7 @@ package stsc.general.statistic;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import stsc.general.statistic.cost.function.CostFunction;
@@ -20,14 +21,14 @@ public class StatisticsByCostSelector extends BorderedStrategySelector {
 	}
 
 	@Override
-	public synchronized TradingStrategy addStrategy(final TradingStrategy strategy) {
+	public synchronized Optional<TradingStrategy> addStrategy(final TradingStrategy strategy) {
 		final Statistics statistics = strategy.getStatistics();
 		final Double compareValue = costFunction.calculate(statistics);
 		select.addStrategy(compareValue, strategy);
 		if (select.size() > size()) {
 			return select.deleteLast();
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
