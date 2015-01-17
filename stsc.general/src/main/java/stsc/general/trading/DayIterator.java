@@ -52,7 +52,7 @@ final class DayIterator {
 						currentIterator = -currentIterator;
 					else
 						currentIterator = days.size();
-					return null;
+					return Optional.empty();
 				}
 				if (currentIterator >= 0) {
 					return Optional.of(days.get(currentIterator));

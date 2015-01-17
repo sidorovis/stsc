@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -81,13 +82,13 @@ public class StrategyGridSearcher implements StrategySearcher {
 
 		@Override
 		public void run() {
-			SimulatorSettings settings = getNextSimulatorSettings();
+			Optional<SimulatorSettings> settings = getNextSimulatorSettings();
 
-			while (settings != null) {
+			while (settings.isPresent()) {
 				Simulator simulator;
 				try {
-					simulator = new Simulator(settings);
-					final TradingStrategy strategy = new TradingStrategy(settings, simulator.getStatistics());
+					simulator = new Simulator(settings.get());
+					final TradingStrategy strategy = new TradingStrategy(settings.get(), simulator.getStatistics());
 					selector.addStrategy(strategy);
 					settings = getNextSimulatorSettings();
 				} catch (BadAlgorithmException | BadSignalException e) {
@@ -96,12 +97,12 @@ public class StrategyGridSearcher implements StrategySearcher {
 			}
 		}
 
-		private SimulatorSettings getNextSimulatorSettings() {
+		private Optional<SimulatorSettings> getNextSimulatorSettings() {
 			synchronized (iterator) {
 				while (!stoppedByRequest && iterator.hasNext()) {
 					final SimulatorSettings nextValue = iterator.next();
 					if (nextValue == null)
-						return null;
+						return Optional.empty();
 					final String hashCode = nextValue.stringHashCode();
 					if (processedSettings.contains(hashCode)) {
 						logger.debug("Already resolved: " + hashCode);
@@ -113,10 +114,10 @@ public class StrategyGridSearcher implements StrategySearcher {
 					if (progressListener != null) {
 						progressListener.processed(processedSize / fullSize);
 					}
-					return nextValue;
+					return Optional.of(nextValue);
 				}
 			}
-			return null;
+			return Optional.empty();
 		}
 
 		public void stopSearch() {
