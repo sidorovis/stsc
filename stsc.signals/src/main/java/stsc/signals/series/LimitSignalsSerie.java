@@ -44,7 +44,7 @@ public final class LimitSignalsSerie<SignalType extends SerieSignal> extends Sig
 			if (i.getIndex() == index)
 				return i;
 		}
-		return null;
+		return SignalContainer.empty(index);
 	}
 
 	@Override

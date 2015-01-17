@@ -3,6 +3,7 @@ package stsc.frontend.zozka.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -126,15 +127,15 @@ public class SimulatorSettingsController {
 
 	@FXML
 	private void addNewExecution() {
-		ExecutionDescription ed = null;
+		Optional<ExecutionDescription> ed = Optional.empty();
 		try {
 			final CreateAlgorithmController controller = new CreateAlgorithmController(owner);
 			ed = controller.getExecutionDescription();
 		} catch (IOException e) {
 			Dialogs.create().showException(e);
 		}
-		if (ed != null) {
-			model.add(ed);
+		if (ed.isPresent()) {
+			model.add(ed.get());
 		}
 	}
 
@@ -143,9 +144,9 @@ public class SimulatorSettingsController {
 		final ExecutionDescription ed = executionsTable.getSelectionModel().getSelectedItem();
 		try {
 			final CreateAlgorithmController controller = new CreateAlgorithmController(owner, ed);
-			final ExecutionDescription newEd = controller.getExecutionDescription();
-			if (newEd != null) {
-				model.set(index, newEd);
+			final Optional<ExecutionDescription> newEd = controller.getExecutionDescription();
+			if (newEd.isPresent()) {
+				model.set(index, newEd.get());
 			}
 		} catch (IOException exception) {
 			Dialogs.create().showException(exception);

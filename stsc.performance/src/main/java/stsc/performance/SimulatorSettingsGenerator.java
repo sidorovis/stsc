@@ -2,6 +2,7 @@ package stsc.performance;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
@@ -20,8 +21,8 @@ import stsc.storage.AlgorithmsStorage;
 
 class SimulatorSettingsGenerator {
 
-	static SimulatorSettingsGridFactory getGridFactory(boolean performanceForGridTest, final StockStorage stockStorage, final List<String> openTypes,
-			final String periodFrom, final String periodTo) {
+	static SimulatorSettingsGridFactory getGridFactory(boolean performanceForGridTest, final StockStorage stockStorage,
+			final List<String> openTypes, final String periodFrom, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
 			final SimulatorSettingsGridFactory settings = new SimulatorSettingsGridFactory(stockStorage, period);
@@ -32,11 +33,11 @@ class SimulatorSettingsGenerator {
 			return settings;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
-		return null;
+		return new SimulatorSettingsGridFactory(stockStorage, new FromToPeriod(new Date(), new Date()));
 	}
 
-	static SimulatorSettingsGeneticFactory getGeneticFactory(boolean performanceForGridTest, final StockStorage stockStorage, final List<String> openTypes,
-			final String periodFrom, final String periodTo) {
+	static SimulatorSettingsGeneticFactory getGeneticFactory(boolean performanceForGridTest, final StockStorage stockStorage,
+			final List<String> openTypes, final String periodFrom, final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod(periodFrom, periodTo);
 			final SimulatorSettingsGeneticFactory settings = new SimulatorSettingsGeneticFactory(stockStorage, period);
@@ -47,11 +48,11 @@ class SimulatorSettingsGenerator {
 			return settings;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
-		return null;
+		return new SimulatorSettingsGeneticFactory(stockStorage, new FromToPeriod(new Date(), new Date()));
 	}
 
-	private static <T> void fillSmallIterator(SimulatorSettingsFactory<T> settings, final List<String> openTypes) throws BadParameterException,
-			BadAlgorithmException {
+	private static <T> void fillSmallIterator(SimulatorSettingsFactory<T> settings, final List<String> openTypes)
+			throws BadParameterException, BadAlgorithmException {
 		final AlgorithmSettingsIteratorFactory factoryIn = new AlgorithmSettingsIteratorFactory(settings.getPeriod());
 		factoryIn.add(new MpString("e", openTypes));
 		settings.addStock("in", algoStockName("In"), factoryIn);

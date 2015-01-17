@@ -111,12 +111,12 @@ public class CreateAlgorithmController implements Initializable {
 		stage.centerOnScreen();
 	}
 
-	public ExecutionDescription getExecutionDescription() {
+	public Optional<ExecutionDescription> getExecutionDescription() {
 		this.stage.showAndWait();
 		if (isValid()) {
-			return model;
+			return Optional.of(model);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

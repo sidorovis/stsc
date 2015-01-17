@@ -6,6 +6,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.controlsfx.dialog.Dialogs;
@@ -125,9 +126,9 @@ public class CreateSettingsController implements Initializable {
 				final ExecutionDescription ed = executionsTable.getSelectionModel().getSelectedItem();
 				try {
 					final CreateAlgorithmController controller = new CreateAlgorithmController(stage, ed);
-					final ExecutionDescription newEd = controller.getExecutionDescription();
-					if (newEd != null) {
-						model.getExecutionDescriptions().set(index, newEd);
+					final Optional<ExecutionDescription> newEd = controller.getExecutionDescription();
+					if (newEd.isPresent()) {
+						model.getExecutionDescriptions().set(index, newEd.get());
 					}
 				} catch (IOException exception) {
 					Dialogs.create().showException(exception);
@@ -165,15 +166,15 @@ public class CreateSettingsController implements Initializable {
 		addExecutionButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				ExecutionDescription ed = null;
+				Optional<ExecutionDescription> ed = Optional.empty();
 				try {
 					final CreateAlgorithmController controller = new CreateAlgorithmController(stage);
 					ed = controller.getExecutionDescription();
 				} catch (IOException e) {
 					Dialogs.create().showException(e);
 				}
-				if (ed != null) {
-					model.getExecutionDescriptions().add(ed);
+				if (ed.isPresent()) {
+					model.getExecutionDescriptions().add(ed.get());
 				}
 			}
 		});
