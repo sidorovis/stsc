@@ -88,7 +88,8 @@ public class StockDatafeedListPane extends BorderPane {
 		assert validColumn != null : "fx:id=\"validColumn\" was not injected: check your FXML file.";
 	}
 
-	public Set<String> loadDatafeed(final String datafeedPath, Function<Set<String>, Optional<Void>> onFinish, Predicate<String> filter) {
+	public Set<String> loadDatafeed(final String datafeedPath, Function<Set<String>, Optional<Void>> onFinish,
+			Optional<Predicate<String>> filter) {
 		model.clear();
 		final Set<String> result = new HashSet<>();
 		try {
@@ -113,9 +114,9 @@ public class StockDatafeedListPane extends BorderPane {
 		setProgressStopButton(ss);
 	}
 
-	private void applySizeFilter(Queue<String> tasks, Predicate<String> filter) {
-		if (filter != null) {
-			tasks.removeIf(filter);
+	private void applySizeFilter(Queue<String> tasks, Optional<Predicate<String>> filter) {
+		if (filter.isPresent()) {
+			tasks.removeIf(filter.get());
 		}
 	}
 

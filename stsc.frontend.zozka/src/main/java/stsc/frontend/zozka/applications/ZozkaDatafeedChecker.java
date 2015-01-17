@@ -180,9 +180,9 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void runLoadDatafeed(final Optional<String> result) {
-		final Predicate<String> predicate = (p) -> {
+		final Optional<Predicate<String>> predicate = Optional.of((p) -> {
 			return !p.startsWith(result.get());
-		};
+		});
 		dataStockList.loadDatafeed(datafeedPath + getDataDatafeed(), onDataEnd -> {
 			filteredStockDataList.loadDatafeed(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, onFilterEnd -> {
 				checkLists();

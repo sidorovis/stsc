@@ -24,7 +24,7 @@ public class VisualTestStockListDialog extends Application {
 		}
 		dialog.setOnMouseDoubleClicked(stockDescription -> {
 			new TextAreaDialog(parent, "Temp Dialog", stockDescription.toString()).show();
-			return null;
+			return Optional.empty();
 		});
 		dialog.show();
 	}

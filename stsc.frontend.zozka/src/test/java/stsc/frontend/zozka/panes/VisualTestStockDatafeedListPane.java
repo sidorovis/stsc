@@ -21,8 +21,8 @@ public class VisualTestStockDatafeedListPane extends Application {
 		parent.show();
 		mainPane.loadDatafeed("./test_data/data", f -> {
 			Dialogs.create().title("Finished").masthead(null).message("Download Finished").showInformation();
-			return null;
-		}, null);
+			return Optional.empty();
+		}, Optional.empty());
 		mainPane.setOnMouseDoubleClick(new Function<StockDescription, Optional<Void>>() {
 			@Override
 			public Optional<Void> apply(StockDescription sd) {

@@ -2,6 +2,7 @@ package stsc.general.testhelper;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import stsc.common.FromToPeriod;
@@ -27,11 +28,11 @@ public class TestGridSimulatorSettings {
 		return AlgorithmsStorage.getInstance().getEod(aname).getName();
 	}
 
-	public static void fillFactory(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep, int nSide,
-			int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
+	public static void fillFactory(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep,
+			int nSide, int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
 		settings.addStock("in", algoStockName("Input"), "e", openTypes);
-		settings.addStock("ema", algoStockName("Ema"),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.4)).add(new MpSubExecution("", "in")));
+		settings.addStock("ema", algoStockName("Ema"), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.4))
+				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
 				algoStockName("Level"),
@@ -48,11 +49,11 @@ public class TestGridSimulatorSettings {
 		settings.addEod("pnm", algoEodName("PositionNDayMStocks"), factoryPositionSide);
 	}
 
-	public static void fillSmallFactory(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes, double fStep, int nSide,
-			int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
+	public static void fillSmallFactory(SimulatorSettingsGridFactory settings, FromToPeriod period, final List<String> openTypes,
+			double fStep, int nSide, int mSide, double psSide) throws BadParameterException, BadAlgorithmException {
 		settings.addStock("in", algoStockName("Input"), "e", openTypes);
-		settings.addStock("ema", algoStockName("Ema"),
-				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.7)).add(new MpSubExecution("", "in")));
+		settings.addStock("ema", algoStockName("Ema"), new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.7))
+				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
 				algoStockName("Level"),
@@ -70,7 +71,8 @@ public class TestGridSimulatorSettings {
 	}
 
 	public static SimulatorSettingsGridList getGridList() {
-		return getGridList(StockStorageMock.getStockStorage(), Arrays.asList(new String[] { "open", "high", "low", "close", "value" }), "31-12-2009");
+		return getGridList(StockStorageMock.getStockStorage(), Arrays.asList(new String[] { "open", "high", "low", "close", "value" }),
+				"31-12-2009");
 	}
 
 	public static SimulatorSettingsGridList getSmallGridList() {
@@ -81,7 +83,8 @@ public class TestGridSimulatorSettings {
 		return getGridFactory(stockStorage, openTypes, periodTo).getList();
 	}
 
-	public static SimulatorSettingsGridFactory getGridFactory(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
+	public static SimulatorSettingsGridFactory getGridFactory(final StockStorage stockStorage, final List<String> openTypes,
+			final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
@@ -89,10 +92,11 @@ public class TestGridSimulatorSettings {
 			return factory;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
-		return null;
+		return new SimulatorSettingsGridFactory(stockStorage, new FromToPeriod(new Date(), new Date()));
 	}
 
-	public static SimulatorSettingsGridFactory getSmallGridFactory(final StockStorage stockStorage, final List<String> openTypes, final String periodTo) {
+	public static SimulatorSettingsGridFactory getSmallGridFactory(final StockStorage stockStorage, final List<String> openTypes,
+			final String periodTo) {
 		try {
 			final FromToPeriod period = new FromToPeriod("01-01-2000", periodTo);
 			final SimulatorSettingsGridFactory factory = new SimulatorSettingsGridFactory(stockStorage, period);
@@ -100,6 +104,6 @@ public class TestGridSimulatorSettings {
 			return factory;
 		} catch (BadParameterException | BadAlgorithmException | ParseException e) {
 		}
-		return null;
+		return new SimulatorSettingsGridFactory(stockStorage, new FromToPeriod(new Date(), new Date()));
 	}
 }
