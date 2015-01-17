@@ -219,7 +219,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 			});
 			mainProcessingThread.start();
 			waitForStarting.await();
-			logger.debug("Waiting for 'e' - exit command or end of ");
+			logger.debug("Please enter 'e' and press Enter to stop application.");
 			addExitHook(waitForEnding);
 			waitForEnding.await();
 			mainProcessingThread.join();

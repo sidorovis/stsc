@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -48,7 +47,7 @@ final class FeedDataDownloader {
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
-	private final ExecutorService executor = Executors.newFixedThreadPool(10);
+	private ExecutorService executor = Executors.newFixedThreadPool(1);
 
 	private volatile boolean stopped = false;
 
@@ -97,6 +96,7 @@ final class FeedDataDownloader {
 			final List<Category> categories = feed.getCategories();
 
 			for (Category category : categories) {
+				final long beginTime = System.currentTimeMillis();
 				try {
 					pause();
 					final List<Subcategory> subcategories = feed.getSubcategories(category);
@@ -105,9 +105,9 @@ final class FeedDataDownloader {
 							pause();
 							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
 						} catch (TimeoutException e) {
-							logger.error("getArticles returns TimeoutException:" + e.getMessage());
+							logger.error("getArticles returns TimeoutException, ", e);
 						} catch (ForbiddenException e) {
-							logger.error("getArticles returns ForbiddenException:" + e.getMessage());
+							logger.error("getArticles returns ForbiddenException, ", e);
 						} catch (Exception e) {
 							logger.error("getArticles returns", e);
 						}
@@ -121,6 +121,9 @@ final class FeedDataDownloader {
 				if (stopped) {
 					break;
 				}
+				final long endTime = System.currentTimeMillis();
+				logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles
+						+ " articles. For day " + startOfDay + ". Which took: " + (endTime - beginTime) + " millisec.");
 			}
 		} catch (Exception e) {
 			logger.error("getCategories returns", e);
@@ -130,23 +133,10 @@ final class FeedDataDownloader {
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
-		final FutureTask<Optional<Articles>> futureArticles = new FutureTask<>(new Callable<Optional<Articles>>() {
-			@Override
-			public Optional<Articles> call() throws Exception {
-				try {
-					final Articles result = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
-							.count(amountOfArticlesPerRequest).articles();
-					return Optional.of(result);
-				} catch (Exception e) {
-					logger.error("article hashcode create: " + category.getId() + " subcategory " + subcategory.getId() + "");
-				}
-				return Optional.empty();
-			}
-		});
-		executor.execute(futureArticles);
-		final Optional<Articles> articles = futureArticles.get(5, TimeUnit.SECONDS);
-		executor.shutdown();
-		executor.awaitTermination(5, TimeUnit.SECONDS);
+		final FutureTask<Optional<Articles>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
+				subcategory, amountOfArticlesPerRequest, startOfDay));
+		executor.submit(futureArticles);
+		final Optional<Articles> articles = futureArticles.get(15, TimeUnit.SECONDS);
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
@@ -165,7 +155,7 @@ final class FeedDataDownloader {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("article hashcode create: " + article.toString(), e);
+				logger.error("error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
 			if (!stopped) {
 				return articlesCount;
