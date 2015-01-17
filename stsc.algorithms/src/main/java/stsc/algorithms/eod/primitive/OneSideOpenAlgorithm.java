@@ -3,6 +3,7 @@ package stsc.algorithms.eod.primitive;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -30,8 +31,8 @@ public class OneSideOpenAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
-		return null;
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+		return Optional.empty();
 	}
 
 	@Override

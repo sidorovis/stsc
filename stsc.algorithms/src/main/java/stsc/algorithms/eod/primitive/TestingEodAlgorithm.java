@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -24,9 +25,9 @@ public class TestingEodAlgorithm extends EodAlgorithm {
 	public ArrayList<HashMap<String, Day>> datafeeds = new ArrayList<HashMap<String, Day>>();
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
 		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
-		return new LimitSignalsSerie<SerieSignal>(TestingEodAlgorithmSignal.class, size);
+		return Optional.of(new LimitSignalsSerie<SerieSignal>(TestingEodAlgorithmSignal.class, size));
 	}
 
 	@Override

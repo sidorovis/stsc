@@ -2,6 +2,7 @@ package stsc.integration.tests.algorithms;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +26,8 @@ public final class EodAlgorithmTest {
 		}
 
 		@Override
-		public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
-			return new LimitSignalsSerie<>(SerieSignal.class);
+		public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+			return Optional.of(new LimitSignalsSerie<>(SerieSignal.class));
 		}
 
 		@Override

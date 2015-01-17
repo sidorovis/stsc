@@ -1,6 +1,7 @@
 package stsc.common.algorithms;
 
 import java.util.Date;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.signals.SignalContainer;
@@ -40,8 +41,10 @@ public class EodAlgorithmInit {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 
-	protected final void registerEodSignalsType(SignalsSerie<SerieSignal> serie) {
-		signalsStorage.registerEodAlgorithmSerie(executionName, serie);
+	protected final void registerEodSignalsType(final Optional<SignalsSerie<SerieSignal>> serie) {
+		if (serie.isPresent()) {
+			signalsStorage.registerEodAlgorithmSerie(executionName, serie.get());
+		}
 	}
 
 	protected final void addSignal(Date date, SerieSignal signal) throws BadSignalException {

@@ -85,10 +85,8 @@ public class SignalsStorageImpl implements SignalsStorage {
 
 	@Override
 	public void registerEodAlgorithmSerie(String executionName, SignalsSerie<SerieSignal> serie) {
-		if (serie != null) {
-			synchronized (eodSignals) {
-				eodSignals.put(executionName, serie);
-			}
+		synchronized (eodSignals) {
+			eodSignals.put(executionName, serie);
 		}
 	}
 

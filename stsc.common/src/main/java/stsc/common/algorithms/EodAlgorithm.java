@@ -2,6 +2,7 @@ package stsc.common.algorithms;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import stsc.common.BadSignalException;
 import stsc.common.Day;
@@ -55,7 +56,7 @@ public abstract class EodAlgorithm {
 		return init.getBroker();
 	}
 
-	public abstract SignalsSerie<SerieSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException;
+	public abstract Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException;
 
 	public abstract void process(Date date, HashMap<String, Day> datafeed) throws BadSignalException;
 

@@ -29,8 +29,8 @@ public class EodOutput extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException {
-		return new CommonSignalsSerie<>(DoubleSignal.class);
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final EodAlgorithmInit init) throws BadAlgorithmException {
+		return Optional.of(new CommonSignalsSerie<>(DoubleSignal.class));
 	}
 
 	@Override

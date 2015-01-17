@@ -34,8 +34,8 @@ public class OpenWhileSignalAlgorithm extends EodAlgorithm {
 	}
 
 	@Override
-	public SignalsSerie<SerieSignal> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
-		return null;
+	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(EodAlgorithmInit init) throws BadAlgorithmException {
+		return Optional.empty();
 	}
 
 	@Override
