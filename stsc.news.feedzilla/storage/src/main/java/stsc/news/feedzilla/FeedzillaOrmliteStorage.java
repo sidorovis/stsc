@@ -20,25 +20,25 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
-public class FeedzillaStorage implements FeedStorage {
+public class FeedzillaOrmliteStorage implements FeedStorage {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 	}
 
-	private static Logger logger = LogManager.getLogger(FeedzillaStorage.class);
+	private static Logger logger = LogManager.getLogger(FeedzillaOrmliteStorage.class);
 
 	private final ConnectionSource source;
 	private final Dao<FeedzillaCategory, Integer> categories;
 	private final Dao<FeedzillaSubcategory, Integer> subcategories;
 	private final Dao<FeedzillaArticle, Integer> articles;
 
-	public FeedzillaStorage() throws SQLException, IOException {
+	public FeedzillaOrmliteStorage() throws SQLException, IOException {
 		this("feedzilla_developer.properties");
 	}
 
-	public FeedzillaStorage(final String propertiesFileName) throws SQLException, IOException {
-		logger.debug(FeedzillaStorage.class + " was loaded from: " + propertiesFileName);
+	public FeedzillaOrmliteStorage(final String propertiesFileName) throws SQLException, IOException {
+		logger.debug(FeedzillaOrmliteStorage.class + " was loaded from: " + propertiesFileName);
 		this.source = getConnectionSource(propertiesFileName);
 		this.categories = DaoManager.createDao(source, FeedzillaCategory.class);
 		this.subcategories = DaoManager.createDao(source, FeedzillaSubcategory.class);

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.news.feedzilla.FeedzillaStorage;
+import stsc.news.feedzilla.FeedzillaOrmliteStorage;
 import stsc.news.feedzilla.schema.FeedzillaArticle;
 import stsc.news.feedzilla.schema.FeedzillaCategory;
 import stsc.news.feedzilla.schema.FeedzillaSubcategory;
@@ -38,7 +38,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	private static FeedzillaDownloadApplication downloadApplication;
 
-	private final FeedzillaStorage feedzillaStorage;
+	private final FeedzillaOrmliteStorage feedzillaStorage;
 	private final FeedDataDownloader downloader;
 
 	private Map<String, FeedzillaCategory> feedzillaCategories = Collections.synchronizedMap(new HashMap<>());
@@ -50,7 +50,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	}
 
 	FeedzillaDownloadApplication(String propertyFile) throws SQLException, IOException {
-		this.feedzillaStorage = new FeedzillaStorage(propertyFile);
+		this.feedzillaStorage = new FeedzillaOrmliteStorage(propertyFile);
 		this.downloader = new FeedDataDownloader(1, 100);
 		logger.debug("going to creating hashes");
 		createHashMap();

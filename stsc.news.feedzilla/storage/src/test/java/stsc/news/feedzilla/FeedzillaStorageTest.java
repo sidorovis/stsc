@@ -16,13 +16,13 @@ public class FeedzillaStorageTest {
 
 	@Test
 	public void testFeedzillaFileFeedStorage() throws IOException, SQLException {
-		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
+		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
 		Assert.assertNotNull(fffs);
 	}
 
 	@Test
 	public void testFeedzillaCategory() throws IOException, SQLException {
-		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
+		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
 		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("display", "english", null)).getNumLinesChanged());
 		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory("hellow", "deutch", "url")).getNumLinesChanged());
 		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaCategory(null, "russian", null)).getNumLinesChanged());
@@ -46,7 +46,7 @@ public class FeedzillaStorageTest {
 
 	@Test
 	public void testFeedzillaSubcategory() throws IOException, SQLException {
-		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
+		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
 		final FeedzillaCategory category = new FeedzillaCategory("display", "english", null);
 		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
 		fffs.createOrUpdateCategory(category);
@@ -56,7 +56,7 @@ public class FeedzillaStorageTest {
 
 	@Test
 	public void testFeedzillaArticle() throws IOException, SQLException {
-		final FeedzillaStorage fffs = new FeedzillaStorage("feedzilla_test.properties");
+		final FeedzillaOrmliteStorage fffs = new FeedzillaOrmliteStorage("feedzilla_test.properties");
 		final FeedzillaCategory category = new FeedzillaCategory("display", "english", null);
 		final FeedzillaSubcategory subcategory = new FeedzillaSubcategory(category, "subdisplay", "subenglish", "sub-url");
 		final FeedzillaArticle article = new FeedzillaArticle(subcategory, "author", new Date());
