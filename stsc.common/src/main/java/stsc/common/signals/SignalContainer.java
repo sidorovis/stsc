@@ -3,16 +3,16 @@ package stsc.common.signals;
 import java.util.Date;
 import java.util.Optional;
 
-public final class SignalContainer<SignalType extends SerieSignal> {
+public final class SignalContainer<SignalType> {
 	final int index;
 	final Date date;
 	final Optional<SignalType> signal;
 
-	public static <T extends SerieSignal> SignalContainer<T> empty(Date date) {
+	public static <T> SignalContainer<T> empty(Date date) {
 		return new SignalContainer<T>(0, date);
 	}
 
-	public static <T extends SerieSignal> SignalContainer<T> empty(final int index) {
+	public static <T> SignalContainer<T> empty(final int index) {
 		return new SignalContainer<T>(index, new Date());
 	}
 
@@ -45,7 +45,7 @@ public final class SignalContainer<SignalType extends SerieSignal> {
 		}
 		return expectedClass.isInstance(signal.get());
 	}
-	
+
 	public boolean isPresent() {
 		return signal.isPresent();
 	}
