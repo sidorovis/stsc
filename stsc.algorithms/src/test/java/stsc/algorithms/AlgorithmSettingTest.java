@@ -1,30 +1,37 @@
 package stsc.algorithms;
 
-import stsc.common.algorithms.AlgorithmSetting;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public final class AlgorithmSettingTest extends TestCase {
+import stsc.common.Settings;
+import stsc.common.algorithms.AlgorithmSetting;
+
+public final class AlgorithmSettingTest {
+
+	@Test
 	public void testAlgorithmSettingWithDouble() {
 		AlgorithmSettingImpl<Double> asd = new AlgorithmSettingImpl<Double>(new Double(0.0));
-		assertEquals(0.0, asd.getValue());
+		Assert.assertEquals(0.0, asd.getValue(), Settings.doubleEpsilon);
 		asd.setValue(new Double(5.3));
-		assertEquals(5.3, asd.getValue());
+		Assert.assertEquals(5.3, asd.getValue(), Settings.doubleEpsilon);
 		asd.setValue(7.6);
-		assertEquals(7.6, asd.getValue());
+		Assert.assertEquals(7.6, asd.getValue(), Settings.doubleEpsilon);
 	}
 
+	@Test
 	public void testAlgorithmSettingWithInteger() {
 		AlgorithmSettingImpl<Integer> asi = new AlgorithmSettingImpl<Integer>(Integer.valueOf(45));
-		assertEquals(45, asi.getValue().intValue());
+		Assert.assertEquals(45, asi.getValue().intValue());
 		asi.setValue(67);
-		assertEquals(67, asi.getValue().intValue());
+		Assert.assertEquals(67, asi.getValue().intValue());
 	}
 
+	@Test
 	public void testAlgorithmSettingWithString() {
 		AlgorithmSetting<String> ass = new AlgorithmSettingImpl<String>("str");
-		assertEquals("str", ass.getValue());
+		Assert.assertEquals("str", ass.getValue());
 		AlgorithmSettingImpl<String> setable = new AlgorithmSettingImpl<String>("");
 		setable.setValue("strvalue");
-		assertEquals("strvalue", setable.getValue());
+		Assert.assertEquals("strvalue", setable.getValue());
 	}
 }

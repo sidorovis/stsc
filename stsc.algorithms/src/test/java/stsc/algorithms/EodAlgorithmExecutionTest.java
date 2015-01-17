@@ -1,12 +1,16 @@
 package stsc.algorithms;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import stsc.algorithms.eod.primitive.TestingEodAlgorithm;
 import stsc.algorithms.testhelper.TestAlgorithmsHelper;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.EodExecution;
-import junit.framework.TestCase;
 
-public final class EodAlgorithmExecutionTest extends TestCase {
+public final class EodAlgorithmExecutionTest {
+
+	@Test
 	public void testEodAlgorithmExecutionConstructor() {
 		boolean exception = false;
 		try {
@@ -14,17 +18,20 @@ public final class EodAlgorithmExecutionTest extends TestCase {
 		} catch (BadAlgorithmException e) {
 			exception = true;
 		}
-		assertTrue(exception);
+		Assert.assertTrue(exception);
 	}
 
+	@Test
 	public void testNameInstallingMethod() throws BadAlgorithmException {
-		final EodExecution eae = new EodExecution("e1", "stsc.algorithms.eod.primitive.TestingEodAlgorithm", TestAlgorithmsHelper.getSettings());
-		assertEquals("stsc.algorithms.eod.primitive.TestingEodAlgorithm", eae.getAlgorithmName());
+		final EodExecution eae = new EodExecution("e1", "stsc.algorithms.eod.primitive.TestingEodAlgorithm",
+				TestAlgorithmsHelper.getSettings());
+		Assert.assertEquals("stsc.algorithms.eod.primitive.TestingEodAlgorithm", eae.getAlgorithmName());
 	}
 
+	@Test
 	public void testExecution() throws BadAlgorithmException {
 		EodExecution e3 = new EodExecution("e1", TestingEodAlgorithm.class.getName(), TestAlgorithmsHelper.getSettings());
-		assertEquals(TestingEodAlgorithm.class.getName(), e3.getAlgorithmName());
-		assertEquals("e1", e3.getExecutionName());
+		Assert.assertEquals(TestingEodAlgorithm.class.getName(), e3.getAlgorithmName());
+		Assert.assertEquals("e1", e3.getExecutionName());
 	}
 }

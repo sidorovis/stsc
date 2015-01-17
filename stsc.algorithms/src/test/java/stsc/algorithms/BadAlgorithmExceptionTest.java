@@ -1,23 +1,27 @@
 package stsc.algorithms;
 
-import stsc.common.algorithms.BadAlgorithmException;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public final class BadAlgorithmExceptionTest extends TestCase {
+import stsc.common.algorithms.BadAlgorithmException;
+
+public final class BadAlgorithmExceptionTest {
+
+	@Test
 	public void testBadAlgorithmException() {
 		final BadAlgorithmException exception = new BadAlgorithmException("my exception message");
-		assertEquals("my exception message", exception.getMessage());
+		Assert.assertEquals("my exception message", exception.getMessage());
 		boolean bae = false;
 		boolean e = false;
 		try {
 			throw new BadAlgorithmException("the reason");
 		} catch (BadAlgorithmException ex) {
 			bae = true;
-			assertEquals("the reason", ex.getMessage());
+			Assert.assertEquals("the reason", ex.getMessage());
 		} catch (Exception ex) {
 			e = true;
 		}
-		assertTrue(bae);
-		assertFalse(e);
+		Assert.assertTrue(bae);
+		Assert.assertFalse(e);
 	}
 }
