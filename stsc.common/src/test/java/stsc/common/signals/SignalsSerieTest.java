@@ -40,7 +40,7 @@ public class SignalsSerieTest {
 
 		@Override
 		public String toString() {
-			return null;
+			return "test string";
 		}
 
 	}

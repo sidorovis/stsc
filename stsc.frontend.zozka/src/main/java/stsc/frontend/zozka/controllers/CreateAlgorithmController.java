@@ -301,56 +301,59 @@ public class CreateAlgorithmController implements Initializable {
 
 	private void addIntegerParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
 		final String errorMessage = "Integer is a number (-)?([0-9])+";
-		final String from = readIntegerParameter(defaultFrom, "Enter From", "From: ", errorMessage);
-		if (from == null) {
+		final Optional<String> from = readIntegerParameter(defaultFrom, "Enter From", "From: ", errorMessage);
+		if (!from.isPresent()) {
 			return;
 		}
-		final String step = readIntegerParameter(defaultStep, "Enter Step", "Step: ", errorMessage);
-		if (step == null) {
+		final Optional<String> step = readIntegerParameter(defaultStep, "Enter Step", "Step: ", errorMessage);
+		if (!step.isPresent()) {
 			return;
 		}
-		final String to = readIntegerParameter(defaultTo, "Enter To", "To: ", errorMessage);
-		if (to == null) {
+		final Optional<String> to = readIntegerParameter(defaultTo, "Enter To", "To: ", errorMessage);
+		if (!to.isPresent()) {
 			return;
 		}
-		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from, step, to));
+		model.getNumberAlgorithms().add(
+				new NumberAlgorithmParameter(parameterName, ParameterType.INTEGER, from.get(), step.get(), to.get()));
 	}
 
 	private void addDoubleParameter(String parameterName, String defaultFrom, String defaultStep, String defaultTo) {
 		final String errorMessage = "Double is a number (-)?([0-9])+(.[0-9]+)?";
-		final String from = readDoubleParameter(defaultFrom, "Double Parameter", "Enter From", "From: ", errorMessage);
-		if (from == null) {
+		final Optional<String> from = readDoubleParameter(defaultFrom, "Double Parameter", "Enter From", "From: ", errorMessage);
+		if (!from.isPresent()) {
 			return;
 		}
-		final String step = readDoubleParameter(defaultStep, "Double Parameter", "Enter Step", "Step: ", errorMessage);
-		if (step == null) {
+		final Optional<String> step = readDoubleParameter(defaultStep, "Double Parameter", "Enter Step", "Step: ", errorMessage);
+		if (!step.isPresent()) {
 			return;
 		}
-		final String to = readDoubleParameter(defaultTo, "Double Parameter", "Enter To", "To: ", errorMessage);
-		if (to == null) {
+		final Optional<String> to = readDoubleParameter(defaultTo, "Double Parameter", "Enter To", "To: ", errorMessage);
+		if (!to.isPresent()) {
 			return;
 		}
-		model.getNumberAlgorithms().add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from, step, to));
+		model.getNumberAlgorithms()
+				.add(new NumberAlgorithmParameter(parameterName, ParameterType.DOUBLE, from.get(), step.get(), to.get()));
 	}
 
-	private String readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
+	private Optional<String> readIntegerParameter(final String defaultValue, String masthead, String message, String errorMessage) {
 		final Optional<String> integerParameter = Dialogs.create().owner(stage).title("Integer Parameter").masthead(masthead)
 				.message(message).showTextInput(defaultValue);
 		if (integerParameter.isPresent() && !NumberAlgorithmParameter.integerParPattern.matcher(integerParameter.get()).matches()) {
 			Dialogs.create().owner(stage).title("Integer Parameter").masthead("Please insert integer").message(errorMessage).showError();
-			return null;
+			return Optional.empty();
 		}
-		return integerParameter.get();
+		return Optional.of(integerParameter.get());
 	}
 
-	private String readDoubleParameter(final String defaultValue, String title, String masthead, String message, String errorMessage) {
+	private Optional<String> readDoubleParameter(final String defaultValue, String title, String masthead, String message,
+			String errorMessage) {
 		final Optional<String> doubleParameter = Dialogs.create().owner(stage).title(title).masthead(masthead).message(message)
 				.showTextInput(defaultValue);
 		if (doubleParameter.isPresent() && !NumberAlgorithmParameter.doubleParPattern.matcher(doubleParameter.get()).matches()) {
 			Dialogs.create().owner(stage).title(title).masthead("Please insert double").message(errorMessage).showError();
-			return null;
+			return Optional.empty();
 		}
-		return doubleParameter.get();
+		return Optional.of(doubleParameter.get());
 	}
 
 	private void addStringParameter(String parameterName) {

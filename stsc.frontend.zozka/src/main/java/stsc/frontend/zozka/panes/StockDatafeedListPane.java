@@ -88,7 +88,7 @@ public class StockDatafeedListPane extends BorderPane {
 		assert validColumn != null : "fx:id=\"validColumn\" was not injected: check your FXML file.";
 	}
 
-	public Set<String> loadDatafeed(final String datafeedPath, Function<Set<String>, Void> onFinish, Predicate<String> filter) {
+	public Set<String> loadDatafeed(final String datafeedPath, Function<Set<String>, Optional<Void>> onFinish, Predicate<String> filter) {
 		model.clear();
 		final Set<String> result = new HashSet<>();
 		try {
@@ -104,7 +104,7 @@ public class StockDatafeedListPane extends BorderPane {
 		return result;
 	}
 
-	private void postLoadDatafeedActions(Function<Set<String>, Void> onFinish, final YahooFileStockStorage ss)
+	private void postLoadDatafeedActions(Function<Set<String>, Optional<Void>> onFinish, final YahooFileStockStorage ss)
 			throws ClassNotFoundException, IOException {
 		setStockStorage(ss);
 		setUpdateModel(ss);
@@ -128,7 +128,7 @@ public class StockDatafeedListPane extends BorderPane {
 		}));
 	}
 
-	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss, Function<Set<String>, Void> onFinish) {
+	private void startLoadIndicatorUpdates(final YahooFileStockStorage ss, Function<Set<String>, Optional<Void>> onFinish) {
 		final Queue<String> queue = ss.getTasks();
 		final Thread t = new Thread(() -> {
 			try {

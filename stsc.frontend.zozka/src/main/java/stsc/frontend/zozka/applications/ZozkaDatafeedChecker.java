@@ -186,9 +186,9 @@ public class ZozkaDatafeedChecker extends Application {
 		dataStockList.loadDatafeed(datafeedPath + getDataDatafeed(), onDataEnd -> {
 			filteredStockDataList.loadDatafeed(datafeedPath + YahooFileStockStorage.FILTER_DATA_FOLDER, onFilterEnd -> {
 				checkLists();
-				return null;
+				return Optional.empty();
 			}, predicate);
-			return null;
+			return Optional.empty();
 		}, predicate);
 	}
 
