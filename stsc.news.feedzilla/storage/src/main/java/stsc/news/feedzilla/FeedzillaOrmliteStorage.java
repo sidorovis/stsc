@@ -49,7 +49,6 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 		this.subcategories = DaoManager.createDao(source, FeedzillaSubcategory.class);
 		this.articles = DaoManager.createDao(source, FeedzillaArticle.class);
 		createHashMap();
-		logger.debug("hashes created: " + feedzillaCategories.size() + " " + feedzillaSubcategories.size() + " " + feedzillaArticles.size());
 	}
 
 	private ConnectionSource getConnectionSource(String propertiesFileName) throws IOException, SQLException {
@@ -58,6 +57,7 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 	}
 
 	private void createHashMap() {
+		logger.info("going to create hash codes");
 		final List<FeedzillaCategory> categories = getCategories();
 		for (FeedzillaCategory category : categories) {
 			feedzillaCategories.put(createHashCode(category), category);
@@ -70,6 +70,7 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 		for (FeedzillaArticle article : articles) {
 			feedzillaArticles.put(createHashCode(article), article);
 		}
+		logger.info("hashes created: " + feedzillaCategories.size() + " " + feedzillaSubcategories.size() + " " + feedzillaArticles.size());
 	}
 
 	public FeedzillaCategory update(FeedzillaCategory category) {

@@ -44,7 +44,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	FeedzillaDownloadApplication(String propertyFile) throws SQLException, IOException {
 		this.feedzillaStorage = new FeedzillaOrmliteStorage(propertyFile);
 		this.downloader = new FeedDataDownloader(1, 100);
-		logger.debug("going to creating hashes");
 		downloader.addReceiver(this);
 	}
 
@@ -101,10 +100,10 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 				public void run() {
 					try {
 						if (args.length > 0 && args[0] == "production") {
-							logger.debug("Started production version");
+							logger.info("Started production version");
 							downloadApplication = new FeedzillaDownloadApplication(PRODUCTION_FILENAME);
 						} else {
-							logger.debug("Started developer version");
+							logger.info("Started developer version");
 							downloadApplication = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
 						}
 						waitForStarting.countDown();
@@ -117,7 +116,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 			});
 			mainProcessingThread.start();
 			waitForStarting.await();
-			logger.debug("Please enter 'e' and press Enter to stop application.");
+			logger.info("Please enter 'e' and press Enter to stop application.");
 			addExitHook(waitForEnding);
 			waitForEnding.await();
 			mainProcessingThread.join();
