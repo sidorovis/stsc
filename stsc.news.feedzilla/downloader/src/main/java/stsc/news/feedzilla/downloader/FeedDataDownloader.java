@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
@@ -129,27 +130,27 @@ final class FeedDataDownloader {
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
-		final FutureTask<Articles> futureArticles = new FutureTask<>(new Callable<Articles>() {
+		final FutureTask<Optional<Articles>> futureArticles = new FutureTask<>(new Callable<Optional<Articles>>() {
 			@Override
-			public Articles call() throws Exception {
+			public Optional<Articles> call() throws Exception {
 				try {
 					final Articles result = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
 							.count(amountOfArticlesPerRequest).articles();
-					return result;
+					return Optional.of(result);
 				} catch (Exception e) {
 					logger.error("article hashcode create: " + category.getId() + " subcategory " + subcategory.getId() + "");
 				}
-				return null;
+				return Optional.empty();
 			}
 		});
 		executor.execute(futureArticles);
-		final Articles articles = futureArticles.get(5, TimeUnit.SECONDS);
+		final Optional<Articles> articles = futureArticles.get(5, TimeUnit.SECONDS);
 		executor.shutdown();
 		executor.awaitTermination(5, TimeUnit.SECONDS);
-		if (articles == null || stopped)
+		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
-		final List<Article> articlesList = articles.getArticles();
+		final List<Article> articlesList = articles.get().getArticles();
 		for (Article article : articlesList) {
 			try {
 				final String hashCode = getHashCode(article);
