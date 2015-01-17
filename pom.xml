@@ -30,6 +30,7 @@
   </build>
   <modules>
 	<module>stsc.common</module>
+<!--
 	<module>stsc.signals</module>
 	<module>stsc.algorithms</module>
 	<module>stsc.storage</module>
@@ -40,6 +41,7 @@
 	<module>stsc.distributed.hadoop</module>
 	<module>stsc.frontend.zozka</module> 
 	<module>stsc.news.feedzilla</module>
+-->
   </modules>
   <description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
 </project>
