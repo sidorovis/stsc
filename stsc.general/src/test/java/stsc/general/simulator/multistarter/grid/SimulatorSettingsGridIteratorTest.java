@@ -51,9 +51,9 @@ public class SimulatorSettingsGridIteratorTest extends TestCase {
 			count += 1;
 			final ExecutionsStorage executionsStorage = simulatorSettings.getInit().getExecutionsStorage();
 			final ExecutionStarter executionStarter = executionsStorage.initialize(new BrokerImpl(stockStorage));
-			final StockAlgorithm sain = executionStarter.getStockAlgorithm("in", "aapl");
-			final StockAlgorithm saema = executionStarter.getStockAlgorithm("ema", "aapl");
-			final StockAlgorithm salevel = executionStarter.getStockAlgorithm("level", "aapl");
+			final StockAlgorithm sain = executionStarter.getStockAlgorithm("in", "aapl").get();
+			final StockAlgorithm saema = executionStarter.getStockAlgorithm("ema", "aapl").get();
+			final StockAlgorithm salevel = executionStarter.getStockAlgorithm("level", "aapl").get();
 			final EodAlgorithm saone = executionStarter.getEodAlgorithm("os");
 			assertNotNull(sain);
 			assertNotNull(saema);

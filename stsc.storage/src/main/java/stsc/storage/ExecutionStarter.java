@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import stsc.common.BadSignalException;
@@ -69,11 +70,11 @@ public final class ExecutionStarter {
 			return stockAlgorithms.getStockToAlgorithm().entrySet().iterator().next().getValue().size();
 	}
 
-	public StockAlgorithm getStockAlgorithm(final String executionName, final String stockName) {
+	public Optional<StockAlgorithm> getStockAlgorithm(final String executionName, final String stockName) {
 		final StockAlgorithms e = stockAlgorithms.getStockToAlgorithm().get(stockName);
 		if (e != null)
-			return e.getMap().get(executionName);
-		return null;
+			return Optional.ofNullable(e.getMap().get(executionName));
+		return Optional.empty();
 	}
 
 	public SignalsStorage getSignalsStorage() {
@@ -82,8 +83,8 @@ public final class ExecutionStarter {
 
 	@Override
 	public String toString() {
-		return "Stocks: " + Integer.toString(stockAlgorithms.size()) + " EodAlgos: " + Integer.toString(tradeAlgorithms.size()) + " StockAlgos:"
-				+ Integer.toString(stockAlgorithms.size());
+		return "Stocks: " + Integer.toString(stockAlgorithms.size()) + " EodAlgos: " + Integer.toString(tradeAlgorithms.size())
+				+ " StockAlgos:" + Integer.toString(stockAlgorithms.size());
 	}
 
 	private String generateHashCode(List<StockExecution> stockExecutions, List<EodExecution> eodExecutions) {
