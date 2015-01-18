@@ -94,7 +94,8 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			hashArticles.put(FeedStorageHelper.createHashCode(a), a);
 		}
 		lastStoredArticlesAmount = storage.getArticles().size();
-		logger.info("Hashcode created");
+		logger.info("Hashcode created. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
+				+ ". Articles: " + lastStoredArticlesAmount);
 	}
 
 	void startDownload() throws FileNotFoundException, IOException {
@@ -119,6 +120,8 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		if (hashArticles.size() != lastStoredArticlesAmount) {
 			saveArticles();
 		}
+		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
+				+ ". Articles: " + lastStoredArticlesAmount);
 	}
 
 	private void saveCategories() throws FileNotFoundException, IOException {
