@@ -1,10 +1,19 @@
 package stsc.news.feedzilla.filedata;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
 
 import stsc.common.feeds.FeedSubcategory;
 
 public class FeedzillaFileSubcategory implements FeedSubcategory {
+
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	private Integer id;
 	private FeedzillaFileCategory category;
@@ -14,13 +23,33 @@ public class FeedzillaFileSubcategory implements FeedSubcategory {
 	private Date createdAt;
 	private Date updatedAt;
 
-	@SuppressWarnings("unused")
-	private FeedzillaFileSubcategory() {
-		// for ormlite
+	public FeedzillaFileSubcategory(DataInputStream dis, Map<Integer, FeedzillaFileCategory> categories) throws IOException {
+		this.id = dis.readInt();
+		final int categoryId = dis.readInt();
+		if (category == null) {
+			throw new IOException("For subcategory id:" + id + " no category with id: " + categoryId);
+		}
+		this.category = categories.get(categoryId);
+		this.displaySubcategoryName = dis.readUTF();
+		this.englishSubcategoryName = dis.readUTF();
+		this.urlSubcategoryName = dis.readUTF();
+		this.createdAt = new Date(dis.readLong());
+		this.updatedAt = new Date(dis.readLong());
 	}
 
-	public FeedzillaFileSubcategory(FeedzillaFileCategory category, String displayCategoryName, String englishCategoryName,
+	public void saveTo(DataOutputStream stream) throws IOException {
+		stream.writeInt(id);
+		stream.writeInt(category.getId());
+		stream.writeUTF(displaySubcategoryName);
+		stream.writeUTF(englishSubcategoryName);
+		stream.writeUTF(urlSubcategoryName);
+		stream.writeLong(createdAt.getTime());
+		stream.writeLong(updatedAt.getTime());
+	}
+
+	public FeedzillaFileSubcategory(int id, FeedzillaFileCategory category, String displayCategoryName, String englishCategoryName,
 			String urlCategoryName) {
+		this.id = id;
 		this.category = category;
 		this.displaySubcategoryName = displayCategoryName;
 		this.englishSubcategoryName = englishCategoryName;

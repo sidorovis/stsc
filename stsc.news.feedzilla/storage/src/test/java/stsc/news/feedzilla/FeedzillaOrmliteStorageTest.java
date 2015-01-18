@@ -2,8 +2,9 @@ package stsc.news.feedzilla;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,19 +28,25 @@ public class FeedzillaOrmliteStorageTest {
 		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaOrmliteCategory("hellow", "deutch", "url")));
 		Assert.assertEquals(1, fffs.createOrUpdateCategory(new FeedzillaOrmliteCategory(null, "russian", null)));
 
-		final List<FeedzillaOrmliteCategory> categories = fffs.getCategories();
+		final Collection<FeedzillaOrmliteCategory> categories = fffs.getCategories();
 		Assert.assertEquals(3, categories.size());
-		Assert.assertEquals("display", categories.get(0).getDisplayCategoryName());
-		Assert.assertEquals("english", categories.get(0).getEnglishCategoryName());
-		Assert.assertNull(categories.get(0).getUrlCategoryName());
 
-		Assert.assertEquals("hellow", categories.get(1).getDisplayCategoryName());
-		Assert.assertEquals("deutch", categories.get(1).getEnglishCategoryName());
-		Assert.assertEquals("url", categories.get(1).getUrlCategoryName());
+		final Iterator<FeedzillaOrmliteCategory> i = categories.iterator();
+		final FeedzillaOrmliteCategory c0 = i.next();
+		final FeedzillaOrmliteCategory c1 = i.next();
+		final FeedzillaOrmliteCategory c2 = i.next();
 
-		Assert.assertNull(categories.get(2).getDisplayCategoryName());
-		Assert.assertEquals("russian", categories.get(2).getEnglishCategoryName());
-		Assert.assertNull(categories.get(2).getUrlCategoryName());
+		Assert.assertEquals("display", c0.getDisplayCategoryName());
+		Assert.assertEquals("english", c0.getEnglishCategoryName());
+		Assert.assertNull(c0.getUrlCategoryName());
+
+		Assert.assertEquals("hellow", c1.getDisplayCategoryName());
+		Assert.assertEquals("deutch", c1.getEnglishCategoryName());
+		Assert.assertEquals("url", c1.getUrlCategoryName());
+
+		Assert.assertNull(c2.getDisplayCategoryName());
+		Assert.assertEquals("russian", c2.getEnglishCategoryName());
+		Assert.assertNull(c2.getUrlCategoryName());
 
 		fffs.dropAllCategories();
 	}

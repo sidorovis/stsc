@@ -2,15 +2,20 @@ package stsc.news.feedzilla;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import stsc.common.feeds.FeedStorageHelper;
 import stsc.common.storage.FeedStorage;
 import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteArticle;
 import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteCategory;
@@ -38,6 +43,8 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 	private Map<String, FeedzillaOrmliteSubcategory> feedzillaSubcategories = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, FeedzillaOrmliteArticle> feedzillaArticles = Collections.synchronizedMap(new HashMap<>());
 
+	private Map<Date, List<FeedzillaOrmliteArticle>> articlesByDate = new ConcurrentHashMap<>();
+
 	public FeedzillaOrmliteStorage() throws SQLException, IOException {
 		this("feedzilla_developer.properties");
 	}
@@ -58,23 +65,30 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 
 	private void createHashMap() {
 		logger.info("going to create hash codes");
-		final List<FeedzillaOrmliteCategory> categories = getCategories();
+		final Collection<FeedzillaOrmliteCategory> categories = getCategories();
 		for (FeedzillaOrmliteCategory category : categories) {
-			feedzillaCategories.put(createHashCode(category), category);
+			feedzillaCategories.put(FeedStorageHelper.createHashCode(category), category);
 		}
-		final List<FeedzillaOrmliteSubcategory> subcategories = getSubcategories();
+		final Collection<FeedzillaOrmliteSubcategory> subcategories = getSubcategories();
 		for (FeedzillaOrmliteSubcategory subcategory : subcategories) {
-			feedzillaSubcategories.put(createHashCode(subcategory), subcategory);
+			feedzillaSubcategories.put(FeedStorageHelper.createHashCode(subcategory), subcategory);
 		}
-		final List<FeedzillaOrmliteArticle> articles = getArticles();
+		final Collection<FeedzillaOrmliteArticle> articles = getArticles();
 		for (FeedzillaOrmliteArticle article : articles) {
-			feedzillaArticles.put(createHashCode(article), article);
+			feedzillaArticles.put(FeedStorageHelper.createHashCode(article), article);
+			final List<FeedzillaOrmliteArticle> articleList = articlesByDate.get(article.getPublishDate());
+			if (articleList == null) {
+				final List<FeedzillaOrmliteArticle> newArticleList = Collections.synchronizedList(new ArrayList<>());
+				articlesByDate.put(article.getPublishDate(), newArticleList);
+			} else {
+				articleList.add(article);
+			}
 		}
 		logger.info("hashes created: " + feedzillaCategories.size() + " " + feedzillaSubcategories.size() + " " + feedzillaArticles.size());
 	}
 
 	public FeedzillaOrmliteCategory update(FeedzillaOrmliteCategory category) {
-		final String hashCode = createHashCode(category);
+		final String hashCode = FeedStorageHelper.createHashCode(category);
 		final FeedzillaOrmliteCategory hashValue = feedzillaCategories.get(hashCode);
 		if (hashValue != null) {
 			return hashValue;
@@ -86,53 +100,31 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 	}
 
 	public FeedzillaOrmliteSubcategory update(FeedzillaOrmliteSubcategory subcategory) {
-		final String hashCode = createHashCode(subcategory);
+		final String hashCode = FeedStorageHelper.createHashCode(subcategory);
 		final FeedzillaOrmliteSubcategory hashValue = feedzillaSubcategories.get(hashCode);
 		if (hashValue != null) {
 			return hashValue;
 		}
 		if (createOrUpdateSubcategory(subcategory) > 0) {
-			feedzillaSubcategories.put(createHashCode(subcategory), subcategory);
+			feedzillaSubcategories.put(hashCode, subcategory);
 		}
 		return subcategory;
 	}
 
 	public FeedzillaOrmliteArticle update(FeedzillaOrmliteArticle article) {
-		final String hashCode = createHashCode(article);
+		final String hashCode = FeedStorageHelper.createHashCode(article);
 		final FeedzillaOrmliteArticle hashValue = feedzillaArticles.get(hashCode);
 		if (hashValue != null) {
 			return hashValue;
 		}
 		if (createOrUpdateArticle(article) > 0) {
-			feedzillaArticles.put(createHashCode(article), article);
+			feedzillaArticles.put(hashCode, article);
 		}
 		return article;
 	}
 
-	private String createHashCode(FeedzillaOrmliteCategory c) {
-		return s(c.getDisplayCategoryName()).hashCode() + " " + s(c.getEnglishCategoryName()).hashCode() + " "
-				+ s(c.getUrlCategoryName()).hashCode();
-	}
-
-	private String createHashCode(FeedzillaOrmliteSubcategory c) {
-		return s(c.getDisplaySubcategoryName()).hashCode() + " " + s(c.getEnglishSubcategoryName()).hashCode() + " "
-				+ s(c.getUrlSubcategoryName()).hashCode();
-	}
-
-	private String createHashCode(FeedzillaOrmliteArticle a) {
-		return s(a.getAuthor()).hashCode() + " " + s(a.getTitle()).hashCode() + " " + s(a.getPublishDate()) + s(a.getUrl()).hashCode()
-				+ " " + s(a.getSummary()).hashCode();
-	}
-
-	private static <T> String s(T v) {
-		if (v == null) {
-			return "null";
-		}
-		return v.toString();
-	}
-
 	@Override
-	public List<FeedzillaOrmliteCategory> getCategories() {
+	public Collection<FeedzillaOrmliteCategory> getCategories() {
 		try {
 			return categories.queryBuilder().orderBy("id", true).query();
 		} catch (SQLException e) {
@@ -150,7 +142,7 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 	}
 
 	@Override
-	public List<FeedzillaOrmliteSubcategory> getSubcategories() {
+	public Collection<FeedzillaOrmliteSubcategory> getSubcategories() {
 		try {
 			return subcategories.queryBuilder().orderBy("id", true).query();
 		} catch (SQLException e) {
@@ -168,12 +160,21 @@ public class FeedzillaOrmliteStorage implements FeedStorage {
 	}
 
 	@Override
-	public List<FeedzillaOrmliteArticle> getArticles() {
+	public Collection<FeedzillaOrmliteArticle> getArticles() {
 		try {
 			return articles.queryBuilder().orderBy("id", true).query();
 		} catch (SQLException e) {
 			return Collections.emptyList();
 		}
+	}
+
+	@Override
+	public List<FeedzillaOrmliteArticle> getArticles(final Date publishDate) {
+		final List<FeedzillaOrmliteArticle> articlesToReturn = articlesByDate.get(publishDate);
+		if (articlesToReturn == null) {
+			return Collections.emptyList();
+		}
+		return articlesToReturn;
 	}
 
 	public int createOrUpdateArticle(FeedzillaOrmliteArticle newArticle) {

@@ -1,10 +1,19 @@
 package stsc.news.feedzilla.filedata;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
 
 import stsc.common.feeds.FeedArticle;
 
 public class FeedzillaFileArticle implements FeedArticle {
+
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	private Integer id;
 	private FeedzillaFileCategory category;
@@ -19,12 +28,41 @@ public class FeedzillaFileArticle implements FeedArticle {
 	private Date createdAt;
 	private Date updatedAt;
 
-	@SuppressWarnings("unused")
-	private FeedzillaFileArticle() {
-		// for ormlite
+	public FeedzillaFileArticle(DataInputStream dis, Map<Integer, FeedzillaFileSubcategory> subcategories) throws IOException {
+		this.id = dis.readInt();
+		final int subCategoryId = dis.readInt();
+		this.subcategory = subcategories.get(subCategoryId);
+		if (subcategory == null) {
+			throw new IOException("For article id:" + id + " no subcategory with id: " + subCategoryId);
+		}
+		this.category = subcategory.getCategory();
+		this.author = dis.readUTF();
+		this.publishDate = new Date(dis.readLong());
+		this.source = dis.readUTF();
+		this.sourceUrl = dis.readUTF();
+		this.summary = dis.readUTF();
+		this.title = dis.readUTF();
+		this.url = dis.readUTF();
+		this.createdAt = new Date(dis.readLong());
+		this.updatedAt = new Date(dis.readLong());
 	}
 
-	public FeedzillaFileArticle(FeedzillaFileSubcategory subcategory, String author, Date publishDate) {
+	public void saveTo(DataOutputStream stream) throws IOException {
+		stream.writeInt(id);
+		stream.writeInt(subcategory.getId());
+		stream.writeUTF(author);
+		stream.writeLong(publishDate.getTime());
+		stream.writeUTF(source);
+		stream.writeUTF(sourceUrl);
+		stream.writeUTF(summary);
+		stream.writeUTF(title);
+		stream.writeUTF(url);
+		stream.writeLong(createdAt.getTime());
+		stream.writeLong(updatedAt.getTime());
+	}
+
+	public FeedzillaFileArticle(int id, FeedzillaFileSubcategory subcategory, String author, Date publishDate) {
+		this.id = id;
 		this.category = subcategory.getCategory();
 		this.subcategory = subcategory;
 		this.author = author;

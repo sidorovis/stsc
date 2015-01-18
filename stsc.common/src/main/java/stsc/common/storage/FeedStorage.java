@@ -1,5 +1,7 @@
 package stsc.common.storage;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import stsc.common.feeds.FeedArticle;
@@ -10,10 +12,12 @@ public interface FeedStorage {
 
 	// get list methods
 
-	public List<? extends FeedCategory> getCategories();
+	public Collection<? extends FeedCategory> getCategories();
 
-	public List<? extends FeedSubcategory> getSubcategories();
+	public Collection<? extends FeedSubcategory> getSubcategories();
 
-	public List<? extends FeedArticle> getArticles();
+	public Collection<? extends FeedArticle> getArticles();
+
+	public List<? extends FeedArticle> getArticles(Date publishDate);
 
 }

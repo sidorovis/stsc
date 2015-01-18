@@ -20,52 +20,53 @@ import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteArticle;
 import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteCategory;
 import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteSubcategory;
 
-final class FeedzillaDownloadApplication implements LoadFeedReceiver {
+final class FeedzillaDownloadToOrmliteApplication implements LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	private static Logger logger = LogManager.getLogger(FeedzillaDownloadApplication.class);
+	private static Logger logger = LogManager.getLogger(FeedzillaDownloadToOrmliteApplication.class);
 
 	private static String PRODUCTION_FILENAME = "feedzilla_production.properties";
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
 
-	private static FeedzillaDownloadApplication downloadApplication;
+	private static FeedzillaDownloadToOrmliteApplication downloadApplication;
 
 	private final FeedzillaOrmliteStorage feedzillaStorage;
 	private final FeedDataDownloader downloader;
 
-	FeedzillaDownloadApplication() throws SQLException, IOException {
+	FeedzillaDownloadToOrmliteApplication() throws SQLException, IOException {
 		this(DEVELOPER_FILENAME);
 	}
 
-	FeedzillaDownloadApplication(String propertyFile) throws SQLException, IOException {
+	FeedzillaDownloadToOrmliteApplication(String propertyFile) throws SQLException, IOException {
 		this.feedzillaStorage = new FeedzillaOrmliteStorage(propertyFile);
 		this.downloader = new FeedDataDownloader(1, 100);
 		downloader.addReceiver(this);
 	}
 
 	void startDownload() {
-		downloader.startDownload();
+		downloader.download();
 		for (int i = 3650; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
 			}
 			downloader.setDaysToDownload(i);
-			downloader.startDownload();
+			downloader.download();
 		}
 	}
 
 	private FeedzillaOrmliteCategory createFeedzillaCategory(Category from) {
-		final FeedzillaOrmliteCategory result = new FeedzillaOrmliteCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		final FeedzillaOrmliteCategory result = new FeedzillaOrmliteCategory(from.getDisplayName(), from.getEnglishName(),
+				from.getUrlName());
 		return feedzillaStorage.update(result);
 	}
 
 	private FeedzillaOrmliteSubcategory createFeedzillaSubcategory(FeedzillaOrmliteCategory categoryFrom, Subcategory from) {
-		final FeedzillaOrmliteSubcategory result = new FeedzillaOrmliteSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(),
-				from.getUrlName());
+		final FeedzillaOrmliteSubcategory result = new FeedzillaOrmliteSubcategory(categoryFrom, from.getDisplayName(),
+				from.getEnglishName(), from.getUrlName());
 		return feedzillaStorage.update(result);
 	}
 
@@ -101,10 +102,10 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 					try {
 						if (args.length > 0 && args[0] == "production") {
 							logger.info("Started production version");
-							downloadApplication = new FeedzillaDownloadApplication(PRODUCTION_FILENAME);
+							downloadApplication = new FeedzillaDownloadToOrmliteApplication(PRODUCTION_FILENAME);
 						} else {
 							logger.info("Started developer version");
-							downloadApplication = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
+							downloadApplication = new FeedzillaDownloadToOrmliteApplication(DEVELOPER_FILENAME);
 						}
 						waitForStarting.countDown();
 					} catch (Exception e) {

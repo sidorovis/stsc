@@ -64,10 +64,6 @@ final class FeedDataDownloader {
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
 	}
 
-	public void startDownload() {
-		downloadLastNdays();
-	}
-
 	public void setDaysToDownload(int daysToDownload) {
 		this.daysToDownload = daysToDownload;
 	}
@@ -86,7 +82,7 @@ final class FeedDataDownloader {
 		receivers.add(receiver);
 	}
 
-	private void downloadLastNdays() {
+	public void download() {
 		DateTime startOfDay = DateTime.now();
 		startOfDay = startOfDay.minusDays(daysToDownload);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
