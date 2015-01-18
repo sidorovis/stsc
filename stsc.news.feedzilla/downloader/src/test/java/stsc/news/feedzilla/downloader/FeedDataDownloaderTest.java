@@ -26,9 +26,8 @@ public class FeedDataDownloaderTest {
 		startOfDay = startOfDay.minusDays(1);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
-		final Category category = feed.getCategories().get(0);
-
-		final Subcategory subcategory = feed.getSubcategories(category).get(0);
+		final Category category = FeedDataDownloader.getCategories(feed).get(0);
+		final Subcategory subcategory = FeedDataDownloader.getSubcategories(feed, category).get(0);
 		final ReceiverTestHelper receiver = new ReceiverTestHelper();
 		final FeedDataDownloader downloader = new FeedDataDownloader(10, 1);
 		downloader.addReceiver(receiver);
@@ -37,5 +36,5 @@ public class FeedDataDownloaderTest {
 		Assert.assertEquals(1, articles);
 		Assert.assertEquals(1, receiver.sum);
 	}
-	
+
 }
