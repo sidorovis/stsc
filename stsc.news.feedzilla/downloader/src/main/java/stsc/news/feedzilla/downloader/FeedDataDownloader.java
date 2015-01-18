@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,6 +89,9 @@ final class FeedDataDownloader {
 				try {
 					CallableArticlesDownload.pause();
 					amountOfProcessedArticles += getArticles(category, subcategory, downloadPeriod);
+				} catch (TimeoutException e) {
+					logger.error("getArticles returns TimeoutException: " + e.getMessage() + "; we trying to restart executor.");
+					updateExecutor();
 				} catch (Exception e) {
 					logger.error("getArticles returns", e);
 				}
@@ -159,6 +163,10 @@ final class FeedDataDownloader {
 			}
 		}
 		return articles.get().size();
+	}
+
+	public void updateExecutor() {
+		this.executor = Executors.newFixedThreadPool(1);
 	}
 
 }
