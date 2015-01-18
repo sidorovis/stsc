@@ -49,11 +49,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.news.feedzilla.sqlite.migrations</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
@@ -63,21 +58,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.j256.ormlite</groupId>
-			<artifactId>ormlite-core</artifactId>
-			<version>4.47</version>
-		</dependency>
-		<dependency>
-			<groupId>com.j256.ormlite</groupId>
-			<artifactId>ormlite-jdbc</artifactId>
-			<version>4.47</version>
-		</dependency>
-		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.7.2</version>
 		</dependency>
 	</dependencies>
 	<description>Stsc news feedzilla storage project, possibility to store news datafeed (from feedzilla).</description>

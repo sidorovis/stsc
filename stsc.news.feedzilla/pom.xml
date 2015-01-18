@@ -32,7 +32,6 @@
 	</plugins>
   </build>
 	<modules>
-		<module>sqlite.migrations</module>
 		<module>storage</module>
 		<module>downloader</module>
 	</modules>
