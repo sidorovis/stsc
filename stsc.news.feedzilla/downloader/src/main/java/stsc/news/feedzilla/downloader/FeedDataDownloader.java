@@ -128,7 +128,7 @@ final class FeedDataDownloader {
 		} catch (Exception e) {
 			logger.error("getCategories returns", e);
 		}
-		logger.debug("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
+		logger.info("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
 				+ " --- for date " + startOfDay.toString());
 	}
 
