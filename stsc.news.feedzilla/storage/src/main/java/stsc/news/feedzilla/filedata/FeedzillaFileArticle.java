@@ -1,58 +1,30 @@
-package stsc.news.feedzilla.schema;
+package stsc.news.feedzilla.filedata;
 
 import java.util.Date;
 
 import stsc.common.feeds.FeedArticle;
 
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+public class FeedzillaFileArticle implements FeedArticle {
 
-@DatabaseTable(tableName = "articles")
-public class FeedzillaArticle implements FeedArticle {
-
-	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
-
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_id", canBeNull = false)
-	private FeedzillaCategory category;
-
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "subcategory_id", canBeNull = false)
-	private FeedzillaSubcategory subcategory;
-
-	@DatabaseField(columnName = "author", useGetSet = true)
+	private FeedzillaFileCategory category;
+	private FeedzillaFileSubcategory subcategory;
 	private String author;
-
-	@DatabaseField(columnName = "publish_date", dataType = DataType.DATE_STRING)
 	private Date publishDate;
-
-	@DatabaseField(columnName = "source", useGetSet = true)
 	private String source;
-
-	@DatabaseField(columnName = "source_url", useGetSet = true)
 	private String sourceUrl;
-
-	@DatabaseField(columnName = "summary", useGetSet = true)
 	private String summary;
-
-	@DatabaseField(columnName = "title", useGetSet = true)
 	private String title;
-
-	@DatabaseField(columnName = "url", useGetSet = true)
 	private String url;
-
-	@DatabaseField(columnName = "created_at", dataType = DataType.DATE_STRING)
 	private Date createdAt;
-
-	@DatabaseField(columnName = "updated_at", dataType = DataType.DATE_STRING)
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedzillaArticle() {
+	private FeedzillaFileArticle() {
 		// for ormlite
 	}
 
-	public FeedzillaArticle(FeedzillaSubcategory subcategory, String author, Date publishDate) {
+	public FeedzillaFileArticle(FeedzillaFileSubcategory subcategory, String author, Date publishDate) {
 		this.category = subcategory.getCategory();
 		this.subcategory = subcategory;
 		this.author = author;
@@ -66,12 +38,12 @@ public class FeedzillaArticle implements FeedArticle {
 	}
 
 	@Override
-	public FeedzillaCategory getCategory() {
+	public FeedzillaFileCategory getCategory() {
 		return category;
 	}
 
 	@Override
-	public FeedzillaSubcategory getSubcategory() {
+	public FeedzillaFileSubcategory getSubcategory() {
 		return subcategory;
 	}
 

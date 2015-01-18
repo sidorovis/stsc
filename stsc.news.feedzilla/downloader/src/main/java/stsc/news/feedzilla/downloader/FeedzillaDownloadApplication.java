@@ -16,9 +16,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.news.feedzilla.FeedzillaOrmliteStorage;
-import stsc.news.feedzilla.schema.FeedzillaArticle;
-import stsc.news.feedzilla.schema.FeedzillaCategory;
-import stsc.news.feedzilla.schema.FeedzillaSubcategory;
+import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteArticle;
+import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteCategory;
+import stsc.news.feedzilla.ormlite.schema.FeedzillaOrmliteSubcategory;
 
 final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
@@ -58,19 +58,19 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		}
 	}
 
-	private FeedzillaCategory createFeedzillaCategory(Category from) {
-		final FeedzillaCategory result = new FeedzillaCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+	private FeedzillaOrmliteCategory createFeedzillaCategory(Category from) {
+		final FeedzillaOrmliteCategory result = new FeedzillaOrmliteCategory(from.getDisplayName(), from.getEnglishName(), from.getUrlName());
 		return feedzillaStorage.update(result);
 	}
 
-	private FeedzillaSubcategory createFeedzillaSubcategory(FeedzillaCategory categoryFrom, Subcategory from) {
-		final FeedzillaSubcategory result = new FeedzillaSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(),
+	private FeedzillaOrmliteSubcategory createFeedzillaSubcategory(FeedzillaOrmliteCategory categoryFrom, Subcategory from) {
+		final FeedzillaOrmliteSubcategory result = new FeedzillaOrmliteSubcategory(categoryFrom, from.getDisplayName(), from.getEnglishName(),
 				from.getUrlName());
 		return feedzillaStorage.update(result);
 	}
 
-	private FeedzillaArticle createFeedzillaArticle(FeedzillaSubcategory subcategory, Article from) {
-		final FeedzillaArticle to = new FeedzillaArticle(subcategory, from.getAuthor(), from.getPublishDate().toDate());
+	private FeedzillaOrmliteArticle createFeedzillaArticle(FeedzillaOrmliteSubcategory subcategory, Article from) {
+		final FeedzillaOrmliteArticle to = new FeedzillaOrmliteArticle(subcategory, from.getAuthor(), from.getPublishDate().toDate());
 		to.setSource(from.getSource());
 		to.setSourceUrl(from.getSourceUrl());
 		to.setSummary(from.getSummary());
@@ -86,8 +86,8 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	@Override
 	public void newArticle(Category newCategory, Subcategory newSubcategory, Article newArticle) {
-		final FeedzillaCategory category = createFeedzillaCategory(newCategory);
-		final FeedzillaSubcategory subcategory = createFeedzillaSubcategory(category, newSubcategory);
+		final FeedzillaOrmliteCategory category = createFeedzillaCategory(newCategory);
+		final FeedzillaOrmliteSubcategory subcategory = createFeedzillaSubcategory(category, newSubcategory);
 		createFeedzillaArticle(subcategory, newArticle);
 	}
 

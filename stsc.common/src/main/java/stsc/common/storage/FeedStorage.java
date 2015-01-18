@@ -8,15 +8,6 @@ import stsc.common.feeds.FeedSubcategory;
 
 public interface FeedStorage {
 
-	// create or update methods
-	//
-	// public <T extends FeedCategory> int createOrUpdateCategory(T
-	// newCategory);
-	//
-	// public int createOrUpdateSubcategory(FeedSubcategory newSubcategory);
-	//
-	// public int createOrUpdateArticle(FeedArticle newArticle);
-
 	// get list methods
 
 	public List<? extends FeedCategory> getCategories();

@@ -1,4 +1,4 @@
-package stsc.news.feedzilla.schema;
+package stsc.news.feedzilla.ormlite.schema;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "categories")
-public class FeedzillaCategory implements FeedCategory {
+public class FeedzillaOrmliteCategory implements FeedCategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -30,11 +30,11 @@ public class FeedzillaCategory implements FeedCategory {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedzillaCategory() {
+	private FeedzillaOrmliteCategory() {
 		// for ormlite
 	}
 
-	public FeedzillaCategory(String displayCategoryName, String englishCategoryName, String urlCategoryName) {
+	public FeedzillaOrmliteCategory(String displayCategoryName, String englishCategoryName, String urlCategoryName) {
 		this.displayCategoryName = displayCategoryName;
 		this.englishCategoryName = englishCategoryName;
 		this.urlCategoryName = urlCategoryName;

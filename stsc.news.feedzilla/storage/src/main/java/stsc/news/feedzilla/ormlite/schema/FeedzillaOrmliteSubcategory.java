@@ -1,4 +1,4 @@
-package stsc.news.feedzilla.schema;
+package stsc.news.feedzilla.ormlite.schema;
 
 import java.util.Date;
 
@@ -9,13 +9,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "subcategories")
-public class FeedzillaSubcategory implements FeedSubcategory {
+public class FeedzillaOrmliteSubcategory implements FeedSubcategory {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "category_id", canBeNull = false)
-	private FeedzillaCategory category;
+	private FeedzillaOrmliteCategory category;
 
 	@DatabaseField(columnName = "display_subcategory_name", useGetSet = true)
 	private String displaySubcategoryName;
@@ -33,11 +33,11 @@ public class FeedzillaSubcategory implements FeedSubcategory {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private FeedzillaSubcategory() {
+	private FeedzillaOrmliteSubcategory() {
 		// for ormlite
 	}
 
-	public FeedzillaSubcategory(FeedzillaCategory category, String displayCategoryName, String englishCategoryName, String urlCategoryName) {
+	public FeedzillaOrmliteSubcategory(FeedzillaOrmliteCategory category, String displayCategoryName, String englishCategoryName, String urlCategoryName) {
 		this.category = category;
 		this.displaySubcategoryName = displayCategoryName;
 		this.englishSubcategoryName = englishCategoryName;
@@ -51,7 +51,7 @@ public class FeedzillaSubcategory implements FeedSubcategory {
 	}
 
 	@Override
-	public FeedzillaCategory getCategory() {
+	public FeedzillaOrmliteCategory getCategory() {
 		return category;
 	}
 
