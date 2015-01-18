@@ -26,9 +26,9 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.feeds.FeedStorageHelper;
 import stsc.news.feedzilla.FeedzillaFileStorage;
-import stsc.news.feedzilla.filedata.FeedzillaFileArticle;
-import stsc.news.feedzilla.filedata.FeedzillaFileCategory;
-import stsc.news.feedzilla.filedata.FeedzillaFileSubcategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
+import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
 final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 

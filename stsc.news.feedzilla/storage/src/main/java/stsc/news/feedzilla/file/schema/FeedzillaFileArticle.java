@@ -1,4 +1,4 @@
-package stsc.news.feedzilla.filedata;
+package stsc.news.feedzilla.file.schema;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

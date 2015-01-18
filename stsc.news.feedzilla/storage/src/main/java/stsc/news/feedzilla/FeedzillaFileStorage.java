@@ -17,9 +17,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import stsc.common.storage.FeedStorage;
-import stsc.news.feedzilla.filedata.FeedzillaFileArticle;
-import stsc.news.feedzilla.filedata.FeedzillaFileCategory;
-import stsc.news.feedzilla.filedata.FeedzillaFileSubcategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
+import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
 public class FeedzillaFileStorage implements FeedStorage {
 
