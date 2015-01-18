@@ -37,4 +37,5 @@ public class FeedDataDownloaderTest {
 		Assert.assertEquals(1, articles);
 		Assert.assertEquals(1, receiver.sum);
 	}
+	
 }

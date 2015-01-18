@@ -120,8 +120,8 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		if (hashArticles.size() != lastStoredArticlesAmount) {
 			saveArticles();
 		}
-		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
-				+ ". Articles: " + lastStoredArticlesAmount);
+		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: "
+				+ lastStoredSubcategoriesAmount + ". Articles: " + lastStoredArticlesAmount);
 	}
 
 	private void saveCategories() throws FileNotFoundException, IOException {

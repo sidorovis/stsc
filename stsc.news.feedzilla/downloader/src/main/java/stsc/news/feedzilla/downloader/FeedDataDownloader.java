@@ -1,7 +1,6 @@
 package stsc.news.feedzilla.downloader;
 
 import graef.feedzillajava.Article;
-import graef.feedzillajava.Articles;
 import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
@@ -17,9 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javax.ws.rs.ForbiddenException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,8 +34,6 @@ final class FeedDataDownloader {
 	}
 
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
-
-	public static long PAUSE_SLEEP_TIME = 200;
 
 	private int daysToDownload;
 	private final int amountOfArticlesPerRequest;
@@ -83,99 +77,88 @@ final class FeedDataDownloader {
 	}
 
 	public void download() {
-		DateTime startOfDay = DateTime.now();
-		startOfDay = startOfDay.minusDays(daysToDownload);
-		startOfDay = startOfDay.withTimeAtStartOfDay();
+		final DateTime downloadPeriod = createNextDateTimeElement();
 		int amountOfProcessedArticles = 0;
-		try {
-			final List<Category> categories = feed.getCategories();
-
-			for (Category category : categories) {
-				final long beginTime = System.currentTimeMillis();
+		final List<Category> categories = getCategories();
+		for (Category category : categories) {
+			final long beginTime = System.currentTimeMillis();
+			CallableArticlesDownload.pause();
+			final List<Subcategory> subcategories = getSubcategories(category);
+			for (Subcategory subcategory : subcategories) {
 				try {
-					pause();
-					final List<Subcategory> subcategories = feed.getSubcategories(category);
-					for (Subcategory subcategory : subcategories) {
-						try {
-							pause();
-							amountOfProcessedArticles += getArticles(category, subcategory, startOfDay);
-						} catch (TimeoutException e) {
-							logger.error("getArticles returns TimeoutException, ", e);
-						} catch (ForbiddenException e) {
-							logger.error("getArticles returns ForbiddenException, ", e);
-						} catch (Exception e) {
-							logger.error("getArticles returns", e);
-						}
-						if (stopped) {
-							break;
-						}
-					}
+					CallableArticlesDownload.pause();
+					amountOfProcessedArticles += getArticles(category, subcategory, downloadPeriod);
 				} catch (Exception e) {
-					logger.error("getSubcategories returns: " + e.getMessage());
+					logger.error("getArticles returns", e);
 				}
 				if (stopped) {
 					break;
 				}
-				final long endTime = System.currentTimeMillis();
-				logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles
-						+ " articles. For day " + startOfDay + ". Which took: " + (endTime - beginTime) + " millisec.");
 			}
-		} catch (Exception e) {
-			logger.error("getCategories returns" + e.getMessage());
+			if (stopped) {
+				break;
+			}
+			final long endTime = System.currentTimeMillis();
+			logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles + " articles. For day "
+					+ downloadPeriod + ". Which took: " + (endTime - beginTime) + " millisec.");
 		}
 		logger.info("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
-				+ " --- for date " + startOfDay.toString());
+				+ " --- for date " + downloadPeriod.toString());
+	}
+
+	private List<Category> getCategories() {
+		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
+			try {
+				return feed.getCategories();
+			} catch (Exception e) {
+				logger.error("Downloading categories throw exception: " + e.getMessage());
+			}
+			CallableArticlesDownload.pause();
+		}
+		return Collections.emptyList();
+	}
+
+	private List<Subcategory> getSubcategories(Category category) {
+		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
+			try {
+				return feed.getSubcategories(category);
+			} catch (Exception e) {
+				logger.error("Downloading subcategories throw exception: " + e.getMessage());
+			}
+			CallableArticlesDownload.pause();
+		}
+		return Collections.emptyList();
+	}
+
+	private DateTime createNextDateTimeElement() {
+		return DateTime.now().minusDays(daysToDownload).withTimeAtStartOfDay();
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
-		final FutureTask<Optional<Articles>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
+		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
 		executor.submit(futureArticles);
-		final Optional<Articles> articles = futureArticles.get(15, TimeUnit.SECONDS);
+		final Optional<List<Article>> articles = futureArticles.get(15, TimeUnit.SECONDS);
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
-		final List<Article> articlesList = articles.get().getArticles();
-		for (Article article : articlesList) {
+		for (Article article : articles.get()) {
 			try {
-				final String hashCode = getHashCode(article);
-				if (!hashCodes.contains(hashCode)) {
-					hashCodes.add(hashCode);
-					for (LoadFeedReceiver receiver : receivers) {
-						receiver.newArticle(category, subcategory, article);
-						articlesCount += 1;
-						if (!stopped) {
-							return articlesCount;
-						}
+				for (LoadFeedReceiver receiver : receivers) {
+					receiver.newArticle(category, subcategory, article);
+					articlesCount += 1;
+					if (!stopped) {
+						return articlesCount;
 					}
 				}
 			} catch (Exception e) {
-				logger.error("error while passing article to receiver: for hashcode create: " + article.toString(), e);
+				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
 			if (!stopped) {
 				return articlesCount;
 			}
 		}
-		return articlesList.size();
-	}
-
-	private void pause() {
-		try {
-			Thread.sleep(PAUSE_SLEEP_TIME);
-		} catch (Exception e) {
-		}
-	}
-
-	private static String getHashCode(Article a) {
-		return "" + s(a.getAuthor()).hashCode() + " " + s(a.getSource()).hashCode() + " " + s(a.getSummary()).hashCode() + " "
-				+ s(a.getTitle()).hashCode();
-	}
-
-	private static String s(String v) {
-		if (v == null) {
-			return "null";
-		}
-		return v;
+		return articles.get().size();
 	}
 
 }
