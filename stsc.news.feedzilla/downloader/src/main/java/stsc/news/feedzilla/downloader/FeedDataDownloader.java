@@ -88,7 +88,6 @@ final class FeedDataDownloader {
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		int amountOfProcessedArticles = 0;
 		try {
-
 			final List<Category> categories = feed.getCategories();
 
 			for (Category category : categories) {
@@ -112,7 +111,7 @@ final class FeedDataDownloader {
 						}
 					}
 				} catch (Exception e) {
-					logger.error("getSubcategories returns", e);
+					logger.error("getSubcategories returns: " + e.getMessage());
 				}
 				if (stopped) {
 					break;

@@ -80,6 +80,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	private void readFeedData() throws FileNotFoundException, IOException {
+		logger.info("Start to create hashcode for database");
 		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
@@ -93,6 +94,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			hashArticles.put(FeedStorageHelper.createHashCode(a), a);
 		}
 		lastStoredArticlesAmount = storage.getArticles().size();
+		logger.info("Hashcode created");
 	}
 
 	void startDownload() throws FileNotFoundException, IOException {
