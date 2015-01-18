@@ -39,7 +39,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	private static Logger logger = LogManager.getLogger(FeedzillaDownloadToFileApplication.class);
 
-	private static String PRODUCTION_FILENAME = "feedzilla_production.properties";
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
 
 	private static FeedzillaDownloadToFileApplication downloadApplication;
@@ -47,6 +46,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	private final FeedDataDownloader downloader;
 
 	private final String feedFolder;
+	private int daysBackDownloadFrom = 3650;
 
 	private Map<String, FeedzillaFileCategory> hashCategories = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, FeedzillaFileSubcategory> hashSubcategories = Collections.synchronizedMap(new HashMap<>());
@@ -75,6 +75,10 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		try (DataInputStream inputStream = new DataInputStream(new FileInputStream("./config/" + propertyFile))) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
+			final String daysBackDownloadFrom = properties.getProperty("days.back.download.from");
+			if (daysBackDownloadFrom != null) {
+				this.daysBackDownloadFrom = Integer.valueOf(daysBackDownloadFrom);
+			}
 			return properties.getProperty("feed.folder");
 		}
 	}
@@ -99,8 +103,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	void startDownload() throws FileNotFoundException, IOException {
-		downloadAndSave();
-		for (int i = 3650; i > 1; --i) {
+		for (int i = daysBackDownloadFrom; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
 			}
@@ -209,13 +212,8 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 				@Override
 				public void run() {
 					try {
-						if (args.length > 0 && args[0] == "production") {
-							logger.info("Started production version");
-							downloadApplication = new FeedzillaDownloadToFileApplication(PRODUCTION_FILENAME);
-						} else {
-							logger.info("Started developer version");
-							downloadApplication = new FeedzillaDownloadToFileApplication(DEVELOPER_FILENAME);
-						}
+						logger.info("Started developer version");
+						downloadApplication = new FeedzillaDownloadToFileApplication(DEVELOPER_FILENAME);
 						waitForStarting.countDown();
 						downloadApplication.startDownload();
 					} catch (Exception e) {
