@@ -121,7 +121,7 @@ final class FeedDataDownloader {
 						+ " articles. For day " + startOfDay + ". Which took: " + (endTime - beginTime) + " millisec.");
 			}
 		} catch (Exception e) {
-			logger.error("getCategories returns", e);
+			logger.error("getCategories returns" + e.getMessage());
 		}
 		logger.info("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
 				+ " --- for date " + startOfDay.toString());
