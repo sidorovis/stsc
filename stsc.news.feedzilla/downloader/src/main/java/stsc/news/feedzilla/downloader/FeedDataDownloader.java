@@ -79,11 +79,11 @@ final class FeedDataDownloader {
 	public void download() {
 		final DateTime downloadPeriod = createNextDateTimeElement();
 		int amountOfProcessedArticles = 0;
-		final List<Category> categories = getCategories();
+		final List<Category> categories = getCategories(feed);
 		for (Category category : categories) {
 			final long beginTime = System.currentTimeMillis();
 			CallableArticlesDownload.pause();
-			final List<Subcategory> subcategories = getSubcategories(category);
+			final List<Subcategory> subcategories = getSubcategories(feed, category);
 			for (Subcategory subcategory : subcategories) {
 				try {
 					CallableArticlesDownload.pause();
@@ -106,7 +106,7 @@ final class FeedDataDownloader {
 				+ " --- for date " + downloadPeriod.toString());
 	}
 
-	private List<Category> getCategories() {
+	public static List<Category> getCategories(FeedZilla feed) {
 		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
 			try {
 				return feed.getCategories();
@@ -118,7 +118,7 @@ final class FeedDataDownloader {
 		return Collections.emptyList();
 	}
 
-	private List<Subcategory> getSubcategories(Category category) {
+	public static List<Subcategory> getSubcategories(FeedZilla feed, Category category) {
 		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
 			try {
 				return feed.getSubcategories(category);
