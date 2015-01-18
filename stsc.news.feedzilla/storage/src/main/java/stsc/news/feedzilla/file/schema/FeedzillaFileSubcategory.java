@@ -26,10 +26,10 @@ public class FeedzillaFileSubcategory implements FeedSubcategory {
 	public FeedzillaFileSubcategory(DataInputStream dis, Map<Integer, FeedzillaFileCategory> categories) throws IOException {
 		this.id = dis.readInt();
 		final int categoryId = dis.readInt();
+		this.category = categories.get(categoryId);
 		if (category == null) {
 			throw new IOException("For subcategory id:" + id + " no category with id: " + categoryId);
 		}
-		this.category = categories.get(categoryId);
 		this.displaySubcategoryName = FileProcessHelper.readNullableUTF(dis);
 		this.englishSubcategoryName = FileProcessHelper.readNullableUTF(dis);
 		this.urlSubcategoryName = FileProcessHelper.readNullableUTF(dis);
