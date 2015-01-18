@@ -51,11 +51,14 @@ public class FeedzillaFileStorage implements FeedStorage {
 	}
 
 	private void readCategories() throws FileNotFoundException, IOException {
-		try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_categories" + FILE_EXTENSION))) {
-			final long sizeOfCategories = f.readLong();
-			for (long i = 0; i < sizeOfCategories; ++i) {
-				final FeedzillaFileCategory category = new FeedzillaFileCategory(f);
-				categories.put(category.getId(), category);
+		final File file = new File(feedFolder + "/" + "_categories" + FILE_EXTENSION);
+		if (file.exists()) {
+			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_categories" + FILE_EXTENSION))) {
+				final long sizeOfCategories = f.readLong();
+				for (long i = 0; i < sizeOfCategories; ++i) {
+					final FeedzillaFileCategory category = new FeedzillaFileCategory(f);
+					categories.put(category.getId(), category);
+				}
 			}
 		}
 	}
@@ -71,11 +74,14 @@ public class FeedzillaFileStorage implements FeedStorage {
 	}
 
 	private void readSubcategories() throws FileNotFoundException, IOException {
-		try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_subcategories" + FILE_EXTENSION))) {
-			final long sizeOfSubcategories = f.readLong();
-			for (long i = 0; i < sizeOfSubcategories; ++i) {
-				final FeedzillaFileSubcategory subcategory = new FeedzillaFileSubcategory(f, categories);
-				subcategories.put(subcategory.getId(), subcategory);
+		final File file = new File(feedFolder + "/" + "_subcategories" + FILE_EXTENSION);
+		if (file.exists()) {
+			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_subcategories" + FILE_EXTENSION))) {
+				final long sizeOfSubcategories = f.readLong();
+				for (long i = 0; i < sizeOfSubcategories; ++i) {
+					final FeedzillaFileSubcategory subcategory = new FeedzillaFileSubcategory(f, categories);
+					subcategories.put(subcategory.getId(), subcategory);
+				}
 			}
 		}
 	}

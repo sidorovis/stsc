@@ -30,9 +30,9 @@ public class FeedzillaFileSubcategory implements FeedSubcategory {
 			throw new IOException("For subcategory id:" + id + " no category with id: " + categoryId);
 		}
 		this.category = categories.get(categoryId);
-		this.displaySubcategoryName = dis.readUTF();
-		this.englishSubcategoryName = dis.readUTF();
-		this.urlSubcategoryName = dis.readUTF();
+		this.displaySubcategoryName = FileProcessHelper.readNullableUTF(dis);
+		this.englishSubcategoryName = FileProcessHelper.readNullableUTF(dis);
+		this.urlSubcategoryName = FileProcessHelper.readNullableUTF(dis);
 		this.createdAt = new Date(dis.readLong());
 		this.updatedAt = new Date(dis.readLong());
 	}
@@ -40,9 +40,9 @@ public class FeedzillaFileSubcategory implements FeedSubcategory {
 	public void saveTo(DataOutputStream stream) throws IOException {
 		stream.writeInt(id);
 		stream.writeInt(category.getId());
-		stream.writeUTF(displaySubcategoryName);
-		stream.writeUTF(englishSubcategoryName);
-		stream.writeUTF(urlSubcategoryName);
+		FileProcessHelper.writeNullableUTF(stream, displaySubcategoryName);
+		FileProcessHelper.writeNullableUTF(stream, englishSubcategoryName);
+		FileProcessHelper.writeNullableUTF(stream, urlSubcategoryName);
 		stream.writeLong(createdAt.getTime());
 		stream.writeLong(updatedAt.getTime());
 	}

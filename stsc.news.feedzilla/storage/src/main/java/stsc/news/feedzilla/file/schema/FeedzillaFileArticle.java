@@ -36,13 +36,13 @@ public class FeedzillaFileArticle implements FeedArticle {
 			throw new IOException("For article id:" + id + " no subcategory with id: " + subCategoryId);
 		}
 		this.category = subcategory.getCategory();
-		this.author = dis.readUTF();
+		this.author = FileProcessHelper.readNullableUTF(dis);
 		this.publishDate = new Date(dis.readLong());
-		this.source = dis.readUTF();
-		this.sourceUrl = dis.readUTF();
-		this.summary = dis.readUTF();
-		this.title = dis.readUTF();
-		this.url = dis.readUTF();
+		this.source = FileProcessHelper.readNullableUTF(dis);
+		this.sourceUrl = FileProcessHelper.readNullableUTF(dis);
+		this.summary = FileProcessHelper.readNullableUTF(dis);
+		this.title = FileProcessHelper.readNullableUTF(dis);
+		this.url = FileProcessHelper.readNullableUTF(dis);
 		this.createdAt = new Date(dis.readLong());
 		this.updatedAt = new Date(dis.readLong());
 	}
@@ -50,13 +50,13 @@ public class FeedzillaFileArticle implements FeedArticle {
 	public void saveTo(DataOutputStream stream) throws IOException {
 		stream.writeInt(id);
 		stream.writeInt(subcategory.getId());
-		stream.writeUTF(author);
+		FileProcessHelper.writeNullableUTF(stream, author);
 		stream.writeLong(publishDate.getTime());
-		stream.writeUTF(source);
-		stream.writeUTF(sourceUrl);
-		stream.writeUTF(summary);
-		stream.writeUTF(title);
-		stream.writeUTF(url);
+		FileProcessHelper.writeNullableUTF(stream, source);
+		FileProcessHelper.writeNullableUTF(stream, sourceUrl);
+		FileProcessHelper.writeNullableUTF(stream, summary);
+		FileProcessHelper.writeNullableUTF(stream, title);
+		FileProcessHelper.writeNullableUTF(stream, url);
 		stream.writeLong(createdAt.getTime());
 		stream.writeLong(updatedAt.getTime());
 	}

@@ -63,7 +63,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	FeedzillaDownloadToFileApplication(String propertyFile) throws IOException {
 		this.feedFolder = readFeedFolderProperty(propertyFile);
-		this.downloader = new FeedDataDownloader(1, 100);
+		this.downloader = new FeedDataDownloader(1, 1);
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
 		}

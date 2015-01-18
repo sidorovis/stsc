@@ -23,18 +23,18 @@ public class FeedzillaFileCategory implements FeedCategory {
 
 	public FeedzillaFileCategory(DataInputStream dis) throws IOException {
 		this.id = dis.readInt();
-		this.displayCategoryName = dis.readUTF();
-		this.englishCategoryName = dis.readUTF();
-		this.urlCategoryName = dis.readUTF();
+		this.displayCategoryName = FileProcessHelper.readNullableUTF(dis);
+		this.englishCategoryName = FileProcessHelper.readNullableUTF(dis);
+		this.urlCategoryName = FileProcessHelper.readNullableUTF(dis);
 		this.createdAt = new Date(dis.readLong());
 		this.updatedAt = new Date(dis.readLong());
 	}
 
 	public void saveTo(DataOutputStream stream) throws IOException {
 		stream.writeInt(id);
-		stream.writeUTF(displayCategoryName);
-		stream.writeUTF(englishCategoryName);
-		stream.writeUTF(urlCategoryName);
+		FileProcessHelper.writeNullableUTF(stream, displayCategoryName);
+		FileProcessHelper.writeNullableUTF(stream, englishCategoryName);
+		FileProcessHelper.writeNullableUTF(stream, urlCategoryName);
 		stream.writeLong(createdAt.getTime());
 		stream.writeLong(updatedAt.getTime());
 	}
@@ -45,7 +45,7 @@ public class FeedzillaFileCategory implements FeedCategory {
 		this.englishCategoryName = englishCategoryName;
 		this.urlCategoryName = urlCategoryName;
 		this.createdAt = new Date();
-		this.createdAt = new Date();
+		this.updatedAt = new Date();
 	}
 
 	public Integer getId() {
