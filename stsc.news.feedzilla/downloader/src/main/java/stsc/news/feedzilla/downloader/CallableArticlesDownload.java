@@ -46,7 +46,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 				final List<Article> articlesList = articles.getArticles();
 				return Optional.of(articlesList);
 			} catch (Exception e) {
-				logger.error("Article download: " + e.getMessage());
+				logger.error("Article download for (" +startOfDay+ "): " + e.getMessage());
 			}
 			pause();
 		}

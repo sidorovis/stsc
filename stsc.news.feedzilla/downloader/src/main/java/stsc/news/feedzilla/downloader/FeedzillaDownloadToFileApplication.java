@@ -144,6 +144,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	private void saveArticles() throws FileNotFoundException, IOException {
 		synchronized (hashArticles) {
 			FeedzillaFileStorage.saveArticles(feedFolder, newArticles);
+			newArticles.clear();
 			lastStoredArticlesAmount = hashArticles.size();
 		}
 	}
