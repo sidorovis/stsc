@@ -127,7 +127,7 @@ final class FeedDataDownloader {
 			try {
 				return feed.getSubcategories(category);
 			} catch (Exception e) {
-				logger.error("Downloading subcategories throw exception: " + e.getMessage());
+				logger.debug("Downloading subcategories throw exception: " + e.getMessage());
 			}
 			CallableArticlesDownload.pause();
 		}
@@ -151,14 +151,14 @@ final class FeedDataDownloader {
 				for (LoadFeedReceiver receiver : receivers) {
 					receiver.newArticle(category, subcategory, article);
 					articlesCount += 1;
-					if (!stopped) {
+					if (stopped) {
 						return articlesCount;
 					}
 				}
 			} catch (Exception e) {
 				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
-			if (!stopped) {
+			if (stopped) {
 				return articlesCount;
 			}
 		}

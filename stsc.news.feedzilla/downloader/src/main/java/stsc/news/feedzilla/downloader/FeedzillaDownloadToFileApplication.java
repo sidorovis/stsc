@@ -252,6 +252,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						downloadApplication.stop();
 						break;
 					}
+					CallableArticlesDownload.pause();
 				}
 				bufferedReader.close();
 			} catch (Exception e) {
