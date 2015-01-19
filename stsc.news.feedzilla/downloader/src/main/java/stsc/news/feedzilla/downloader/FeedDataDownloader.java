@@ -137,17 +137,27 @@ final class FeedDataDownloader {
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
+
+		final long beginArticlesDownloadTime = System.currentTimeMillis();
 		executor.submit(futureArticles);
-		final Optional<List<Article>> articles = futureArticles.get(15, TimeUnit.SECONDS);
+		final Optional<List<Article>> articles = futureArticles.get(20, TimeUnit.SECONDS);
+		final long endArticlesDownloadTime = System.currentTimeMillis();
+		logger.debug("Timing for articles download: " + (endArticlesDownloadTime - beginArticlesDownloadTime));
+
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
+		long timeReceiversDifferenceSum = 0;
 		for (Article article : articles.get()) {
 			try {
 				for (LoadFeedReceiver receiver : receivers) {
+					final long beginProcessing = System.currentTimeMillis();
 					receiver.newArticle(category, subcategory, article);
+					final long endProcessing = System.currentTimeMillis();
+					timeReceiversDifferenceSum += endProcessing - beginProcessing;
 					articlesCount += 1;
 					if (stopped) {
+						logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
 						return articlesCount;
 					}
 				}
@@ -155,9 +165,11 @@ final class FeedDataDownloader {
 				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
 			if (stopped) {
+				logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
 				return articlesCount;
 			}
 		}
+		logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
 		return articles.get().size();
 	}
 
