@@ -46,10 +46,6 @@ final class FeedDataDownloader {
 
 	private volatile boolean stopped = false;
 
-	static {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	}
-
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
 		this(356 * 20, amountOfArticlesPerRequest);
 	}
