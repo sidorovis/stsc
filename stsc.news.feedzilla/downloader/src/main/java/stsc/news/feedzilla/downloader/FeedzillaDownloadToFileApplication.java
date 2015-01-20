@@ -83,7 +83,9 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	private void stop() throws InterruptedException {
+		logger.info("stopping process going to start");
 		downloader.stopDownload();
+		logger.info("stopping process is finishing");
 	}
 
 	@Override

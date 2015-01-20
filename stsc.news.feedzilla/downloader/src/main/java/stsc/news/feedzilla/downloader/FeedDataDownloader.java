@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,8 +40,7 @@ final class FeedDataDownloader {
 
 	private final FeedZilla feed = new FeedZilla();
 	private final Set<String> hashCodes = new HashSet<>();
-	private ExecutorService executor = Executors.newFixedThreadPool(1);
-
+	private Thread thread;
 	private volatile boolean stopped = false;
 
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
@@ -61,8 +58,9 @@ final class FeedDataDownloader {
 
 	public void stopDownload() throws InterruptedException {
 		stopped = true;
-		executor.shutdown();
-		executor.awaitTermination(5, TimeUnit.SECONDS);
+		if (thread != null) {
+			thread.interrupt();
+		}
 	}
 
 	public boolean isStopped() {
@@ -137,10 +135,16 @@ final class FeedDataDownloader {
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
-
+		this.thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				futureArticles.run();
+			}
+		});
 		final long beginArticlesDownloadTime = System.currentTimeMillis();
-		executor.submit(futureArticles);
-		final Optional<List<Article>> articles = futureArticles.get(20, TimeUnit.SECONDS);
+		thread.start();
+		final Optional<List<Article>> articles = futureArticles.get(60, TimeUnit.SECONDS);
+
 		final long endArticlesDownloadTime = System.currentTimeMillis();
 		logger.debug("Timing for articles download: " + (endArticlesDownloadTime - beginArticlesDownloadTime));
 
@@ -174,7 +178,7 @@ final class FeedDataDownloader {
 	}
 
 	public void updateExecutor() {
-		this.executor = Executors.newFixedThreadPool(1);
+		thread.interrupt();
 	}
 
 }
