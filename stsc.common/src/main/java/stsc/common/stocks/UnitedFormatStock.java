@@ -1,5 +1,6 @@
 package stsc.common.stocks;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -57,7 +58,7 @@ public final class UnitedFormatStock extends Stock {
 	}
 
 	public static UnitedFormatStock readFromUniteFormatFile(String filePath) throws IOException {
-		try (DataInputStream is = new DataInputStream(new FileInputStream(filePath))) {
+		try (DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 			return readFromUniteFormatFile(is);
 		}
 	}
