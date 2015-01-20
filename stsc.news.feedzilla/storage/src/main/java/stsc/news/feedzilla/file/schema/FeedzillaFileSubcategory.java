@@ -62,6 +62,10 @@ public class FeedzillaFileSubcategory implements FeedSubcategory {
 		return id;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	@Override
 	public FeedzillaFileCategory getCategory() {
 		return category;

@@ -11,11 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
@@ -24,8 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
-import stsc.common.feeds.FeedStorageHelper;
-import stsc.news.feedzilla.FeedzillaFileStorage;
+import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
@@ -38,24 +32,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	private static Logger logger = LogManager.getLogger(FeedzillaDownloadToFileApplication.class);
-
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
-
 	private static FeedzillaDownloadToFileApplication downloadApplication;
-
-	private final FeedDataDownloader downloader;
 
 	private final String feedFolder;
 	private int daysBackDownloadFrom = 3650;
-
-	private Map<String, FeedzillaFileCategory> hashCategories = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, FeedzillaFileSubcategory> hashSubcategories = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, FeedzillaFileArticle> hashArticles = Collections.synchronizedMap(new HashMap<>());
-
-	private int lastStoredCategoriesAmount = 0;
-	private int lastStoredSubcategoriesAmount = 0;
-	private int lastStoredArticlesAmount = 0;
-	private List<FeedzillaFileArticle> newArticles = Collections.synchronizedList(new ArrayList<>());
+	private final FeedDataDownloader downloader;
+	private final FeedzillaHashStorage hashStorage;
 
 	FeedzillaDownloadToFileApplication() throws SQLException, IOException {
 		this(DEVELOPER_FILENAME);
@@ -63,12 +46,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	FeedzillaDownloadToFileApplication(String propertyFile) throws IOException {
 		this.feedFolder = readFeedFolderProperty(propertyFile);
-		this.downloader = new FeedDataDownloader(1, 100);
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
 		}
-		readFeedData();
+		this.downloader = new FeedDataDownloader(1, 100);
+		this.hashStorage = new FeedzillaHashStorage(feedFolder);
 		downloader.addReceiver(this);
+		hashStorage.initialReadFeedData();
 	}
 
 	private String readFeedFolderProperty(String propertyFile) throws FileNotFoundException, IOException {
@@ -83,26 +67,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		}
 	}
 
-	private void readFeedData() throws FileNotFoundException, IOException {
-		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
-		for (FeedzillaFileCategory c : storage.getCategories()) {
-			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
-		}
-		lastStoredCategoriesAmount = storage.getCategories().size();
-		for (FeedzillaFileSubcategory s : storage.getSubcategories()) {
-			hashSubcategories.put(FeedStorageHelper.createHashCode(s), s);
-		}
-		lastStoredSubcategoriesAmount = storage.getSubcategories().size();
-		for (FeedzillaFileArticle a : storage.getArticles()) {
-			hashArticles.put(FeedStorageHelper.createHashCode(a), a);
-		}
-		lastStoredArticlesAmount = storage.getArticles().size();
-		logger.info("Hashcode created. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
-				+ ". Articles: " + lastStoredArticlesAmount);
-	}
-
-	void startDownload() throws FileNotFoundException, IOException {
+	void start() throws FileNotFoundException, IOException {
 		for (int i = daysBackDownloadFrom; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
@@ -114,39 +79,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	private void downloadAndSave() throws FileNotFoundException, IOException {
 		downloader.download();
-		if (hashCategories.size() != lastStoredCategoriesAmount) {
-			saveCategories();
-		}
-		if (hashSubcategories.size() != lastStoredSubcategoriesAmount) {
-			saveSubcategories();
-		}
-		if (hashArticles.size() != lastStoredArticlesAmount) {
-			saveArticles();
-		}
-		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: "
-				+ lastStoredSubcategoriesAmount + ". Articles: " + lastStoredArticlesAmount);
-	}
-
-	private void saveCategories() throws FileNotFoundException, IOException {
-		synchronized (hashCategories) {
-			FeedzillaFileStorage.saveCategories(feedFolder, hashCategories);
-			lastStoredCategoriesAmount = hashCategories.size();
-		}
-	}
-
-	private void saveSubcategories() throws FileNotFoundException, IOException {
-		synchronized (hashSubcategories) {
-			FeedzillaFileStorage.saveSubcategories(feedFolder, hashSubcategories);
-			lastStoredSubcategoriesAmount = hashSubcategories.size();
-		}
-	}
-
-	private void saveArticles() throws FileNotFoundException, IOException {
-		synchronized (hashArticles) {
-			FeedzillaFileStorage.saveArticles(feedFolder, newArticles);
-			newArticles.clear();
-			lastStoredArticlesAmount = hashArticles.size();
-		}
+		hashStorage.save();
 	}
 
 	private void stop() throws InterruptedException {
@@ -161,48 +94,24 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	private FeedzillaFileCategory createFeedzillaCategory(Category from) {
-		synchronized (hashCategories) {
-			final int id = hashCategories.size();
-			final FeedzillaFileCategory result = new FeedzillaFileCategory(id, from.getDisplayName(), from.getEnglishName(),
-					from.getUrlName());
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			final FeedzillaFileCategory oldCategory = hashCategories.putIfAbsent(hashCode, result);
-			if (oldCategory != null) {
-				return oldCategory;
-			}
-			return result;
-		}
+		final FeedzillaFileCategory result = new FeedzillaFileCategory(0, from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		return hashStorage.createFeedzillaCategory(result);
 	}
 
 	private FeedzillaFileSubcategory createFeedzillaSubcategory(FeedzillaFileCategory category, Subcategory from) {
-		synchronized (hashSubcategories) {
-			final int id = hashSubcategories.size();
-			final FeedzillaFileSubcategory result = new FeedzillaFileSubcategory(id, category, from.getDisplayName(),
-					from.getEnglishName(), from.getUrlName());
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			final FeedzillaFileSubcategory oldSubcategory = hashSubcategories.putIfAbsent(hashCode, result);
-			if (oldSubcategory != null) {
-				return oldSubcategory;
-			}
-			return result;
-		}
+		final FeedzillaFileSubcategory result = new FeedzillaFileSubcategory(0, category, from.getDisplayName(), from.getEnglishName(),
+				from.getUrlName());
+		return hashStorage.createFeedzillaSubcategory(category, result);
 	}
 
 	private void createFeedzillaArticle(FeedzillaFileSubcategory subcategory, Article from) {
-		synchronized (hashArticles) {
-			final int id = hashArticles.size();
-			final FeedzillaFileArticle result = new FeedzillaFileArticle(id, subcategory, from.getAuthor(), from.getPublishDate().toDate());
-			result.setSource(from.getSource());
-			result.setSourceUrl(from.getSourceUrl());
-			result.setSummary(from.getSummary());
-			result.setTitle(from.getTitle());
-			result.setUrl(from.getUrl());
-
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			if (hashArticles.putIfAbsent(hashCode, result) == null) {
-				newArticles.add(result);
-			}
-		}
+		final FeedzillaFileArticle result = new FeedzillaFileArticle(0, subcategory, from.getAuthor(), from.getPublishDate().toDate());
+		result.setSource(from.getSource());
+		result.setSourceUrl(from.getSourceUrl());
+		result.setSummary(from.getSummary());
+		result.setTitle(from.getTitle());
+		result.setUrl(from.getUrl());
+		hashStorage.createFeedzillaArticle(subcategory, result);
 	}
 
 	public static void main(String[] args) {
@@ -216,7 +125,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						logger.info("Started developer version");
 						downloadApplication = new FeedzillaDownloadToFileApplication(DEVELOPER_FILENAME);
 						waitForStarting.countDown();
-						downloadApplication.startDownload();
+						downloadApplication.start();
 					} catch (Exception e) {
 						logger.error("Error on main execution thread", e);
 					}
