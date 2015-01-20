@@ -1,5 +1,6 @@
 package stsc.news.feedzilla;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -16,12 +17,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import stsc.common.storage.FeedStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
 public class FeedzillaFileStorage implements FeedStorage {
+
+	private static Logger logger = LogManager.getLogger(FeedzillaFileStorage.class);
 
 	public static final String FILE_EXTENSION = ".fz";
 	public static final String FILE_ARTICLE_EXTENSION = ".article.fz";
@@ -100,8 +106,9 @@ public class FeedzillaFileStorage implements FeedStorage {
 		final List<String> articleNames = readFileList(feedFolder);
 		for (String articleName : articleNames) {
 			final String filePath = feedFolder + "/" + articleName + FILE_ARTICLE_EXTENSION;
-			try (DataInputStream f = new DataInputStream(new FileInputStream(filePath))) {
+			try (DataInputStream f = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 				final long sizeOfArticles = f.readLong();
+				logger.info("We are going to load: " + articleName + "(" + sizeOfArticles + ")");
 				for (long i = 0; i < sizeOfArticles; ++i) {
 					final FeedzillaFileArticle article = new FeedzillaFileArticle(f, subcategories);
 					articlesById.put(article.getId(), article);

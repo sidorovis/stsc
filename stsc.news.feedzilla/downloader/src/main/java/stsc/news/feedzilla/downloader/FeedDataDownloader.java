@@ -161,7 +161,7 @@ final class FeedDataDownloader {
 					timeReceiversDifferenceSum += endProcessing - beginProcessing;
 					articlesCount += 1;
 					if (stopped) {
-						logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
+						logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
 						return articlesCount;
 					}
 				}
@@ -169,11 +169,11 @@ final class FeedDataDownloader {
 				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
 			if (stopped) {
-				logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
+				logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
 				return articlesCount;
 			}
 		}
-		logger.debug("Timing for processing: " + timeReceiversDifferenceSum / articlesCount);
+		logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
 		return articles.get().size();
 	}
 
