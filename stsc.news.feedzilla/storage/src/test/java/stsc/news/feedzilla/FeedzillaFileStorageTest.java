@@ -29,6 +29,14 @@ public class FeedzillaFileStorageTest {
 			return true;
 		}
 
+		@Override
+		public void allArticleFilesSize(int allArticlesFilesCount) {
+		}
+
+		@Override
+		public void processedArticleFile(String articleFileName) {
+		}
+
 	}
 
 	@Test

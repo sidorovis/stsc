@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -35,6 +36,10 @@ public class FeedzillaFileStorage implements FeedStorage {
 	}
 
 	public static interface Receiver {
+		public void allArticleFilesSize(int allArticlesFilesCount);
+
+		public void processedArticleFile(String articleFileName);
+
 		public boolean addArticle(FeedzillaFileArticle article);
 	}
 
@@ -59,6 +64,7 @@ public class FeedzillaFileStorage implements FeedStorage {
 		this.dateBackDownloadFrom = dateBackDownloadFrom;
 		this.storeFeed = storeFeed;
 		this.receiver = receiver;
+		Validate.notNull(receiver, Receiver.class.toString() + " for " + FeedzillaFileStorage.class.toString() + " cannot be null.");
 		readCategories();
 		readSubcategories();
 		readArticles();
@@ -122,12 +128,14 @@ public class FeedzillaFileStorage implements FeedStorage {
 
 	private void readArticles() throws FileNotFoundException, IOException {
 		final List<String> articleNames = readFileList(feedFolder);
+		receiver.allArticleFilesSize(articleNames.size());
 		for (String articleName : articleNames) {
 			final String filePath = feedFolder + "/" + articleName + FILE_ARTICLE_EXTENSION;
 			try (DataInputStream f = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 				final long sizeOfArticles = f.readLong();
 				readArticleAndProcess(f, articleName, sizeOfArticles);
 			}
+			receiver.processedArticleFile(articleName);
 		}
 	}
 
@@ -137,11 +145,9 @@ public class FeedzillaFileStorage implements FeedStorage {
 		for (long i = 0; i < sizeOfArticles; ++i) {
 			final FeedzillaFileArticle article = new FeedzillaFileArticle(f, subcategories);
 			if (checkArticlePublishDate(article)) {
-				if (receiver != null) {
-					if (receiver.addArticle(article)) {
-						realLoadedArticles += 1;
-						storeFeed(article);
-					}
+				if (receiver.addArticle(article)) {
+					realLoadedArticles += 1;
+					storeFeed(article);
 				}
 			}
 		}

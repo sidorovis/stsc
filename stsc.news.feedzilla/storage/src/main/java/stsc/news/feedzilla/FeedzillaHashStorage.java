@@ -171,6 +171,14 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		return hashArticles.add(hashCode);
 	}
 
+	@Override
+	public void allArticleFilesSize(int allArticlesFilesCount) {
+	}
+
+	@Override
+	public void processedArticleFile(String articleFileName) {
+	}
+
 	public static Date getDaysBack(int daysBackDownloadFrom) {
 		return DateTime.now().minusDays(daysBackDownloadFrom).withTimeAtStartOfDay().toDate();
 	}
