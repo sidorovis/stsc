@@ -52,7 +52,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		this.downloader = new FeedDataDownloader(1, 100);
 		this.hashStorage = new FeedzillaHashStorage(feedFolder);
 		downloader.addReceiver(this);
-		hashStorage.initialReadFeedData();
+		hashStorage.initialReadFeedData(daysBackDownloadFrom);
 	}
 
 	private String readFeedFolderProperty(String propertyFile) throws FileNotFoundException, IOException {
@@ -73,13 +73,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 				break;
 			}
 			downloader.setDaysToDownload(i);
-			downloadAndSave();
+			downloadIteration();
 		}
 	}
 
-	private void downloadAndSave() throws FileNotFoundException, IOException {
+	private void downloadIteration() throws FileNotFoundException, IOException {
 		downloader.download();
-		hashStorage.save();
+		hashStorage.save(downloader.getDaysToDownload());
 	}
 
 	private void stop() throws InterruptedException {

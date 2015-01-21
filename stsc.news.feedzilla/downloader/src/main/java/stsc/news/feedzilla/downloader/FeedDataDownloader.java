@@ -7,10 +7,8 @@ import graef.feedzillajava.Subcategory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +37,6 @@ final class FeedDataDownloader {
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
 	private final FeedZilla feed = new FeedZilla();
-	private final Set<String> hashCodes = new HashSet<>();
 	private Thread thread;
 	private volatile boolean stopped = false;
 
@@ -54,6 +51,10 @@ final class FeedDataDownloader {
 
 	public void setDaysToDownload(int daysToDownload) {
 		this.daysToDownload = daysToDownload;
+	}
+
+	public int getDaysToDownload() {
+		return daysToDownload;
 	}
 
 	public void stopDownload() throws InterruptedException {
@@ -100,8 +101,7 @@ final class FeedDataDownloader {
 			logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles + " articles. For day "
 					+ downloadPeriod + ". Which took: " + (endTime - beginTime) + " millisec.");
 		}
-		logger.info("Received amount of articles: " + amountOfProcessedArticles + ", received new articles: " + hashCodes.size()
-				+ " --- for date " + downloadPeriod.toString());
+		logger.info("Received amount of articles: " + amountOfProcessedArticles + " --- for date " + downloadPeriod.toString());
 	}
 
 	public static List<Category> getCategories(FeedZilla feed) {

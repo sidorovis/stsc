@@ -155,4 +155,9 @@ public class FeedzillaFileArticle implements FeedArticle {
 	public Date getUpdatedAt() {
 		return updatedAt;
 	}
+
+	@Override
+	public String toString() {
+		return "Article: " + getPublishDate().toString();
+	}
 }

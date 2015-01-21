@@ -4,14 +4,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.joda.time.DateTime;
 
 import stsc.common.feeds.FeedStorageHelper;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -42,9 +45,9 @@ public class FeedzillaHashStorage {
 		this.feedFolder = feedFolder;
 	}
 
-	public void initialReadFeedData() throws FileNotFoundException, IOException {
+	public void initialReadFeedData(int daysBackDownloadFrom) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, getDaysBack(daysBackDownloadFrom));
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
 		}
@@ -61,7 +64,7 @@ public class FeedzillaHashStorage {
 				+ ". Articles: " + lastStoredArticlesAmount);
 	}
 
-	public void save() throws FileNotFoundException, IOException {
+	public void save(int daysBackDownloadFrom) throws FileNotFoundException, IOException {
 		if (hashCategories.size() != lastStoredCategoriesAmount) {
 			saveCategories();
 		}
@@ -73,6 +76,33 @@ public class FeedzillaHashStorage {
 		}
 		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: "
 				+ lastStoredSubcategoriesAmount + ". Articles: " + lastStoredArticlesAmount);
+		freeHash(daysBackDownloadFrom);
+		newArticles.clear();
+	}
+
+	private void freeHash(int daysBackDownloadFrom) {
+		final Date dateBackDownloadFrom = getDaysBack(daysBackDownloadFrom);
+		newArticles.removeIf(new RemoteArticles(dateBackDownloadFrom, hashArticles));
+	}
+
+	private static class RemoteArticles implements Predicate<FeedzillaFileArticle> {
+
+		private Date dateBackDownloadFrom;
+		private Map<String, FeedzillaFileArticle> hashArticles;
+
+		RemoteArticles(Date dateBackDownloadFrom, Map<String, FeedzillaFileArticle> hashArticles) {
+			this.dateBackDownloadFrom = dateBackDownloadFrom;
+			this.hashArticles = hashArticles;
+		}
+
+		@Override
+		public boolean test(FeedzillaFileArticle article) {
+			if (article.getPublishDate().before(dateBackDownloadFrom)) {
+				hashArticles.remove(FeedStorageHelper.createHashCode(article));
+				return true;
+			}
+			return false;
+		}
 	}
 
 	private void saveCategories() throws FileNotFoundException, IOException {
@@ -92,7 +122,6 @@ public class FeedzillaHashStorage {
 	private void saveArticles() throws FileNotFoundException, IOException {
 		synchronized (hashArticles) {
 			FeedzillaFileStorage.saveArticles(feedFolder, newArticles);
-			newArticles.clear();
 			lastStoredArticlesAmount = hashArticles.size();
 		}
 	}
@@ -133,6 +162,10 @@ public class FeedzillaHashStorage {
 				newArticles.add(result);
 			}
 		}
+	}
+
+	public static Date getDaysBack(int daysBackDownloadFrom) {
+		return DateTime.now().minusDays(daysBackDownloadFrom).withTimeAtStartOfDay().toDate();
 	}
 
 }

@@ -15,10 +15,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.storage.FeedStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -26,6 +28,10 @@ import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
 public class FeedzillaFileStorage implements FeedStorage {
+	static {
+		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	private static Logger logger = LogManager.getLogger(FeedzillaFileStorage.class);
 
@@ -33,14 +39,16 @@ public class FeedzillaFileStorage implements FeedStorage {
 	public static final String FILE_ARTICLE_EXTENSION = ".article.fz";
 
 	private final String feedFolder;
+	private final Date dateBackDownloadFrom;
 
 	private final Map<Integer, FeedzillaFileCategory> categories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileSubcategory> subcategories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileArticle> articlesById = new ConcurrentHashMap<>();
 	private final Map<Date, List<FeedzillaFileArticle>> articlesByDate = new ConcurrentHashMap<>();
 
-	public FeedzillaFileStorage(String feedFolder) throws FileNotFoundException, IOException {
+	public FeedzillaFileStorage(String feedFolder, Date dateBackDownloadFrom) throws FileNotFoundException, IOException {
 		this.feedFolder = feedFolder;
+		this.dateBackDownloadFrom = dateBackDownloadFrom;
 		readCategories();
 		readSubcategories();
 		readArticles();
@@ -111,18 +119,24 @@ public class FeedzillaFileStorage implements FeedStorage {
 				logger.info("We are going to load: " + articleName + "(" + sizeOfArticles + ")");
 				for (long i = 0; i < sizeOfArticles; ++i) {
 					final FeedzillaFileArticle article = new FeedzillaFileArticle(f, subcategories);
-					articlesById.put(article.getId(), article);
-					final List<FeedzillaFileArticle> list = articlesByDate.get(article.getPublishDate());
-					if (list != null) {
-						list.add(article);
-					} else {
-						final List<FeedzillaFileArticle> newList = Collections.synchronizedList(new ArrayList<>());
-						newList.add(article);
-						articlesByDate.put(article.getPublishDate(), newList);
+					if (checkArticlePublishDate(article)) {
+						articlesById.put(article.getId(), article);
+						final List<FeedzillaFileArticle> list = articlesByDate.get(article.getPublishDate());
+						if (list != null) {
+							list.add(article);
+						} else {
+							final List<FeedzillaFileArticle> newList = Collections.synchronizedList(new ArrayList<>());
+							newList.add(article);
+							articlesByDate.put(article.getPublishDate(), newList);
+						}
 					}
 				}
 			}
 		}
+	}
+
+	private boolean checkArticlePublishDate(FeedzillaFileArticle article) {
+		return dateBackDownloadFrom.before(article.getPublishDate());
 	}
 
 	public static List<String> readFileList(String feedFolder) {

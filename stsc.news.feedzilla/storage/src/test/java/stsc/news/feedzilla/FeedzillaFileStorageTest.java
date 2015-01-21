@@ -26,7 +26,7 @@ public class FeedzillaFileStorageTest {
 		FeedzillaFileStorage.saveSubcategories(feedFolder, Collections.emptyMap());
 		FeedzillaFileStorage.saveArticles(feedFolder, Collections.emptyList());
 		{
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650));
 			Assert.assertNotNull(storage);
 			Assert.assertTrue(storage.getCategories().isEmpty());
 			Assert.assertTrue(storage.getSubcategories().isEmpty());
@@ -45,7 +45,7 @@ public class FeedzillaFileStorageTest {
 			FeedzillaFileStorage.saveArticles(feedFolder, articles);
 		}
 		{
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650));
 			Assert.assertNotNull(storage);
 			Assert.assertEquals(1, storage.getCategories().size());
 			Assert.assertEquals(1, storage.getSubcategories().size());
@@ -62,7 +62,7 @@ public class FeedzillaFileStorageTest {
 	@Test
 	public void testFeedzillaFileStorageLoadTest() throws FileNotFoundException, IOException {
 		final String feedFolder = "./../test_data/";
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650));
 		Assert.assertNotNull(storage);
 		Assert.assertEquals(36, storage.getCategories().size());
 		Assert.assertEquals(600, storage.getSubcategories().size());
