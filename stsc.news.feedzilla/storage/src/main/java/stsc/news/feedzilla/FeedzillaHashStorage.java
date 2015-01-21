@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.function.Predicate;
 
@@ -21,7 +23,7 @@ import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-public class FeedzillaHashStorage {
+public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -34,7 +36,7 @@ public class FeedzillaHashStorage {
 
 	private Map<String, FeedzillaFileCategory> hashCategories = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, FeedzillaFileSubcategory> hashSubcategories = Collections.synchronizedMap(new HashMap<>());
-	private Map<String, FeedzillaFileArticle> hashArticles = Collections.synchronizedMap(new HashMap<>());
+	private Set<String> hashArticles = Collections.synchronizedSet(new HashSet<>());
 
 	private int lastStoredCategoriesAmount = 0;
 	private int lastStoredSubcategoriesAmount = 0;
@@ -47,7 +49,7 @@ public class FeedzillaHashStorage {
 
 	public void initialReadFeedData(int daysBackDownloadFrom) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, getDaysBack(daysBackDownloadFrom));
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, getDaysBack(daysBackDownloadFrom), false, this);
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
 		}
@@ -57,9 +59,9 @@ public class FeedzillaHashStorage {
 		}
 		lastStoredSubcategoriesAmount = storage.getSubcategories().size();
 		for (FeedzillaFileArticle a : storage.getArticles()) {
-			hashArticles.put(FeedStorageHelper.createHashCode(a), a);
+			hashArticles.add(FeedStorageHelper.createHashCode(a));
 		}
-		lastStoredArticlesAmount = storage.getArticles().size();
+		lastStoredArticlesAmount = hashArticles.size();
 		logger.info("Hashcode created. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
 				+ ". Articles: " + lastStoredArticlesAmount);
 	}
@@ -88,9 +90,9 @@ public class FeedzillaHashStorage {
 	private static class RemoteArticles implements Predicate<FeedzillaFileArticle> {
 
 		private Date dateBackDownloadFrom;
-		private Map<String, FeedzillaFileArticle> hashArticles;
+		private Set<String> hashArticles;
 
-		RemoteArticles(Date dateBackDownloadFrom, Map<String, FeedzillaFileArticle> hashArticles) {
+		RemoteArticles(Date dateBackDownloadFrom, Set<String> hashArticles) {
 			this.dateBackDownloadFrom = dateBackDownloadFrom;
 			this.hashArticles = hashArticles;
 		}
@@ -157,11 +159,16 @@ public class FeedzillaHashStorage {
 			final int id = hashArticles.size();
 			result.setId(id);
 			final String hashCode = FeedStorageHelper.createHashCode(result);
-			final FeedzillaFileArticle oldArticle = hashArticles.putIfAbsent(hashCode, result);
-			if (oldArticle == null) {
+			if (hashArticles.add(hashCode)) {
 				newArticles.add(result);
 			}
 		}
+	}
+
+	@Override
+	public boolean addArticle(FeedzillaFileArticle article) {
+		final String hashCode = FeedStorageHelper.createHashCode(article);
+		return hashArticles.add(hashCode);
 	}
 
 	public static Date getDaysBack(int daysBackDownloadFrom) {

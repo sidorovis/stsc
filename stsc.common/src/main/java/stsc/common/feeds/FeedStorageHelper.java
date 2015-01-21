@@ -13,8 +13,8 @@ public class FeedStorageHelper {
 	}
 
 	public static String createHashCode(FeedArticle a) {
-		return s(a.getAuthor()).hashCode() + " " + s(a.getTitle()).hashCode() + " " + s(a.getPublishDate()) + s(a.getUrl()).hashCode()
-				+ " " + s(a.getSummary()).hashCode();
+		return s(a.getAuthor()).hashCode() + " " + s(a.getTitle()).hashCode() + " " + s(a.getPublishDate())
+				+ s(a.getSourceUrl()).hashCode() + " " + s(a.getSummary()).hashCode();
 	}
 
 	private static <T> String s(T v) {
