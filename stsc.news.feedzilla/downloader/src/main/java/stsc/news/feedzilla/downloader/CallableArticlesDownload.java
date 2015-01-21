@@ -49,20 +49,19 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	@Override
 	public Optional<List<Article>> call() throws Exception {
+		callableLogger.trace(" --- before getting articles --- ");
 		for (int amountOfTries = 0; amountOfTries < TRIES_COUNT; ++amountOfTries) {
 			try {
-				callableLogger.debug(" --- before getting articles --- ");
 				final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
 						.count(amountOfArticlesPerRequest).articles();
-				callableLogger.debug(" --- after getting articles --- ");
 				final List<Article> articlesList = articles.getArticles();
 				return Optional.of(articlesList);
 			} catch (Exception e) {
-				callableLogger.debug(" --- an exception after getting articles --- ", e);
-				logger.debug("Article download for (" + startOfDay + "): " + e.getMessage());
+				logger.error("Article download for (" + startOfDay + "): " + e.getMessage());
 			}
 			pause();
 		}
+		callableLogger.trace(" --- after getting articles --- ");
 		return Optional.empty();
 	}
 
