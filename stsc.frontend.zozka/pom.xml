@@ -75,6 +75,16 @@
       <artifactId>stsc.stocks.yahoo.liquidator</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.news.feedzilla.downloader</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.news.feedzilla.storage</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
 	<dependency>
     	<groupId>org.controlsfx</groupId>
