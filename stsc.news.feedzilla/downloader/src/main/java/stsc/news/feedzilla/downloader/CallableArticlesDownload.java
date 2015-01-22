@@ -28,8 +28,6 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	public static final int TRIES_COUNT = 5;
 	public static final long PAUSE_SLEEP_TIME = 200;
 
-	private final Logger logger;
-
 	private final FeedZilla feed;
 	private final Category category;
 	private final Subcategory subcategory;
