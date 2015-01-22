@@ -34,10 +34,9 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	private final int amountOfArticlesPerRequest;
 	private final DateTime startOfDay;
 
-	public CallableArticlesDownload(final Logger logger, FeedZilla feed, Category category, Subcategory subcategory,
-			int amountOfArticlesPerRequest, DateTime startOfDay) {
+	public CallableArticlesDownload(FeedZilla feed, Category category, Subcategory subcategory, int amountOfArticlesPerRequest,
+			DateTime startOfDay) {
 		super();
-		this.logger = logger;
 		this.feed = feed;
 		this.category = category;
 		this.subcategory = subcategory;

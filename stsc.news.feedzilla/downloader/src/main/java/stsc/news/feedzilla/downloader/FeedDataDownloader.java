@@ -133,7 +133,7 @@ final class FeedDataDownloader {
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
-		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(logger, feed, category,
+		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
 		this.thread = new Thread(new Runnable() {
 			@Override
