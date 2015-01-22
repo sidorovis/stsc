@@ -57,12 +57,12 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 						.count(amountOfArticlesPerRequest).articles();
 				final List<Article> articlesList = articles.getArticles();
 				result = Optional.of(articlesList);
+				callableLogger.trace(" --- after getting articles --- ");
 			} catch (Exception e) {
-				logger.error("Article download for (" + startOfDay + "): " + e.getMessage());
+				callableLogger.trace(" --- after getting articles: exception " + e.getMessage());
 			}
 			pause();
 		}
-		callableLogger.trace(" --- after getting articles --- ");
 		return result;
 	}
 
