@@ -137,7 +137,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			mainProcessingThread.start();
 			waitForStarting.await();
 			logger.info("Please enter 'e' and press Enter to stop application.");
-			addExitHook(waitForEnding);
+			addExitHook(waitForEnding, mainProcessingThread);
 			waitForEnding.await();
 			mainProcessingThread.join();
 		} catch (Exception e) {
@@ -145,7 +145,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		}
 	}
 
-	private static void addExitHook(final CountDownLatch waitForEnding) {
+	private static void addExitHook(final CountDownLatch waitForEnding, Thread mainProcessingThread) {
 		try {
 			try {
 				final InputStreamReader fileInputStream = new InputStreamReader(System.in);
@@ -156,11 +156,14 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						final String s = bufferedReader.readLine();
 						if (s.equals("e")) {
 							downloadApplication.stop();
+							waitForEnding.await();
+							mainProcessingThread.join();
 							break;
 						}
 					}
 					if (waitForEnding.getCount() == 0) {
 						downloadApplication.stop();
+						mainProcessingThread.join();
 						break;
 					}
 					CallableArticlesDownload.pause();
@@ -169,6 +172,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			} catch (Exception e) {
 				logger.error("Error on exit hook. ", e);
 				downloadApplication.stop();
+				mainProcessingThread.join();
 			}
 		} catch (Exception e) {
 			logger.error("Error on exit hook with non stop. ", e);
