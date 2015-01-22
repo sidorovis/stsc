@@ -55,6 +55,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 				final List<Article> articlesList = articles.getArticles();
 				result = Optional.of(articlesList);
 				callableLogger.trace(" --- after getting articles --- ");
+				return result;
 			} catch (Exception e) {
 				callableLogger.trace(" --- after getting articles: exception " + e.getMessage());
 			}
