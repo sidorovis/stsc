@@ -111,7 +111,7 @@ final class FeedDataDownloader {
 			} catch (Exception e) {
 				logger.error("Downloading categories throw exception: " + e.getMessage());
 			}
-			CallableArticlesDownload.pause();
+			CallableArticlesDownload.pause(1000);
 		}
 		return Collections.emptyList();
 	}
@@ -123,7 +123,7 @@ final class FeedDataDownloader {
 			} catch (Exception e) {
 				logger.debug("Downloading subcategories throw exception: " + e.getMessage());
 			}
-			CallableArticlesDownload.pause();
+			CallableArticlesDownload.pause(500);
 		}
 		return Collections.emptyList();
 	}

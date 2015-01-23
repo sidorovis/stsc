@@ -25,7 +25,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	private static Logger callableLogger = LogManager.getLogger(CallableArticlesDownload.class);
 
-	public static final int TRIES_COUNT = 5;
+	public static final int TRIES_COUNT = 7;
 	public static final long PAUSE_SLEEP_TIME = 200;
 
 	private final FeedZilla feed;
@@ -48,6 +48,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	public Optional<List<Article>> call() throws Exception {
 		Optional<List<Article>> result = Optional.empty();
 		callableLogger.trace(" --- before getting articles --- ");
+		Exception exceptionToReturn = new Exception();
 		for (int amountOfTries = 0; amountOfTries < TRIES_COUNT; ++amountOfTries) {
 			try {
 				final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
@@ -57,16 +58,21 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 				callableLogger.trace(" --- after getting articles --- ");
 				return result;
 			} catch (Exception e) {
-				callableLogger.trace(" --- after getting articles: exception " + e.getMessage());
+				exceptionToReturn = e;
 			}
 			pause();
 		}
+		callableLogger.trace(" --- we do not return articles as answer --- " + exceptionToReturn.getMessage());
 		return result;
 	}
 
 	public static void pause() {
+		pause(PAUSE_SLEEP_TIME);
+	}
+
+	public static void pause(long timeInMillis) {
 		try {
-			Thread.sleep(PAUSE_SLEEP_TIME);
+			Thread.sleep(timeInMillis);
 		} catch (Exception e) {
 		}
 	}

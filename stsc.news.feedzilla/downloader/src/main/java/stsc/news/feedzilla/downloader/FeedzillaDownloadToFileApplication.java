@@ -163,7 +163,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 					}
 					if (waitForEnding.getCount() == 0) {
 						downloadApplication.stop();
-						mainProcessingThread.join();
 						break;
 					}
 					CallableArticlesDownload.pause();
