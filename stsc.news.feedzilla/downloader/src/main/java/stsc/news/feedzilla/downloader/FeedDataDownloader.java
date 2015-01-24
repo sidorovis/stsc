@@ -72,13 +72,19 @@ final class FeedDataDownloader {
 		receivers.add(receiver);
 	}
 
-	public void download() {
+	public boolean download() {
+		boolean result = true;
 		int amountOfProcessedArticles = 0;
 		final List<Category> categories = getCategories(feed);
+		if (categories.isEmpty())
+			return false;
 		for (Category category : categories) {
 			final long beginTime = System.currentTimeMillis();
 			CallableArticlesDownload.pause();
 			final List<Subcategory> subcategories = getSubcategories(feed, category);
+			if (subcategories.isEmpty()) {
+				result = false;
+			}
 			for (Subcategory subcategory : subcategories) {
 				try {
 					CallableArticlesDownload.pause();
@@ -86,8 +92,10 @@ final class FeedDataDownloader {
 				} catch (TimeoutException e) {
 					logger.error("getArticles returns TimeoutException: " + e.getMessage() + "; we trying to restart executor.");
 					updateExecutor();
+					result = false;
 				} catch (Exception e) {
 					logger.error("getArticles returns", e);
+					result = false;
 				}
 				if (stopped) {
 					break;
@@ -101,6 +109,7 @@ final class FeedDataDownloader {
 					+ dayDownloadFrom + ". Which took: " + (endTime - beginTime) + " millisec.");
 		}
 		logger.info("Received amount of articles: " + amountOfProcessedArticles + " --- for date " + dayDownloadFrom.toString());
+		return result;
 	}
 
 	public static List<Category> getCategories(FeedZilla feed) {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import stsc.frontend.zozka.panes.FeedzillaArticlesPane;
@@ -27,7 +28,9 @@ public class ZozkaFeedzillaVisualiser extends Application {
 
 	@FXML
 	private void datafeedClicked(MouseEvent e) {
-		System.out.println("click " + e.getClickCount());
+		if (e.getClickCount() == 2 && e.getButton().equals(MouseButton.PRIMARY)) {
+			System.out.println("click " + e.getClickCount());
+		}
 	}
 
 	public static void main(String[] args) {

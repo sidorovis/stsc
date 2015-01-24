@@ -85,11 +85,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		DateTime lastDownloadDate = DateTime.now().minusDays(2).withTimeAtStartOfDay();
 		while (true) {
 			if (downloader.isStopped()) {
+				logger.info("stopping now true, we break endless cycle");
 				break;
 			}
 			final DateTime now = DateTime.now();
-			downloadIteration(lastDownloadDate);
-			lastDownloadDate = now;
+			if (downloadIteration(lastDownloadDate)) {
+				lastDownloadDate = now;
+			}
 		}
 	}
 
@@ -102,16 +104,15 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		}
 	}
 
-	private void downloadIteration(DateTime downloadFrom) throws FileNotFoundException, IOException {
+	private boolean downloadIteration(DateTime downloadFrom) throws FileNotFoundException, IOException {
 		downloader.setDaysToDownload(downloadFrom);
-		downloader.download();
+		final boolean result = downloader.download();
 		hashStorage.save(downloadFrom);
+		return result;
 	}
 
 	private void stop() throws InterruptedException {
-		logger.info("stopping process going to start");
 		downloader.stopDownload();
-		logger.info("stopping process is finishing");
 	}
 
 	@Override
@@ -185,9 +186,11 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 					if (bufferedReader.ready()) {
 						final String s = bufferedReader.readLine();
 						if (s.equals("e")) {
+							logger.info("stopping process going to start");
 							downloadApplication.stop();
 							waitForEnding.await();
 							mainProcessingThread.join();
+							logger.info("stopping process is finishing");
 							break;
 						}
 					}

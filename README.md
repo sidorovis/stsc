@@ -16,7 +16,10 @@ Actually you could draw
  * on stock algorithms results (curves);
  * final equity curve;
 
-Also code include example of application with different search algorithms and providing results in the very convinient way.
+Also you could observe 'news' feed (currently from feedzilla).
+ * [ZozkaFeedzillaVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaFeedzillaVisualizer-Examples)
+
+Also code include examples of application with different search algorithms and providing results in the very convinient way.
 
  * [ZozkaStrategySelector](https://github.com/sidorovis/stsc/wiki/ZozkaStrategySelector-Examples)
  * [ZozkaStrategyVisualizer](https://github.com/sidorovis/stsc/wiki/ZozkaStrategyVisualizer-Examples)

@@ -1,6 +1,5 @@
 package stsc.frontend.zozka.applications;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +7,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -18,19 +28,9 @@ import stsc.common.storage.StockStorage;
 import stsc.frontend.zozka.dialogs.StockListDialog;
 import stsc.frontend.zozka.models.StockDescription;
 import stsc.frontend.zozka.panes.StockDatafeedListPane;
+import stsc.frontend.zozka.settings.ControllerHelper;
 import stsc.frontend.zozka.settings.ZozkaDatafeedCheckerHelper;
 import stsc.yahoo.YahooFileStockStorage;
-import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 public class ZozkaDatafeedChecker extends Application {
 
@@ -134,27 +134,14 @@ public class ZozkaDatafeedChecker extends Application {
 	}
 
 	private void chooseFolder() {
-		final String path = datafeedPathLabel.getText();
-		final File f = new File(path);
-
-		final Action response = Dialogs.create().owner(owner).title("Datafeed Path").masthead("Do you want to change datafeed path?")
-				.message("Current path is: " + path).showConfirm();
-		if (response != Dialog.Actions.YES) {
-			return;
-		}
-		final DirectoryChooser dc = new DirectoryChooser();
-		if (f.exists()) {
-			dc.setInitialDirectory(f);
-		}
-		final File result = dc.showDialog(owner);
-		if (result != null && result.isDirectory()) {
-			datafeedPathLabel.setText(result.getAbsolutePath());
+		if (ControllerHelper.chooseFolder(owner, datafeedPathLabel)) {
 			try {
 				loadDatafeed();
 			} catch (IOException e) {
 				Dialogs.create().showException(e);
 			}
 		}
+
 	}
 
 	private void loadDatafeed() throws IOException {
