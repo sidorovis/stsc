@@ -36,6 +36,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	private static FeedzillaDownloadToFileApplication downloadApplication;
 
 	private final String feedFolder;
+	private boolean endlessCycle = false;
 	private int daysBackDownloadFrom = 3650;
 	private final FeedDataDownloader downloader;
 	private final FeedzillaHashStorage hashStorage;
@@ -63,21 +64,42 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			if (daysBackDownloadFrom != null) {
 				this.daysBackDownloadFrom = Integer.valueOf(daysBackDownloadFrom);
 			}
+			final String endlessCycle = properties.getProperty("endless.cycle");
+			if (endlessCycle != null) {
+				this.endlessCycle = Boolean.valueOf(endlessCycle);
+			}
 			return properties.getProperty("feed.folder");
 		}
 	}
 
 	void start() throws FileNotFoundException, IOException {
+		if (endlessCycle) {
+			startEndless();
+		} else {
+			startNcycles();
+		}
+	}
+
+	void startEndless() throws FileNotFoundException, IOException {
+		while (true) {
+			if (downloader.isStopped()) {
+				break;
+			}
+			downloadIteration(2);
+		}
+	}
+
+	void startNcycles() throws FileNotFoundException, IOException {
 		for (int i = daysBackDownloadFrom; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
 			}
-			downloader.setDaysToDownload(i);
-			downloadIteration();
+			downloadIteration(i);
 		}
 	}
 
-	private void downloadIteration() throws FileNotFoundException, IOException {
+	private void downloadIteration(int daysBackDownload) throws FileNotFoundException, IOException {
+		downloader.setDaysToDownload(daysBackDownload);
 		downloader.download();
 		hashStorage.save(downloader.getDaysToDownload());
 	}
