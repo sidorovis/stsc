@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class FeedzillaFileStorageTest {
 		FeedzillaFileStorage.saveArticles(feedFolder, Collections.emptyList());
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650), true, r);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true, r);
 			Assert.assertNotNull(storage);
 			Assert.assertTrue(storage.getCategories().isEmpty());
 			Assert.assertTrue(storage.getSubcategories().isEmpty());
@@ -67,7 +68,7 @@ public class FeedzillaFileStorageTest {
 		}
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650), true, r);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true, r);
 			Assert.assertNotNull(storage);
 			Assert.assertEquals(1, storage.getCategories().size());
 			Assert.assertEquals(1, storage.getSubcategories().size());
@@ -85,7 +86,7 @@ public class FeedzillaFileStorageTest {
 	public void testFeedzillaFileStorageLoadTest() throws FileNotFoundException, IOException {
 		final String feedFolder = "./../test_data/";
 		final FileStorageReceiver r = new FileStorageReceiver();
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, FeedzillaHashStorage.getDaysBack(3650), true, r);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true, r);
 		Assert.assertNotNull(storage);
 		Assert.assertEquals(36, storage.getCategories().size());
 		Assert.assertEquals(600, storage.getSubcategories().size());

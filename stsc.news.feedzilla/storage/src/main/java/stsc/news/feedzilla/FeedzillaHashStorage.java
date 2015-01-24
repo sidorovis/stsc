@@ -47,9 +47,9 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		this.feedFolder = feedFolder;
 	}
 
-	public void initialReadFeedData(int daysBackDownloadFrom) throws FileNotFoundException, IOException {
+	public void initialReadFeedData(DateTime dateDownloadFrom) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, getDaysBack(daysBackDownloadFrom), false, this);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom.toDate(), false, this);
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
 		}
@@ -66,7 +66,7 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 				+ ". Articles: " + lastStoredArticlesAmount);
 	}
 
-	public void save(int daysBackDownloadFrom) throws FileNotFoundException, IOException {
+	public void save(DateTime daysDownloadFrom) throws FileNotFoundException, IOException {
 		if (hashCategories.size() != lastStoredCategoriesAmount) {
 			saveCategories();
 		}
@@ -78,13 +78,12 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		}
 		logger.info("Download iteration finished. Categories: " + lastStoredCategoriesAmount + ". Subcategories: "
 				+ lastStoredSubcategoriesAmount + ". Articles: " + lastStoredArticlesAmount);
-		freeHash(daysBackDownloadFrom);
+		freeHash(daysDownloadFrom);
 		newArticles.clear();
 	}
 
-	private void freeHash(int daysBackDownloadFrom) {
-		final Date dateBackDownloadFrom = getDaysBack(daysBackDownloadFrom);
-		newArticles.removeIf(new RemoteArticles(dateBackDownloadFrom, hashArticles));
+	private void freeHash(DateTime daysDownloadFrom) {
+		newArticles.removeIf(new RemoteArticles(daysDownloadFrom.toDate(), hashArticles));
 	}
 
 	private static class RemoteArticles implements Predicate<FeedzillaFileArticle> {
@@ -177,10 +176,6 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 
 	@Override
 	public void processedArticleFile(String articleFileName) {
-	}
-
-	public static Date getDaysBack(int daysBackDownloadFrom) {
-		return DateTime.now().minusDays(daysBackDownloadFrom).withTimeAtStartOfDay().toDate();
 	}
 
 }

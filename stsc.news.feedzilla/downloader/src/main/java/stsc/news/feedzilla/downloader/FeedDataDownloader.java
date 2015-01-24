@@ -32,7 +32,7 @@ final class FeedDataDownloader {
 
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
 
-	private int daysToDownload;
+	private DateTime dayDownloadFrom;
 	private final int amountOfArticlesPerRequest;
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
@@ -41,20 +41,20 @@ final class FeedDataDownloader {
 	private volatile boolean stopped = false;
 
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
-		this(356 * 20, amountOfArticlesPerRequest);
+		this(new DateTime().minusDays(356 * 20), amountOfArticlesPerRequest);
 	}
 
-	FeedDataDownloader(int daysToDownload, int amountOfArticlesPerRequest) {
-		this.daysToDownload = daysToDownload;
+	FeedDataDownloader(DateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
+		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
 	}
 
-	public void setDaysToDownload(int daysToDownload) {
-		this.daysToDownload = daysToDownload;
+	public void setDaysToDownload(DateTime dayDownloadFrom) {
+		this.dayDownloadFrom = dayDownloadFrom;
 	}
 
-	public int getDaysToDownload() {
-		return daysToDownload;
+	public DateTime getDaysToDownload() {
+		return dayDownloadFrom;
 	}
 
 	public void stopDownload() throws InterruptedException {
@@ -73,7 +73,6 @@ final class FeedDataDownloader {
 	}
 
 	public void download() {
-		final DateTime downloadPeriod = createNextDateTimeElement();
 		int amountOfProcessedArticles = 0;
 		final List<Category> categories = getCategories(feed);
 		for (Category category : categories) {
@@ -83,7 +82,7 @@ final class FeedDataDownloader {
 			for (Subcategory subcategory : subcategories) {
 				try {
 					CallableArticlesDownload.pause();
-					amountOfProcessedArticles += getArticles(category, subcategory, downloadPeriod);
+					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom);
 				} catch (TimeoutException e) {
 					logger.error("getArticles returns TimeoutException: " + e.getMessage() + "; we trying to restart executor.");
 					updateExecutor();
@@ -99,9 +98,9 @@ final class FeedDataDownloader {
 			}
 			final long endTime = System.currentTimeMillis();
 			logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles + " articles. For day "
-					+ downloadPeriod + ". Which took: " + (endTime - beginTime) + " millisec.");
+					+ dayDownloadFrom + ". Which took: " + (endTime - beginTime) + " millisec.");
 		}
-		logger.info("Received amount of articles: " + amountOfProcessedArticles + " --- for date " + downloadPeriod.toString());
+		logger.info("Received amount of articles: " + amountOfProcessedArticles + " --- for date " + dayDownloadFrom.toString());
 	}
 
 	public static List<Category> getCategories(FeedZilla feed) {
@@ -126,10 +125,6 @@ final class FeedDataDownloader {
 			CallableArticlesDownload.pause(500);
 		}
 		return Collections.emptyList();
-	}
-
-	private DateTime createNextDateTimeElement() {
-		return DateTime.now().minusDays(daysToDownload).withTimeAtStartOfDay();
 	}
 
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {

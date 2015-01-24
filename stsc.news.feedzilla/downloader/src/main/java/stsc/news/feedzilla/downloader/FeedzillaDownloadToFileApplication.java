@@ -18,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.joda.time.DateTime;
 
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -50,10 +51,10 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
 		}
-		this.downloader = new FeedDataDownloader(1, 100);
+		this.downloader = new FeedDataDownloader(100);
 		this.hashStorage = new FeedzillaHashStorage(feedFolder);
 		downloader.addReceiver(this);
-		hashStorage.initialReadFeedData(daysBackDownloadFrom);
+		hashStorage.initialReadFeedData(createNextDateTimeElement(daysBackDownloadFrom));
 	}
 
 	private String readFeedFolderProperty(String propertyFile) throws FileNotFoundException, IOException {
@@ -81,11 +82,14 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	void startEndless() throws FileNotFoundException, IOException {
+		DateTime lastDownloadDate = DateTime.now().minusDays(2).withTimeAtStartOfDay();
 		while (true) {
 			if (downloader.isStopped()) {
 				break;
 			}
-			downloadIteration(2);
+			final DateTime now = DateTime.now();
+			downloadIteration(lastDownloadDate);
+			lastDownloadDate = now;
 		}
 	}
 
@@ -94,14 +98,14 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			if (downloader.isStopped()) {
 				break;
 			}
-			downloadIteration(i);
+			downloadIteration(createNextDateTimeElement(i));
 		}
 	}
 
-	private void downloadIteration(int daysBackDownload) throws FileNotFoundException, IOException {
-		downloader.setDaysToDownload(daysBackDownload);
+	private void downloadIteration(DateTime downloadFrom) throws FileNotFoundException, IOException {
+		downloader.setDaysToDownload(downloadFrom);
 		downloader.download();
-		hashStorage.save(downloader.getDaysToDownload());
+		hashStorage.save(downloadFrom);
 	}
 
 	private void stop() throws InterruptedException {
@@ -136,6 +140,10 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		result.setTitle(from.getTitle());
 		result.setUrl(from.getUrl());
 		hashStorage.createFeedzillaArticle(subcategory, result);
+	}
+
+	private static DateTime createNextDateTimeElement(int daysToDownload) {
+		return DateTime.now().minusDays(daysToDownload).withTimeAtStartOfDay();
 	}
 
 	public static void main(String[] args) {

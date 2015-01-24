@@ -29,7 +29,7 @@ public class FeedDataDownloaderTest {
 		final Category category = FeedDataDownloader.getCategories(feed).get(0);
 		final Subcategory subcategory = FeedDataDownloader.getSubcategories(feed, category).get(0);
 		final ReceiverTestHelper receiver = new ReceiverTestHelper();
-		final FeedDataDownloader downloader = new FeedDataDownloader(10, 1);
+		final FeedDataDownloader downloader = new FeedDataDownloader(DateTime.now().minusDays(10), 1);
 		downloader.addReceiver(receiver);
 
 		final int articles = downloader.getArticles(category, subcategory, startOfDay);
