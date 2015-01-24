@@ -53,7 +53,7 @@ public class StockDatafeedListPane extends BorderPane {
 	@FXML
 	private TableColumn<StockDescription, Boolean> validColumn;
 
-	private ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane();
+	private final ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane();
 
 	public StockDatafeedListPane(final Stage owner, final String title) throws IOException {
 		this.owner = owner;
@@ -105,6 +105,12 @@ public class StockDatafeedListPane extends BorderPane {
 		return result;
 	}
 
+	private void applySizeFilter(Queue<String> tasks, Optional<Predicate<String>> filter) {
+		if (filter.isPresent()) {
+			tasks.removeIf(filter.get());
+		}
+	}
+
 	private void postLoadDatafeedActions(Function<Set<String>, Optional<Void>> onFinish, final YahooFileStockStorage ss)
 			throws ClassNotFoundException, IOException {
 		setStockStorage(ss);
@@ -112,12 +118,6 @@ public class StockDatafeedListPane extends BorderPane {
 		startLoadIndicatorUpdates(ss, onFinish);
 		ss.startLoadStocks();
 		setProgressStopButton(ss);
-	}
-
-	private void applySizeFilter(Queue<String> tasks, Optional<Predicate<String>> filter) {
-		if (filter.isPresent()) {
-			tasks.removeIf(filter.get());
-		}
 	}
 
 	private void setUpdateModel(final YahooFileStockStorage ss) {

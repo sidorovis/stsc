@@ -3,10 +3,7 @@ package stsc.frontend.zozka.applications;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import stsc.frontend.zozka.panes.FeedzillaArticlesPane;
 
@@ -22,15 +19,9 @@ public class ZozkaFeedzillaVisualiser extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.owner = stage;
+		feedzillaArticlesPane.setMainWindow(owner);
 		owner.setScene(new Scene(feedzillaArticlesPane.getMainPane()));
 		owner.show();
-	}
-
-	@FXML
-	private void datafeedClicked(MouseEvent e) {
-		if (e.getClickCount() == 2 && e.getButton().equals(MouseButton.PRIMARY)) {
-			System.out.println("click " + e.getClickCount());
-		}
 	}
 
 	public static void main(String[] args) {

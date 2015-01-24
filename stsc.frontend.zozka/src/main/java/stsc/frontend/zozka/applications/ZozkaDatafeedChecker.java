@@ -141,7 +141,6 @@ public class ZozkaDatafeedChecker extends Application {
 				Dialogs.create().showException(e);
 			}
 		}
-
 	}
 
 	private void loadDatafeed() throws IOException {

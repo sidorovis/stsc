@@ -47,9 +47,11 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		this.feedFolder = feedFolder;
 	}
 
-	public void initialReadFeedData(DateTime dateDownloadFrom) throws FileNotFoundException, IOException {
+	public FeedzillaFileStorage initialReadFeedData(DateTime dateDownloadFrom) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom.toDate(), false, this);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom.toDate(), false);
+		storage.addReceiver(this);
+		storage.readData();
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
 		}
@@ -64,6 +66,7 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		lastStoredArticlesAmount = hashArticles.size();
 		logger.info("Hashcode created. Categories: " + lastStoredCategoriesAmount + ". Subcategories: " + lastStoredSubcategoriesAmount
 				+ ". Articles: " + lastStoredArticlesAmount);
+		return storage;
 	}
 
 	public void save(DateTime daysDownloadFrom) throws FileNotFoundException, IOException {

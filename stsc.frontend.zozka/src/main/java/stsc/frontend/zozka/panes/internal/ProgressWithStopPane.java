@@ -13,12 +13,18 @@ public class ProgressWithStopPane extends BorderPane {
 	private final Button stopSearchButton = new Button();
 
 	public ProgressWithStopPane() {
+		this(true);
+	}
+
+	public ProgressWithStopPane(boolean withStopButton) {
 		this.indicator.setPrefSize(40, 40);
 		this.indicator.setProgress(0.0);
 		this.setCenter(pane);
 		stopSearchButton.setText("Stop Search");
 		pane.getChildren().add(indicator);
-		pane.getChildren().add(stopSearchButton);
+		if (withStopButton) {
+			pane.getChildren().add(stopSearchButton);
+		}
 		pane.setAlignment(Pos.CENTER);
 		BorderPane.setAlignment(pane, Pos.CENTER);
 	}

@@ -18,7 +18,6 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -51,20 +50,24 @@ public class FeedzillaFileStorage implements FeedStorage {
 	private final String feedFolder;
 	private final Date dateBackDownloadFrom;
 	private final boolean storeFeed;
-	private final Receiver receiver;
+	private final List<Receiver> receivers = new ArrayList<>();
 
 	private final Map<Integer, FeedzillaFileCategory> categories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileSubcategory> subcategories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileArticle> articlesById = new ConcurrentHashMap<>();
 	private final Map<Date, List<FeedzillaFileArticle>> articlesByDate = new ConcurrentHashMap<>();
 
-	public FeedzillaFileStorage(String feedFolder, Date dateBackDownloadFrom, boolean storeFeed, Receiver receiver)
-			throws FileNotFoundException, IOException {
+	public FeedzillaFileStorage(String feedFolder, Date dateBackDownloadFrom, boolean storeFeed) {
 		this.feedFolder = feedFolder;
 		this.dateBackDownloadFrom = dateBackDownloadFrom;
 		this.storeFeed = storeFeed;
-		this.receiver = receiver;
-		Validate.notNull(receiver, Receiver.class.toString() + " for " + FeedzillaFileStorage.class.toString() + " cannot be null.");
+	}
+
+	public void addReceiver(Receiver r) {
+		receivers.add(r);
+	}
+
+	public void readData() throws FileNotFoundException, IOException {
 		readCategories();
 		readSubcategories();
 		readArticles();
@@ -128,14 +131,18 @@ public class FeedzillaFileStorage implements FeedStorage {
 
 	private void readArticles() throws FileNotFoundException, IOException {
 		final List<String> articleNames = readFileList(feedFolder);
-		receiver.allArticleFilesSize(articleNames.size());
+		for (Receiver r : receivers) {
+			r.allArticleFilesSize(articleNames.size());
+		}
 		for (String articleName : articleNames) {
 			final String filePath = feedFolder + "/" + articleName + FILE_ARTICLE_EXTENSION;
 			try (DataInputStream f = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 				final long sizeOfArticles = f.readLong();
 				readArticleAndProcess(f, articleName, sizeOfArticles);
 			}
-			receiver.processedArticleFile(articleName);
+			for (Receiver r : receivers) {
+				r.processedArticleFile(articleName);
+			}
 		}
 	}
 
@@ -145,7 +152,13 @@ public class FeedzillaFileStorage implements FeedStorage {
 		for (long i = 0; i < sizeOfArticles; ++i) {
 			final FeedzillaFileArticle article = new FeedzillaFileArticle(f, subcategories);
 			if (checkArticlePublishDate(article)) {
-				if (receiver.addArticle(article)) {
+				boolean addArticle = false;
+				for (Receiver r : receivers) {
+					if (r.addArticle(article)) {
+						addArticle = true;
+					}
+				}
+				if (addArticle) {
 					realLoadedArticles += 1;
 					storeFeed(article);
 				}
