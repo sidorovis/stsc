@@ -80,30 +80,27 @@ public class CurvesViewPane {
 
 	public CurvesViewPane(Stage owner, Stock stock, CandleSticksChartDataset chartDataset) throws IOException {
 		this.chartDataset = chartDataset;
-		final URL location = EquityPane.class.getResource("04_stock_view_pane.fxml");
-		final FXMLLoader loader = new FXMLLoader(location);
-		loader.setController(this);
-		this.gui = loader.load();
-		initialize();
+		this.gui = getGui();
 		tableModel.add(chartDataset);
 	}
 
 	public CurvesViewPane(Stage owner, Stock stock, CandleSticksChartDataset chartDataset, FromToPeriod period) throws IOException {
 		this.chartDataset = chartDataset;
-		final URL location = EquityPane.class.getResource("04_stock_view_pane.fxml");
-		final FXMLLoader loader = new FXMLLoader(location);
-		loader.setController(this);
-		this.gui = loader.load();
-		initialize();
+		this.gui = getGui();
 	}
 
 	public CurvesViewPane(Stage owner, FromToPeriod period, SignalsStorage signalsStorage) throws IOException {
 		this.chartDataset = new CurveTimeSerieSetting(false, "", 0, signalsStorage);
-		final URL location = EquityPane.class.getResource("04_stock_view_pane.fxml");
+		this.gui = getGui();
+	}
+
+	private Parent getGui() throws IOException {
+		final URL location = CurvesViewPane.class.getResource("04_stock_view_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
-		this.gui = loader.load();
+		final Parent result = loader.load();
 		initialize();
+		return result;
 	}
 
 	private void initialize() {
