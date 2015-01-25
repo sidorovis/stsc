@@ -14,7 +14,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -39,14 +41,22 @@ public class FeedzillaArticlesPane extends BorderPane {
 	private ObservableList<FeedzillaArticleDescription> model = FXCollections.observableArrayList();
 	@FXML
 	private TableView<FeedzillaArticleDescription> newsTable;
+	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> dateColumn;
 
 	private final ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane();
 
 	public FeedzillaArticlesPane() throws IOException {
 		final Parent gui = initializeGui();
 		validateGui();
+		setUpTable();
 		mainPane.setCenter(gui);
 		mainPane.setBottom(null);
+	}
+
+	private void setUpTable() {
+		newsTable.setItems(model);
+		dateColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("date"));
 	}
 
 	private Parent initializeGui() throws IOException {
@@ -59,6 +69,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 	private void validateGui() {
 		assert newsTable != null : "fx:id=\"newsTable\" was not injected: check your FXML file.";
+		assert dateColumn != null : "fx:id=\"dateColumn\" was not injected: check your FXML file.";
 		assert datafeedLabel != null : "fx:id=\"datafeedLabel\" was not injected: check your FXML file.";
 	}
 
@@ -121,6 +132,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 		private final ObservableList<FeedzillaArticleDescription> newsTableModel;
 		private double size = 0;
 		private double index = 0;
+		private int articleIndex = 0;
 
 		ReceiverToIndicatorProcess(ProgressWithStopPane progressWithStopPane, ObservableList<FeedzillaArticleDescription> newsTable) {
 			this.progressWithStopPane = progressWithStopPane;
@@ -140,7 +152,8 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 		@Override
 		public boolean addArticle(FeedzillaFileArticle article) {
-			newsTableModel.add(new FeedzillaArticleDescription());
+			newsTableModel.add(new FeedzillaArticleDescription(article.getPublishDate().toString() + " " + String.valueOf(articleIndex)));
+			articleIndex += 1;
 			return false;
 		}
 	}

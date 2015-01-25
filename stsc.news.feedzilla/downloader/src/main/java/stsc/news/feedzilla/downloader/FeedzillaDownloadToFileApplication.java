@@ -163,6 +163,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						logger.error("Error on main execution thread", e);
 					}
 					waitForEnding.countDown();
+					logger.info("Execution thread is finished");
 				}
 			});
 			mainProcessingThread.start();
@@ -188,8 +189,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						if (s.equals("e")) {
 							logger.info("stopping process going to start");
 							downloadApplication.stop();
-							waitForEnding.await();
-							mainProcessingThread.join();
 							logger.info("stopping process is finishing");
 							break;
 						}
@@ -204,7 +203,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			} catch (Exception e) {
 				logger.error("Error on exit hook. ", e);
 				downloadApplication.stop();
-				mainProcessingThread.join();
 			}
 		} catch (Exception e) {
 			logger.error("Error on exit hook with non stop. ", e);
