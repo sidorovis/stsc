@@ -47,7 +47,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	@Override
 	public Optional<List<Article>> call() throws Exception {
 		Optional<List<Article>> result = Optional.empty();
-		callableLogger.trace(" --- before getting articles --- ");
+		final long startArticlesLoadTime = System.currentTimeMillis();
 		Exception exceptionToReturn = new Exception();
 		for (int amountOfTries = 0; amountOfTries < TRIES_COUNT; ++amountOfTries) {
 			try {
@@ -55,14 +55,17 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 						.count(amountOfArticlesPerRequest).articles();
 				final List<Article> articlesList = articles.getArticles();
 				result = Optional.of(articlesList);
-				callableLogger.trace(" --- after getting articles --- ");
+				final long endArticlesLoadTime = System.currentTimeMillis();
+				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms");
 				return result;
 			} catch (Exception e) {
 				exceptionToReturn = e;
 			}
 			pause();
 		}
-		callableLogger.trace(" --- we do not return articles as answer --- " + exceptionToReturn.getMessage());
+		final long endArticlesLoadTime = System.currentTimeMillis();
+		callableLogger.trace("no articles and it took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms; "
+				+ exceptionToReturn.getMessage());
 		return result;
 	}
 
