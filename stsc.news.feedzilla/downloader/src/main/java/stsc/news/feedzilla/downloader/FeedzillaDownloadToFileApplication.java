@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,16 +84,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	void startEndless() throws FileNotFoundException, IOException {
 		DateTime lastDownloadDate = DateTime.now().minusDays(2).withTimeAtStartOfDay();
-		while (true) {
-			if (downloader.isStopped()) {
-				logger.info("stopping now true, we break endless cycle");
-				break;
-			}
+		while (!downloader.isStopped()) {
 			final DateTime now = DateTime.now();
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
 			}
 		}
+		logger.info("Stopping now true, we break endless cycle");
 	}
 
 	void startNcycles() throws FileNotFoundException, IOException {
@@ -170,8 +168,11 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			waitForStarting.await();
 			logger.info("Please enter 'e' and press Enter to stop application.");
 			addExitHook(waitForEnding, mainProcessingThread);
-			waitForEnding.await();
+			logger.info("addExitHook() function finished.");
+			waitForEnding.await(120, TimeUnit.SECONDS);
+			logger.info("waitForEnding for 2 minutes end.");
 			mainProcessingThread.join();
+			logger.info("mainProcessThread joined and life is now awesome!");
 		} catch (Exception e) {
 			logger.error("Error on main function. ", e);
 		}
@@ -187,9 +188,8 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 					if (bufferedReader.ready()) {
 						final String s = bufferedReader.readLine();
 						if (s.equals("e")) {
-							logger.info("stopping process going to start");
 							downloadApplication.stop();
-							logger.info("stopping process is finishing");
+							logger.info("Stopping process is finishing");
 							break;
 						}
 					}
