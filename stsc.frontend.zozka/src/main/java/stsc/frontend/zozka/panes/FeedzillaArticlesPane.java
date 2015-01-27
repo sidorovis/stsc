@@ -6,6 +6,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import javafx.application.Platform;
@@ -96,7 +99,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 	}
 
 	private void chooseDate() throws FileNotFoundException, IOException {
-		final DatePickerDialog pickDate = new DatePickerDialog(owner);
+		final DatePickerDialog pickDate = new DatePickerDialog("Choose Date", owner, LocalDate.of(1990, 1, 1));
 		pickDate.showAndWait();
 		if (pickDate.isOk()) {
 			loadFeedzillaFileStorage(pickDate.getDate());
@@ -109,15 +112,26 @@ public class FeedzillaArticlesPane extends BorderPane {
 		mainPane.setBottom(progressWithStopPane);
 		final String feedFolder = datafeedLabel.getText();
 		Platform.runLater(() -> {
-			final FeedzillaFileStorage ffs = new FeedzillaFileStorage(feedFolder, createDate(localDate), true);
-			ffs.addReceiver(new ReceiverToIndicatorProcess(progressWithStopPane, model));
-			try {
-				ffs.readData();
-			} catch (Exception e) {
-				Dialogs.create().owner(owner).showException(e);
-			}
-			ffs.getArticlesById();
+			loadFeedzillaDataFromFileStorage(feedFolder, localDate);
 		});
+	}
+
+	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDate localDate) {
+		final FeedzillaFileStorage ffs = new FeedzillaFileStorage(feedFolder, createDate(localDate), true);
+		ffs.addReceiver(new ReceiverToIndicatorProcess(progressWithStopPane));
+		try {
+			ffs.readData();
+		} catch (Exception e) {
+			Dialogs.create().owner(owner).showException(e);
+		}
+		final Map<Date, List<FeedzillaFileArticle>> data = ffs.getArticlesByDate();
+		int index = 0;
+		for (Entry<Date, List<FeedzillaFileArticle>> entry : data.entrySet()) {
+			for (FeedzillaFileArticle article : entry.getValue()) {
+				model.add(new FeedzillaArticleDescription(index, entry.getKey()));
+				index += 1;
+			}
+		}
 	}
 
 	public void setMainWindow(Stage owner) {
@@ -135,14 +149,11 @@ public class FeedzillaArticlesPane extends BorderPane {
 	private static class ReceiverToIndicatorProcess implements FeedzillaFileStorage.Receiver {
 
 		private final ProgressWithStopPane progressWithStopPane;
-		private final ObservableList<FeedzillaArticleDescription> newsTableModel;
 		private double size = 0;
 		private double index = 0;
-		private int articleIndex = 0;
 
-		ReceiverToIndicatorProcess(ProgressWithStopPane progressWithStopPane, ObservableList<FeedzillaArticleDescription> newsTable) {
+		ReceiverToIndicatorProcess(ProgressWithStopPane progressWithStopPane) {
 			this.progressWithStopPane = progressWithStopPane;
-			this.newsTableModel = newsTable;
 		}
 
 		@Override
@@ -154,13 +165,14 @@ public class FeedzillaArticlesPane extends BorderPane {
 		public void processedArticleFile(String articleFileName) {
 			index += 1.0;
 			progressWithStopPane.setIndicatorProgress(index / size);
+			if (Double.compare(index, size) == 0) {
+				progressWithStopPane.hide();
+			}
 		}
 
 		@Override
 		public boolean addArticle(FeedzillaFileArticle article) {
-			newsTableModel.add(new FeedzillaArticleDescription(articleIndex, article.getPublishDate()));
-			articleIndex += 1;
-			return false;
+			return true;
 		}
 	}
 }

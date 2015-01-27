@@ -17,7 +17,12 @@ public class DatePickerDialog extends Stage {
 	private final DatePicker dp = new DatePicker(LocalDate.now());
 	private final Button ok = new Button("Ok");
 
-	public DatePickerDialog(Stage owner) {
+	public DatePickerDialog(String title, Stage owner, LocalDate from) {
+		this(title, owner);
+		dp.setValue(from);
+	}
+
+	public DatePickerDialog(String title, Stage owner) {
 		super(StageStyle.UTILITY);
 		ok.setDefaultButton(true);
 		ok.setOnAction((e) -> {
@@ -29,6 +34,7 @@ public class DatePickerDialog extends Stage {
 		BorderPane.setAlignment(ok, Pos.CENTER);
 		ok.setAlignment(Pos.CENTER);
 		this.setScene(new Scene(bp, 280, 80));
+		this.setTitle(title);
 	}
 
 	public boolean isOk() {
