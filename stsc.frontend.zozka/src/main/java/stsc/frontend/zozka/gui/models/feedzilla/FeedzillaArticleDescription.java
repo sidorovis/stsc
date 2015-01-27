@@ -2,18 +2,22 @@ package stsc.frontend.zozka.gui.models.feedzilla;
 
 import java.util.Date;
 
+import org.joda.time.DateTime;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class FeedzillaArticleDescription {
 
-	final private SimpleStringProperty publishDate;
+	final private int index;
+	final private Date publishDate;
 
-	public FeedzillaArticleDescription(String publishDate) {
-		this.publishDate = new SimpleStringProperty(publishDate.toString());
+	public FeedzillaArticleDescription(final int index, Date publishDate) {
+		this.index = index;
+		this.publishDate = new DateTime(publishDate).withTimeAtStartOfDay().toDate();
 	}
 
 	public StringProperty dateProperty() {
-		return publishDate;
+		return new SimpleStringProperty("" + index + " " + publishDate);
 	}
 }

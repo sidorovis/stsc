@@ -6,6 +6,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -31,6 +32,10 @@ import stsc.news.feedzilla.FeedzillaFileStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 
 public class FeedzillaArticlesPane extends BorderPane {
+
+	static {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	final private BorderPane mainPane = new BorderPane();
 	private Stage owner;
@@ -111,6 +116,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 			} catch (Exception e) {
 				Dialogs.create().owner(owner).showException(e);
 			}
+			ffs.getArticlesById();
 		});
 	}
 
@@ -152,7 +158,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 		@Override
 		public boolean addArticle(FeedzillaFileArticle article) {
-			newsTableModel.add(new FeedzillaArticleDescription(article.getPublishDate().toString() + " " + String.valueOf(articleIndex)));
+			newsTableModel.add(new FeedzillaArticleDescription(articleIndex, article.getPublishDate()));
 			articleIndex += 1;
 			return false;
 		}

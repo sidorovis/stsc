@@ -54,7 +54,7 @@ public class FeedzillaFileStorageTest {
 			Assert.assertNotNull(storage);
 			Assert.assertTrue(storage.getCategories().isEmpty());
 			Assert.assertTrue(storage.getSubcategories().isEmpty());
-			Assert.assertTrue(storage.getArticles().isEmpty());
+			Assert.assertTrue(storage.getArticlesById().isEmpty());
 
 			final Map<String, FeedzillaFileCategory> categories = new HashMap<>();
 			categories.put("key", new FeedzillaFileCategory(14, "test", "english", null));
@@ -76,7 +76,7 @@ public class FeedzillaFileStorageTest {
 			Assert.assertNotNull(storage);
 			Assert.assertEquals(1, storage.getCategories().size());
 			Assert.assertEquals(1, storage.getSubcategories().size());
-			Assert.assertEquals(1, storage.getArticles().size());
+			Assert.assertEquals(1, storage.getArticlesById().size());
 		}
 		Assert.assertTrue(new File(feedFolder + "/_categories" + FeedzillaFileStorage.FILE_EXTENSION).delete());
 		Assert.assertTrue(new File(feedFolder + "/_subcategories" + FeedzillaFileStorage.FILE_EXTENSION).delete());
@@ -96,6 +96,6 @@ public class FeedzillaFileStorageTest {
 		Assert.assertNotNull(storage);
 		Assert.assertEquals(36, storage.getCategories().size());
 		Assert.assertEquals(600, storage.getSubcategories().size());
-		Assert.assertEquals(769, storage.getArticles().size());
+		Assert.assertEquals(769, storage.getArticlesById().size());
 	}
 }

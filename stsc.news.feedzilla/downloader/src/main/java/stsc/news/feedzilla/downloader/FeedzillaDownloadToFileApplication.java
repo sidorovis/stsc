@@ -89,6 +89,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
 			}
+			logger.info("This message shows that endless cycle still works: " + downloader.isStopped());
 		}
 		logger.info("Stopping now true, we break endless cycle");
 	}
@@ -111,6 +112,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	private void stop() throws InterruptedException {
 		downloader.stopDownload();
+		logger.info("stop message was sent to downloader: " + downloader.isStopped());
 	}
 
 	@Override
@@ -168,7 +170,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			waitForStarting.await();
 			logger.info("Please enter 'e' and press Enter to stop application.");
 			addExitHook(waitForEnding, mainProcessingThread);
-			logger.info("addExitHook() function finished.");
 			waitForEnding.await(120, TimeUnit.SECONDS);
 			logger.info("waitForEnding for 2 minutes end.");
 			mainProcessingThread.join();
@@ -189,7 +190,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 						final String s = bufferedReader.readLine();
 						if (s.equals("e")) {
 							downloadApplication.stop();
-							logger.info("Stopping process is finishing");
 							break;
 						}
 					}

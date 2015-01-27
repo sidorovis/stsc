@@ -60,7 +60,7 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 			hashSubcategories.put(FeedStorageHelper.createHashCode(s), s);
 		}
 		lastStoredSubcategoriesAmount = storage.getSubcategories().size();
-		for (FeedzillaFileArticle a : storage.getArticles()) {
+		for (FeedzillaFileArticle a : storage.getArticlesById()) {
 			hashArticles.add(FeedStorageHelper.createHashCode(a));
 		}
 		lastStoredArticlesAmount = hashArticles.size();

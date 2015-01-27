@@ -27,7 +27,7 @@ import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-public class FeedzillaFileStorage implements FeedStorage {
+public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -210,8 +210,13 @@ public class FeedzillaFileStorage implements FeedStorage {
 	}
 
 	@Override
-	public Collection<FeedzillaFileArticle> getArticles() {
+	public Collection<FeedzillaFileArticle> getArticlesById() {
 		return articlesById.values();
+	}
+
+	@Override
+	public Map<Date, List<FeedzillaFileArticle>> getArticlesByDate() {
+		return articlesByDate;
 	}
 
 	@Override
@@ -222,5 +227,4 @@ public class FeedzillaFileStorage implements FeedStorage {
 		}
 		return result;
 	}
-
 }
