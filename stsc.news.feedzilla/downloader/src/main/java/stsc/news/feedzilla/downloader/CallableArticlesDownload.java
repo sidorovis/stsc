@@ -53,8 +53,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 			try {
 				final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
 						.count(amountOfArticlesPerRequest).articles();
-				final List<Article> articlesList = articles.getArticles();
-				result = Optional.of(articlesList);
+				result = Optional.of(articles.getArticles());
 				final long endArticlesLoadTime = System.currentTimeMillis();
 				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms");
 				return result;

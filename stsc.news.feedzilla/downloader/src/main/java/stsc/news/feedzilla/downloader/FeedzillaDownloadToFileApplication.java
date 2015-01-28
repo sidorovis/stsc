@@ -55,6 +55,9 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		this.downloader = new FeedDataDownloader(100);
 		this.hashStorage = new FeedzillaHashStorage(feedFolder);
 		downloader.addReceiver(this);
+		if (endlessCycle) {
+			daysBackDownloadFrom = 2;
+		}
 		hashStorage.initialReadFeedData(createNextDateTimeElement(daysBackDownloadFrom));
 	}
 
@@ -89,7 +92,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
 			}
-			logger.info("This message shows that endless cycle still works: " + downloader.isStopped());
 		}
 		logger.info("Stopping now true, we break endless cycle");
 	}
@@ -156,7 +158,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 				@Override
 				public void run() {
 					try {
-						logger.info("Started developer version");
 						downloadApplication = new FeedzillaDownloadToFileApplication(DEVELOPER_FILENAME);
 						waitForStarting.countDown();
 						downloadApplication.start();

@@ -65,15 +65,11 @@ final class FeedDataDownloader {
 
 	public void stopDownload() throws InterruptedException {
 		stopped = true;
-		if (thread != null) {
-			thread.interrupt();
-		}
-		tasks.add(new Runnable() {
+		tasks.offer(new Runnable() {
 			@Override
 			public void run() {
 			}
 		});
-		tasks.clear();
 	}
 
 	public boolean isStopped() {
@@ -135,8 +131,7 @@ final class FeedDataDownloader {
 			}
 		});
 		final long beginArticlesDownloadTime = System.currentTimeMillis();
-		final Optional<List<Article>> articles = futureArticles.get(30, TimeUnit.SECONDS);
-
+		final Optional<List<Article>> articles = futureArticles.get(45, TimeUnit.SECONDS);
 		final long endArticlesDownloadTime = System.currentTimeMillis();
 		logger.debug("Timing for articles download: " + (endArticlesDownloadTime - beginArticlesDownloadTime));
 
@@ -187,6 +182,7 @@ final class FeedDataDownloader {
 						} else {
 							break;
 						}
+					} catch (InterruptedException e) {
 					} catch (Exception e) {
 						logger.fatal("Download thread throw an exception: ", e);
 					}
@@ -194,5 +190,4 @@ final class FeedDataDownloader {
 			}
 		});
 	}
-
 }
