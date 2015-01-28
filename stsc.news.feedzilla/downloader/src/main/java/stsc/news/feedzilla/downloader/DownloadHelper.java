@@ -30,7 +30,7 @@ class DownloadHelper {
 			} catch (Exception e) {
 				logger.debug("Downloading subcategories throw exception: " + e.getMessage());
 			}
-			CallableArticlesDownload.pause(500);
+			CallableArticlesDownload.pause(700);
 		}
 		return Collections.emptyList();
 	}

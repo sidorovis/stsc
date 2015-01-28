@@ -25,8 +25,8 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	private static Logger callableLogger = LogManager.getLogger(CallableArticlesDownload.class);
 
-	public static final int TRIES_COUNT = 7;
-	public static final long PAUSE_SLEEP_TIME = 200;
+	public static final int TRIES_COUNT = 5;
+	public static final long PAUSE_SLEEP_TIME = 100;
 
 	private final FeedZilla feed;
 	private final Category category;
@@ -46,14 +46,13 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	@Override
 	public Optional<List<Article>> call() throws Exception {
-		Optional<List<Article>> result = Optional.empty();
 		final long startArticlesLoadTime = System.currentTimeMillis();
 		Exception exceptionToReturn = new Exception();
 		for (int amountOfTries = 0; amountOfTries < TRIES_COUNT; ++amountOfTries) {
 			try {
 				final Articles articles = feed.query().category(category.getId()).subcategory(subcategory.getId()).since(startOfDay)
 						.count(amountOfArticlesPerRequest).articles();
-				result = Optional.of(articles.getArticles());
+				final Optional<List<Article>> result = Optional.of(articles.getArticles());
 				final long endArticlesLoadTime = System.currentTimeMillis();
 				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms");
 				return result;
@@ -65,7 +64,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 		final long endArticlesLoadTime = System.currentTimeMillis();
 		callableLogger.trace("no articles and it took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms; "
 				+ exceptionToReturn.getMessage());
-		return result;
+		return Optional.empty();
 	}
 
 	public static void pause() {

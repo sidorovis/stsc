@@ -186,17 +186,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 				final InputStreamReader fileInputStream = new InputStreamReader(System.in);
 				final BufferedReader bufferedReader = new BufferedReader(fileInputStream);
 
-				while (true) {
+				while (waitForEnding.getCount() != 0) {
 					if (bufferedReader.ready()) {
 						final String s = bufferedReader.readLine();
 						if (s.equals("e")) {
 							downloadApplication.stop();
 							break;
 						}
-					}
-					if (waitForEnding.getCount() == 0) {
-						downloadApplication.stop();
-						break;
 					}
 					CallableArticlesDownload.pause();
 				}

@@ -14,7 +14,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -95,12 +94,7 @@ final class FeedDataDownloader {
 			}
 			for (Subcategory subcategory : subcategories) {
 				try {
-					CallableArticlesDownload.pause();
 					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom);
-				} catch (TimeoutException e) {
-					logger.error("getArticles returns TimeoutException: " + e.getMessage() + "; we trying to restart executor.");
-					updateExecutor();
-					result = false;
 				} catch (Exception e) {
 					logger.error("getArticles returns", e);
 					updateExecutor();
@@ -130,37 +124,25 @@ final class FeedDataDownloader {
 				futureArticles.run();
 			}
 		});
-		final long beginArticlesDownloadTime = System.currentTimeMillis();
-		final Optional<List<Article>> articles = futureArticles.get(45, TimeUnit.SECONDS);
-		final long endArticlesDownloadTime = System.currentTimeMillis();
-		logger.debug("Timing for articles download: " + (endArticlesDownloadTime - beginArticlesDownloadTime));
-
+		final Optional<List<Article>> articles = futureArticles.get(90, TimeUnit.SECONDS);
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
-		long timeReceiversDifferenceSum = 0;
 		for (Article article : articles.get()) {
 			try {
 				for (LoadFeedReceiver receiver : receivers) {
-					final long beginProcessing = System.currentTimeMillis();
 					receiver.newArticle(category, subcategory, article);
-					final long endProcessing = System.currentTimeMillis();
-					timeReceiversDifferenceSum += endProcessing - beginProcessing;
 					articlesCount += 1;
-					if (stopped) {
-						logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
+					if (stopped)
 						return articlesCount;
-					}
 				}
 			} catch (Exception e) {
 				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}
 			if (stopped) {
-				logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
 				return articlesCount;
 			}
 		}
-		logger.debug("Timing for processing: " + timeReceiversDifferenceSum);
 		return articles.get().size();
 	}
 
