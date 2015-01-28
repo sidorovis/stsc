@@ -5,11 +5,15 @@ import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class FeedDataDownloaderTest {
+
+	private final Logger logger = LogManager.getLogger(FeedDataDownloaderTest.class);
 
 	private class ReceiverTestHelper implements LoadFeedReceiver {
 		public int sum = 0;
@@ -26,8 +30,8 @@ public class FeedDataDownloaderTest {
 		startOfDay = startOfDay.minusDays(1);
 		startOfDay = startOfDay.withTimeAtStartOfDay();
 		final FeedZilla feed = new FeedZilla();
-		final Category category = FeedDataDownloader.getCategories(feed).get(0);
-		final Subcategory subcategory = FeedDataDownloader.getSubcategories(feed, category).get(0);
+		final Category category = DownloadHelper.getCategories(feed, logger).get(0);
+		final Subcategory subcategory = DownloadHelper.getSubcategories(feed, category, logger).get(0);
 		final ReceiverTestHelper receiver = new ReceiverTestHelper();
 		final FeedDataDownloader downloader = new FeedDataDownloader(DateTime.now().minusDays(10), 1);
 		downloader.addReceiver(receiver);

@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -37,6 +39,8 @@ final class FeedDataDownloader {
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
 	private final FeedZilla feed = new FeedZilla();
+
+	private BlockingQueue<Runnable> tasks = new SynchronousQueue<>();
 	private Thread thread;
 	private volatile boolean stopped = false;
 
@@ -47,6 +51,8 @@ final class FeedDataDownloader {
 	FeedDataDownloader(DateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
 		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
+		this.thread = createThread();
+		thread.start();
 	}
 
 	public void setDaysToDownload(DateTime dayDownloadFrom) {
@@ -62,6 +68,12 @@ final class FeedDataDownloader {
 		if (thread != null) {
 			thread.interrupt();
 		}
+		tasks.add(new Runnable() {
+			@Override
+			public void run() {
+			}
+		});
+		tasks.clear();
 	}
 
 	public boolean isStopped() {
@@ -75,13 +87,13 @@ final class FeedDataDownloader {
 	public boolean download() {
 		boolean result = true;
 		int amountOfProcessedArticles = 0;
-		final List<Category> categories = getCategories(feed);
+		final List<Category> categories = DownloadHelper.getCategories(feed, logger);
 		if (categories.isEmpty())
 			return false;
 		for (Category category : categories) {
 			final long beginTime = System.currentTimeMillis();
 			CallableArticlesDownload.pause();
-			final List<Subcategory> subcategories = getSubcategories(feed, category);
+			final List<Subcategory> subcategories = DownloadHelper.getSubcategories(feed, category, logger);
 			if (subcategories.isEmpty()) {
 				result = false;
 			}
@@ -95,6 +107,7 @@ final class FeedDataDownloader {
 					result = false;
 				} catch (Exception e) {
 					logger.error("getArticles returns", e);
+					updateExecutor();
 					result = false;
 				}
 				if (stopped) {
@@ -112,42 +125,17 @@ final class FeedDataDownloader {
 		return result;
 	}
 
-	public static List<Category> getCategories(FeedZilla feed) {
-		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
-			try {
-				return feed.getCategories();
-			} catch (Exception e) {
-				logger.error("Downloading categories throw exception: " + e.getMessage());
-			}
-			CallableArticlesDownload.pause(1000);
-		}
-		return Collections.emptyList();
-	}
-
-	public static List<Subcategory> getSubcategories(FeedZilla feed, Category category) {
-		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {
-			try {
-				return feed.getSubcategories(category);
-			} catch (Exception e) {
-				logger.debug("Downloading subcategories throw exception: " + e.getMessage());
-			}
-			CallableArticlesDownload.pause(500);
-		}
-		return Collections.emptyList();
-	}
-
 	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
-		this.thread = new Thread(new Runnable() {
+		tasks.offer(new Runnable() {
 			@Override
 			public void run() {
 				futureArticles.run();
 			}
 		});
 		final long beginArticlesDownloadTime = System.currentTimeMillis();
-		thread.start();
-		final Optional<List<Article>> articles = futureArticles.get(60, TimeUnit.SECONDS);
+		final Optional<List<Article>> articles = futureArticles.get(30, TimeUnit.SECONDS);
 
 		final long endArticlesDownloadTime = System.currentTimeMillis();
 		logger.debug("Timing for articles download: " + (endArticlesDownloadTime - beginArticlesDownloadTime));
@@ -183,6 +171,28 @@ final class FeedDataDownloader {
 
 	public void updateExecutor() {
 		thread.interrupt();
+		thread = createThread();
+		thread.start();
+	}
+
+	private Thread createThread() {
+		return new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (!stopped) {
+					try {
+						final Runnable r = tasks.take();
+						if (r != null) {
+							r.run();
+						} else {
+							break;
+						}
+					} catch (Exception e) {
+						logger.fatal("Download thread throw an exception: ", e);
+					}
+				}
+			}
+		});
 	}
 
 }

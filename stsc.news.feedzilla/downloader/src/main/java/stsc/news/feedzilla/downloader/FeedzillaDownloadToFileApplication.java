@@ -74,7 +74,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		}
 	}
 
-	void start() throws FileNotFoundException, IOException {
+	void start() throws FileNotFoundException, IOException, InterruptedException {
 		if (endlessCycle) {
 			startEndless();
 		} else {
@@ -94,13 +94,14 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		logger.info("Stopping now true, we break endless cycle");
 	}
 
-	void startNcycles() throws FileNotFoundException, IOException {
+	void startNcycles() throws FileNotFoundException, IOException, InterruptedException {
 		for (int i = daysBackDownloadFrom; i > 1; --i) {
 			if (downloader.isStopped()) {
 				break;
 			}
 			downloadIteration(createNextDateTimeElement(i));
 		}
+		downloader.stopDownload();
 	}
 
 	private boolean downloadIteration(DateTime downloadFrom) throws FileNotFoundException, IOException {
@@ -171,7 +172,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			logger.info("Please enter 'e' and press Enter to stop application.");
 			addExitHook(waitForEnding, mainProcessingThread);
 			waitForEnding.await(120, TimeUnit.SECONDS);
-			logger.info("waitForEnding for 2 minutes end.");
 			mainProcessingThread.join();
 			logger.info("mainProcessThread joined and life is now awesome!");
 		} catch (Exception e) {
