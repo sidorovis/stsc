@@ -25,8 +25,8 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	private static Logger callableLogger = LogManager.getLogger(CallableArticlesDownload.class);
 
-	public static final int TRIES_COUNT = 5;
-	public static final long PAUSE_SLEEP_TIME = 100;
+	public static final int TRIES_COUNT = 7;
+	public static final long PAUSE_SLEEP_TIME = 230;
 
 	private final FeedZilla feed;
 	private final Category category;
