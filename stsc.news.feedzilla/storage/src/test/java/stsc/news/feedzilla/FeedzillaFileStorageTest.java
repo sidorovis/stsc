@@ -3,14 +3,13 @@ package stsc.news.feedzilla;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -48,7 +47,7 @@ public class FeedzillaFileStorageTest {
 		FeedzillaFileStorage.saveArticles(feedFolder, Collections.emptyList());
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, LocalDateTime.now().minusDays(3650), true);
 			storage.addReceiver(r);
 			storage.readData();
 			Assert.assertNotNull(storage);
@@ -65,12 +64,12 @@ public class FeedzillaFileStorageTest {
 			FeedzillaFileStorage.saveSubcategories(feedFolder, subcategories);
 
 			final List<FeedzillaFileArticle> articles = new ArrayList<>();
-			articles.add(new FeedzillaFileArticle(56, subcategories.get("key"), null, new Date()));
+			articles.add(new FeedzillaFileArticle(56, subcategories.get("key"), null, LocalDateTime.now()));
 			FeedzillaFileStorage.saveArticles(feedFolder, articles);
 		}
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, LocalDateTime.now().minusDays(3650), true);
 			storage.addReceiver(r);
 			storage.readData();
 			Assert.assertNotNull(storage);
@@ -90,7 +89,7 @@ public class FeedzillaFileStorageTest {
 	public void testFeedzillaFileStorageLoadTest() throws FileNotFoundException, IOException {
 		final String feedFolder = "./../test_data/";
 		final FileStorageReceiver r = new FileStorageReceiver();
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, DateTime.now().minusDays(3650).toDate(), true);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, LocalDateTime.now().minusDays(3650), true);
 		storage.addReceiver(r);
 		storage.readData();
 		Assert.assertNotNull(storage);

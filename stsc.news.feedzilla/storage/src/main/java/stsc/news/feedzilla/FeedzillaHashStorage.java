@@ -2,9 +2,9 @@ package stsc.news.feedzilla;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,9 +16,9 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.joda.time.DateTime;
 
 import stsc.common.feeds.FeedStorageHelper;
+import stsc.news.feedzilla.FeedzillaFileStorage.Receiver;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
@@ -33,6 +33,7 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 	private static Logger logger = LogManager.getLogger(FeedzillaHashStorage.class);
 
 	private final String feedFolder;
+	private Receiver receiver;
 
 	private Map<String, FeedzillaFileCategory> hashCategories = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, FeedzillaFileSubcategory> hashSubcategories = Collections.synchronizedMap(new HashMap<>());
@@ -45,12 +46,21 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 
 	public FeedzillaHashStorage(String feedFolder) {
 		this.feedFolder = feedFolder;
+		this.receiver = this;
 	}
 
-	public FeedzillaFileStorage initialReadFeedData(DateTime dateDownloadFrom) throws FileNotFoundException, IOException {
+	public void setReceiver(Receiver receiver) {
+		this.receiver = receiver;
+	}
+
+	public FeedzillaFileStorage readFeedDataAndStore(LocalDateTime dateDownloadFrom) throws FileNotFoundException, IOException {
+		return readFeedData(dateDownloadFrom, true);
+	}
+
+	public FeedzillaFileStorage readFeedData(LocalDateTime dateDownloadFrom, boolean storeData) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom.toDate(), false);
-		storage.addReceiver(this);
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom, storeData);
+		storage.addReceiver(receiver);
 		storage.readData();
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
@@ -69,7 +79,7 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		return storage;
 	}
 
-	public void save(DateTime daysDownloadFrom) throws FileNotFoundException, IOException {
+	public void save(LocalDateTime daysDownloadFrom) throws FileNotFoundException, IOException {
 		if (hashCategories.size() != lastStoredCategoriesAmount) {
 			saveCategories();
 		}
@@ -85,23 +95,23 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		newArticles.clear();
 	}
 
-	private void freeHash(DateTime daysDownloadFrom) {
-		newArticles.removeIf(new RemoteArticles(daysDownloadFrom.toDate(), hashArticles));
+	private void freeHash(LocalDateTime daysDownloadFrom) {
+		newArticles.removeIf(new RemoteArticles(daysDownloadFrom, hashArticles));
 	}
 
 	private static class RemoteArticles implements Predicate<FeedzillaFileArticle> {
 
-		private Date dateBackDownloadFrom;
+		private LocalDateTime dateBackDownloadFrom;
 		private Set<String> hashArticles;
 
-		RemoteArticles(Date dateBackDownloadFrom, Set<String> hashArticles) {
+		RemoteArticles(LocalDateTime dateBackDownloadFrom, Set<String> hashArticles) {
 			this.dateBackDownloadFrom = dateBackDownloadFrom;
 			this.hashArticles = hashArticles;
 		}
 
 		@Override
 		public boolean test(FeedzillaFileArticle article) {
-			if (article.getPublishDate().before(dateBackDownloadFrom)) {
+			if (article.getPublishDate().isBefore(dateBackDownloadFrom)) {
 				hashArticles.remove(FeedStorageHelper.createHashCode(article));
 				return true;
 			}

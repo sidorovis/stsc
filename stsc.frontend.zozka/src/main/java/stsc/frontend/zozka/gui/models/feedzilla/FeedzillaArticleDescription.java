@@ -1,8 +1,6 @@
 package stsc.frontend.zozka.gui.models.feedzilla;
 
-import java.util.Date;
-
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -10,11 +8,11 @@ import javafx.beans.property.StringProperty;
 public class FeedzillaArticleDescription {
 
 	final private int index;
-	final private Date publishDate;
+	final private LocalDateTime publishDate;
 
-	public FeedzillaArticleDescription(final int index, Date publishDate) {
+	public FeedzillaArticleDescription(final int index, LocalDateTime publishDate) {
 		this.index = index;
-		this.publishDate = new DateTime(publishDate).withTimeAtStartOfDay().toDate();
+		this.publishDate = publishDate;
 	}
 
 	public StringProperty dateProperty() {

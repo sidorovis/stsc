@@ -5,6 +5,7 @@ import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.joda.time.DateTime;
 
 /**
  * {@link FeedDataDownloader} is a class that download feed's from FeedZilla and
@@ -33,7 +33,7 @@ final class FeedDataDownloader {
 
 	private static Logger logger = LogManager.getLogger(FeedDataDownloader.class);
 
-	private DateTime dayDownloadFrom;
+	private LocalDateTime dayDownloadFrom;
 	private final int amountOfArticlesPerRequest;
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
@@ -44,21 +44,21 @@ final class FeedDataDownloader {
 	private volatile boolean stopped = false;
 
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
-		this(new DateTime().minusDays(356 * 20), amountOfArticlesPerRequest);
+		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest);
 	}
 
-	FeedDataDownloader(DateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
+	FeedDataDownloader(LocalDateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
 		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
 		this.thread = createThread();
 		thread.start();
 	}
 
-	public void setDaysToDownload(DateTime dayDownloadFrom) {
+	public void setDaysToDownload(LocalDateTime dayDownloadFrom) {
 		this.dayDownloadFrom = dayDownloadFrom;
 	}
 
-	public DateTime getDaysToDownload() {
+	public LocalDateTime getDaysToDownload() {
 		return dayDownloadFrom;
 	}
 
@@ -115,7 +115,7 @@ final class FeedDataDownloader {
 		return result;
 	}
 
-	int getArticles(final Category category, final Subcategory subcategory, final DateTime startOfDay) throws Exception {
+	int getArticles(final Category category, final Subcategory subcategory, final LocalDateTime startOfDay) throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
 		tasks.offer(new Runnable() {

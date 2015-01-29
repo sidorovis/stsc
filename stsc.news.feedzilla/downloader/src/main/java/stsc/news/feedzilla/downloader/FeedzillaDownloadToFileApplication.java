@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
@@ -19,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.joda.time.DateTime;
 
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -58,7 +58,7 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		if (endlessCycle) {
 			daysBackDownloadFrom = 2;
 		}
-		hashStorage.initialReadFeedData(createNextDateTimeElement(daysBackDownloadFrom));
+		hashStorage.readFeedData(DownloadHelper.createDateTimeElement(daysBackDownloadFrom), false);
 	}
 
 	private String readFeedFolderProperty(String propertyFile) throws FileNotFoundException, IOException {
@@ -86,9 +86,9 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	void startEndless() throws FileNotFoundException, IOException {
-		DateTime lastDownloadDate = DateTime.now().minusDays(2).withTimeAtStartOfDay();
+		LocalDateTime lastDownloadDate = LocalDateTime.now().minusDays(2).withHour(0).withMinute(0);
 		while (!downloader.isStopped()) {
-			final DateTime now = DateTime.now();
+			final LocalDateTime now = LocalDateTime.now();
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
 			}
@@ -101,12 +101,12 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 			if (downloader.isStopped()) {
 				break;
 			}
-			downloadIteration(createNextDateTimeElement(i));
+			downloadIteration(DownloadHelper.createDateTimeElement(i));
 		}
 		downloader.stopDownload();
 	}
 
-	private boolean downloadIteration(DateTime downloadFrom) throws FileNotFoundException, IOException {
+	private boolean downloadIteration(LocalDateTime downloadFrom) throws FileNotFoundException, IOException {
 		downloader.setDaysToDownload(downloadFrom);
 		final boolean result = downloader.download();
 		hashStorage.save(downloadFrom);
@@ -137,17 +137,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	private void createFeedzillaArticle(FeedzillaFileSubcategory subcategory, Article from) {
-		final FeedzillaFileArticle result = new FeedzillaFileArticle(0, subcategory, from.getAuthor(), from.getPublishDate().toDate());
+		final FeedzillaFileArticle result = new FeedzillaFileArticle(0, subcategory, from.getAuthor(), from.getPublishDate());
 		result.setSource(from.getSource());
 		result.setSourceUrl(from.getSourceUrl());
 		result.setSummary(from.getSummary());
 		result.setTitle(from.getTitle());
 		result.setUrl(from.getUrl());
 		hashStorage.createFeedzillaArticle(subcategory, result);
-	}
-
-	private static DateTime createNextDateTimeElement(int daysToDownload) {
-		return DateTime.now().minusDays(daysToDownload).withTimeAtStartOfDay();
 	}
 
 	public static void main(String[] args) {

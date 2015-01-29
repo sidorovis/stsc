@@ -4,8 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +31,7 @@ import stsc.frontend.zozka.gui.models.feedzilla.FeedzillaArticleDescription;
 import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
 import stsc.frontend.zozka.settings.ControllerHelper;
 import stsc.news.feedzilla.FeedzillaFileStorage;
+import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 
 public class FeedzillaArticlesPane extends BorderPane {
@@ -52,7 +52,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 	@FXML
 	private TableColumn<FeedzillaArticleDescription, String> dateColumn;
 
-	private final ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane();
+	private final ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane(false);
 
 	public FeedzillaArticlesPane() throws IOException {
 		final Parent gui = initializeGui();
@@ -102,11 +102,11 @@ public class FeedzillaArticlesPane extends BorderPane {
 		final DatePickerDialog pickDate = new DatePickerDialog("Choose Date", owner, LocalDate.of(1990, 1, 1));
 		pickDate.showAndWait();
 		if (pickDate.isOk()) {
-			loadFeedzillaFileStorage(pickDate.getDate());
+			loadFeedzillaFileStorage(pickDate.getDate().atStartOfDay());
 		}
 	}
 
-	private void loadFeedzillaFileStorage(LocalDate localDate) {
+	private void loadFeedzillaFileStorage(LocalDateTime localDate) {
 		progressWithStopPane.show();
 		progressWithStopPane.setIndicatorProgress(0.0);
 		mainPane.setBottom(progressWithStopPane);
@@ -116,21 +116,33 @@ public class FeedzillaArticlesPane extends BorderPane {
 		});
 	}
 
-	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDate localDate) {
-		final FeedzillaFileStorage ffs = new FeedzillaFileStorage(feedFolder, createDate(localDate), true);
-		ffs.addReceiver(new ReceiverToIndicatorProcess(progressWithStopPane));
+	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDateTime localDate) {
+		final FeedzillaHashStorage fhs = new FeedzillaHashStorage(feedFolder);
+		fhs.setReceiver(new ReceiverToIndicatorProcess(progressWithStopPane));
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				downloadData(fhs, localDate);
+			}
+		}).start();
+	}
+
+	private void downloadData(FeedzillaHashStorage fhs, LocalDateTime localDate) {
 		try {
-			ffs.readData();
+			final FeedzillaFileStorage ffs = fhs.readFeedData(localDate, true);
+			final Map<LocalDateTime, List<FeedzillaFileArticle>> data = ffs.getArticlesByDate();
+			int index = 0;
+			for (Entry<LocalDateTime, List<FeedzillaFileArticle>> entry : data.entrySet()) {
+				for (FeedzillaFileArticle article : entry.getValue()) {
+					final int finalIndex = index;
+					Platform.runLater(() -> {
+						model.add(new FeedzillaArticleDescription(finalIndex, article.getPublishDate()));
+					});
+					index += 1;
+				}
+			}
 		} catch (Exception e) {
 			Dialogs.create().owner(owner).showException(e);
-		}
-		final Map<Date, List<FeedzillaFileArticle>> data = ffs.getArticlesByDate();
-		int index = 0;
-		for (Entry<Date, List<FeedzillaFileArticle>> entry : data.entrySet()) {
-			for (FeedzillaFileArticle article : entry.getValue()) {
-				model.add(new FeedzillaArticleDescription(index, entry.getKey()));
-				index += 1;
-			}
 		}
 	}
 
@@ -140,10 +152,6 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 	public BorderPane getMainPane() {
 		return mainPane;
-	}
-
-	private Date createDate(LocalDate date) {
-		return new Date(date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
 	}
 
 	private static class ReceiverToIndicatorProcess implements FeedzillaFileStorage.Receiver {
@@ -164,15 +172,21 @@ public class FeedzillaArticlesPane extends BorderPane {
 		@Override
 		public void processedArticleFile(String articleFileName) {
 			index += 1.0;
-			progressWithStopPane.setIndicatorProgress(index / size);
-			if (Double.compare(index, size) == 0) {
-				progressWithStopPane.hide();
-			}
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					progressWithStopPane.setIndicatorProgress(index / size);
+					if (Double.compare(index, size) == 0) {
+						progressWithStopPane.hide();
+					}
+				}
+			});
 		}
 
 		@Override
 		public boolean addArticle(FeedzillaFileArticle article) {
-			return true;
+			System.out.println(article.getPublishDate().withHour(0).withMinute(0));
+			return false;
 		}
 	}
 }

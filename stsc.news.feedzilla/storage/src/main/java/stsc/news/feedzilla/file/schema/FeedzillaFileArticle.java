@@ -3,6 +3,9 @@ package stsc.news.feedzilla.file.schema;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
@@ -19,7 +22,7 @@ public class FeedzillaFileArticle implements FeedArticle {
 	private FeedzillaFileCategory category;
 	private FeedzillaFileSubcategory subcategory;
 	private String author;
-	private Date publishDate;
+	private LocalDateTime publishDate;
 	private String source;
 	private String sourceUrl;
 	private String summary;
@@ -37,7 +40,7 @@ public class FeedzillaFileArticle implements FeedArticle {
 		}
 		this.category = subcategory.getCategory();
 		this.author = FileProcessHelper.readNullableUTF(dis);
-		this.publishDate = new Date(dis.readLong());
+		this.publishDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(dis.readLong()), ZoneOffset.UTC);
 		this.source = FileProcessHelper.readNullableUTF(dis);
 		this.sourceUrl = FileProcessHelper.readNullableUTF(dis);
 		this.summary = FileProcessHelper.readNullableUTF(dis);
@@ -51,7 +54,7 @@ public class FeedzillaFileArticle implements FeedArticle {
 		stream.writeInt(id);
 		stream.writeInt(subcategory.getId());
 		FileProcessHelper.writeNullableUTF(stream, author);
-		stream.writeLong(publishDate.getTime());
+		stream.writeLong(publishDate.toInstant(ZoneOffset.UTC).toEpochMilli());
 		FileProcessHelper.writeNullableUTF(stream, source);
 		FileProcessHelper.writeNullableUTF(stream, sourceUrl);
 		FileProcessHelper.writeNullableUTF(stream, summary);
@@ -61,7 +64,7 @@ public class FeedzillaFileArticle implements FeedArticle {
 		stream.writeLong(updatedAt.getTime());
 	}
 
-	public FeedzillaFileArticle(int id, FeedzillaFileSubcategory subcategory, String author, Date publishDate) {
+	public FeedzillaFileArticle(int id, FeedzillaFileSubcategory subcategory, String author, LocalDateTime publishDate) {
 		this.id = id;
 		this.category = subcategory.getCategory();
 		this.subcategory = subcategory;
@@ -144,7 +147,7 @@ public class FeedzillaFileArticle implements FeedArticle {
 	}
 
 	@Override
-	public Date getPublishDate() {
+	public LocalDateTime getPublishDate() {
 		return publishDate;
 	}
 

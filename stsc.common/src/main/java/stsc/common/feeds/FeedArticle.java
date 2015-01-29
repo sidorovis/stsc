@@ -1,6 +1,6 @@
 package stsc.common.feeds;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public interface FeedArticle {
 
@@ -20,6 +20,6 @@ public interface FeedArticle {
 
 	public String getUrl();
 
-	public Date getPublishDate();
+	public LocalDateTime getPublishDate();
 
 }

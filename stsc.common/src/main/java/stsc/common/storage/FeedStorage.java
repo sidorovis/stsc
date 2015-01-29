@@ -1,7 +1,7 @@
 package stsc.common.storage;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +19,8 @@ public interface FeedStorage<T extends FeedArticle> {
 
 	public Collection<T> getArticlesById();
 
-	public Map<Date, List<T>> getArticlesByDate();
+	public Map<LocalDateTime, List<T>> getArticlesByDate();
 
-	public List<T> getArticles(Date publishDate);
+	public List<T> getArticles(LocalDateTime publishDate);
 
 }

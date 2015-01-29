@@ -4,6 +4,7 @@ import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,5 +34,9 @@ class DownloadHelper {
 			CallableArticlesDownload.pause(700);
 		}
 		return Collections.emptyList();
+	}
+
+	public static LocalDateTime createDateTimeElement(int daysToDownload) {
+		return LocalDateTime.now().withHour(0).withMinute(0).minusDays(daysToDownload);
 	}
 }

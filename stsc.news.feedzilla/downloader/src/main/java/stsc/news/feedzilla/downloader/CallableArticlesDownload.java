@@ -6,6 +6,7 @@ import graef.feedzillajava.Category;
 import graef.feedzillajava.FeedZilla;
 import graef.feedzillajava.Subcategory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -14,7 +15,6 @@ import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.joda.time.DateTime;
 
 class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
@@ -32,10 +32,10 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	private final Category category;
 	private final Subcategory subcategory;
 	private final int amountOfArticlesPerRequest;
-	private final DateTime startOfDay;
+	private final LocalDateTime startOfDay;
 
 	public CallableArticlesDownload(FeedZilla feed, Category category, Subcategory subcategory, int amountOfArticlesPerRequest,
-			DateTime startOfDay) {
+			LocalDateTime startOfDay) {
 		super();
 		this.feed = feed;
 		this.category = category;

@@ -8,10 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,16 +48,16 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 	public static final String FILE_ARTICLE_EXTENSION = ".article.fz";
 
 	private final String feedFolder;
-	private final Date dateBackDownloadFrom;
+	private final LocalDateTime dateBackDownloadFrom;
 	private final boolean storeFeed;
 	private final List<Receiver> receivers = new ArrayList<>();
 
 	private final Map<Integer, FeedzillaFileCategory> categories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileSubcategory> subcategories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileArticle> articlesById = new ConcurrentHashMap<>();
-	private final Map<Date, List<FeedzillaFileArticle>> articlesByDate = new ConcurrentHashMap<>();
+	private final Map<LocalDateTime, List<FeedzillaFileArticle>> articlesByDate = new ConcurrentHashMap<>();
 
-	public FeedzillaFileStorage(String feedFolder, Date dateBackDownloadFrom, boolean storeFeed) {
+	public FeedzillaFileStorage(String feedFolder, LocalDateTime dateBackDownloadFrom, boolean storeFeed) {
 		this.feedFolder = feedFolder;
 		this.dateBackDownloadFrom = dateBackDownloadFrom;
 		this.storeFeed = storeFeed;
@@ -183,7 +183,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 	}
 
 	private boolean checkArticlePublishDate(FeedzillaFileArticle article) {
-		return dateBackDownloadFrom.before(article.getPublishDate());
+		return dateBackDownloadFrom.isBefore(article.getPublishDate());
 	}
 
 	public static List<String> readFileList(String feedFolder) {
@@ -215,12 +215,12 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 	}
 
 	@Override
-	public Map<Date, List<FeedzillaFileArticle>> getArticlesByDate() {
+	public Map<LocalDateTime, List<FeedzillaFileArticle>> getArticlesByDate() {
 		return articlesByDate;
 	}
 
 	@Override
-	public List<FeedzillaFileArticle> getArticles(Date publishDate) {
+	public List<FeedzillaFileArticle> getArticles(LocalDateTime publishDate) {
 		final List<FeedzillaFileArticle> result = articlesByDate.get(publishDate);
 		if (result == null) {
 			return Collections.emptyList();
