@@ -38,7 +38,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>stsc.news.feedzilla.downloader.FeedzillaDownloadToFileApplication</mainClass>
+							<mainClass>stsc.news.feedzilla.downloader.FeedzillaDownloadApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

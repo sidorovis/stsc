@@ -71,10 +71,6 @@ final class FeedDataDownloader {
 		});
 	}
 
-	public boolean isStopped() {
-		return stopped;
-	}
-
 	void addReceiver(LoadFeedReceiver receiver) {
 		receivers.add(receiver);
 	}

@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,28 +24,29 @@ import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
+final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	private static Logger logger = LogManager.getLogger(FeedzillaDownloadToFileApplication.class);
+	private static Logger logger = LogManager.getLogger(FeedzillaDownloadApplication.class);
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
-	private static FeedzillaDownloadToFileApplication downloadApplication;
 
+	private final BufferedReader bufferedReader;
 	private final String feedFolder;
 	private boolean endlessCycle = false;
 	private int daysBackDownloadFrom = 3650;
 	private final FeedDataDownloader downloader;
 	private final FeedzillaHashStorage hashStorage;
 
-	FeedzillaDownloadToFileApplication() throws SQLException, IOException {
+	FeedzillaDownloadApplication() throws SQLException, IOException {
 		this(DEVELOPER_FILENAME);
 	}
 
-	FeedzillaDownloadToFileApplication(String propertyFile) throws IOException {
+	FeedzillaDownloadApplication(String propertyFile) throws IOException {
+		this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 		this.feedFolder = readFeedFolderProperty(propertyFile);
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
@@ -85,9 +84,12 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		}
 	}
 
-	void startEndless() throws FileNotFoundException, IOException {
+	void startEndless() throws FileNotFoundException, IOException, InterruptedException {
 		LocalDateTime lastDownloadDate = LocalDateTime.now().minusDays(2).withHour(0).withMinute(0);
-		while (!downloader.isStopped()) {
+		while (true) {
+			if (checkReadExitLine()) {
+				break;
+			}
 			final LocalDateTime now = LocalDateTime.now();
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
@@ -98,12 +100,22 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 
 	void startNcycles() throws FileNotFoundException, IOException, InterruptedException {
 		for (int i = daysBackDownloadFrom; i > 1; --i) {
-			if (downloader.isStopped()) {
+			if (checkReadExitLine()) {
 				break;
 			}
 			downloadIteration(DownloadHelper.createDateTimeElement(i));
 		}
-		downloader.stopDownload();
+	}
+
+	private boolean checkReadExitLine() throws InterruptedException, IOException {
+		if (bufferedReader.ready()) {
+			final String s = bufferedReader.readLine();
+			if (s.equals("e")) {
+				downloader.stopDownload();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean downloadIteration(LocalDateTime downloadFrom) throws FileNotFoundException, IOException {
@@ -111,11 +123,6 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 		final boolean result = downloader.download();
 		hashStorage.save(downloadFrom);
 		return result;
-	}
-
-	private void stop() throws InterruptedException {
-		downloader.stopDownload();
-		logger.info("stop message was sent to downloader: " + downloader.isStopped());
 	}
 
 	@Override
@@ -147,58 +154,13 @@ final class FeedzillaDownloadToFileApplication implements LoadFeedReceiver {
 	}
 
 	public static void main(String[] args) {
-		final CountDownLatch waitForStarting = new CountDownLatch(1);
-		final CountDownLatch waitForEnding = new CountDownLatch(1);
 		try {
-			final Thread mainProcessingThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						downloadApplication = new FeedzillaDownloadToFileApplication(DEVELOPER_FILENAME);
-						waitForStarting.countDown();
-						downloadApplication.start();
-					} catch (Exception e) {
-						logger.error("Error on main execution thread", e);
-					}
-					waitForEnding.countDown();
-					logger.info("Execution thread is finished");
-				}
-			});
-			mainProcessingThread.start();
-			waitForStarting.await();
+			final FeedzillaDownloadApplication downloadApplication = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
 			logger.info("Please enter 'e' and press Enter to stop application.");
-			addExitHook(waitForEnding, mainProcessingThread);
-			waitForEnding.await(120, TimeUnit.SECONDS);
-			mainProcessingThread.join();
-			logger.info("mainProcessThread joined and life is now awesome!");
+			downloadApplication.start();
 		} catch (Exception e) {
 			logger.error("Error on main function. ", e);
 		}
 	}
 
-	private static void addExitHook(final CountDownLatch waitForEnding, Thread mainProcessingThread) {
-		try {
-			try {
-				final InputStreamReader fileInputStream = new InputStreamReader(System.in);
-				final BufferedReader bufferedReader = new BufferedReader(fileInputStream);
-
-				while (waitForEnding.getCount() != 0) {
-					if (bufferedReader.ready()) {
-						final String s = bufferedReader.readLine();
-						if (s.equals("e")) {
-							downloadApplication.stop();
-							break;
-						}
-					}
-					CallableArticlesDownload.pause();
-				}
-				bufferedReader.close();
-			} catch (Exception e) {
-				logger.error("Error on exit hook. ", e);
-				downloadApplication.stop();
-			}
-		} catch (Exception e) {
-			logger.error("Error on exit hook with non stop. ", e);
-		}
-	}
 }
