@@ -54,7 +54,9 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 						.count(amountOfArticlesPerRequest).articles();
 				final Optional<List<Article>> result = Optional.of(articles.getArticles());
 				final long endArticlesLoadTime = System.currentTimeMillis();
-				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms " + (result.get().size()));
+				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms "
+						+ (result.get().size()) + " Category(" + category.getDisplayName() + "), Subcategory("
+						+ subcategory.getDisplayName() + ")");
 				return result;
 			} catch (Exception e) {
 				exceptionToReturn = e;
@@ -62,8 +64,8 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 			pause();
 		}
 		final long endArticlesLoadTime = System.currentTimeMillis();
-		callableLogger.trace("no articles and it took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms; "
-				+ exceptionToReturn.getMessage());
+		callableLogger.trace("no articles and it took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms 0 Category("
+				+ category.getDisplayName() + "), Subcategory(" + subcategory.getDisplayName() + ")" + exceptionToReturn.getMessage());
 		return Optional.empty();
 	}
 
