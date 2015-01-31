@@ -54,7 +54,7 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 						.count(amountOfArticlesPerRequest).articles();
 				final Optional<List<Article>> result = Optional.of(articles.getArticles());
 				final long endArticlesLoadTime = System.currentTimeMillis();
-				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms");
+				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms " + (result.get().size()));
 				return result;
 			} catch (Exception e) {
 				exceptionToReturn = e;

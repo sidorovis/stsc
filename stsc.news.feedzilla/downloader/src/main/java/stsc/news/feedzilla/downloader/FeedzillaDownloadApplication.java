@@ -34,7 +34,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	private static Logger logger = LogManager.getLogger(FeedzillaDownloadApplication.class);
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
 
-	private final BufferedReader bufferedReader;
 	private final String feedFolder;
 	private boolean endlessCycle = false;
 	private int daysBackDownloadFrom = 3650;
@@ -46,7 +45,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 	}
 
 	FeedzillaDownloadApplication(String propertyFile) throws IOException {
-		this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 		this.feedFolder = readFeedFolderProperty(propertyFile);
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
@@ -86,10 +84,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	void startEndless() throws FileNotFoundException, IOException, InterruptedException {
 		LocalDateTime lastDownloadDate = LocalDateTime.now().minusDays(2).withHour(0).withMinute(0);
-		while (true) {
-			if (checkReadExitLine()) {
-				break;
-			}
+		while (!downloader.isStopped()) {
 			final LocalDateTime now = LocalDateTime.now();
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
@@ -100,25 +95,13 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	void startNcycles() throws FileNotFoundException, IOException, InterruptedException {
 		for (int i = daysBackDownloadFrom; i > 1; --i) {
-			if (checkReadExitLine()) {
+			if (downloader.isStopped())
 				break;
-			}
 			downloadIteration(DownloadHelper.createDateTimeElement(i));
 		}
 	}
 
-	private boolean checkReadExitLine() throws InterruptedException, IOException {
-		if (bufferedReader.ready()) {
-			final String s = bufferedReader.readLine();
-			if (s.equals("e")) {
-				downloader.stopDownload();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean downloadIteration(LocalDateTime downloadFrom) throws FileNotFoundException, IOException {
+	private boolean downloadIteration(LocalDateTime downloadFrom) throws FileNotFoundException, IOException, InterruptedException {
 		downloader.setDaysToDownload(downloadFrom);
 		final boolean result = downloader.download();
 		hashStorage.save(downloadFrom);
@@ -155,12 +138,42 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	public static void main(String[] args) {
 		try {
-			final FeedzillaDownloadApplication downloadApplication = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
+			final FeedzillaDownloadApplication app = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
 			logger.info("Please enter 'e' and press Enter to stop application.");
-			downloadApplication.start();
+			final Thread waiter = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+					while (!checkReadExitLine(app, bufferedReader)) {
+						CallableArticlesDownload.pause();
+					}
+				}
+			});
+			waiter.start();
+			app.start();
+			waiter.join();
 		} catch (Exception e) {
 			logger.error("Error on main function. ", e);
 		}
+	}
+
+	private static boolean checkReadExitLine(FeedzillaDownloadApplication app, BufferedReader bufferedReader) {
+		try {
+			if (bufferedReader.ready()) {
+				final String s = bufferedReader.readLine();
+				if (s.equals("e")) {
+					app.stop();
+					return true;
+				}
+			}
+		} catch (InterruptedException | IOException e) {
+			logger.debug("checkReadExitLine(...)", e);
+		}
+		return false;
+	}
+
+	private void stop() throws InterruptedException {
+		downloader.stopDownload();
 	}
 
 }

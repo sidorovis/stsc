@@ -37,7 +37,7 @@ final class FeedDataDownloader {
 	private final int amountOfArticlesPerRequest;
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
-	private final FeedZilla feed = new FeedZilla();
+	private FeedZilla feed = new FeedZilla();
 
 	private BlockingQueue<Runnable> tasks = new SynchronousQueue<>();
 	private Thread thread;
@@ -50,7 +50,7 @@ final class FeedDataDownloader {
 	FeedDataDownloader(LocalDateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
 		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
-		this.thread = createThread();
+		this.thread = createThread(tasks);
 		thread.start();
 	}
 
@@ -75,7 +75,7 @@ final class FeedDataDownloader {
 		receivers.add(receiver);
 	}
 
-	public boolean download() {
+	public boolean download() throws InterruptedException {
 		boolean result = true;
 		int amountOfProcessedArticles = 0;
 		final List<Category> categories = DownloadHelper.getCategories(feed, logger);
@@ -142,30 +142,40 @@ final class FeedDataDownloader {
 		return articles.get().size();
 	}
 
-	public void updateExecutor() {
+	public void updateExecutor() throws InterruptedException {
 		thread.interrupt();
-		thread = createThread();
+		feed = new FeedZilla();
+		tasks = new SynchronousQueue<>();
+		thread = createThread(tasks);
 		thread.start();
 	}
 
-	private Thread createThread() {
+	private Thread createThread(final BlockingQueue<Runnable> tasksQueue) {
 		return new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (!stopped) {
+				while (true) {
 					try {
-						final Runnable r = tasks.take();
+						final Runnable r = tasksQueue.take();
 						if (r != null) {
 							r.run();
 						} else {
 							break;
 						}
 					} catch (InterruptedException e) {
+						break;
 					} catch (Exception e) {
 						logger.fatal("Download thread throw an exception: ", e);
+					}
+					if (stopped) {
+						break;
 					}
 				}
 			}
 		});
+	}
+
+	public boolean isStopped() {
+		return stopped;
 	}
 }
