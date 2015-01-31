@@ -11,9 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,9 +36,6 @@ final class FeedDataDownloader {
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
 	private FeedZilla feed = new FeedZilla();
-
-	private BlockingQueue<Runnable> tasks = new SynchronousQueue<>();
-	private Thread thread;
 	private volatile boolean stopped = false;
 
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
@@ -50,8 +45,6 @@ final class FeedDataDownloader {
 	FeedDataDownloader(LocalDateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
 		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
-		this.thread = createThread(tasks);
-		thread.start();
 	}
 
 	public void setDaysToDownload(LocalDateTime dayDownloadFrom) {
@@ -64,11 +57,6 @@ final class FeedDataDownloader {
 
 	public void stopDownload() throws InterruptedException {
 		stopped = true;
-		tasks.offer(new Runnable() {
-			@Override
-			public void run() {
-			}
-		});
 	}
 
 	void addReceiver(LoadFeedReceiver receiver) {
@@ -93,7 +81,6 @@ final class FeedDataDownloader {
 					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom);
 				} catch (Exception e) {
 					logger.error("getArticles returns", e);
-					updateExecutor();
 					result = false;
 				}
 				if (stopped) {
@@ -114,13 +101,14 @@ final class FeedDataDownloader {
 	int getArticles(final Category category, final Subcategory subcategory, final LocalDateTime startOfDay) throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
-		tasks.offer(new Runnable() {
+		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				futureArticles.run();
 			}
 		});
-		final Optional<List<Article>> articles = futureArticles.get(90, TimeUnit.SECONDS);
+		thread.start();
+		final Optional<List<Article>> articles = futureArticles.get(20, TimeUnit.SECONDS);
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;
@@ -140,39 +128,6 @@ final class FeedDataDownloader {
 			}
 		}
 		return articles.get().size();
-	}
-
-	public void updateExecutor() throws InterruptedException {
-		thread.interrupt();
-		feed = new FeedZilla();
-		tasks = new SynchronousQueue<>();
-		thread = createThread(tasks);
-		thread.start();
-	}
-
-	private Thread createThread(final BlockingQueue<Runnable> tasksQueue) {
-		return new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						final Runnable r = tasksQueue.take();
-						if (r != null) {
-							r.run();
-						} else {
-							break;
-						}
-					} catch (InterruptedException e) {
-						break;
-					} catch (Exception e) {
-						logger.fatal("Download thread throw an exception: ", e);
-					}
-					if (stopped) {
-						break;
-					}
-				}
-			}
-		});
 	}
 
 	public boolean isStopped() {

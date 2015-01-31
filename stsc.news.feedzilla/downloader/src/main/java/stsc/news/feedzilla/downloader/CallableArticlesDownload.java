@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -27,6 +28,9 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 
 	public static final int TRIES_COUNT = 7;
 	public static final long PAUSE_SLEEP_TIME = 230;
+
+	private static long timeSum = 0;
+	private static long timeN = 0;
 
 	private final FeedZilla feed;
 	private final Category category;
@@ -54,9 +58,10 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 						.count(amountOfArticlesPerRequest).articles();
 				final Optional<List<Article>> result = Optional.of(articles.getArticles());
 				final long endArticlesLoadTime = System.currentTimeMillis();
-				callableLogger.trace("articles load took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms "
-						+ (result.get().size()) + " Category(" + category.getDisplayName() + "), Subcategory("
-						+ subcategory.getDisplayName() + ")");
+				timeSum += (endArticlesLoadTime - startArticlesLoadTime);
+				timeN += 1;
+				callableLogger.trace("articles load took: " + ljust(timeSum / timeN) + " AvMs " + ljust(result.get().size()) + " "
+						+ ljust(category.getDisplayName()) + " " + ljust(subcategory.getDisplayName()));
 				return result;
 			} catch (Exception e) {
 				exceptionToReturn = e;
@@ -64,9 +69,19 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 			pause();
 		}
 		final long endArticlesLoadTime = System.currentTimeMillis();
-		callableLogger.trace("no articles and it took: " + (endArticlesLoadTime - startArticlesLoadTime) + " ms 0 Category("
-				+ category.getDisplayName() + "), Subcategory(" + subcategory.getDisplayName() + ")" + exceptionToReturn.getMessage());
+		timeSum += (endArticlesLoadTime - startArticlesLoadTime);
+		timeN += 1;
+		callableLogger.trace("no articles and it took: " + ljust(timeSum / timeN) + " AvMs " + ljust(0) + " "
+				+ ljust(category.getDisplayName()) + " " + ljust(subcategory.getDisplayName()) + " | " + exceptionToReturn.getMessage());
 		return Optional.empty();
+	}
+
+	public static String ljust(long v) {
+		return StringUtils.rightPad(String.valueOf(v), 8);
+	}
+
+	public static String ljust(String v) {
+		return StringUtils.rightPad(v, 14);
 	}
 
 	public static void pause() {
