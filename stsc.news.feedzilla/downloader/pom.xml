@@ -4,7 +4,7 @@
 
 	<groupId>stsc</groupId>
 	<artifactId>stsc.news.feedzilla.downloader</artifactId>
-	<version>0.0.13-NEWS</version>
+	<version>0.0.15-SERVICE</version>
 	<packaging>jar</packaging>
 
 	<name>stsc.news.feedzilla.downloader</name>
