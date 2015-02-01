@@ -80,7 +80,7 @@ final class FeedDataDownloader {
 				try {
 					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom);
 				} catch (Exception e) {
-					logger.error("getArticles returns" + e.getMessage());
+					logger.debug("getArticles returns " + e.getClass() + " msg: " + e.getMessage());
 					result = false;
 				}
 				if (stopped) {
