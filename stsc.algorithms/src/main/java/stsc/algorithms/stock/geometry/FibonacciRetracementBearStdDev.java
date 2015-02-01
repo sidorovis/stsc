@@ -15,7 +15,7 @@ import stsc.signals.series.LimitSignalsSerie;
 
 public class FibonacciRetracementBearStdDev extends StockAlgorithm {
 
-	private final static double ratios[] = { 1.0, 0.618034, 0.381966, 0.236068, 0.0 };
+	public final static double ratios[] = { 0.0, 0.236068, 0.381966, 0.618034 };
 
 	private final String subAlgoName;
 
@@ -51,13 +51,13 @@ public class FibonacciRetracementBearStdDev extends StockAlgorithm {
 			addSignal(day.getDate(), new DoubleSignal(Double.MAX_VALUE));
 			return;
 		}
-		final double difference = (lastValue - firstValue);
+		final double difference = firstValue - lastValue;
 		double stdDev = 0.0;
-		for (int i = 1; i < ratios.length - 1; ++i) {
+		for (int i = 1; i < ratios.length; ++i) {
 			final int index = currentIndex - ratios.length + i;
 			final double expectedValue = firstValue - ratios[i] * difference;
 			final double actualValue = getSignal(subAlgoName, index).getSignal(DoubleSignal.class).get().getValue();
-			stdDev += Math.sqrt(actualValue - expectedValue);
+			stdDev += Math.pow(actualValue - expectedValue, 2.0);
 		}
 		addSignal(day.getDate(), new DoubleSignal(stdDev));
 	}
