@@ -47,11 +47,15 @@ public class FibonacciRetracementBullStdDev extends StockAlgorithm {
 		final Optional<DoubleSignal> firstSignal = getSignal(subAlgoName, currentIndex - ratios.length).getSignal(DoubleSignal.class);
 		final double lastValue = lastSignal.get().getValue();
 		final double firstValue = firstSignal.get().getValue();
-		final double corpusculum = (lastValue - firstValue) / 1000000.0;
+		if (lastValue < firstValue) {
+			addSignal(day.getDate(), new DoubleSignal(Double.MAX_VALUE));
+			return;
+		}
+		final double difference = (lastValue - firstValue);
 		double stdDev = 0.0;
 		for (int i = 1; i < ratios.length - 1; ++i) {
-			final int index = currentIndex - (ratios.length + i);
-			final double expectedValue = firstValue + corpusculum * ratios[i];
+			final int index = currentIndex - ratios.length + i;
+			final double expectedValue = firstValue - ratios[i] * difference;
 			final double actualValue = getSignal(subAlgoName, index).getSignal(DoubleSignal.class).get().getValue();
 			stdDev += Math.sqrt(actualValue - expectedValue);
 		}

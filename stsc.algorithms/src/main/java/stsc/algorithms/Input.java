@@ -63,7 +63,8 @@ public class Input extends StockAlgorithm {
 
 	@Override
 	public Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final StockAlgorithmInit init) throws BadAlgorithmException {
-		return Optional.of(new LimitSignalsSerie<SerieSignal>(DoubleSignal.class));
+		final int size = init.getSettings().getIntegerSetting("size", 2).getValue().intValue();
+		return Optional.of(new LimitSignalsSerie<>(DoubleSignal.class, size));
 	}
 
 	@Override
