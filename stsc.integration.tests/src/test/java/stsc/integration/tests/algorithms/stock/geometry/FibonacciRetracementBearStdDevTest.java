@@ -21,11 +21,12 @@ public class FibonacciRetracementBearStdDevTest {
 	@Test
 	public void testFibonacciRetracementBearStdDev() throws Exception {
 		final StockAlgoInitHelper init = new StockAlgoInitHelper("in", "aapl");
-		init.getSettings().setInteger("size", 6);
+		init.getSettings().setInteger("size", 8);
 		final Input in = new Input(init.getInit());
 
 		final StockAlgoInitHelper frInit = new StockAlgoInitHelper("fr", "aapl", init.getStorage());
 		frInit.getSettings().addSubExecutionName("in");
+		frInit.getSettings().setInteger("N", 8);
 		final FibonacciRetracementBearStdDev fr = new FibonacciRetracementBearStdDev(frInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
@@ -41,17 +42,19 @@ public class FibonacciRetracementBearStdDevTest {
 
 			final Optional<DoubleSignal> v = init.getStorage().getStockSignal("aapl", "fr", day.getDate()).getSignal(DoubleSignal.class);
 			Assert.assertTrue(v.isPresent());
-			if (i - aaplIndex >= len) {
-				final double firstP = init.getStorage().getStockSignal("aapl", "in", i - aaplIndex - len).getSignal(DoubleSignal.class)
-						.get().getValue();
+			if (i - aaplIndex >= 8) {
+				final double firstP = init.getStorage().getStockSignal("aapl", "in", i - aaplIndex - 8).getSignal(DoubleSignal.class).get()
+						.getValue();
 				final double lastP = init.getStorage().getStockSignal("aapl", "in", i - aaplIndex).getSignal(DoubleSignal.class).get()
 						.getValue();
 				if (lastP < firstP) {
 					final double diff = firstP - lastP;
 					double stdDev = 0.0;
 					for (int u = 1; u < len; ++u) {
-						final double actualP = init.getStorage().getStockSignal("aapl", "in", i - aaplIndex - len + u)
-								.getSignal(DoubleSignal.class).get().getValue();
+						final int mappedIndex = u * (8 / len);
+						final int index = i - aaplIndex - 8 + mappedIndex;
+						final double actualP = init.getStorage().getStockSignal("aapl", "in", index).getSignal(DoubleSignal.class).get()
+								.getValue();
 						final double expectedP = firstP - FibonacciRetracementBearStdDev.ratios[u] * diff;
 						stdDev += Math.pow(expectedP - actualP, 2.0);
 					}

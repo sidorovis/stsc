@@ -17,11 +17,13 @@ public class FibonacciRetracementBearStdDev extends StockAlgorithm {
 
 	public final static double ratios[] = { 0.0, 0.236068, 0.381966, 0.618034 };
 
+	private final int N;
 	private final String subAlgoName;
 
 	public FibonacciRetracementBearStdDev(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
 		List<String> subExecutionNames = init.getSettings().getSubExecutions();
+		N = init.getSettings().getIntegerSetting("N", 4).getValue();
 		if (subExecutionNames.size() < 1)
 			throw new BadAlgorithmException(FibonacciRetracementBearStdDev.class.toString() + " require one sub parameter");
 		subAlgoName = subExecutionNames.get(0);
@@ -40,11 +42,11 @@ public class FibonacciRetracementBearStdDev extends StockAlgorithm {
 			return;
 		}
 		final int currentIndex = getCurrentIndex();
-		if (currentIndex < ratios.length) {
+		if (currentIndex < N) {
 			addSignal(day.getDate(), new DoubleSignal(Double.MAX_VALUE));
 			return;
 		}
-		final Optional<DoubleSignal> firstSignal = getSignal(subAlgoName, currentIndex - ratios.length).getSignal(DoubleSignal.class);
+		final Optional<DoubleSignal> firstSignal = getSignal(subAlgoName, currentIndex - N).getSignal(DoubleSignal.class);
 		final double lastValue = lastSignal.get().getValue();
 		final double firstValue = firstSignal.get().getValue();
 		if (lastValue > firstValue) {
@@ -54,7 +56,8 @@ public class FibonacciRetracementBearStdDev extends StockAlgorithm {
 		final double difference = firstValue - lastValue;
 		double stdDev = 0.0;
 		for (int i = 1; i < ratios.length; ++i) {
-			final int index = currentIndex - ratios.length + i;
+			final int mappedIndex = i * (N / ratios.length);
+			final int index = currentIndex - N + mappedIndex;
 			final double expectedValue = firstValue - ratios[i] * difference;
 			final double actualValue = getSignal(subAlgoName, index).getSignal(DoubleSignal.class).get().getValue();
 			stdDev += Math.pow(actualValue - expectedValue, 2.0);

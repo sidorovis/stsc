@@ -27,6 +27,7 @@ public class FibonacciRetracementBullStdDevTest {
 
 		final StockAlgoInitHelper frInit = new StockAlgoInitHelper("fr", "aapl", init.getStorage());
 		frInit.getSettings().addSubExecutionName("in");
+		frInit.getSettings().setInteger("N", 4);
 		final FibonacciRetracementBullStdDev fr = new FibonacciRetracementBullStdDev(frInit.getInit());
 
 		final Stock aapl = UnitedFormatStock.readFromUniteFormatFile("./test_data/aapl.uf");
