@@ -26,3 +26,4 @@ Also code include examples of application with different search algorithms and p
 
 ##### Please feel free to read some information about [modules list](https://github.com/sidorovis/stsc/wiki/Modules-List)
 
+##### Some information about working Stsc available at: [Stsc As Service](https://github.com/sidorovis/stsc/wiki/StscAsService)
