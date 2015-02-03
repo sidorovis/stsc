@@ -18,7 +18,7 @@ public class FeedzillaCleaner {
 	private FeedzillaCleaner() throws FileNotFoundException, IOException {
 		readProperties();
 		final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
-		final FeedzillaFileStorage storage = hashStorage.readFeedDataAndStore(LocalDateTime.of(1990, 0, 0, 0, 0));
+		final FeedzillaFileStorage storage = hashStorage.readFeedDataAndStore(LocalDateTime.of(1990, 1, 1, 0, 0));
 		storeData(storage, hashStorage);
 	}
 
