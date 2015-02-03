@@ -119,7 +119,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		}
 	}
 
-	public static void saveArticles(String feedFolder, List<FeedzillaFileArticle> articles) throws FileNotFoundException, IOException {
+	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles) throws FileNotFoundException, IOException {
 		final String timestamp = "a_" + String.valueOf(System.nanoTime());
 		try (DataOutputStream f = new DataOutputStream(new FileOutputStream(feedFolder + "/" + timestamp + FILE_ARTICLE_EXTENSION))) {
 			f.writeLong(articles.size());
@@ -179,7 +179,6 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 				articlesByDate.put(article.getPublishDate(), newList);
 			}
 		}
-
 	}
 
 	private boolean checkArticlePublishDate(FeedzillaFileArticle article) {

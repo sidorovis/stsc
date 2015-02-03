@@ -106,40 +106,43 @@ public class FeedzillaArticlesPane extends BorderPane {
 		}
 	}
 
-	private void loadFeedzillaFileStorage(LocalDateTime localDate) {
+	private void loadFeedzillaFileStorage(LocalDateTime dateDownloadFrom) {
 		progressWithStopPane.show();
 		progressWithStopPane.setIndicatorProgress(0.0);
 		mainPane.setBottom(progressWithStopPane);
 		final String feedFolder = datafeedLabel.getText();
 		Platform.runLater(() -> {
-			loadFeedzillaDataFromFileStorage(feedFolder, localDate);
+			loadFeedzillaDataFromFileStorage(feedFolder, dateDownloadFrom);
 		});
 	}
 
-	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDateTime localDate) {
-		final FeedzillaHashStorage fhs = new FeedzillaHashStorage(feedFolder);
-		fhs.setReceiver(new ReceiverToIndicatorProcess(progressWithStopPane));
+	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDateTime dateDownloadFrom) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				downloadData(fhs, localDate);
+				downloadData(feedFolder, dateDownloadFrom);
 			}
 		}).start();
 	}
 
-	private void downloadData(FeedzillaHashStorage fhs, LocalDateTime localDate) {
+	private void downloadData(String feedFolder, LocalDateTime dateDownloadFrom) {
 		try {
-			final FeedzillaFileStorage ffs = fhs.readFeedData(localDate, true);
-			final Map<LocalDateTime, List<FeedzillaFileArticle>> data = ffs.getArticlesByDate();
+			final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
+//			hashStorage.setReceiver(new ReceiverToIndicatorProcess(progressWithStopPane));
+			final FeedzillaFileStorage storage = hashStorage.readFeedDataAndStore(dateDownloadFrom);
+			final Map<LocalDateTime, List<FeedzillaFileArticle>> data = storage.getArticlesByDate();
+			System.out.println(":: " + data.size());
 			int index = 0;
 			for (Entry<LocalDateTime, List<FeedzillaFileArticle>> entry : data.entrySet()) {
-				for (FeedzillaFileArticle article : entry.getValue()) {
-					final int finalIndex = index;
-					Platform.runLater(() -> {
-						model.add(new FeedzillaArticleDescription(finalIndex, article.getPublishDate()));
-					});
-					index += 1;
-				}
+				System.out.println(":::: " + entry.getValue() + " = " + entry.getValue().size());
+				// for (FeedzillaFileArticle article : entry.getValue()) {
+				// final int finalIndex = index;
+				// // Platform.runLater(() -> {
+				// // model.add(new FeedzillaArticleDescription(finalIndex,
+				// article.getPublishDate()));
+				// // });
+				// index += 1;
+				// }
 			}
 		} catch (Exception e) {
 			Dialogs.create().owner(owner).showException(e);
@@ -185,8 +188,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 		@Override
 		public boolean addArticle(FeedzillaFileArticle article) {
-			System.out.println(article.getPublishDate().withHour(0).withMinute(0));
-			return false;
+			return true;
 		}
 	}
 }

@@ -177,6 +177,14 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		}
 	}
 
+	public Map<String, FeedzillaFileCategory> getHashCategories() {
+		return hashCategories;
+	}
+
+	public Map<String, FeedzillaFileSubcategory> getHashSubcategories() {
+		return hashSubcategories;
+	}
+
 	@Override
 	public boolean addArticle(FeedzillaFileArticle article) {
 		final String hashCode = FeedStorageHelper.createHashCode(article);
