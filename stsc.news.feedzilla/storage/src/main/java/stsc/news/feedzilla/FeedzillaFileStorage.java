@@ -1,6 +1,7 @@
 package stsc.news.feedzilla;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -54,8 +56,8 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 
 	private final Map<Integer, FeedzillaFileCategory> categories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileSubcategory> subcategories = new ConcurrentHashMap<>();
-	private final Map<Integer, FeedzillaFileArticle> articlesById = new ConcurrentHashMap<>();
-	private final Map<LocalDateTime, List<FeedzillaFileArticle>> articlesByDate = new ConcurrentHashMap<>();
+	private final List<FeedzillaFileArticle> articles = Collections.synchronizedList(new ArrayList<>());
+	private final Map<LocalDateTime, List<FeedzillaFileArticle>> articlesByDate = Collections.synchronizedMap(new TreeMap<>());
 
 	public FeedzillaFileStorage(String feedFolder, LocalDateTime dateBackDownloadFrom, boolean storeFeed) {
 		this.feedFolder = feedFolder;
@@ -121,7 +123,13 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 
 	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles) throws FileNotFoundException, IOException {
 		final String timestamp = "a_" + String.valueOf(System.nanoTime());
-		try (DataOutputStream f = new DataOutputStream(new FileOutputStream(feedFolder + "/" + timestamp + FILE_ARTICLE_EXTENSION))) {
+		saveArticles(feedFolder, articles, timestamp);
+	}
+
+	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles, String namePostfix)
+			throws FileNotFoundException, IOException {
+		try (DataOutputStream f = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(feedFolder + "/" + namePostfix
+				+ FILE_ARTICLE_EXTENSION)))) {
 			f.writeLong(articles.size());
 			for (FeedzillaFileArticle a : articles) {
 				a.saveTo(f);
@@ -149,8 +157,10 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 	private void readArticleAndProcess(DataInputStream f, String articleName, long sizeOfArticles) throws IOException {
 		logger.info("We are going to load: " + articleName + "(" + sizeOfArticles + ")");
 		int realLoadedArticles = 0;
+		int newArticleId = 0;
 		for (long i = 0; i < sizeOfArticles; ++i) {
 			final FeedzillaFileArticle article = new FeedzillaFileArticle(f, subcategories);
+			article.setId(newArticleId++);
 			if (checkArticlePublishDate(article)) {
 				boolean addArticle = false;
 				for (Receiver r : receivers) {
@@ -169,7 +179,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 
 	private void storeFeed(final FeedzillaFileArticle article) {
 		if (storeFeed) {
-			articlesById.put(article.getId(), article);
+			articles.add(article);
 			final List<FeedzillaFileArticle> list = articlesByDate.get(article.getPublishDate());
 			if (list != null) {
 				list.add(article);
@@ -210,7 +220,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 
 	@Override
 	public Collection<FeedzillaFileArticle> getArticlesById() {
-		return articlesById.values();
+		return articles;
 	}
 
 	@Override
