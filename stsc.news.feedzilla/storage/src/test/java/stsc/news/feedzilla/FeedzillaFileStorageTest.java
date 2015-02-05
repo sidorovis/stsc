@@ -87,7 +87,7 @@ public class FeedzillaFileStorageTest {
 
 	@Test
 	public void testFeedzillaFileStorageLoadTest() throws FileNotFoundException, IOException {
-		final String feedFolder = "./../test_data/";
+		final String feedFolder = "./../test_data/feed_data";
 		final FileStorageReceiver r = new FileStorageReceiver();
 		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, LocalDateTime.now().minusDays(3650), true);
 		storage.addReceiver(r);
@@ -95,6 +95,6 @@ public class FeedzillaFileStorageTest {
 		Assert.assertNotNull(storage);
 		Assert.assertEquals(36, storage.getCategories().size());
 		Assert.assertEquals(600, storage.getSubcategories().size());
-		Assert.assertEquals(769, storage.getArticlesById().size());
+		Assert.assertEquals(1336, storage.getArticlesById().size());
 	}
 }
