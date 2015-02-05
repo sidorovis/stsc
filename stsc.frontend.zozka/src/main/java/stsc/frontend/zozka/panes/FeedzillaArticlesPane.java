@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 import javafx.application.Platform;
@@ -13,26 +14,30 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import org.controlsfx.dialog.Dialogs;
 
 import stsc.frontend.zozka.dialogs.DatePickerDialog;
 import stsc.frontend.zozka.gui.models.feedzilla.FeedzillaArticleDescription;
-import stsc.frontend.zozka.panes.internal.ProgressWithStopPane;
 import stsc.frontend.zozka.settings.ControllerHelper;
-import stsc.news.feedzilla.FeedzillaFileStorage;
+import stsc.news.feedzilla.FeedzillaFileStorage.Receiver;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 
-public class FeedzillaArticlesPane extends BorderPane {
+public class FeedzillaArticlesPane extends BorderPane implements Receiver {
+
+	private final static int ARTICLES_PER_PAGE = 100;
 
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -44,25 +49,50 @@ public class FeedzillaArticlesPane extends BorderPane {
 	@FXML
 	private Label datafeedLabel;
 
-	private ObservableList<FeedzillaArticleDescription> model = FXCollections.observableArrayList();
+	private List<ObservableList<FeedzillaArticleDescription>> pagedModels = new ArrayList<>();
+
 	@FXML
 	private TableView<FeedzillaArticleDescription> newsTable;
 	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> authorColumn;
+	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> titleColumn;
+	@FXML
 	private TableColumn<FeedzillaArticleDescription, String> dateColumn;
 
-	private final ProgressWithStopPane progressWithStopPane = new ProgressWithStopPane(false);
+	@FXML
+	private Pagination pagination;
 
 	public FeedzillaArticlesPane() throws IOException {
 		final Parent gui = initializeGui();
 		validateGui();
 		setUpTable();
+		setUpPaginator();
 		mainPane.setCenter(gui);
-		mainPane.setBottom(null);
+		newsTable.setVisible(false);
+		// mainPane.setBottom(null);
 	}
 
 	private void setUpTable() {
-		newsTable.setItems(model);
+		pagedModels.add(FXCollections.observableArrayList());
+		newsTable.setItems(pagedModels.get(0));
+		authorColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("author"));
+		titleColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("title"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("date"));
+	}
+
+	private void setUpPaginator() {
+		pagination.setPageCount(1);
+
+		pagination.setPageFactory(new Callback<Integer, Node>() {
+			@Override
+			public Node call(Integer param) {
+				if (param > 0) {
+					newsTable.setItems(pagedModels.get(param - 1));
+				}
+				return new BorderPane(newsTable);
+			}
+		});
 	}
 
 	private Parent initializeGui() throws IOException {
@@ -77,6 +107,7 @@ public class FeedzillaArticlesPane extends BorderPane {
 		assert newsTable != null : "fx:id=\"newsTable\" was not injected: check your FXML file.";
 		assert dateColumn != null : "fx:id=\"dateColumn\" was not injected: check your FXML file.";
 		assert datafeedLabel != null : "fx:id=\"datafeedLabel\" was not injected: check your FXML file.";
+		assert pagination != null : "fx:id=\"pagination\" was not injected: check your FXML file.";
 	}
 
 	@FXML
@@ -105,9 +136,6 @@ public class FeedzillaArticlesPane extends BorderPane {
 	}
 
 	private void loadFeedzillaFileStorage(LocalDateTime dateDownloadFrom) {
-		progressWithStopPane.show();
-		progressWithStopPane.setIndicatorProgress(0.0);
-		mainPane.setBottom(progressWithStopPane);
 		final String feedFolder = datafeedLabel.getText();
 		Platform.runLater(() -> {
 			loadFeedzillaDataFromFileStorage(feedFolder, dateDownloadFrom);
@@ -115,10 +143,17 @@ public class FeedzillaArticlesPane extends BorderPane {
 	}
 
 	private void loadFeedzillaDataFromFileStorage(String feedFolder, LocalDateTime dateDownloadFrom) {
+		pagination.setPageCount(1);
+		pagedModels.clear();
+		pagedModels.add(FXCollections.observableArrayList());
+		newsTable.setItems(pagedModels.get(0));
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				downloadData(feedFolder, dateDownloadFrom);
+				Platform.runLater(() -> {
+					newsTable.setVisible(true);
+				});
 			}
 		}).start();
 	}
@@ -126,31 +161,12 @@ public class FeedzillaArticlesPane extends BorderPane {
 	private void downloadData(String feedFolder, LocalDateTime dateDownloadFrom) {
 		try {
 			final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
-			// hashStorage.setReceiver(new
-			// ReceiverToIndicatorProcess(progressWithStopPane));
-			final FeedzillaFileStorage storage = hashStorage.readFeedDataAndStore(dateDownloadFrom);
-			// final Collection<>
-			final Collection<FeedzillaFileArticle> articles = storage.getArticlesById();
-			System.out.println("Articles size: " + articles.size());
-			// final Map<LocalDateTime, List<FeedzillaFileArticle>> data =
-			// storage.getArticlesByDate();
-			// System.out.println(":: " + data.size());
-			// int index = 0;
-			// for (Entry<LocalDateTime, List<FeedzillaFileArticle>> entry :
-			// data.entrySet()) {
-			// System.out.println(":::: " + entry.getValue() + " = " +
-			// entry.getValue().size());
-			// // for (FeedzillaFileArticle article : entry.getValue()) {
-			// // final int finalIndex = index;
-			// // // Platform.runLater(() -> {
-			// // // model.add(new FeedzillaArticleDescription(finalIndex,
-			// // article.getPublishDate()));
-			// // // });
-			// // index += 1;
-			// // }
-			// }
+			hashStorage.addReceiver(this);
+			hashStorage.readFeedDataAndStore(dateDownloadFrom);
 		} catch (Exception e) {
-			Dialogs.create().owner(owner).showException(e);
+			Platform.runLater(() -> {
+				Dialogs.create().owner(owner).showException(e);
+			});
 		}
 	}
 
@@ -160,6 +176,27 @@ public class FeedzillaArticlesPane extends BorderPane {
 
 	public BorderPane getMainPane() {
 		return mainPane;
+	}
+
+	@Override
+	public void allArticleFilesSize(int allArticlesFilesCount) {
+	}
+
+	@Override
+	public void processedArticleFile(String articleFileName) {
+	}
+
+	@Override
+	public boolean addArticle(FeedzillaFileArticle article) {
+		final int modelIndex = pagedModels.size() - 1;
+		ObservableList<FeedzillaArticleDescription> currentPagedModel = pagedModels.get(modelIndex);
+		if (currentPagedModel.size() == ARTICLES_PER_PAGE) {
+			currentPagedModel = FXCollections.observableArrayList();
+			pagedModels.add(currentPagedModel);
+			Platform.runLater(() -> pagination.setPageCount(pagedModels.size()));
+		}
+		currentPagedModel.add(new FeedzillaArticleDescription(article.getAuthor(), article.getTitle(), article.getPublishDate()));
+		return false;
 	}
 
 }

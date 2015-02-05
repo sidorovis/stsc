@@ -9,9 +9,14 @@
       <Label fx:id="datafeedLabel" maxWidth="1.7976931348623157E308" minWidth="-Infinity" onMouseClicked="#datafeedClicked" prefHeight="21.0" prefWidth="670.0" text="./test_data/" BorderPane.alignment="CENTER" />
    </top>
    <center>
+      <Pagination fx:id="pagination" prefHeight="31.0" prefWidth="670.0" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
       <TableView fx:id="newsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
          <columns>
-            <TableColumn fx:id="dateColumn" maxWidth="1.7976931348623157E308" minWidth="400.0" prefWidth="-1.0" text="Date" />
+            <TableColumn fx:id="authorColumn" prefWidth="163.0" text="Author" />
+            <TableColumn fx:id="titleColumn" prefWidth="376.0" text="Title" />
+            <TableColumn fx:id="dateColumn" maxWidth="1.7976931348623157E308" minWidth="65.0" prefWidth="130.0" text="Date" />
          </columns></TableView>
-   </center>
+   </bottom>
 </BorderPane>

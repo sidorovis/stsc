@@ -7,15 +7,25 @@ import javafx.beans.property.StringProperty;
 
 public class FeedzillaArticleDescription {
 
-	final private int index;
+	final private String author;
+	final private String title;
 	final private LocalDateTime publishDate;
 
-	public FeedzillaArticleDescription(final int index, LocalDateTime publishDate) {
-		this.index = index;
+	public FeedzillaArticleDescription(final String author, final String title, LocalDateTime publishDate) {
+		this.author = (author == null ? "" : author);
+		this.title = (title == null ? "" : title);
 		this.publishDate = publishDate;
 	}
 
 	public StringProperty dateProperty() {
-		return new SimpleStringProperty("" + index + " " + publishDate);
+		return new SimpleStringProperty("" + publishDate);
+	}
+
+	public StringProperty authorProperty() {
+		return new SimpleStringProperty(author);
+	}
+
+	public StringProperty titleProperty() {
+		return new SimpleStringProperty(title);
 	}
 }

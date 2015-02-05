@@ -33,7 +33,6 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 	private static Logger logger = LogManager.getLogger(FeedzillaHashStorage.class);
 
 	private final String feedFolder;
-	private Receiver receiver;
 
 	private Map<String, FeedzillaFileCategory> hashCategories = Collections.synchronizedMap(new HashMap<>());
 	private Map<String, FeedzillaFileSubcategory> hashSubcategories = Collections.synchronizedMap(new HashMap<>());
@@ -44,13 +43,15 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 	private int lastStoredArticlesAmount = 0;
 	private List<FeedzillaFileArticle> newArticles = Collections.synchronizedList(new ArrayList<>());
 
+	private List<Receiver> receivers = new ArrayList<>();
+
 	public FeedzillaHashStorage(String feedFolder) {
 		this.feedFolder = feedFolder;
-		this.receiver = this;
+		receivers.add(this);
 	}
 
-	public void setReceiver(Receiver receiver) {
-		this.receiver = receiver;
+	public void addReceiver(Receiver receiver) {
+		receivers.add(receiver);
 	}
 
 	public FeedzillaFileStorage readFeedDataAndStore(LocalDateTime dateDownloadFrom) throws FileNotFoundException, IOException {
@@ -60,7 +61,9 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 	public FeedzillaFileStorage readFeedData(LocalDateTime dateDownloadFrom, boolean storeData) throws FileNotFoundException, IOException {
 		logger.info("Start to create hashcode for database");
 		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom, storeData);
-		storage.addReceiver(receiver);
+		for (Receiver r : receivers) {
+			storage.addReceiver(r);
+		}
 		storage.readData();
 		for (FeedzillaFileCategory c : storage.getCategories()) {
 			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
