@@ -24,6 +24,10 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
  */
 final class FeedDataDownloader {
 
+	private final static double MIN_MULTIPLIER = 1.0;
+	private final static double MAX_MULTIPLIER = 4.0;
+	private final static double STEP_MULTIPLIER = 1.5;
+
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -33,18 +37,26 @@ final class FeedDataDownloader {
 
 	private LocalDateTime dayDownloadFrom;
 	private final int amountOfArticlesPerRequest;
+	private final int articlesWaitTime;
 	private List<LoadFeedReceiver> receivers = Collections.synchronizedList(new ArrayList<LoadFeedReceiver>());
 
 	private FeedZilla feed = new FeedZilla();
 	private volatile boolean stopped = false;
 
+	private double multiplier = MIN_MULTIPLIER;
+
 	FeedDataDownloader(int amountOfArticlesPerRequest) {
-		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest);
+		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest, 20);
 	}
 
-	FeedDataDownloader(LocalDateTime dayDownloadFrom, int amountOfArticlesPerRequest) {
+	FeedDataDownloader(int amountOfArticlesPerRequest, int articlesWaitTime) {
+		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest, articlesWaitTime);
+	}
+
+	FeedDataDownloader(LocalDateTime dayDownloadFrom, int amountOfArticlesPerRequest, int articlesWaitTime) {
 		this.dayDownloadFrom = dayDownloadFrom;
 		this.amountOfArticlesPerRequest = amountOfArticlesPerRequest;
+		this.articlesWaitTime = articlesWaitTime;
 	}
 
 	public void setDaysToDownload(LocalDateTime dayDownloadFrom) {
@@ -78,10 +90,13 @@ final class FeedDataDownloader {
 			}
 			for (Subcategory subcategory : subcategories) {
 				try {
-					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom);
+					amountOfProcessedArticles += getArticles(category, subcategory, dayDownloadFrom, multiplier);
 				} catch (Exception e) {
-					logger.debug("getArticles returns " + e.getClass() + " msg: " + e.getMessage());
+					logger.error("getArticles returns " + e.getClass() + " msg: " + e.getMessage() + " for " + subcategory.getDisplayName());
 					result = false;
+					if (multiplier < MAX_MULTIPLIER) {
+						multiplier *= STEP_MULTIPLIER;
+					}
 				}
 				if (stopped) {
 					break;
@@ -89,6 +104,11 @@ final class FeedDataDownloader {
 			}
 			if (stopped) {
 				break;
+			}
+			if (result) { // there were no errors
+				if (multiplier > MIN_MULTIPLIER) {
+					multiplier = 1.0 / STEP_MULTIPLIER;
+				}
 			}
 			final long endTime = System.currentTimeMillis();
 			logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles + " articles. For day "
@@ -98,7 +118,8 @@ final class FeedDataDownloader {
 		return result;
 	}
 
-	int getArticles(final Category category, final Subcategory subcategory, final LocalDateTime startOfDay) throws Exception {
+	int getArticles(final Category category, final Subcategory subcategory, final LocalDateTime startOfDay, final double multiplyer)
+			throws Exception {
 		final FutureTask<Optional<List<Article>>> futureArticles = new FutureTask<>(new CallableArticlesDownload(feed, category,
 				subcategory, amountOfArticlesPerRequest, startOfDay));
 		final Thread thread = new Thread(new Runnable() {
@@ -108,7 +129,7 @@ final class FeedDataDownloader {
 			}
 		});
 		thread.start();
-		final Optional<List<Article>> articles = futureArticles.get(20, TimeUnit.SECONDS);
+		final Optional<List<Article>> articles = futureArticles.get((long) (articlesWaitTime * multiplyer), TimeUnit.SECONDS);
 		if (!articles.isPresent() || stopped)
 			return 0;
 		int articlesCount = 0;

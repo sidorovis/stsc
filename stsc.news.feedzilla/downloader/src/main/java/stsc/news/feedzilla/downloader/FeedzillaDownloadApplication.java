@@ -36,6 +36,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 
 	private final String feedFolder;
 	private boolean endlessCycle = false;
+	private int articlesWaitTime = 20;
 	private int daysBackDownloadFrom = 3650;
 	private final FeedDataDownloader downloader;
 	private final FeedzillaHashStorage hashStorage;
@@ -49,7 +50,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		if (feedFolder == null) {
 			throw new IOException("There is no setting 'feed.folder' at property file: " + propertyFile);
 		}
-		this.downloader = new FeedDataDownloader(100);
+		this.downloader = new FeedDataDownloader(100, articlesWaitTime);
 		this.hashStorage = new FeedzillaHashStorage(feedFolder);
 		downloader.addReceiver(this);
 		if (endlessCycle) {
@@ -62,14 +63,9 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		try (DataInputStream inputStream = new DataInputStream(new FileInputStream("./config/" + propertyFile))) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
-			final String daysBackDownloadFrom = properties.getProperty("days.back.download.from");
-			if (daysBackDownloadFrom != null) {
-				this.daysBackDownloadFrom = Integer.valueOf(daysBackDownloadFrom);
-			}
-			final String endlessCycle = properties.getProperty("endless.cycle");
-			if (endlessCycle != null) {
-				this.endlessCycle = Boolean.valueOf(endlessCycle);
-			}
+			this.daysBackDownloadFrom = Integer.valueOf((String) properties.getOrDefault("days.back.download.from", "2"));
+			this.endlessCycle = Boolean.valueOf((String) properties.getOrDefault("endless.cycle", "false"));
+			this.articlesWaitTime = Integer.valueOf((String) properties.getOrDefault("articles.wait.time", "20"));
 			return properties.getProperty("feed.folder");
 		}
 	}

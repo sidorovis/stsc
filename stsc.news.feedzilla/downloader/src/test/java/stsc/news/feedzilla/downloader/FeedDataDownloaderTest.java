@@ -32,10 +32,10 @@ public class FeedDataDownloaderTest {
 		final Category category = DownloadHelper.getCategories(feed, logger).get(0);
 		final Subcategory subcategory = DownloadHelper.getSubcategories(feed, category, logger).get(0);
 		final ReceiverTestHelper receiver = new ReceiverTestHelper();
-		final FeedDataDownloader downloader = new FeedDataDownloader(LocalDateTime.now().minusDays(10), 1);
+		final FeedDataDownloader downloader = new FeedDataDownloader(LocalDateTime.now().minusDays(10), 1, 20);
 		downloader.addReceiver(receiver);
 
-		final int articles = downloader.getArticles(category, subcategory, startOfDay);
+		final int articles = downloader.getArticles(category, subcategory, startOfDay, 1);
 		Assert.assertEquals(1, articles);
 		Assert.assertEquals(1, receiver.sum);
 	}
