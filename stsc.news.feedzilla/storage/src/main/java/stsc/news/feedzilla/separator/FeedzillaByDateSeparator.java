@@ -1,4 +1,4 @@
-package stsc.news.feedzilla.cleaner;
+package stsc.news.feedzilla.separator;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -22,7 +22,7 @@ public class FeedzillaByDateSeparator {
 	private String feedFolder = "./feed_data";
 	private String byDateFeedFolder = "./feed_data_by_date";
 
-	private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
+	private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM");
 
 	private FeedzillaByDateSeparator() throws FileNotFoundException, IOException {
 		readProperties();
@@ -45,9 +45,9 @@ public class FeedzillaByDateSeparator {
 		FeedzillaFileStorage.saveSubcategories(byDateFeedFolder, hashStorage.getHashSubcategories());
 		final Map<LocalDateTime, List<FeedzillaFileArticle>> articles = storage.getArticlesByDate();
 		final List<FeedzillaFileArticle> articlesToSwap = new ArrayList<FeedzillaFileArticle>();
-		LocalDate swappingDate = LocalDate.now();
+		LocalDate swappingDate = LocalDate.now().withDayOfMonth(1);
 		for (Entry<LocalDateTime, List<FeedzillaFileArticle>> v : articles.entrySet()) {
-			final LocalDate keyDate = v.getKey().toLocalDate();
+			final LocalDate keyDate = v.getKey().toLocalDate().withDayOfMonth(1);
 			if (!keyDate.equals(swappingDate)) {
 				storeArticles(articlesToSwap, swappingDate);
 				swappingDate = keyDate;
