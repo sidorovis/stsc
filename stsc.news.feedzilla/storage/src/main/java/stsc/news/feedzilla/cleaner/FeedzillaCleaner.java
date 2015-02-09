@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
+import stsc.news.feedzilla.FeedzillaFileSaver;
 import stsc.news.feedzilla.FeedzillaFileStorage;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 
@@ -32,9 +33,9 @@ public class FeedzillaCleaner {
 	}
 
 	private void storeData(FeedzillaFileStorage storage, FeedzillaHashStorage hashStorage) throws FileNotFoundException, IOException {
-		FeedzillaFileStorage.saveCategories(cleanedFeedFolder, hashStorage.getHashCategories());
-		FeedzillaFileStorage.saveSubcategories(cleanedFeedFolder, hashStorage.getHashSubcategories());
-		FeedzillaFileStorage.saveArticles(cleanedFeedFolder, storage.getArticlesById());
+		FeedzillaFileSaver.saveCategories(cleanedFeedFolder, hashStorage.getHashCategories());
+		FeedzillaFileSaver.saveSubcategories(cleanedFeedFolder, hashStorage.getHashSubcategories());
+		FeedzillaFileSaver.saveArticles(cleanedFeedFolder, storage.getArticlesById());
 	}
 
 	public static void main(String[] args) {

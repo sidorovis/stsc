@@ -1,13 +1,10 @@
 package stsc.news.feedzilla;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,23 +32,12 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	public static interface Receiver {
-		public void allArticleFilesSize(int allArticlesFilesCount);
-
-		public void processedArticleFile(String articleFileName);
-
-		public boolean addArticle(FeedzillaFileArticle article);
-	}
-
 	private static Logger logger = LogManager.getLogger(FeedzillaFileStorage.class);
-
-	public static final String FILE_EXTENSION = ".fz";
-	public static final String FILE_ARTICLE_EXTENSION = ".article.fz";
 
 	private final String feedFolder;
 	private final LocalDateTime dateBackDownloadFrom;
 	private final boolean storeFeed;
-	private final List<Receiver> receivers = new ArrayList<>();
+	private final List<FeedzillaFileStorageReceiver> receivers = new ArrayList<>();
 
 	private final Map<Integer, FeedzillaFileCategory> categories = new ConcurrentHashMap<>();
 	private final Map<Integer, FeedzillaFileSubcategory> subcategories = new ConcurrentHashMap<>();
@@ -65,7 +50,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		this.storeFeed = storeFeed;
 	}
 
-	public void addReceiver(Receiver r) {
+	public void addReceiver(FeedzillaFileStorageReceiver r) {
 		receivers.add(r);
 	}
 
@@ -75,20 +60,11 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		readArticles();
 	}
 
-	public static void saveCategories(String feedFolder, Map<String, FeedzillaFileCategory> categories) throws FileNotFoundException,
-			IOException {
-		try (DataOutputStream f = new DataOutputStream(new FileOutputStream(feedFolder + "/" + "_categories" + FILE_EXTENSION))) {
-			f.writeLong(categories.size());
-			for (Entry<String, FeedzillaFileCategory> c : categories.entrySet()) {
-				c.getValue().saveTo(f);
-			}
-		}
-	}
-
 	private void readCategories() throws FileNotFoundException, IOException {
-		final File file = new File(feedFolder + "/" + "_categories" + FILE_EXTENSION);
+		final File file = new File(feedFolder + "/" + "_categories" + FeedzillaFileSaver.FILE_EXTENSION);
 		if (file.exists()) {
-			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_categories" + FILE_EXTENSION))) {
+			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_categories"
+					+ FeedzillaFileSaver.FILE_EXTENSION))) {
 				final long sizeOfCategories = f.readLong();
 				for (long i = 0; i < sizeOfCategories; ++i) {
 					final FeedzillaFileCategory category = new FeedzillaFileCategory(f);
@@ -98,20 +74,11 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		}
 	}
 
-	public static void saveSubcategories(String feedFolder, Map<String, FeedzillaFileSubcategory> subcategories)
-			throws FileNotFoundException, IOException {
-		try (DataOutputStream f = new DataOutputStream(new FileOutputStream(feedFolder + "/" + "_subcategories" + FILE_EXTENSION))) {
-			f.writeLong(subcategories.size());
-			for (Entry<String, FeedzillaFileSubcategory> s : subcategories.entrySet()) {
-				s.getValue().saveTo(f);
-			}
-		}
-	}
-
 	private void readSubcategories() throws FileNotFoundException, IOException {
-		final File file = new File(feedFolder + "/" + "_subcategories" + FILE_EXTENSION);
+		final File file = new File(feedFolder + "/" + "_subcategories" + FeedzillaFileSaver.FILE_EXTENSION);
 		if (file.exists()) {
-			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_subcategories" + FILE_EXTENSION))) {
+			try (DataInputStream f = new DataInputStream(new FileInputStream(feedFolder + "/" + "_subcategories"
+					+ FeedzillaFileSaver.FILE_EXTENSION))) {
 				final long sizeOfSubcategories = f.readLong();
 				for (long i = 0; i < sizeOfSubcategories; ++i) {
 					final FeedzillaFileSubcategory subcategory = new FeedzillaFileSubcategory(f, categories);
@@ -121,35 +88,13 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		}
 	}
 
-	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles) throws FileNotFoundException, IOException {
-		final String timestamp = "a_" + String.valueOf(System.nanoTime());
-		saveArticles(feedFolder, articles, timestamp);
-	}
-
-	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles, String namePostfix)
-			throws FileNotFoundException, IOException {
-		try (DataOutputStream f = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(feedFolder + "/" + namePostfix
-				+ FILE_ARTICLE_EXTENSION)))) {
-			f.writeLong(articles.size());
-			for (FeedzillaFileArticle a : articles) {
-				a.saveTo(f);
-			}
-		}
-	}
-
 	private void readArticles() throws FileNotFoundException, IOException {
 		final List<String> articleNames = readFileList(feedFolder);
-		for (Receiver r : receivers) {
-			r.allArticleFilesSize(articleNames.size());
-		}
 		for (String articleName : articleNames) {
-			final String filePath = feedFolder + "/" + articleName + FILE_ARTICLE_EXTENSION;
+			final String filePath = feedFolder + "/" + articleName + FeedzillaFileSaver.FILE_ARTICLE_EXTENSION;
 			try (DataInputStream f = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 				final long sizeOfArticles = f.readLong();
 				readArticleAndProcess(f, articleName, sizeOfArticles);
-			}
-			for (Receiver r : receivers) {
-				r.processedArticleFile(articleName);
 			}
 		}
 	}
@@ -163,7 +108,7 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 			article.setId(newArticleId++);
 			if (checkArticlePublishDate(article)) {
 				boolean addArticle = false;
-				for (Receiver r : receivers) {
+				for (FeedzillaFileStorageReceiver r : receivers) {
 					if (r.addArticle(article)) {
 						addArticle = true;
 					}
@@ -201,8 +146,8 @@ public class FeedzillaFileStorage implements FeedStorage<FeedzillaFileArticle> {
 		final List<String> fileNames = new ArrayList<>();
 		for (File file : listOfFiles) {
 			String filename = file.getName();
-			if (file.isFile() && filename.endsWith(FILE_ARTICLE_EXTENSION)) {
-				fileNames.add(filename.substring(0, filename.length() - FILE_ARTICLE_EXTENSION.length()));
+			if (file.isFile() && filename.endsWith(FeedzillaFileSaver.FILE_ARTICLE_EXTENSION)) {
+				fileNames.add(filename.substring(0, filename.length() - FeedzillaFileSaver.FILE_ARTICLE_EXTENSION.length()));
 			}
 		}
 		return fileNames;

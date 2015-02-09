@@ -19,7 +19,7 @@ import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
 public class FeedzillaFileStorageTest {
 
-	class FileStorageReceiver implements FeedzillaFileStorage.Receiver {
+	class FileStorageReceiver implements FeedzillaFileStorageReceiver {
 
 		public int size = 0;
 
@@ -29,22 +29,14 @@ public class FeedzillaFileStorageTest {
 			return true;
 		}
 
-		@Override
-		public void allArticleFilesSize(int allArticlesFilesCount) {
-		}
-
-		@Override
-		public void processedArticleFile(String articleFileName) {
-		}
-
 	}
 
 	@Test
 	public void testFeedzillaFileStorageController() throws FileNotFoundException, IOException {
 		final String feedFolder = FeedzillaFileStorageTest.class.getResource("").getPath();
-		FeedzillaFileStorage.saveCategories(feedFolder, Collections.emptyMap());
-		FeedzillaFileStorage.saveSubcategories(feedFolder, Collections.emptyMap());
-		FeedzillaFileStorage.saveArticles(feedFolder, Collections.emptyList());
+		FeedzillaFileSaver.saveCategories(feedFolder, Collections.emptyMap());
+		FeedzillaFileSaver.saveSubcategories(feedFolder, Collections.emptyMap());
+		FeedzillaFileSaver.saveArticles(feedFolder, Collections.emptyList());
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
 			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, LocalDateTime.now().minusDays(3650), true);
@@ -57,15 +49,15 @@ public class FeedzillaFileStorageTest {
 
 			final Map<String, FeedzillaFileCategory> categories = new HashMap<>();
 			categories.put("key", new FeedzillaFileCategory(14, "test", "english", null));
-			FeedzillaFileStorage.saveCategories(feedFolder, categories);
+			FeedzillaFileSaver.saveCategories(feedFolder, categories);
 
 			final Map<String, FeedzillaFileSubcategory> subcategories = new HashMap<>();
 			subcategories.put("key", new FeedzillaFileSubcategory(14, categories.get("key"), "test", "english", null));
-			FeedzillaFileStorage.saveSubcategories(feedFolder, subcategories);
+			FeedzillaFileSaver.saveSubcategories(feedFolder, subcategories);
 
 			final List<FeedzillaFileArticle> articles = new ArrayList<>();
 			articles.add(new FeedzillaFileArticle(56, subcategories.get("key"), null, LocalDateTime.now()));
-			FeedzillaFileStorage.saveArticles(feedFolder, articles);
+			FeedzillaFileSaver.saveArticles(feedFolder, articles);
 		}
 		{
 			final FileStorageReceiver r = new FileStorageReceiver();
@@ -77,10 +69,10 @@ public class FeedzillaFileStorageTest {
 			Assert.assertEquals(1, storage.getSubcategories().size());
 			Assert.assertEquals(1, storage.getArticlesById().size());
 		}
-		Assert.assertTrue(new File(feedFolder + "/_categories" + FeedzillaFileStorage.FILE_EXTENSION).delete());
-		Assert.assertTrue(new File(feedFolder + "/_subcategories" + FeedzillaFileStorage.FILE_EXTENSION).delete());
+		Assert.assertTrue(new File(feedFolder + "/_categories" + FeedzillaFileSaver.FILE_EXTENSION).delete());
+		Assert.assertTrue(new File(feedFolder + "/_subcategories" + FeedzillaFileSaver.FILE_EXTENSION).delete());
 		for (String articleName : FeedzillaFileStorage.readFileList(feedFolder)) {
-			final String path = feedFolder + "/" + articleName + FeedzillaFileStorage.FILE_ARTICLE_EXTENSION;
+			final String path = feedFolder + "/" + articleName + FeedzillaFileSaver.FILE_ARTICLE_EXTENSION;
 			Assert.assertTrue(new File(path).delete());
 		}
 	}

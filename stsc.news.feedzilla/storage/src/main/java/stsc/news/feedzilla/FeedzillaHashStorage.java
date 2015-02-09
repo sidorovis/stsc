@@ -11,19 +11,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.feeds.FeedStorageHelper;
-import stsc.news.feedzilla.FeedzillaFileStorage.Receiver;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
+public class FeedzillaHashStorage implements FeedzillaFileStorageReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -43,34 +41,37 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 	private int lastStoredArticlesAmount = 0;
 	private List<FeedzillaFileArticle> newArticles = Collections.synchronizedList(new ArrayList<>());
 
-	private List<Receiver> receivers = new ArrayList<>();
+	private final List<FeedzillaHashStorageReceiver> receivers = new ArrayList<>();
 
 	public FeedzillaHashStorage(String feedFolder) {
 		this.feedFolder = feedFolder;
-		receivers.add(this);
 	}
 
-	public void addReceiver(Receiver receiver) {
+	public void addReceiver(FeedzillaHashStorageReceiver receiver) {
 		receivers.add(receiver);
 	}
 
-	public FeedzillaFileStorage readFeedDataAndStore(LocalDateTime dateDownloadFrom) throws FileNotFoundException, IOException {
-		return readFeedData(dateDownloadFrom, true);
+	public FeedzillaFileStorage readFeedDataAndStore(LocalDateTime datetime) throws FileNotFoundException, IOException {
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, datetime, true);
+		storage.addReceiver(this);
+		storage.readData();
+		return readFeedData(storage);
 	}
 
-	public FeedzillaFileStorage readFeedData(LocalDateTime dateDownloadFrom, boolean storeData) throws FileNotFoundException, IOException {
-		logger.info("Start to create hashcode for database");
-		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom, storeData);
-		for (Receiver r : receivers) {
-			storage.addReceiver(r);
-		}
+	public FeedzillaFileStorage readFeedData(LocalDateTime datetime) throws FileNotFoundException, IOException {
+		final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, datetime, false);
+		storage.addReceiver(this);
 		storage.readData();
+		return readFeedData(storage);
+	}
+
+	public FeedzillaFileStorage readFeedData(FeedzillaFileStorage storage) throws FileNotFoundException, IOException {
 		for (FeedzillaFileCategory c : storage.getCategories()) {
-			hashCategories.put(FeedStorageHelper.createHashCode(c), c);
+			putCategory(FeedStorageHelper.createHashCode(c), c);
 		}
 		lastStoredCategoriesAmount = storage.getCategories().size();
 		for (FeedzillaFileSubcategory s : storage.getSubcategories()) {
-			hashSubcategories.put(FeedStorageHelper.createHashCode(s), s);
+			putSubcategory(FeedStorageHelper.createHashCode(s), s);
 		}
 		lastStoredSubcategoriesAmount = storage.getSubcategories().size();
 		for (FeedzillaFileArticle a : storage.getArticlesById()) {
@@ -102,43 +103,23 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		newArticles.removeIf(new RemoteArticles(daysDownloadFrom, hashArticles));
 	}
 
-	private static class RemoteArticles implements Predicate<FeedzillaFileArticle> {
-
-		private LocalDateTime dateBackDownloadFrom;
-		private Set<String> hashArticles;
-
-		RemoteArticles(LocalDateTime dateBackDownloadFrom, Set<String> hashArticles) {
-			this.dateBackDownloadFrom = dateBackDownloadFrom;
-			this.hashArticles = hashArticles;
-		}
-
-		@Override
-		public boolean test(FeedzillaFileArticle article) {
-			if (article.getPublishDate().isBefore(dateBackDownloadFrom)) {
-				hashArticles.remove(FeedStorageHelper.createHashCode(article));
-				return true;
-			}
-			return false;
-		}
-	}
-
 	private void saveCategories() throws FileNotFoundException, IOException {
 		synchronized (hashCategories) {
-			FeedzillaFileStorage.saveCategories(feedFolder, hashCategories);
+			FeedzillaFileSaver.saveCategories(feedFolder, hashCategories);
 			lastStoredCategoriesAmount = hashCategories.size();
 		}
 	}
 
 	private void saveSubcategories() throws FileNotFoundException, IOException {
 		synchronized (hashSubcategories) {
-			FeedzillaFileStorage.saveSubcategories(feedFolder, hashSubcategories);
+			FeedzillaFileSaver.saveSubcategories(feedFolder, hashSubcategories);
 			lastStoredSubcategoriesAmount = hashSubcategories.size();
 		}
 	}
 
 	private void saveArticles() throws FileNotFoundException, IOException {
 		synchronized (hashArticles) {
-			FeedzillaFileStorage.saveArticles(feedFolder, newArticles);
+			FeedzillaFileSaver.saveArticles(feedFolder, newArticles);
 			lastStoredArticlesAmount = hashArticles.size();
 		}
 	}
@@ -147,35 +128,55 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 		synchronized (hashCategories) {
 			final int id = hashCategories.size();
 			result.setId(id);
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			final FeedzillaFileCategory oldCategory = hashCategories.putIfAbsent(hashCode, result);
-			if (oldCategory != null) {
-				return oldCategory;
-			}
-			return result;
+			return putCategory(FeedStorageHelper.createHashCode(result), result);
 		}
+	}
+
+	private FeedzillaFileCategory putCategory(String hashCode, FeedzillaFileCategory result) {
+		final FeedzillaFileCategory oldCategory = hashCategories.putIfAbsent(hashCode, result);
+		if (oldCategory != null) {
+			return oldCategory;
+		} else {
+			for (FeedzillaHashStorageReceiver r : receivers) {
+				r.addCategory(result);
+			}
+		}
+		return result;
 	}
 
 	public FeedzillaFileSubcategory createFeedzillaSubcategory(FeedzillaFileCategory category, FeedzillaFileSubcategory result) {
 		synchronized (hashSubcategories) {
 			final int id = hashSubcategories.size();
 			result.setId(id);
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			final FeedzillaFileSubcategory oldSubcategory = hashSubcategories.putIfAbsent(hashCode, result);
-			if (oldSubcategory != null) {
-				return oldSubcategory;
-			}
-			return result;
+			return putSubcategory(FeedStorageHelper.createHashCode(result), result);
 		}
+	}
+
+	private FeedzillaFileSubcategory putSubcategory(String hashCode, FeedzillaFileSubcategory result) {
+		final FeedzillaFileSubcategory oldSubcategory = hashSubcategories.putIfAbsent(hashCode, result);
+		if (oldSubcategory != null) {
+			return oldSubcategory;
+		} else {
+			for (FeedzillaHashStorageReceiver r : receivers) {
+				r.addSubCategory(result);
+			}
+		}
+		return result;
 	}
 
 	public void createFeedzillaArticle(FeedzillaFileSubcategory subcategory, FeedzillaFileArticle result) {
 		synchronized (hashArticles) {
 			final int id = hashArticles.size();
 			result.setId(id);
-			final String hashCode = FeedStorageHelper.createHashCode(result);
-			if (hashArticles.add(hashCode)) {
-				newArticles.add(result);
+			putArticle(FeedStorageHelper.createHashCode(result), result);
+		}
+	}
+
+	private void putArticle(String hashCode, FeedzillaFileArticle result) {
+		if (hashArticles.add(hashCode)) {
+			newArticles.add(result);
+			for (FeedzillaHashStorageReceiver r : receivers) {
+				r.addArticle(result);
 			}
 		}
 	}
@@ -190,16 +191,13 @@ public class FeedzillaHashStorage implements FeedzillaFileStorage.Receiver {
 
 	@Override
 	public boolean addArticle(FeedzillaFileArticle article) {
-		final String hashCode = FeedStorageHelper.createHashCode(article);
-		return hashArticles.add(hashCode);
-	}
-
-	@Override
-	public void allArticleFilesSize(int allArticlesFilesCount) {
-	}
-
-	@Override
-	public void processedArticleFile(String articleFileName) {
+		if (hashArticles.add(FeedStorageHelper.createHashCode(article))) {
+			for (FeedzillaHashStorageReceiver r : receivers) {
+				r.addArticle(article);
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

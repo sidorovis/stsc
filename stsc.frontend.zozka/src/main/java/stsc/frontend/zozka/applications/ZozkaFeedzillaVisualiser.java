@@ -9,17 +9,16 @@ import stsc.frontend.zozka.panes.FeedzillaArticlesPane;
 
 public class ZozkaFeedzillaVisualiser extends Application {
 
-	private final FeedzillaArticlesPane feedzillaArticlesPane;
+	private FeedzillaArticlesPane feedzillaArticlesPane;
 	private Stage owner;
 
 	public ZozkaFeedzillaVisualiser() throws IOException {
-		this.feedzillaArticlesPane = new FeedzillaArticlesPane();
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.owner = stage;
-		feedzillaArticlesPane.setMainWindow(owner);
+		feedzillaArticlesPane = new FeedzillaArticlesPane(owner);
 		owner.setScene(new Scene(feedzillaArticlesPane.getMainPane()));
 		owner.show();
 	}

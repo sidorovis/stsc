@@ -56,7 +56,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		if (endlessCycle) {
 			daysBackDownloadFrom = 2;
 		}
-		hashStorage.readFeedData(DownloadHelper.createDateTimeElement(daysBackDownloadFrom), false);
+		hashStorage.readFeedData(DownloadHelper.createDateTimeElement(daysBackDownloadFrom));
 	}
 
 	private String readFeedFolderProperty(String propertyFile) throws FileNotFoundException, IOException {

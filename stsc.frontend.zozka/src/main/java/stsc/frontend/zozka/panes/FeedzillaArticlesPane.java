@@ -31,11 +31,12 @@ import org.controlsfx.dialog.Dialogs;
 import stsc.frontend.zozka.dialogs.DatePickerDialog;
 import stsc.frontend.zozka.gui.models.feedzilla.FeedzillaArticleDescription;
 import stsc.frontend.zozka.settings.ControllerHelper;
-import stsc.news.feedzilla.FeedzillaFileStorage.Receiver;
+import stsc.news.feedzilla.FeedzillaFileStorage;
+import stsc.news.feedzilla.FeedzillaFileStorageReceiver;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 
-public class FeedzillaArticlesPane extends BorderPane implements Receiver {
+public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileStorageReceiver {
 
 	private final static int ARTICLES_PER_PAGE = 100;
 
@@ -44,7 +45,7 @@ public class FeedzillaArticlesPane extends BorderPane implements Receiver {
 	}
 
 	final private BorderPane mainPane = new BorderPane();
-	private Stage owner;
+	private final Stage owner;
 
 	@FXML
 	private Label datafeedLabel;
@@ -63,14 +64,14 @@ public class FeedzillaArticlesPane extends BorderPane implements Receiver {
 	@FXML
 	private Pagination pagination;
 
-	public FeedzillaArticlesPane() throws IOException {
+	public FeedzillaArticlesPane(Stage owner) throws IOException {
+		this.owner = owner;
 		final Parent gui = initializeGui();
 		validateGui();
 		setUpTable();
 		setUpPaginator();
 		mainPane.setCenter(gui);
 		newsTable.setVisible(false);
-		// mainPane.setBottom(null);
 	}
 
 	private void setUpTable() {
@@ -161,8 +162,10 @@ public class FeedzillaArticlesPane extends BorderPane implements Receiver {
 	private void downloadData(String feedFolder, LocalDateTime dateDownloadFrom) {
 		try {
 			final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
-			hashStorage.addReceiver(this);
-			hashStorage.readFeedDataAndStore(dateDownloadFrom);
+			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom, true);
+			storage.addReceiver(hashStorage);
+			storage.readData();
+			hashStorage.readFeedData(storage);
 		} catch (Exception e) {
 			Platform.runLater(() -> {
 				Dialogs.create().owner(owner).showException(e);
@@ -170,20 +173,8 @@ public class FeedzillaArticlesPane extends BorderPane implements Receiver {
 		}
 	}
 
-	public void setMainWindow(Stage owner) {
-		this.owner = owner;
-	}
-
 	public BorderPane getMainPane() {
 		return mainPane;
-	}
-
-	@Override
-	public void allArticleFilesSize(int allArticlesFilesCount) {
-	}
-
-	@Override
-	public void processedArticleFile(String articleFileName) {
 	}
 
 	@Override

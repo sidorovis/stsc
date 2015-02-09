@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import stsc.news.feedzilla.FeedzillaFileSaver;
 import stsc.news.feedzilla.FeedzillaFileStorage;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -41,8 +42,8 @@ public class FeedzillaByDateSeparator {
 	}
 
 	private void storeData(FeedzillaFileStorage storage, FeedzillaHashStorage hashStorage) throws FileNotFoundException, IOException {
-		FeedzillaFileStorage.saveCategories(byDateFeedFolder, hashStorage.getHashCategories());
-		FeedzillaFileStorage.saveSubcategories(byDateFeedFolder, hashStorage.getHashSubcategories());
+		FeedzillaFileSaver.saveCategories(byDateFeedFolder, hashStorage.getHashCategories());
+		FeedzillaFileSaver.saveSubcategories(byDateFeedFolder, hashStorage.getHashSubcategories());
 		final Map<LocalDateTime, List<FeedzillaFileArticle>> articles = storage.getArticlesByDate();
 		final List<FeedzillaFileArticle> articlesToSwap = new ArrayList<FeedzillaFileArticle>();
 		LocalDate swappingDate = LocalDate.now().withDayOfMonth(1);
@@ -59,7 +60,7 @@ public class FeedzillaByDateSeparator {
 
 	private void storeArticles(List<FeedzillaFileArticle> articlesToSwap, LocalDate swappingDate) throws FileNotFoundException, IOException {
 		if (!articlesToSwap.isEmpty()) {
-			FeedzillaFileStorage.saveArticles(byDateFeedFolder, articlesToSwap, swappingDate.format(formatter));
+			FeedzillaFileSaver.saveArticles(byDateFeedFolder, articlesToSwap, swappingDate.format(formatter));
 			articlesToSwap.clear();
 		}
 	}
