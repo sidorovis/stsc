@@ -96,7 +96,7 @@ public class FeedzillaArticlesPane extends BorderPane implements Receiver {
 	}
 
 	private Parent initializeGui() throws IOException {
-		final URL location = FeedzillaArticlesPane.class.getResource("05_zozka_feedzilla_visualiser_pane.fxml");
+		final URL location = FeedzillaArticlesPane.class.getResource("05_zozka_feedzilla_articles_pane.fxml");
 		final FXMLLoader loader = new FXMLLoader(location);
 		loader.setController(this);
 		final Parent result = loader.load();
