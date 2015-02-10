@@ -77,11 +77,11 @@ class CallableArticlesDownload implements Callable<Optional<List<Article>>> {
 	}
 
 	public static String ljust(long v) {
-		return StringUtils.rightPad(String.valueOf(v), 8);
+		return StringUtils.leftPad(String.valueOf(v), 8);
 	}
 
 	public static String ljust(String v) {
-		return StringUtils.rightPad(v, 14);
+		return StringUtils.leftPad(v, 14);
 	}
 
 	public static void pause() {

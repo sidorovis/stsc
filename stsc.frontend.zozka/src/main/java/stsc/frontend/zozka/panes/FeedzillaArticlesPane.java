@@ -31,14 +31,15 @@ import org.controlsfx.dialog.Dialogs;
 import stsc.frontend.zozka.dialogs.DatePickerDialog;
 import stsc.frontend.zozka.gui.models.feedzilla.FeedzillaArticleDescription;
 import stsc.frontend.zozka.settings.ControllerHelper;
-import stsc.news.feedzilla.FeedzillaFileStorage;
-import stsc.news.feedzilla.FeedzillaFileStorageReceiver;
 import stsc.news.feedzilla.FeedzillaHashStorage;
+import stsc.news.feedzilla.FeedzillaHashStorageReceiver;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
+import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileStorageReceiver {
+public class FeedzillaArticlesPane extends BorderPane implements FeedzillaHashStorageReceiver {
 
-	private final static int ARTICLES_PER_PAGE = 100;
+	private final static int ARTICLES_PER_PAGE = 5000;
 
 	static {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -60,6 +61,12 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileSt
 	private TableColumn<FeedzillaArticleDescription, String> titleColumn;
 	@FXML
 	private TableColumn<FeedzillaArticleDescription, String> dateColumn;
+	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> urlColumn;
+	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> subcategoryColumn;
+	@FXML
+	private TableColumn<FeedzillaArticleDescription, String> categoryColumn;
 
 	@FXML
 	private Pagination pagination;
@@ -80,11 +87,13 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileSt
 		authorColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("author"));
 		titleColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("title"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("date"));
+		urlColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("url"));
+		subcategoryColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("subcategoryName"));
+		categoryColumn.setCellValueFactory(new PropertyValueFactory<FeedzillaArticleDescription, String>("categoryName"));
 	}
 
 	private void setUpPaginator() {
 		pagination.setPageCount(1);
-
 		pagination.setPageFactory(new Callback<Integer, Node>() {
 			@Override
 			public Node call(Integer param) {
@@ -106,7 +115,12 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileSt
 
 	private void validateGui() {
 		assert newsTable != null : "fx:id=\"newsTable\" was not injected: check your FXML file.";
+		assert authorColumn != null : "fx:id=\"authorColumn\" was not injected: check your FXML file.";
+		assert titleColumn != null : "fx:id=\"titleColumn\" was not injected: check your FXML file.";
 		assert dateColumn != null : "fx:id=\"dateColumn\" was not injected: check your FXML file.";
+		assert urlColumn != null : "fx:id=\"urlColumn\" was not injected: check your FXML file.";
+		assert subcategoryColumn != null : "fx:id=\"subcategoryColumn\" was not injected: check your FXML file.";
+		assert categoryColumn != null : "fx:id=\"categoryColumn\" was not injected: check your FXML file.";
 		assert datafeedLabel != null : "fx:id=\"datafeedLabel\" was not injected: check your FXML file.";
 		assert pagination != null : "fx:id=\"pagination\" was not injected: check your FXML file.";
 	}
@@ -162,10 +176,8 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileSt
 	private void downloadData(String feedFolder, LocalDateTime dateDownloadFrom) {
 		try {
 			final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
-			final FeedzillaFileStorage storage = new FeedzillaFileStorage(feedFolder, dateDownloadFrom, true);
-			storage.addReceiver(hashStorage);
-			storage.readData();
-			hashStorage.readFeedData(storage);
+			hashStorage.addReceiver(this);
+			hashStorage.readFeedData(dateDownloadFrom);
 		} catch (Exception e) {
 			Platform.runLater(() -> {
 				Dialogs.create().owner(owner).showException(e);
@@ -186,8 +198,16 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaFileSt
 			pagedModels.add(currentPagedModel);
 			Platform.runLater(() -> pagination.setPageCount(pagedModels.size()));
 		}
-		currentPagedModel.add(new FeedzillaArticleDescription(article.getAuthor(), article.getTitle(), article.getPublishDate()));
+		currentPagedModel.add(new FeedzillaArticleDescription(article));
 		return false;
+	}
+
+	@Override
+	public void addCategory(FeedzillaFileCategory category) {
+	}
+
+	@Override
+	public void addSubCategory(FeedzillaFileSubcategory subcategory) {
 	}
 
 }
