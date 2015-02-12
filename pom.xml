@@ -40,7 +40,7 @@
 		<module>stsc.distributed.hadoop</module>
 		<module>stsc.frontend.zozka</module>
 		<module>stsc.news.feedzilla</module>
-		<!--module>stsc.database</module-->
+		<module>stsc.database</module>
 		<!--module>stsc.as.service</module-->
 	</modules>
 	<description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
