@@ -12,14 +12,14 @@ public class DatabaseSettingsTest {
 
 	@Test
 	public void testDatabaseSettings() throws IOException {
-		final DatabaseSettings ds = new DatabaseSettings();
+		final DatabaseSettings ds = DatabaseSettings.test();
 		Assert.assertEquals("org.h2.Driver", ds.getJdbcDriver());
 		Assert.assertEquals("jdbc:h2:mem:", ds.getJdbcUrl());
 	}
 
 	@Test
 	public void testCreateConnectionToLiquibase() throws SQLException, IOException, LiquibaseException {
-		final DatabaseSettings ds = new DatabaseSettings();
+		final DatabaseSettings ds = DatabaseSettings.test();
 		ds.migrate();
 	}
 }

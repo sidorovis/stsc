@@ -25,12 +25,12 @@ public final class DatabaseSettings {
 		return new DatabaseSettings("../../../feedzilla_development.properties");
 	}
 
-	private DatabaseSettings(final String filePath) throws IOException {
-		this(DatabaseSettings.class.getResourceAsStream(filePath));
+	public static DatabaseSettings test() throws IOException {
+		return new DatabaseSettings("../../../feedzilla_test.properties");
 	}
 
-	public DatabaseSettings() throws IOException {
-		this(DatabaseSettings.class.getResourceAsStream("../../../feedzilla_test.properties"));
+	private DatabaseSettings(final String filePath) throws IOException {
+		this(DatabaseSettings.class.getResourceAsStream(filePath));
 	}
 
 	public DatabaseSettings(InputStream sourceInputStream) throws IOException {

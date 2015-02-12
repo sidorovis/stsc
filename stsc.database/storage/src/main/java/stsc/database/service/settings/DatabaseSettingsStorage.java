@@ -20,10 +20,6 @@ public class DatabaseSettingsStorage {
 
 	private final Dao<OrmliteYahooDatafeedSettings, Integer> yahooDatafeedSettings;
 
-	public DatabaseSettingsStorage() throws IOException, SQLException {
-		this(new DatabaseSettings());
-	}
-
 	public DatabaseSettingsStorage(final DatabaseSettings databaseSettings) throws IOException, SQLException {
 		this.databaseSettings = databaseSettings;
 		this.source = getConnectionSource();
