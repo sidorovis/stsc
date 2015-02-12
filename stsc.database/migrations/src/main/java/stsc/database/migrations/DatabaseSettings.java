@@ -26,7 +26,7 @@ final class DatafeedSettings {
 	private final String jdbcUrl;
 
 	public DatafeedSettings() throws IOException {
-		this(DatafeedSettings.class.getResourceAsStream("feedzilla_test.properties"), DatabaseType.test);
+		this(DatafeedSettings.class.getResourceAsStream("../../../feedzilla_test.properties"), DatabaseType.test);
 	}
 
 	public DatafeedSettings(InputStream sourceInputStream, DatabaseType type) throws IOException {
@@ -49,8 +49,8 @@ final class DatafeedSettings {
 	public void migrate() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = DatafeedSettings.class.getResource("db.changelog.xml").getFile();
-		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getParentFile();
+		final String path = DatafeedSettings.class.getResource("../../../db.changelog.xml").getFile();
+		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile();
 		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.update((String) null);
 		liquibase.validate();

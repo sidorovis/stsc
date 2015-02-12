@@ -14,7 +14,7 @@ public class DatabaseSettingsTest {
 	public void testDatabaseSettings() throws IOException {
 		final DatafeedSettings ds = new DatafeedSettings();
 		Assert.assertEquals("org.h2.Driver", ds.getJdbcDriver());
-		Assert.assertEquals("jdbc:h2:./../test_data/liquibaseTest;AUTO_SERVER=TRUE", ds.getJdbcUrl());
+		Assert.assertEquals("jdbc:h2:mem:", ds.getJdbcUrl());
 	}
 
 	@Test
