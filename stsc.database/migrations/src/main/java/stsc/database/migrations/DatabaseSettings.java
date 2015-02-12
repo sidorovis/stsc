@@ -16,20 +16,24 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 
-final class DatafeedSettings {
-
-	enum DatabaseType {
-		production, development, test;
-	}
+public final class DatabaseSettings {
 
 	private final String jdbcDriver;
 	private final String jdbcUrl;
 
-	public DatafeedSettings() throws IOException {
-		this(DatafeedSettings.class.getResourceAsStream("../../../feedzilla_test.properties"), DatabaseType.test);
+	public static DatabaseSettings development() throws IOException {
+		return new DatabaseSettings("../../../feedzilla_development.properties");
 	}
 
-	public DatafeedSettings(InputStream sourceInputStream, DatabaseType type) throws IOException {
+	private DatabaseSettings(final String filePath) throws IOException {
+		this(DatabaseSettings.class.getResourceAsStream(filePath));
+	}
+
+	public DatabaseSettings() throws IOException {
+		this(DatabaseSettings.class.getResourceAsStream("../../../feedzilla_test.properties"));
+	}
+
+	public DatabaseSettings(InputStream sourceInputStream) throws IOException {
 		try (DataInputStream inputStream = new DataInputStream(sourceInputStream)) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
@@ -46,15 +50,17 @@ final class DatafeedSettings {
 		return jdbcDriver;
 	}
 
-	public void migrate() throws SQLException, LiquibaseException {
+	public DatabaseSettings migrate() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = DatafeedSettings.class.getResource("../../../db.changelog.xml").getFile();
+		final String path = DatabaseSettings.class.getResource("../../../db.changelog.xml").getFile();
 		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile();
 		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.update((String) null);
 		liquibase.validate();
+		c.commit();
 		c.close();
+		return this;
 	}
 
 }

@@ -32,6 +32,7 @@ stsc.news.feedzilla/feed_data/*.fz
 _*.log
 *.versionsBackup
 tools/vagrant_hadoop_cluster/single-node/package
+liquibase*db
 
 .~lock*#
 

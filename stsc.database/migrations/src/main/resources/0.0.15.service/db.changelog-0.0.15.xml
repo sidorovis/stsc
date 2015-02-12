@@ -3,6 +3,24 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="23_32_00__12_02_2015" author="ivan.sidarau@gmail.com">
+		<createTable tableName="yahoo_downloader_datafeed_settings">
+			<column name="id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="setting_name" type="varchar(255)" >
+				<constraints unique="true" nullable="false" />
+			</column>
+			<column name="thread_amount" type="int(11)" defaultValueNumeric="1" >
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="DATETIME" />
+			<column name="updated_at" type="DATETIME" />
+		</createTable>
+	</changeSet>
+
+
 <!--
 	<changeSet id="23_38_00__09_01_2015" author="ivan.sidarau@gmail.com">
 		<createTable tableName="categories">

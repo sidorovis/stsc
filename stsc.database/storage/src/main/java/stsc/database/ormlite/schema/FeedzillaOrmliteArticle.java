@@ -1,15 +1,13 @@
-package stsc.news.feedzilla.ormlite.schema;
+package stsc.database.ormlite.schema;
 
 import java.util.Date;
-
-import stsc.common.feeds.FeedArticle;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "articles")
-public class FeedzillaOrmliteArticle implements FeedArticle {
+public class FeedzillaOrmliteArticle {
 
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
@@ -61,84 +59,4 @@ public class FeedzillaOrmliteArticle implements FeedArticle {
 		this.updatedAt = new Date();
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public FeedzillaOrmliteCategory getCategory() {
-		return category;
-	}
-
-	@Override
-	public FeedzillaOrmliteSubcategory getSubcategory() {
-		return subcategory;
-	}
-
-	@Override
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	@Override
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	@Override
-	public String getSourceUrl() {
-		return sourceUrl;
-	}
-
-	public void setSourceUrl(String sourceUrl) {
-		this.sourceUrl = sourceUrl;
-	}
-
-	@Override
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	@Override
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	@Override
-	public Date getPublishDate() {
-		return publishDate;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
 }

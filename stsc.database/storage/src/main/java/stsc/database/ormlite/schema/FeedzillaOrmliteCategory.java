@@ -1,4 +1,4 @@
-package stsc.news.feedzilla.ormlite.schema;
+package stsc.database.ormlite.schema;
 
 import java.util.Date;
 
