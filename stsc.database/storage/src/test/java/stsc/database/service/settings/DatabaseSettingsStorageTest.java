@@ -16,7 +16,7 @@ public class DatabaseSettingsStorageTest {
 
 	@Test
 	public void testDatabaseSettingsStorage() throws IOException, SQLException, LiquibaseException {
-		final DatabaseSettings settings = DatabaseSettings.test().migrate();
+		final DatabaseSettings settings = DatabaseSettings.development().migrate();
 		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
 		Assert.assertNotNull(storage);
 		OrmliteYahooDatafeedSettings oyds = new OrmliteYahooDatafeedSettings("yahoo settings");

@@ -31,6 +31,7 @@ import org.controlsfx.dialog.Dialogs;
 import stsc.frontend.zozka.dialogs.DatePickerDialog;
 import stsc.frontend.zozka.gui.models.feedzilla.FeedzillaArticleDescription;
 import stsc.frontend.zozka.settings.ControllerHelper;
+import stsc.news.feedzilla.FeedzillaFileStorage;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.FeedzillaHashStorageReceiver;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
@@ -177,7 +178,11 @@ public class FeedzillaArticlesPane extends BorderPane implements FeedzillaHashSt
 		try {
 			final FeedzillaHashStorage hashStorage = new FeedzillaHashStorage(feedFolder);
 			hashStorage.addReceiver(this);
-			hashStorage.readFeedData(dateDownloadFrom);
+			FeedzillaFileStorage storage = hashStorage.readFeedDataAndStore(dateDownloadFrom);
+			Platform.runLater(() -> {
+				Dialogs.create().owner(owner).title("Loaded articles").message("Articles size: " + storage.getArticlesById().size())
+						.showInformation();
+			});
 		} catch (Exception e) {
 			Platform.runLater(() -> {
 				Dialogs.create().owner(owner).showException(e);

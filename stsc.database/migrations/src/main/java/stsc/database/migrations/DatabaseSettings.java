@@ -58,6 +58,7 @@ public final class DatabaseSettings {
 		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.update((String) null);
 		liquibase.validate();
+		database.commit();
 		c.commit();
 		c.close();
 		return this;
