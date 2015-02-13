@@ -119,9 +119,8 @@ public class FeedzillaHashStorage implements FeedzillaFileStorageReceiver {
 
 	private void saveArticles() throws FileNotFoundException, IOException {
 		synchronized (hashArticles) {
-			logger.info("saving some new articles" + newArticles.size());
 			FeedzillaFileSaver.saveArticles(feedFolder, newArticles);
-			logger.info("articles saved");
+			logger.info("articles saved: " + newArticles.size());
 			lastStoredArticlesAmount = hashArticles.size();
 		}
 	}

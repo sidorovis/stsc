@@ -64,4 +64,18 @@ public final class DatabaseSettings {
 		return this;
 	}
 
+	public DatabaseSettings dropAll() throws SQLException, LiquibaseException {
+		final Connection c = DriverManager.getConnection(jdbcUrl);
+		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
+		final String path = DatabaseSettings.class.getResource("../../../db.changelog.xml").getFile();
+		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile();
+		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
+		liquibase.dropAll();
+		liquibase.validate();
+		database.commit();
+		c.commit();
+		c.close();
+		return this;
+	}
+
 }

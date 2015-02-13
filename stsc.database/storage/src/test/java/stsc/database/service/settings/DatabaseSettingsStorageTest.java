@@ -8,20 +8,26 @@ import liquibase.exception.LiquibaseException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
-
 import stsc.database.migrations.DatabaseSettings;
 
 public class DatabaseSettingsStorageTest {
 
 	@Test
-	public void testDatabaseSettingsStorage() throws IOException, SQLException, LiquibaseException {
-		final DatabaseSettings settings = DatabaseSettings.development().migrate();
+	public void testDatabaseSettingsStorage() throws IOException, SQLException, LiquibaseException, InterruptedException {
+		final DatabaseSettings settings = DatabaseSettings.test().dropAll().migrate();
 		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
 		Assert.assertNotNull(storage);
-		OrmliteYahooDatafeedSettings oyds = new OrmliteYahooDatafeedSettings("yahoo settings");
-		final CreateOrUpdateStatus status = storage.createOrUpdateCategory(oyds);
-		Assert.assertEquals(1, status.getNumLinesChanged());
+		{
+			final OrmliteYahooDatafeedSettings oyds = new OrmliteYahooDatafeedSettings("yahoo_settings");
+			oyds.setThreadAmount(6);
+			Assert.assertEquals(1, storage.setYahooDatafeedSettings(oyds).getNumLinesChanged());
+		}
+		{
+			final OrmliteYahooDatafeedSettings copy = storage.getYahooDatafeedSettings("yahoo_settings");
+			Assert.assertEquals(6, copy.threadAmount());
+			Assert.assertEquals(1, storage.setYahooDatafeedSettings(copy).getNumLinesChanged());
+		}
+		settings.dropAll();
 	}
 
 }

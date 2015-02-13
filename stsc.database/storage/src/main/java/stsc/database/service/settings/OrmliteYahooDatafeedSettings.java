@@ -1,7 +1,10 @@
 package stsc.database.service.settings;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -10,14 +13,22 @@ import stsc.common.service.settings.YahooDatafeedSettings;
 @DatabaseTable(tableName = "yahoo_downloader_datafeed_settings")
 public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 
+	public final static String settingColumnName = "setting_name";
+
 	@DatabaseField(generatedId = true, columnName = "id", canBeNull = false)
 	private Integer id;
 
-	@DatabaseField(columnName = "setting_name", canBeNull = false, unique = true)
+	@DatabaseField(columnName = settingColumnName, canBeNull = false, unique = true)
 	private String settingName;
 
 	@DatabaseField(columnName = "thread_amount", canBeNull = false)
-	private Integer threadAmount;
+	private int threadAmount;
+
+	@DatabaseField(columnName = "created_at", dataType = DataType.DATE)
+	private Date createdAt;
+
+	@DatabaseField(columnName = "updated_at", dataType = DataType.DATE)
+	private Date updatedAt;
 
 	@SuppressWarnings("unused")
 	private OrmliteYahooDatafeedSettings() {
@@ -27,6 +38,15 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 	public OrmliteYahooDatafeedSettings(final String settingName) {
 		this.settingName = settingName;
 		this.threadAmount = 0;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public OrmliteYahooDatafeedSettings setThreadAmount(int threadAmount) {
+		this.threadAmount = threadAmount;
+		return this;
 	}
 
 	@Override
@@ -58,4 +78,13 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 		return null;
 	}
 
+	public void setCreatedAt() {
+		if (getId() == null) {
+			this.createdAt = new Date();
+		}
+	}
+
+	public void setUpdatedAt() {
+		this.updatedAt = new Date();
+	}
 }
