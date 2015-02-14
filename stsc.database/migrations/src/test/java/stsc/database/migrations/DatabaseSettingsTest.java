@@ -14,7 +14,7 @@ public class DatabaseSettingsTest {
 	public void testDatabaseSettings() throws IOException {
 		final DatabaseSettings ds = DatabaseSettings.test();
 		Assert.assertEquals("org.h2.Driver", ds.getJdbcDriver());
-		Assert.assertEquals("jdbc:h2:mem:", ds.getJdbcUrl());
+		Assert.assertEquals("jdbc:h2:mem:test_mem;DB_CLOSE_DELAY=-1", ds.getJdbcUrl());
 	}
 
 	@Test

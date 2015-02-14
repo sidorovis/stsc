@@ -1,6 +1,5 @@
 package stsc.database.service.settings;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -21,7 +20,6 @@ public class DatabaseSettingsStorage {
 	private final Dao<OrmliteYahooDatafeedSettings, Integer> yahooDatafeedSettings;
 
 	public DatabaseSettingsStorage(final DatabaseSettings databaseSettings) throws IOException, SQLException {
-		System.out.println(new File("./").getAbsoluteFile());
 		this.source = getConnectionSource(databaseSettings);
 		this.yahooDatafeedSettings = DaoManager.createDao(source, OrmliteYahooDatafeedSettings.class);
 		Validate.isTrue(yahooDatafeedSettings.isTableExists(), "OrmliteYahooDatafeedSettings table should exists");
