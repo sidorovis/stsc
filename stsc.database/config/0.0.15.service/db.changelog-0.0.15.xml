@@ -38,4 +38,30 @@
 		</createTable>
 	</changeSet>
 
+	<changeSet id="23_39_00__15_02_2015" author="ivan.sidarau@gmail.com">
+		<createTable tableName="yahoo_downloader_datafeed_statistics">
+			<column name="id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="setting_name" type="varchar(255)" >
+				<constraints unique="false" nullable="false" />
+			</column>
+			<column name="start_date" type="DATETIME" >
+				<constraints nullable="false" />
+			</column>
+			<column name="process_id" type="int(11)" defaultValueNumeric="2" >
+				<constraints nullable="false" />
+			</column>
+			<column name="statistic_type" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="message" type="text">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="DATETIME" />
+			<column name="updated_at" type="DATETIME" />
+		</createTable>
+	</changeSet>
+
+
 </databaseChangeLog>

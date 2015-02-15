@@ -2,14 +2,14 @@ package stsc.database.service.settings;
 
 import java.util.Date;
 
-import stsc.common.service.settings.YahooDatafeedSettings;
+import stsc.common.service.settings.YahooDownloaderSettings;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "yahoo_downloader_datafeed_settings")
-public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
+public class OrmliteYahooDownloaderSettings implements YahooDownloaderSettings {
 
 	public final static String settingColumnName = "setting_name";
 
@@ -47,11 +47,11 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 	private Date updatedAt;
 
 	@SuppressWarnings("unused")
-	private OrmliteYahooDatafeedSettings() {
+	private OrmliteYahooDownloaderSettings() {
 		// for ormlite
 	}
 
-	public OrmliteYahooDatafeedSettings(final String settingName) {
+	public OrmliteYahooDownloaderSettings(final String settingName) {
 		this.settingName = settingName;
 		this.threadAmount = 1;
 		this.downloadOnlyExisted = true;

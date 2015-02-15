@@ -1,7 +1,6 @@
 package stsc.common.service.settings;
 
-
-public interface YahooDatafeedSettings {
+public interface YahooDownloaderSettings {
 
 	/**
 	 * parallel downloading threads amount

@@ -18,7 +18,7 @@ public class OrmliteYahooDatafeedSettingsTest {
 		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
 		Assert.assertNotNull(storage);
 		{
-			final OrmliteYahooDatafeedSettings oyds = new OrmliteYahooDatafeedSettings("yahoo_settings");
+			final OrmliteYahooDownloaderSettings oyds = new OrmliteYahooDownloaderSettings("yahoo_settings");
 			oyds.setThreadAmount(6);
 			oyds.setDownloadByPattern(false);
 			oyds.setDownloadOnlyExisted(false);
@@ -29,7 +29,7 @@ public class OrmliteYahooDatafeedSettingsTest {
 			Assert.assertEquals(1, storage.setYahooDatafeedSettings(oyds).getNumLinesChanged());
 		}
 		{
-			final OrmliteYahooDatafeedSettings copy = storage.getYahooDatafeedSettings("yahoo_settings");
+			final OrmliteYahooDownloaderSettings copy = storage.getYahooDatafeedSettings("yahoo_settings");
 			Assert.assertEquals(6, copy.threadAmount());
 			Assert.assertEquals(1, storage.setYahooDatafeedSettings(copy).getNumLinesChanged());
 			Assert.assertEquals(false, copy.downloadByPattern());

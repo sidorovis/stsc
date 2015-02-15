@@ -49,6 +49,9 @@ public final class FeedzillaFileSaver {
 
 	public static void saveArticles(String feedFolder, Collection<FeedzillaFileArticle> articles, String namePostfix)
 			throws FileNotFoundException, IOException {
+		if (articles.isEmpty()) {
+			return;
+		}
 		try (DataOutputStream f = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(feedFolder + "/" + namePostfix
 				+ FILE_ARTICLE_EXTENSION)))) {
 			f.writeLong(articles.size());
