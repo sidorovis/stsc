@@ -1,6 +1,5 @@
 package stsc.common.service.settings;
 
-import org.apache.commons.lang3.tuple.Pair;
 
 public interface YahooDatafeedSettings {
 
@@ -22,13 +21,17 @@ public interface YahooDatafeedSettings {
 
 	/**
 	 * if downloadOnlyExisted() == false this options install permutation size
-	 * in characters for stock names to download from yahoo
+	 * in characters for stock names to download from Yahoo.
 	 */
-	public Pair<Integer, Integer> stockNameSizePair();
+	public int stockNameFrom();
+
+	public int stockNameTo();
 
 	/**
 	 * stock names patterns to download
 	 */
-	public Pair<String, String> patternNamePair();
+	public String patternNameFrom();
+
+	public String patternNameTo();
 
 }

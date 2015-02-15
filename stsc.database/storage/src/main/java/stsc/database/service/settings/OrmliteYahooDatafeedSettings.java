@@ -2,8 +2,6 @@ package stsc.database.service.settings;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import stsc.common.service.settings.YahooDatafeedSettings;
 
 import com.j256.ormlite.field.DataType;
@@ -24,6 +22,24 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 	@DatabaseField(columnName = "thread_amount", canBeNull = false)
 	private int threadAmount;
 
+	@DatabaseField(columnName = "download_only_existed", canBeNull = false)
+	private boolean downloadOnlyExisted;
+
+	@DatabaseField(columnName = "download_by_pattern", canBeNull = false)
+	private boolean downloadByPattern;
+
+	@DatabaseField(columnName = "stock_name_from", canBeNull = false)
+	private int stockNameFrom;
+
+	@DatabaseField(columnName = "stock_name_to", canBeNull = false)
+	private int stockNameTo;
+
+	@DatabaseField(columnName = "pattern_name_from", canBeNull = false)
+	private String patternNameFrom;
+
+	@DatabaseField(columnName = "pattern_name_to", canBeNull = false)
+	private String patternNameTo;
+
 	@DatabaseField(columnName = "created_at", dataType = DataType.DATE)
 	private Date createdAt;
 
@@ -37,16 +53,21 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 
 	public OrmliteYahooDatafeedSettings(final String settingName) {
 		this.settingName = settingName;
-		this.threadAmount = 0;
+		this.threadAmount = 1;
+		this.downloadOnlyExisted = true;
+		this.downloadByPattern = true;
+		this.stockNameFrom = 1;
+		this.stockNameTo = 2;
+		this.patternNameFrom = "A";
+		this.patternNameTo = "Z";
 	}
 
 	public Integer getId() {
 		return id;
 	}
 
-	public OrmliteYahooDatafeedSettings setThreadAmount(int threadAmount) {
+	public void setThreadAmount(int threadAmount) {
 		this.threadAmount = threadAmount;
-		return this;
 	}
 
 	@Override
@@ -54,28 +75,58 @@ public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {
 		return threadAmount;
 	}
 
+	public void setDownloadOnlyExisted(boolean downloadOnlyExisted) {
+		this.downloadOnlyExisted = downloadOnlyExisted;
+	}
+
 	@Override
 	public boolean downloadOnlyExisted() {
-		// TODO Auto-generated method stub
-		return false;
+		return downloadOnlyExisted;
+	}
+
+	public void setDownloadByPattern(boolean downloadByPattern) {
+		this.downloadByPattern = downloadByPattern;
 	}
 
 	@Override
 	public boolean downloadByPattern() {
-		// TODO Auto-generated method stub
-		return false;
+		return downloadByPattern;
+	}
+
+	public void setStockNameFrom(int stockNameFrom) {
+		this.stockNameFrom = stockNameFrom;
 	}
 
 	@Override
-	public Pair<Integer, Integer> stockNameSizePair() {
-		// TODO Auto-generated method stub
-		return null;
+	public int stockNameFrom() {
+		return stockNameFrom;
+	}
+
+	public void setStockNameTo(int stockNameTo) {
+		this.stockNameTo = stockNameTo;
 	}
 
 	@Override
-	public Pair<String, String> patternNamePair() {
-		// TODO Auto-generated method stub
-		return null;
+	public int stockNameTo() {
+		return stockNameTo;
+	}
+
+	public void setPatternNameFrom(String patternNameFrom) {
+		this.patternNameFrom = patternNameFrom;
+	}
+
+	@Override
+	public String patternNameFrom() {
+		return patternNameFrom;
+	}
+
+	public void setPatternNameTo(String patternNameTo) {
+		this.patternNameTo = patternNameTo;
+	}
+
+	@Override
+	public String patternNameTo() {
+		return patternNameTo;
 	}
 
 	public void setCreatedAt() {

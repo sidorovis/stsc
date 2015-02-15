@@ -124,6 +124,10 @@ public class FeedzillaHashStorage implements FeedzillaFileStorageReceiver {
 			lastStoredArticlesAmount = hashArticles.size();
 		}
 	}
+	
+	public void freeArticles() {
+		hashArticles.clear();
+	}
 
 	public FeedzillaFileCategory createFeedzillaCategory(FeedzillaFileCategory result) {
 		synchronized (hashCategories) {
