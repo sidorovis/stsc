@@ -32,7 +32,6 @@
 	</plugins>
   </build>
 	<modules>
-		<module>migrations</module>
 		<module>storage</module>
 	</modules>
 	<description>Stsc database is a set of modules for storing / reading data from databases.</description>

@@ -7,6 +7,6 @@
 		<dbms type="h2" />
 	</preConditions>
 
-	<include file="src/main/resources/0.0.15.service/db.changelog-0.0.15.xml" />
+	<include file="../config/0.0.15.service/db.changelog-0.0.15.xml" />
 
 </databaseChangeLog> 

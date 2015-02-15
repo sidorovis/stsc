@@ -4,11 +4,11 @@ import java.util.Date;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import stsc.common.service.settings.YahooDatafeedSettings;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import stsc.common.service.settings.YahooDatafeedSettings;
 
 @DatabaseTable(tableName = "yahoo_downloader_datafeed_settings")
 public class OrmliteYahooDatafeedSettings implements YahooDatafeedSettings {

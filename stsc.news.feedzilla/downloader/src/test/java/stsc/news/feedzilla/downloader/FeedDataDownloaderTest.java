@@ -27,7 +27,7 @@ public class FeedDataDownloaderTest {
 
 	@Test
 	public void testFeedDataDownloaderGetArticle() throws Exception {
-		LocalDateTime startOfDay = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0);
+		LocalDateTime startOfDay = LocalDateTime.now().minusDays(5).withHour(0).withMinute(0);
 		final FeedZilla feed = new FeedZilla();
 		final Category category = DownloadHelper.getCategories(feed, logger).get(0);
 		final Subcategory subcategory = DownloadHelper.getSubcategories(feed, category, logger).get(0);

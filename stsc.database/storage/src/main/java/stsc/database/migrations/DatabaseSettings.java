@@ -2,6 +2,7 @@ package stsc.database.migrations;
 
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -18,19 +19,21 @@ import liquibase.resource.FileSystemResourceAccessor;
 
 public final class DatabaseSettings {
 
+	public final static String dbChangeLog = "../config/db.changelog.xml";
+
 	private final String jdbcDriver;
 	private final String jdbcUrl;
 
 	public static DatabaseSettings development() throws IOException {
-		return new DatabaseSettings("../../../feedzilla_development.properties");
+		return new DatabaseSettings("../config/feedzilla_development.properties");
 	}
 
 	public static DatabaseSettings test() throws IOException {
-		return new DatabaseSettings("../../../feedzilla_test.properties");
+		return new DatabaseSettings("../config/feedzilla_test.properties");
 	}
 
 	private DatabaseSettings(final String filePath) throws IOException {
-		this(DatabaseSettings.class.getResourceAsStream(filePath));
+		this(new FileInputStream(filePath));
 	}
 
 	public DatabaseSettings(InputStream sourceInputStream) throws IOException {
@@ -40,6 +43,7 @@ public final class DatabaseSettings {
 			jdbcDriver = properties.getProperty("jdbc.driver");
 			jdbcUrl = properties.getProperty("jdbc.url");
 		}
+
 	}
 
 	public String getJdbcUrl() {
@@ -53,8 +57,8 @@ public final class DatabaseSettings {
 	public DatabaseSettings migrate() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = DatabaseSettings.class.getResource("../../../db.changelog.xml").getFile();
-		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile();
+		final String path = dbChangeLog;
+		final File parentPath = new File(path).getParentFile();
 		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.update((String) null);
 		liquibase.validate();
@@ -67,8 +71,8 @@ public final class DatabaseSettings {
 	public DatabaseSettings dropAll() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = DatabaseSettings.class.getResource("../../../db.changelog.xml").getFile();
-		final File parentPath = new File(path).getParentFile().getParentFile().getParentFile();
+		final String path = dbChangeLog;
+		final File parentPath = new File(path).getParentFile();
 		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.dropAll();
 		liquibase.validate();
