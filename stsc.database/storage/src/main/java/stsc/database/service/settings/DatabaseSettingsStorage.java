@@ -23,7 +23,7 @@ public class DatabaseSettingsStorage {
 	private final Dao<OrmliteYahooDownloaderStatistics, Integer> yahooDatafeedStatistics;
 
 	public DatabaseSettingsStorage(final DatabaseSettings databaseSettings) throws IOException, SQLException {
-		this.source = new JdbcConnectionSource(databaseSettings.getJdbcUrl());
+		this.source = new JdbcConnectionSource(databaseSettings.getJdbcUrl(), databaseSettings.getLogin(), databaseSettings.getPassword());
 		this.yahooDatafeedSettings = DaoManager.createDao(source, OrmliteYahooDownloaderSettings.class);
 		Validate.isTrue(yahooDatafeedSettings.isTableExists(), "OrmliteYahooDatafeedSettings table should exists");
 		yahooDatafeedStatistics = DaoManager.createDao(source, OrmliteYahooDownloaderStatistics.class);

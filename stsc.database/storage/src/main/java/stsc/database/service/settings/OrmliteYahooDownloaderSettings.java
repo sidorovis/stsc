@@ -2,7 +2,7 @@ package stsc.database.service.settings;
 
 import java.util.Date;
 
-import stsc.common.service.settings.YahooDownloaderSettings;
+import stsc.common.service.YahooDownloaderSettings;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

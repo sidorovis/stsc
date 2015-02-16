@@ -4,28 +4,27 @@ import graef.feedzillajava.Article;
 import graef.feedzillajava.Category;
 import graef.feedzillajava.Subcategory;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import stsc.common.service.ApplicationHelper;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
 import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-final class FeedzillaDownloadApplication implements LoadFeedReceiver {
+final class FeedzillaDownloadApplication implements ApplicationHelper.StopableApp, LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -71,7 +70,8 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		}
 	}
 
-	void start() throws FileNotFoundException, IOException, InterruptedException {
+	@Override
+	public void start() throws FileNotFoundException, IOException, InterruptedException {
 		if (endlessCycle) {
 			startEndless();
 		} else {
@@ -138,49 +138,24 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		hashStorage.createFeedzillaArticle(subcategory, result);
 	}
 
+	@Override
+	public void stop() throws Exception {
+		downloader.stopDownload();
+	}
+
+	@Override
+	public void log(Level logLevel, String message) {
+		logger.debug("log: " + logLevel.getName() + ", message: " + message);
+	}
+
 	public static void main(String[] args) {
 		try {
 			final FeedzillaDownloadApplication app = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
 			logger.info("Please enter 'e' and press Enter to stop application.");
-			final AtomicBoolean finished = new AtomicBoolean(false);
-			final Thread waiter = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-					while (!checkReadExitLine(app, bufferedReader)) {
-						CallableArticlesDownload.pause();
-						if (finished.get()) {
-							break;
-						}
-					}
-				}
-			});
-			waiter.start();
-			app.start();
-			finished.set(true);
-			waiter.join();
+			ApplicationHelper.createHelper(app);
 		} catch (Exception e) {
 			logger.error("Error on main function. ", e);
 		}
-	}
-
-	private static boolean checkReadExitLine(FeedzillaDownloadApplication app, BufferedReader bufferedReader) {
-		try {
-			if (bufferedReader.ready()) {
-				final String s = bufferedReader.readLine();
-				if (s.equals("e")) {
-					app.stop();
-					return true;
-				}
-			}
-		} catch (InterruptedException | IOException e) {
-			logger.debug("checkReadExitLine(...)", e);
-		}
-		return false;
-	}
-
-	private void stop() throws InterruptedException {
-		downloader.stopDownload();
 	}
 
 }

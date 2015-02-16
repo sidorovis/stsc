@@ -1,5 +1,4 @@
 package stsc.as.service.yahoo.downloader;
 
-public class SettingProxy {
-
+public class SettingProxy<T> {
 }

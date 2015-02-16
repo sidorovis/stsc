@@ -1,4 +1,4 @@
-package stsc.common.service.settings;
+package stsc.common.service;
 
 public interface YahooDownloaderSettings {
 

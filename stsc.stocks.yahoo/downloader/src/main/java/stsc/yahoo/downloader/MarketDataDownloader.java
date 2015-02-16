@@ -19,7 +19,7 @@ import stsc.yahoo.YahooUtils;
  * Download Market Data from Yahoo API.
  * 
  */
-final class MarketDataDownloader {
+public final class MarketDataDownloader {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");

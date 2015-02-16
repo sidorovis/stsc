@@ -23,6 +23,8 @@ public final class DatabaseSettings {
 
 	private final String jdbcDriver;
 	private final String jdbcUrl;
+	private final String login;
+	private final String password;
 
 	public static DatabaseSettings development() throws IOException {
 		return new DatabaseSettings("../config/feedzilla_development.properties");
@@ -32,16 +34,18 @@ public final class DatabaseSettings {
 		return new DatabaseSettings("../config/feedzilla_test.properties");
 	}
 
-	private DatabaseSettings(final String filePath) throws IOException {
+	public DatabaseSettings(final String filePath) throws IOException {
 		this(new FileInputStream(filePath));
 	}
 
-	public DatabaseSettings(InputStream sourceInputStream) throws IOException {
+	private DatabaseSettings(InputStream sourceInputStream) throws IOException {
 		try (DataInputStream inputStream = new DataInputStream(sourceInputStream)) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
 			jdbcDriver = properties.getProperty("jdbc.driver");
 			jdbcUrl = properties.getProperty("jdbc.url");
+			login = properties.getProperty("jdbc.login");
+			password = properties.getProperty("jdbc.password");
 		}
 
 	}
@@ -52,6 +56,14 @@ public final class DatabaseSettings {
 
 	public String getJdbcDriver() {
 		return jdbcDriver;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public DatabaseSettings migrate() throws SQLException, LiquibaseException {
