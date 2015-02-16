@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+	<property name="now" value="CURRENT_TIMESTAMP()" dbms="h2"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
 	<changeSet id="23_32_00__12_02_2015" author="ivan.sidarau@gmail.com">
 		<createTable tableName="yahoo_downloader_datafeed_settings">
 			<column name="id" type="int(11)" autoIncrement="true">
@@ -36,6 +39,11 @@
 			<column name="created_at" type="DATETIME" />
 			<column name="updated_at" type="DATETIME" />
 		</createTable>
+		<insert tableName="yahoo_downloader_datafeed_settings">
+        	<column name="setting_name" value="yahoo_downloader" />
+        	<column name="created_at" valueDate='CURRENT_TIMESTAMP()' />
+        	<column name="updated_at" valueDate='CURRENT_TIMESTAMP()' />
+    	</insert>
 	</changeSet>
 
 	<changeSet id="23_39_00__15_02_2015" author="ivan.sidarau@gmail.com">

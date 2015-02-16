@@ -35,10 +35,6 @@
                 <filter>${project.basedir}/../config/feedzilla_production.properties</filter>
             </filters>
             <resources>
-                <!--resource>
-                    <directory>${project.basedir}/../config</directory>
-                    <filtering>true</filtering>
-                </resource-->
                 <resource>
                     <directory>src/main/resources</directory>
                     <filtering>true</filtering>
@@ -79,6 +75,11 @@
         </profile>
     </profiles>
 	<dependencies>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.34</version>
+		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

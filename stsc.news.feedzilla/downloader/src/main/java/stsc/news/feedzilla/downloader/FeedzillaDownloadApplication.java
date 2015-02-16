@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -141,17 +142,22 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		try {
 			final FeedzillaDownloadApplication app = new FeedzillaDownloadApplication(DEVELOPER_FILENAME);
 			logger.info("Please enter 'e' and press Enter to stop application.");
+			final AtomicBoolean finished = new AtomicBoolean(false);
 			final Thread waiter = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 					while (!checkReadExitLine(app, bufferedReader)) {
 						CallableArticlesDownload.pause();
+						if (finished.get()) {
+							break;
+						}
 					}
 				}
 			});
 			waiter.start();
 			app.start();
+			finished.set(true);
 			waiter.join();
 		} catch (Exception e) {
 			logger.error("Error on main function. ", e);
