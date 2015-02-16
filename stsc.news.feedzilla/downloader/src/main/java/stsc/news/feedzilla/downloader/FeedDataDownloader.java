@@ -63,10 +63,6 @@ final class FeedDataDownloader {
 		this.dayDownloadFrom = dayDownloadFrom;
 	}
 
-	public LocalDateTime getDaysToDownload() {
-		return dayDownloadFrom;
-	}
-
 	public void stopDownload() throws InterruptedException {
 		stopped = true;
 	}
@@ -78,6 +74,7 @@ final class FeedDataDownloader {
 	public boolean download() throws InterruptedException {
 		boolean result = true;
 		int amountOfProcessedArticles = 0;
+		feed = new FeedZilla();
 		final List<Category> categories = DownloadHelper.getCategories(feed, logger);
 		if (categories.isEmpty())
 			return false;

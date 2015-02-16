@@ -31,7 +31,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	private static final int SLEEP_BETWEEN_DOWNLOAD = 1000 * 60 * 10;
 	private static Logger logger = LogManager.getLogger(FeedzillaDownloadApplication.class);
 	private static String DEVELOPER_FILENAME = "feedzilla_developer.properties";
 
@@ -83,7 +82,7 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 		boolean firstDownload = true;
 		LocalDateTime lastDownloadDate = LocalDateTime.now().minusDays(daysBackDownloadFrom).withHour(0).withMinute(0);
 		while (!downloader.isStopped()) {
-			final LocalDateTime now = LocalDateTime.now();
+			final LocalDateTime now = LocalDateTime.now().minusDays(daysBackDownloadFrom).withHour(0).withMinute(0);
 			if (downloadIteration(lastDownloadDate)) {
 				lastDownloadDate = now;
 			}
@@ -91,7 +90,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 				firstDownload = true;
 				hashStorage.freeArticles();
 			}
-			CallableArticlesDownload.pause(SLEEP_BETWEEN_DOWNLOAD);
 		}
 		logger.info("Stopping now true, we break endless cycle");
 	}
@@ -101,7 +99,6 @@ final class FeedzillaDownloadApplication implements LoadFeedReceiver {
 			if (downloader.isStopped())
 				break;
 			downloadIteration(DownloadHelper.createDateTimeElement(i));
-			CallableArticlesDownload.pause(SLEEP_BETWEEN_DOWNLOAD);
 		}
 	}
 
