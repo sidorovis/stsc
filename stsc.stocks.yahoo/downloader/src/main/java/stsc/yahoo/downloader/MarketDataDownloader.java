@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import stsc.common.service.ApplicationHelper;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.StringUtils;
 import stsc.yahoo.YahooSettings;
@@ -19,7 +21,7 @@ import stsc.yahoo.YahooUtils;
  * Download Market Data from Yahoo API.
  * 
  */
-public final class MarketDataDownloader {
+public final class MarketDataDownloader implements ApplicationHelper.StopableApp {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -35,6 +37,9 @@ public final class MarketDataDownloader {
 	static boolean downloadByPattern = false;
 	static String startPattern = "a";
 	static String endPattern = "zz";
+
+	final DownloadYahooStockThread downloadThread;
+	private volatile boolean stopped = false;
 
 	void generateNextElement(char[] generatedText, int currentIndex, int size) {
 		for (char c = 'a'; c <= 'z'; ++c) {
@@ -76,7 +81,20 @@ public final class MarketDataDownloader {
 
 	MarketDataDownloader() throws InterruptedException, IOException {
 		readProperties();
-		final DownloadYahooStockThread downloadThread = new DownloadYahooStockThread(settings);
+		downloadThread = new DownloadYahooStockThread(settings);
+	}
+
+	public static void main(String[] args) {
+		try {
+			final MarketDataDownloader downloader = new MarketDataDownloader();
+			ApplicationHelper.createHelper(downloader);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void start() throws Exception {
 
 		logger.trace("starting");
 		if (downloadExisted) {
@@ -92,6 +110,9 @@ public final class MarketDataDownloader {
 				for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
 					generateTasks(i);
 			}
+		}
+		if (stopped) {
+			return;
 		}
 		logger.trace("tasks size: {}", settings.taskQueueSize());
 		final List<Thread> threads = new ArrayList<Thread>();
@@ -109,13 +130,14 @@ public final class MarketDataDownloader {
 		logger.trace("finishing");
 	}
 
-	public static void main(String[] args) {
-		try {
-			new MarketDataDownloader();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void stop() throws Exception {
+		stopped = true;
+		downloadThread.stop();
+	}
+
+	@Override
+	public void log(Level logLevel, String message) {
+		logger.warn("log: " + logLevel.getName() + ", message: " + message);
 	}
 }

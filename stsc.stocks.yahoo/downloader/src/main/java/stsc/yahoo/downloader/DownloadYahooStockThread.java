@@ -21,6 +21,8 @@ class DownloadYahooStockThread implements Runnable {
 	private boolean deleteFilteredData = true;
 	private static Logger logger = LogManager.getLogger("DownloadThread");
 
+	private volatile boolean stopped = false;
+
 	DownloadYahooStockThread(YahooSettings settings) {
 		this.settings = settings;
 		this.stockFilter = new StockFilter();
@@ -78,8 +80,15 @@ class DownloadYahooStockThread implements Runnable {
 				if (solvedAmount % printEach == 0)
 					logger.info("solved {} tasks last stock name {}", solvedAmount, task);
 			}
+			if (stopped) {
+				break;
+			}
 			task = settings.getTask();
 		}
+	}
+
+	public void stop() {
+		stopped = true;
 	}
 
 	private static String getPath(String folder, String taskName) {
