@@ -2,8 +2,6 @@ package stsc.yahoo.downloader;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -12,8 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.service.ApplicationHelper;
-import stsc.common.stocks.UnitedFormatStock;
-import stsc.yahoo.StringUtils;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 
@@ -29,34 +25,16 @@ public final class MarketDataDownloader implements ApplicationHelper.StopableApp
 
 	private static Logger logger = LogManager.getLogger("MarketDataDownloader");
 
-	final private YahooSettings settings = YahooUtils.createSettings();
-	static int downloadThreadSize = 8;
-	static int stockNameMinLength = 5;
-	static int stockNameMaxLength = 5;
-	static boolean downloadExisted = false;
-	static boolean downloadByPattern = false;
-	static String startPattern = "a";
-	static String endPattern = "zz";
+	private final YahooSettings settings = YahooUtils.createSettings();
+	private int downloadThreadSize = 8;
+	private int stockNameMinLength = 5;
+	private int stockNameMaxLength = 5;
+	private boolean downloadExisted = false;
+	private boolean downloadByPattern = false;
+	private String startPattern = "a";
+	private String endPattern = "zz";
 
-	final DownloadYahooStockThread downloadThread;
-	private volatile boolean stopped = false;
-
-	void generateNextElement(char[] generatedText, int currentIndex, int size) {
-		for (char c = 'a'; c <= 'z'; ++c) {
-			generatedText[currentIndex] = c;
-			if (currentIndex == size - 1) {
-				String newTask = new String(generatedText);
-				settings.addTask(newTask);
-			} else {
-				generateNextElement(generatedText, currentIndex + 1, size);
-			}
-		}
-	}
-
-	void generateTasks(int taskLength) {
-		char[] generatedText = new char[taskLength];
-		generateNextElement(generatedText, 0, taskLength);
-	}
+	private final YahooDownloadCourutine downloadCourutine;
 
 	private void readProperties() throws IOException {
 		FileInputStream in = new FileInputStream("config/yahoo_fetcher.ini");
@@ -81,7 +59,8 @@ public final class MarketDataDownloader implements ApplicationHelper.StopableApp
 
 	MarketDataDownloader() throws InterruptedException, IOException {
 		readProperties();
-		downloadThread = new DownloadYahooStockThread(settings);
+		downloadCourutine = new YahooDownloadCourutine(logger, downloadExisted, settings, downloadByPattern, startPattern, endPattern,
+				stockNameMinLength, stockNameMaxLength, downloadThreadSize);
 	}
 
 	public static void main(String[] args) {
@@ -95,45 +74,12 @@ public final class MarketDataDownloader implements ApplicationHelper.StopableApp
 
 	@Override
 	public void start() throws Exception {
-
-		logger.trace("starting");
-		if (downloadExisted) {
-			UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.getTaskQueue());
-		} else {
-			if (downloadByPattern) {
-				String pattern = startPattern;
-				while (StringUtils.comparePatterns(pattern, endPattern) <= 0) {
-					settings.addTask(pattern);
-					pattern = StringUtils.nextPermutation(pattern);
-				}
-			} else {
-				for (int i = stockNameMinLength; i <= stockNameMaxLength; ++i)
-					generateTasks(i);
-			}
-		}
-		if (stopped) {
-			return;
-		}
-		logger.trace("tasks size: {}", settings.taskQueueSize());
-		final List<Thread> threads = new ArrayList<Thread>();
-		for (int i = 0; i < downloadThreadSize; ++i) {
-			Thread newThread = new Thread(downloadThread);
-			threads.add(newThread);
-			newThread.start();
-		}
-
-		logger.info("calculating threads started ( {} )", downloadThreadSize);
-		for (Thread thread : threads) {
-			thread.join();
-		}
-
-		logger.trace("finishing");
+		downloadCourutine.start();
 	}
 
 	@Override
 	public void stop() throws Exception {
-		stopped = true;
-		downloadThread.stop();
+		downloadCourutine.stop();
 	}
 
 	@Override

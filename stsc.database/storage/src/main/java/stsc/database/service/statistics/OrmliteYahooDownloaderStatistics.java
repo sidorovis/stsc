@@ -118,4 +118,9 @@ public class OrmliteYahooDownloaderStatistics implements YahooDownloaderStatisti
 	public void setUpdatedAt() {
 		this.updatedAt = new Date();
 	}
+
+	@Override
+	public String toString() {
+		return "[" + getStartDate() + "] " + getStatisticType() + " " + getMessage();
+	}
 }
