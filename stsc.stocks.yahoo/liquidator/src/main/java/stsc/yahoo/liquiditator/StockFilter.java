@@ -45,7 +45,6 @@ public class StockFilter {
 	private static Logger logger = LogManager.getLogger("StockFilter");
 
 	public StockFilter() {
-
 	}
 
 	public StockFilter(final Date testToday) {

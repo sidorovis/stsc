@@ -20,6 +20,7 @@ public class OrmliteYahooDownloaderLogger implements YahooDownloaderLogger {
 	public OrmliteYahooDownloaderLogger(final Logger logger, final DatabaseSettingsStorage storage, final String settingName,
 			final int processId, final Date startDate) {
 		this.logger = logger;
+		logger.info("logger initialized. processId: " + processId + ", startDate: " + startDate);
 		this.settingName = settingName;
 		this.storage = storage;
 		this.processId = processId;

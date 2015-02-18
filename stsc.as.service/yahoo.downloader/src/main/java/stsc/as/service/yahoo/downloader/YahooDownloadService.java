@@ -68,7 +68,7 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 			if (timeDiff < INTERVAL_BETWEEN_EXECUTIONS) {
 				synchronized (lock) {
 					final long secondsSLeepInterval = (INTERVAL_BETWEEN_EXECUTIONS - timeDiff);
-					final double minutesSleepInterval = (double)secondsSLeepInterval / 3600;
+					final double minutesSleepInterval = (double) secondsSLeepInterval / 3600;
 					downloaderLogger.log(StatisticType.TRACE, "Sleep until next cycle: " + (INTERVAL_BETWEEN_EXECUTIONS - timeDiff)
 							+ " seconds (" + minutesSleepInterval + " hours)");
 					lock.wait(1000 * (INTERVAL_BETWEEN_EXECUTIONS - timeDiff));
