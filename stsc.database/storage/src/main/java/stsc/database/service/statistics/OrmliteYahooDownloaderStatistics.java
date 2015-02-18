@@ -2,12 +2,12 @@ package stsc.database.service.statistics;
 
 import java.util.Date;
 
+import stsc.common.service.statistics.StatisticType;
+import stsc.common.service.statistics.YahooDownloaderStatistics;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import stsc.common.service.statistics.StatisticType;
-import stsc.common.service.statistics.YahooDownloaderStatistics;
 
 @DatabaseTable(tableName = "yahoo_downloader_datafeed_statistics")
 public class OrmliteYahooDownloaderStatistics implements YahooDownloaderStatistics {
@@ -123,4 +123,5 @@ public class OrmliteYahooDownloaderStatistics implements YahooDownloaderStatisti
 	public String toString() {
 		return "[" + getStartDate() + "] " + getStatisticType() + " " + getMessage();
 	}
+
 }

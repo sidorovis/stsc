@@ -3,15 +3,14 @@ package stsc.yahoo.downloader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-
+import stsc.common.service.statistics.YahooDownloaderLogger;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.StringUtils;
 import stsc.yahoo.YahooSettings;
 
 public final class YahooDownloadCourutine {
 
-	private final Logger logger;
+	private final YahooDownloaderLogger logger;
 
 	private final DownloadYahooStockThread downloadThread;
 
@@ -26,7 +25,7 @@ public final class YahooDownloadCourutine {
 
 	private volatile boolean stopped = false;
 
-	public YahooDownloadCourutine(Logger logger, boolean downloadExisted, YahooSettings settings, boolean downloadByPattern,
+	public YahooDownloadCourutine(YahooDownloaderLogger logger, boolean downloadExisted, YahooSettings settings, boolean downloadByPattern,
 			String startPattern, String endPattern, int stockNameMinLength, int stockNameMaxLength, int downloadThreadSize) {
 		this.logger = logger;
 		this.downloadExisted = downloadExisted;
@@ -38,11 +37,11 @@ public final class YahooDownloadCourutine {
 		this.stockNameMaxLength = stockNameMaxLength;
 		this.downloadThreadSize = downloadThreadSize;
 
-		downloadThread = new DownloadYahooStockThread(settings);
+		downloadThread = new DownloadYahooStockThread(logger, settings);
 	}
 
 	public void start() throws InterruptedException {
-		logger.trace("starting");
+		logger.log().trace("starting");
 		if (downloadExisted) {
 			UnitedFormatStock.loadStockList(settings.getDataFolder(), settings.getTaskQueue());
 		} else {
@@ -60,7 +59,7 @@ public final class YahooDownloadCourutine {
 		if (stopped) {
 			return;
 		}
-		logger.trace("tasks size: {}", settings.taskQueueSize());
+		logger.log().trace("tasks size: {}", settings.taskQueueSize());
 		final List<Thread> threads = new ArrayList<Thread>();
 		for (int i = 0; i < downloadThreadSize; ++i) {
 			Thread newThread = new Thread(downloadThread);
@@ -68,12 +67,12 @@ public final class YahooDownloadCourutine {
 			newThread.start();
 		}
 
-		logger.info("calculating threads started ( {} )", downloadThreadSize);
+		logger.log().info("calculating threads started ( {} )", downloadThreadSize);
 		for (Thread thread : threads) {
 			thread.join();
 		}
 
-		logger.trace("finishing");
+		logger.log().trace("finishing");
 	}
 
 	private void generateNextElement(char[] generatedText, int currentIndex, int size) {
@@ -96,7 +95,7 @@ public final class YahooDownloadCourutine {
 	public void stop() throws Exception {
 		stopped = true;
 		downloadThread.stop();
-		logger.trace("stop command was processed");
+		logger.log().trace("stop command was processed");
 	}
 
 }

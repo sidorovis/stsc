@@ -27,6 +27,7 @@ public class DatabaseSettingsStorage {
 		this.yahooDatafeedSettings = DaoManager.createDao(source, OrmliteYahooDownloaderSettings.class);
 		Validate.isTrue(yahooDatafeedSettings.isTableExists(), "OrmliteYahooDatafeedSettings table should exists");
 		yahooDatafeedStatistics = DaoManager.createDao(source, OrmliteYahooDownloaderStatistics.class);
+		Validate.isTrue(yahooDatafeedStatistics.isTableExists(), "OrmliteYahooDatafeedStatistics table should exists");
 	}
 
 	public CreateOrUpdateStatus setYahooDatafeedSettings(OrmliteYahooDownloaderSettings newCategory) throws SQLException {
