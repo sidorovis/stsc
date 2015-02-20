@@ -33,4 +33,6 @@ public interface YahooDownloaderSettings {
 
 	public String patternNameTo();
 
+	public int intervalBetweenExecutions();
+	
 }

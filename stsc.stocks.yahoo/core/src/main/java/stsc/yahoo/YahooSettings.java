@@ -24,7 +24,7 @@ public class YahooSettings {
 		if (dataFolderFile.exists() && dataFolderFile.isDirectory()) {
 			return dataFolderFile.getPath() + File.separatorChar;
 		} else {
-			throw new IOException(message + ": " + this.dataFolder);
+			throw new IOException(message + ": " + dataFolder);
 		}
 	}
 

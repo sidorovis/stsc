@@ -40,6 +40,9 @@ public class OrmliteYahooDownloaderSettings implements YahooDownloaderSettings {
 	@DatabaseField(columnName = "pattern_name_to", canBeNull = false)
 	private String patternNameTo;
 
+	@DatabaseField(columnName = "interval_between_executions", canBeNull = false)
+	private int intervalBetweenExecutions;
+
 	@DatabaseField(columnName = "created_at", dataType = DataType.DATE)
 	private Date createdAt;
 
@@ -137,5 +140,10 @@ public class OrmliteYahooDownloaderSettings implements YahooDownloaderSettings {
 
 	public void setUpdatedAt() {
 		this.updatedAt = new Date();
+	}
+
+	@Override
+	public int intervalBetweenExecutions() {
+		return intervalBetweenExecutions;
 	}
 }

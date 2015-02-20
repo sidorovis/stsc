@@ -33,6 +33,7 @@ _*.log
 *.versionsBackup
 tools/vagrant_hadoop_cluster/single-node/package
 liquibase*db
+stsc.stocks.yahoo/downloader/test/aaoi.uf
 
 .~lock*#
 

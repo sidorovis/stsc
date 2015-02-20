@@ -36,6 +36,9 @@
 			<column name="pattern_name_to" type="varchar(255)" defaultValue="Z" >
 				<constraints nullable="false" />
 			</column>
+			<column name="interval_between_executions" type="int(11)" defaultValueNumeric="43200" >
+				<constraints nullable="false" />
+			</column>
 			<column name="created_at" type="DATETIME" />
 			<column name="updated_at" type="DATETIME" />
 		</createTable>

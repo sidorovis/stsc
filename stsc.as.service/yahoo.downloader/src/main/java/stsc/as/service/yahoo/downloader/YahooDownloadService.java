@@ -32,14 +32,12 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
-	private final int INTERVAL_BETWEEN_EXECUTIONS = 60 * 60 * 12;
-
 	private final Logger logger = LogManager.getLogger(YahooDownloadService.class.getName());
 
 	private final String settingName = "yahoo_downloader";
 
 	private volatile boolean stopped = false;
-	private YahooDownloaderSettings defaultYahooDownloaderSettings;
+	private YahooDownloaderSettings settings;
 	private final DatabaseSettingsStorage settingsStorage;
 	private final OrmliteYahooDownloaderLogger downloaderLogger;
 
@@ -50,7 +48,7 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 		final DatabaseSettings databaseSettings = new DatabaseSettings("./config/yahoo_downloader_production.properties");
 		this.settingsStorage = new DatabaseSettingsStorage(databaseSettings);
 		this.downloaderLogger = new OrmliteYahooDownloaderLogger(logger, settingsStorage, settingName, getProcessId(), getStartTime());
-		this.defaultYahooDownloaderSettings = settingsStorage.getYahooDatafeedSettings(settingName);
+		this.settings = settingsStorage.getYahooDatafeedSettings(settingName);
 		downloaderLogger.log(StatisticType.TRACE, "YahooDownloadService initialized");
 	}
 
@@ -65,13 +63,14 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 				break;
 			}
 			final long timeDiff = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start;
-			if (timeDiff < INTERVAL_BETWEEN_EXECUTIONS) {
+			final int intervalBetweenExecutionsSeconds = settings.intervalBetweenExecutions();
+			if (timeDiff < intervalBetweenExecutionsSeconds) {
 				synchronized (lock) {
-					final long secondsSLeepInterval = (INTERVAL_BETWEEN_EXECUTIONS - timeDiff);
-					final double minutesSleepInterval = (double) secondsSLeepInterval / 3600;
-					downloaderLogger.log(StatisticType.TRACE, "Sleep until next cycle: " + (INTERVAL_BETWEEN_EXECUTIONS - timeDiff)
+					final long secondsSleepInterval = (intervalBetweenExecutionsSeconds - timeDiff);
+					final double minutesSleepInterval = (double) secondsSleepInterval / 3600;
+					downloaderLogger.log(StatisticType.TRACE, "Sleep until next cycle: " + (intervalBetweenExecutionsSeconds - timeDiff)
 							+ " seconds (" + minutesSleepInterval + " hours)");
-					lock.wait(1000 * (INTERVAL_BETWEEN_EXECUTIONS - timeDiff));
+					lock.wait(1000 * (intervalBetweenExecutionsSeconds - timeDiff));
 				}
 			}
 			start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
@@ -80,7 +79,7 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 
 	private void download() throws SQLException {
 		try {
-			final YahooDownloaderSettings s = defaultYahooDownloaderSettings;
+			final YahooDownloaderSettings s = settings;
 			final boolean downloadExisted = s.downloadOnlyExisted();
 			final YahooSettings settings = YahooUtils.createSettings();
 			final boolean downloadByPattern = s.downloadByPattern();
@@ -116,11 +115,11 @@ public class YahooDownloadService implements ApplicationHelper.StopableApp {
 
 	private YahooDownloaderSettings readSettings() throws SQLException {
 		try {
-			defaultYahooDownloaderSettings = settingsStorage.getYahooDatafeedSettings(settingName);
+			settings = settingsStorage.getYahooDatafeedSettings(settingName);
 		} catch (SQLException e) {
 			logger.fatal("readSettings() " + e.getMessage());
 		}
-		return defaultYahooDownloaderSettings;
+		return settings;
 	}
 
 	@Override
