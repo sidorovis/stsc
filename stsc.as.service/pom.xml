@@ -33,6 +33,7 @@
   </build>
 	<modules>
 		<module>yahoo.downloader</module>
+		<module>feedzilla.downloader</module>
 	</modules>
-	<description>Stsc as service container.</description>
+	<description>Stsc as service container. Contain all stsc.as.service modules (downloaders, task creators, statistic storages and etc).</description>
 </project>

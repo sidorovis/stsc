@@ -25,7 +25,7 @@ import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.downloader.YahooDownloadCourutine;
 
-public class YahooDownloadService implements ApplicationHelper.StopableApp {
+final class YahooDownloadService implements ApplicationHelper.StopableApp {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");

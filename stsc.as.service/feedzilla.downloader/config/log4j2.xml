@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Properties>
+		<Property name="market_data_downloader_filename">./logs/_market_data_downloader.log</Property>
+		<Property name="downloaded_stock_filter_filename">./logs/_downloaded_stock_filter.log</Property>
+	</Properties>
+    <Appenders>
+ 		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</Console>
+		<File name="MarketDataFile" fileName="${market_data_downloader_filename}">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="StockFilterFile" fileName="${downloaded_stock_filter_filename}">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="StockFilterWarnFile" fileName="./logs/_stock_filter.log">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="StockStorageFile" fileName="./logs/_stock_storage.log">
+			<PatternLayout>
+				<pattern>%d [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+    </Appenders>
+    <Loggers>
+    	<Root level="error">
+    		<AppenderRef ref="MarketDataFile"/>
+    	</Root>
+    	<Logger name="MarketDataDownloader" level="trace" additivity="false">
+    		<AppenderRef ref="MarketDataFile"/>
+    	</Logger>
+    	<Logger name="DownloadThread" level="trace" additivity="false">
+    		<AppenderRef ref="MarketDataFile"/>
+    	</Logger>
+    	<Logger name="DownloadedStockFilter" level="trace" additivity="false">
+    		<AppenderRef ref="StockFilterFile"/>
+    	</Logger>
+    	<Logger name="FilterThread" level="trace" additivity="false">
+    		<AppenderRef ref="StockFilterFile"/>
+    	</Logger>
+    	<Logger name="StockFilter" level="error" additivity="false">
+    		<AppenderRef ref="StockFilterWarnFile"/>
+    	</Logger>
+    	<Logger name="YahooStockStorage" level="trace" additivity="false">
+    		<AppenderRef ref="StockStorageFile"/>
+    	</Logger>
+    	<Logger name="stsc.as.service.yahoo.downloader.YahooDownloadService" level="trace" additivity="false">
+    		<AppenderRef ref="StockStorageFile"/>
+    	</Logger>
+    </Loggers>
+</Configuration>
