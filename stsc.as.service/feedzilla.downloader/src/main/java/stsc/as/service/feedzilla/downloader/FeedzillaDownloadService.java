@@ -8,8 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.service.ApplicationHelper;
+import stsc.common.service.StopableApp;
 
-final class FeedzillaDownloadService implements ApplicationHelper.StopableApp {
+final class FeedzillaDownloadService implements StopableApp {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -24,7 +25,7 @@ final class FeedzillaDownloadService implements ApplicationHelper.StopableApp {
 
 	public static void main(String[] args) {
 		try {
-			final ApplicationHelper.StopableApp app = new FeedzillaDownloadService();
+			final StopableApp app = new FeedzillaDownloadService();
 			ApplicationHelper.createHelper(app);
 		} catch (Exception e) {
 			e.printStackTrace();

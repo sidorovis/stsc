@@ -7,15 +7,6 @@ import java.util.logging.Level;
 
 public class ApplicationHelper {
 
-	public interface StopableApp {
-
-		public void start() throws Exception;
-
-		public void stop() throws Exception;
-
-		public void log(Level logLevel, String message);
-	}
-
 	public static void createHelper(final StopableApp app) throws Exception {
 		final AtomicBoolean finished = new AtomicBoolean(false);
 		final Thread waiter = new Thread(new Runnable() {

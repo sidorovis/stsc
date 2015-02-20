@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.service.ApplicationHelper;
+import stsc.common.service.StopableApp;
 import stsc.common.service.YahooDownloaderSettings;
 import stsc.common.service.statistics.StatisticType;
 import stsc.database.migrations.DatabaseSettings;
@@ -25,7 +26,7 @@ import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.downloader.YahooDownloadCourutine;
 
-final class YahooDownloadService implements ApplicationHelper.StopableApp {
+final class YahooDownloadService implements StopableApp {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -147,7 +148,7 @@ final class YahooDownloadService implements ApplicationHelper.StopableApp {
 
 	public static void main(String[] args) {
 		try {
-			final ApplicationHelper.StopableApp app = new YahooDownloadService();
+			final StopableApp app = new YahooDownloadService();
 			ApplicationHelper.createHelper(app);
 		} catch (Exception e) {
 			e.printStackTrace();
