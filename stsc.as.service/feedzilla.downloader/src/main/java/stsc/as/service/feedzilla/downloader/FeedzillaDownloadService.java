@@ -18,7 +18,7 @@ final class FeedzillaDownloadService implements StopableApp {
 	}
 
 	private final Logger logger = LogManager.getLogger(FeedzillaDownloadService.class.getName());
-
+	
 	public FeedzillaDownloadService() {
 
 	}
