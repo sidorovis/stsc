@@ -18,12 +18,6 @@ target
 */test_data/*.out/*
 /.*
 stsc.general/test/*.csv
-stsc.distributed.hadoop/test_data/output.txt
-stsc.distributed.hadoop/output_data/
-stsc.distributed.hadoop/output.txt
-stsc.distributed.hadoop/yahoo_datafeed/*
-stsc.distributed.hadoop/test_data/.*
-stsc.distributed.hadoop/test_data/_SUCCESS
 stsc.news.feedzilla/**/*.log
 stsc.news.feedzilla/feed_data/*.fz
 .project
