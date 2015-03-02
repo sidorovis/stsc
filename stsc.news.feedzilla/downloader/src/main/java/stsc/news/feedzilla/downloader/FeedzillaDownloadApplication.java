@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.service.ApplicationHelper;
 import stsc.common.service.StopableApp;
+import stsc.common.service.statistics.StatisticType;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
@@ -41,6 +43,8 @@ final class FeedzillaDownloadApplication implements StopableApp, LoadFeedReceive
 	private int daysBackDownloadFrom = 3650;
 	private final FeedDataDownloader downloader;
 	private final FeedzillaHashStorage hashStorage;
+
+	private Object lock = new Object();
 
 	FeedzillaDownloadApplication() throws SQLException, IOException {
 		this(DEVELOPER_FILENAME);
@@ -83,6 +87,7 @@ final class FeedzillaDownloadApplication implements StopableApp, LoadFeedReceive
 	void startEndless() throws FileNotFoundException, IOException, InterruptedException {
 		boolean firstDownload = true;
 		LocalDateTime lastDownloadDate = LocalDateTime.now().minusDays(daysBackDownloadFrom).withHour(0).withMinute(0);
+		long start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
 		while (!downloader.isStopped()) {
 			final LocalDateTime now = LocalDateTime.now().minusDays(daysBackDownloadFrom).withHour(0).withMinute(0);
 			if (downloadIteration(lastDownloadDate)) {
@@ -92,6 +97,18 @@ final class FeedzillaDownloadApplication implements StopableApp, LoadFeedReceive
 				firstDownload = true;
 				hashStorage.freeArticles();
 			}
+			final long timeDiff = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start;
+			final int intervalBetweenExecutionsSeconds = 3600; // one hour
+			if (timeDiff < intervalBetweenExecutionsSeconds) {
+				synchronized (lock) {
+					final long secondsSleepInterval = (intervalBetweenExecutionsSeconds - timeDiff);
+					final double minutesSleepInterval = (double) secondsSleepInterval / 3600;
+					logger.debug("Sleep until next cycle: " + (intervalBetweenExecutionsSeconds - timeDiff) + " seconds ("
+							+ minutesSleepInterval + " hours)");
+					lock.wait(1000 * (intervalBetweenExecutionsSeconds - timeDiff));
+				}
+			}
+			start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
 		}
 		logger.info("Stopping now true, we break endless cycle");
 	}
@@ -142,6 +159,9 @@ final class FeedzillaDownloadApplication implements StopableApp, LoadFeedReceive
 	@Override
 	public void stop() throws Exception {
 		downloader.stopDownload();
+		synchronized (lock) {
+			lock.notifyAll();
+		}
 	}
 
 	@Override
