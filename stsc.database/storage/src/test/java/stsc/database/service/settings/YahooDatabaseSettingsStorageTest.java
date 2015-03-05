@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import stsc.database.migrations.YahooDownloaderDatabaseSettings;
 
-public class DatabaseSettingsStorageTest {
+public class YahooDatabaseSettingsStorageTest {
 
 	@Test
-	public void testDatabaseSettingsStorage() throws IOException, SQLException, LiquibaseException, InterruptedException {
+	public void testYahooDatabaseSettingsStorage() throws IOException, SQLException, LiquibaseException, InterruptedException {
 		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
 		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		Assert.assertNotNull(storage);
