@@ -45,10 +45,6 @@ final class FeedDataDownloader {
 
 	private double multiplier = MIN_MULTIPLIER;
 
-	FeedDataDownloader(int amountOfArticlesPerRequest) {
-		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest, 20);
-	}
-
 	FeedDataDownloader(int amountOfArticlesPerRequest, int articlesWaitTime) {
 		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest, articlesWaitTime);
 	}
