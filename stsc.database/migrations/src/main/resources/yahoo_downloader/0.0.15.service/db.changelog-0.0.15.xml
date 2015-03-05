@@ -8,7 +8,7 @@
 	<property name="now" value="now()" dbms="mysql"/>
 
 	<changeSet id="23_32_00__12_02_2015" author="ivan.sidarau@gmail.com">
-		<createTable tableName="yahoo_downloader_datafeed_settings">
+		<createTable tableName="datafeed_settings">
 			<column name="id" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
@@ -42,7 +42,7 @@
 			<column name="created_at" type="DATETIME" />
 			<column name="updated_at" type="DATETIME" />
 		</createTable>
-		<insert tableName="yahoo_downloader_datafeed_settings">
+		<insert tableName="datafeed_settings">
         	<column name="setting_name" value="yahoo_downloader" />
         	<column name="created_at" valueDate='CURRENT_TIMESTAMP()' />
         	<column name="updated_at" valueDate='CURRENT_TIMESTAMP()' />
@@ -50,7 +50,7 @@
 	</changeSet>
 
 	<changeSet id="23_39_00__15_02_2015" author="ivan.sidarau@gmail.com">
-		<createTable tableName="yahoo_downloader_datafeed_statistics">
+		<createTable tableName="datafeed_statistics">
 			<column name="id" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>

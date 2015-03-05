@@ -7,17 +7,17 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.common.service.statistics.StatisticType;
 import stsc.common.service.statistics.YahooDownloaderLogger;
-import stsc.database.service.settings.DatabaseSettingsStorage;
+import stsc.database.service.settings.YahooDownloaderDatabaseStorage;
 
 public class OrmliteYahooDownloaderLogger implements YahooDownloaderLogger {
 
 	private final Logger logger;
-	private final DatabaseSettingsStorage storage;
+	private final YahooDownloaderDatabaseStorage storage;
 	private final String settingName;
 	private final int processId;
 	private final Date startDate;
 
-	public OrmliteYahooDownloaderLogger(final Logger logger, final DatabaseSettingsStorage storage, final String settingName,
+	public OrmliteYahooDownloaderLogger(final Logger logger, final YahooDownloaderDatabaseStorage storage, final String settingName,
 			final int processId, final Date startDate) {
 		this.logger = logger;
 		logger.info("logger initialized. processId: " + processId + ", startDate: " + startDate);

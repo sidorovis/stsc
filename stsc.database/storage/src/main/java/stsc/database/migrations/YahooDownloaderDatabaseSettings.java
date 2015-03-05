@@ -17,28 +17,30 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 
-public final class DatabaseSettings {
+public final class YahooDownloaderDatabaseSettings {
 
-	public final static String dbChangeLog = "../config/db.changelog.xml";
+	public final static String configFolder = "../config/yahoo_downloader/";
+	public final static String dbChangeLog = "../migrations/target/classes/yahoo_downloader/";
+	public final static String dbChangeLogFile = "db.changelog.xml";
 
 	private final String jdbcDriver;
 	private final String jdbcUrl;
 	private final String login;
 	private final String password;
 
-	public static DatabaseSettings development() throws IOException {
-		return new DatabaseSettings("../config/feedzilla_development.properties");
+	public static YahooDownloaderDatabaseSettings development() throws IOException {
+		return new YahooDownloaderDatabaseSettings(configFolder + "development.properties");
 	}
 
-	public static DatabaseSettings test() throws IOException {
-		return new DatabaseSettings("../config/feedzilla_test.properties");
+	public static YahooDownloaderDatabaseSettings test() throws IOException {
+		return new YahooDownloaderDatabaseSettings(configFolder + "test.properties");
 	}
 
-	public DatabaseSettings(final String filePath) throws IOException {
+	public YahooDownloaderDatabaseSettings(final String filePath) throws IOException {
 		this(new FileInputStream(filePath));
 	}
 
-	private DatabaseSettings(InputStream sourceInputStream) throws IOException {
+	private YahooDownloaderDatabaseSettings(InputStream sourceInputStream) throws IOException {
 		try (DataInputStream inputStream = new DataInputStream(sourceInputStream)) {
 			final Properties properties = new Properties();
 			properties.load(inputStream);
@@ -66,12 +68,11 @@ public final class DatabaseSettings {
 		return password;
 	}
 
-	public DatabaseSettings migrate() throws SQLException, LiquibaseException {
+	public YahooDownloaderDatabaseSettings migrate() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = dbChangeLog;
-		final File parentPath = new File(path).getParentFile();
-		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
+		final File parentPath = new File(dbChangeLog);
+		final Liquibase liquibase = new Liquibase(dbChangeLogFile, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.update((String) null);
 		liquibase.validate();
 		database.commit();
@@ -80,12 +81,11 @@ public final class DatabaseSettings {
 		return this;
 	}
 
-	public DatabaseSettings dropAll() throws SQLException, LiquibaseException {
+	public YahooDownloaderDatabaseSettings dropAll() throws SQLException, LiquibaseException {
 		final Connection c = DriverManager.getConnection(jdbcUrl);
 		final Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-		final String path = dbChangeLog;
-		final File parentPath = new File(path).getParentFile();
-		final Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
+		final File parentPath = new File(dbChangeLog);
+		final Liquibase liquibase = new Liquibase(dbChangeLogFile, new FileSystemResourceAccessor(parentPath.getAbsolutePath()), database);
 		liquibase.dropAll();
 		liquibase.validate();
 		database.commit();

@@ -22,17 +22,17 @@
 				<version>3.2.0</version>
 				<configuration>
 					<propertyFileWillOverride>true</propertyFileWillOverride>
-					<propertyFile>target/classes/liquibase.properties</propertyFile>
+					<propertyFile>${project.basedir}/target/classes/liquibase.properties</propertyFile>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<profiles>
         <profile>
-            <id>production</id>
+            <id>yahoo.production</id>
 			<build>
             <filters>
-                <filter>${project.basedir}/../config/feedzilla_production.properties</filter>
+                <filter>${project.basedir}/../config/yahoo_downloader/production.properties</filter>
             </filters>
             <resources>
                 <resource>
@@ -43,13 +43,13 @@
         	</build>
         </profile>
         <profile>
-            <id>development</id>
+            <id>yahoo.development</id>
 			<activation>
             	<activeByDefault>true</activeByDefault>
         	</activation>
 			<build>
             <filters>
-                <filter>${project.basedir}/../config/feedzilla_development.properties</filter>
+                <filter>${project.basedir}/../config/yahoo_downloader/development.properties</filter>
             </filters>
             <resources>
                 <resource>
@@ -60,10 +60,55 @@
         	</build>
         </profile>
         <profile>
-            <id>test</id>
+            <id>yahoo.test</id>
 			<build>
             <filters>
-                <filter>${project.basedir}/../config/feedzilla_test.properties</filter>
+                <filter>${project.basedir}/../config/yahoo_downloader/test.properties</filter>
+            </filters>
+            <resources>
+                <resource>
+                    <directory>src/main/resources</directory>
+                    <filtering>true</filtering>
+                </resource>
+            </resources>
+        	</build>
+        </profile>
+        <profile>
+            <id>feedzilla.production</id>
+			<build>
+            <filters>
+                <filter>${project.basedir}/../config/feedzilla_downloader/production.properties</filter>
+            </filters>
+            <resources>
+                <resource>
+                    <directory>src/main/resources</directory>
+                    <filtering>true</filtering>
+                </resource>
+            </resources>
+        	</build>
+        </profile>
+        <profile>
+            <id>feedzilla.development</id>
+			<activation>
+            	<activeByDefault>true</activeByDefault>
+        	</activation>
+			<build>
+            <filters>
+                <filter>${project.basedir}/../config/feedzilla_downloader/development.properties</filter>
+            </filters>
+            <resources>
+                <resource>
+                    <directory>src/main/resources</directory>
+                    <filtering>true</filtering>
+                </resource>
+            </resources>
+        	</build>
+        </profile>
+        <profile>
+            <id>feedzilla.test</id>
+			<build>
+            <filters>
+                <filter>${project.basedir}/../config/feedzilla_downloader/test.properties</filter>
             </filters>
             <resources>
                 <resource>

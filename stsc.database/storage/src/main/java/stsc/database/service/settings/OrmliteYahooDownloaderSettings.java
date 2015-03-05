@@ -8,7 +8,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "yahoo_downloader_datafeed_settings")
+@DatabaseTable(tableName = "datafeed_settings")
 public class OrmliteYahooDownloaderSettings implements YahooDownloaderSettings {
 
 	public final static String settingColumnName = "setting_name";

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 import stsc.common.service.ApplicationHelper;
 import stsc.common.service.StopableApp;
-import stsc.common.service.statistics.StatisticType;
 import stsc.news.feedzilla.FeedzillaHashStorage;
 import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
 import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
@@ -98,11 +97,11 @@ final class FeedzillaDownloadApplication implements StopableApp, LoadFeedReceive
 				hashStorage.freeArticles();
 			}
 			final long timeDiff = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start;
-			final int intervalBetweenExecutionsSeconds = 3600; // one hour
+			final int intervalBetweenExecutionsSeconds = 36000;
 			if (timeDiff < intervalBetweenExecutionsSeconds) {
 				synchronized (lock) {
 					final long secondsSleepInterval = (intervalBetweenExecutionsSeconds - timeDiff);
-					final double minutesSleepInterval = (double) secondsSleepInterval / 3600;
+					final double minutesSleepInterval = (double) secondsSleepInterval / intervalBetweenExecutionsSeconds;
 					logger.debug("Sleep until next cycle: " + (intervalBetweenExecutionsSeconds - timeDiff) + " seconds ("
 							+ minutesSleepInterval + " hours)");
 					lock.wait(1000 * (intervalBetweenExecutionsSeconds - timeDiff));

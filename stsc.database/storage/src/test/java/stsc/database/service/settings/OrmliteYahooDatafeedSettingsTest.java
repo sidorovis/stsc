@@ -8,14 +8,14 @@ import liquibase.exception.LiquibaseException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import stsc.database.migrations.DatabaseSettings;
+import stsc.database.migrations.YahooDownloaderDatabaseSettings;
 
 public class OrmliteYahooDatafeedSettingsTest {
 
 	@Test
 	public void testOrmliteYahooDatafeedSettings() throws SQLException, LiquibaseException, IOException {
-		final DatabaseSettings settings = DatabaseSettings.test().dropAll().migrate();
-		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
+		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
+		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		Assert.assertNotNull(storage);
 		{
 			final OrmliteYahooDownloaderSettings oyds = new OrmliteYahooDownloaderSettings("test_yahoo_settings");

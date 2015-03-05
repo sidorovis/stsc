@@ -12,8 +12,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.common.service.statistics.StatisticType;
-import stsc.database.migrations.DatabaseSettings;
-import stsc.database.service.settings.DatabaseSettingsStorage;
+import stsc.database.migrations.YahooDownloaderDatabaseSettings;
+import stsc.database.service.settings.YahooDownloaderDatabaseStorage;
 
 public class OrmliteYahooDatafeedStatisticsTest {
 
@@ -23,8 +23,8 @@ public class OrmliteYahooDatafeedStatisticsTest {
 		return Integer.valueOf(id);
 	}
 
-	private Date create(DatabaseSettings settings) throws IOException, SQLException {
-		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
+	private Date create(YahooDownloaderDatabaseSettings settings) throws IOException, SQLException {
+		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		Assert.assertNotNull(storage);
 		final Date d = new Date();
 		{
@@ -50,9 +50,9 @@ public class OrmliteYahooDatafeedStatisticsTest {
 
 	@Test
 	public void testOrmliteYahooDatafeedSettings() throws SQLException, LiquibaseException, IOException {
-		final DatabaseSettings settings = DatabaseSettings.test().dropAll().migrate();
+		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
 		final Date d = create(settings);
-		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
+		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		final List<OrmliteYahooDownloaderStatistics> list = storage.getYahooDatafeedStatistics("yahoo_settings");
 		checkList(d, list);
 		settings.dropAll();
@@ -60,9 +60,9 @@ public class OrmliteYahooDatafeedStatisticsTest {
 
 	@Test
 	public void testOrmliteYahooDatafeedSettingsGetStatisticsByPid() throws SQLException, LiquibaseException, IOException {
-		final DatabaseSettings settings = DatabaseSettings.test().dropAll().migrate();
+		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
 		final Date d = create(settings);
-		final DatabaseSettingsStorage storage = new DatabaseSettingsStorage(settings);
+		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		final List<OrmliteYahooDownloaderStatistics> list = storage.getYahooDatafeedStatistics("yahoo_settings", getId());
 		checkList(d, list);
 		settings.dropAll();
