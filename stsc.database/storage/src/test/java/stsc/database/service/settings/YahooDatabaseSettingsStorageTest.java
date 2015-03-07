@@ -18,12 +18,12 @@ public class YahooDatabaseSettingsStorageTest {
 		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
 		Assert.assertNotNull(storage);
 		{
-			final OrmliteYahooDownloaderSettings oyds = new OrmliteYahooDownloaderSettings("test_yahoo_settings");
+			final OrmliteYahooDownloaderSettings oyds = new OrmliteYahooDownloaderSettings("yahoo_downloader_test");
 			oyds.setThreadAmount(6);
 			Assert.assertEquals(1, storage.setYahooDatafeedSettings(oyds).getNumLinesChanged());
 		}
 		{
-			final OrmliteYahooDownloaderSettings copy = storage.getYahooDatafeedSettings("test_yahoo_settings");
+			final OrmliteYahooDownloaderSettings copy = storage.getYahooDatafeedSettings("yahoo_downloader_test");
 			Assert.assertEquals(6, copy.threadAmount());
 			Assert.assertEquals(1, storage.setYahooDatafeedSettings(copy).getNumLinesChanged());
 		}
