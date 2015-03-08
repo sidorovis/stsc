@@ -9,6 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.database.migrations.YahooDownloaderDatabaseSettings;
+import stsc.database.service.schemas.OrmliteYahooDownloaderSettings;
+import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
 
 public class YahooDatabaseSettingsStorageTest {
 
@@ -20,12 +22,12 @@ public class YahooDatabaseSettingsStorageTest {
 		{
 			final OrmliteYahooDownloaderSettings oyds = new OrmliteYahooDownloaderSettings("yahoo_downloader_test");
 			oyds.setThreadAmount(6);
-			Assert.assertEquals(1, storage.setYahooDatafeedSettings(oyds).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setSettings(oyds).getNumLinesChanged());
 		}
 		{
-			final OrmliteYahooDownloaderSettings copy = storage.getYahooDatafeedSettings("yahoo_downloader_test");
+			final OrmliteYahooDownloaderSettings copy = storage.getSettings("yahoo_downloader_test");
 			Assert.assertEquals(6, copy.threadAmount());
-			Assert.assertEquals(1, storage.setYahooDatafeedSettings(copy).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setSettings(copy).getNumLinesChanged());
 		}
 		settings.dropAll();
 	}

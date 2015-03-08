@@ -1,4 +1,4 @@
-package stsc.database.service.statistics;
+package stsc.database.service.schemas;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -13,9 +13,10 @@ import org.junit.Test;
 
 import stsc.common.service.statistics.StatisticType;
 import stsc.database.migrations.YahooDownloaderDatabaseSettings;
-import stsc.database.service.settings.YahooDownloaderDatabaseStorage;
+import stsc.database.service.schemas.OrmliteYahooDownloaderStatistics;
+import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
 
-public class OrmliteYahooDatafeedStatisticsTest {
+public class OrmliteYahooDownloaderStatisticsTest {
 
 	private Integer getId() {
 		final String name = ManagementFactory.getRuntimeMXBean().getName();
@@ -33,8 +34,8 @@ public class OrmliteYahooDatafeedStatisticsTest {
 			oyds.setStatisticType(StatisticType.FATAL);
 			oyds.setProcessId(getId());
 			oyds.setMessage("this is a test message");
-			Assert.assertEquals(1, storage.setYahooDatafeedStatistics(oyds).getNumLinesChanged());
-			Assert.assertEquals(1, storage.setYahooDatafeedStatistics(oyds).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setStatistics(oyds).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setStatistics(oyds).getNumLinesChanged());
 		}
 		{
 			final OrmliteYahooDownloaderStatistics oyds = new OrmliteYahooDownloaderStatistics("yahoo_settings");
@@ -42,7 +43,7 @@ public class OrmliteYahooDatafeedStatisticsTest {
 			oyds.setStatisticType(StatisticType.ALL);
 			oyds.setProcessId(getId());
 			oyds.setMessage("another test message");
-			Assert.assertEquals(1, storage.setYahooDatafeedStatistics(oyds).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setStatistics(oyds).getNumLinesChanged());
 			Assert.assertEquals(2, oyds.getId().intValue());
 		}
 		return d;
@@ -53,7 +54,7 @@ public class OrmliteYahooDatafeedStatisticsTest {
 		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
 		final Date d = create(settings);
 		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
-		final List<OrmliteYahooDownloaderStatistics> list = storage.getYahooDatafeedStatistics("yahoo_settings");
+		final List<OrmliteYahooDownloaderStatistics> list = storage.getStatistics("yahoo_settings");
 		checkList(d, list);
 		settings.dropAll();
 	}
@@ -63,7 +64,7 @@ public class OrmliteYahooDatafeedStatisticsTest {
 		final YahooDownloaderDatabaseSettings settings = YahooDownloaderDatabaseSettings.test().dropAll().migrate();
 		final Date d = create(settings);
 		final YahooDownloaderDatabaseStorage storage = new YahooDownloaderDatabaseStorage(settings);
-		final List<OrmliteYahooDownloaderStatistics> list = storage.getYahooDatafeedStatistics("yahoo_settings", getId());
+		final List<OrmliteYahooDownloaderStatistics> list = storage.getStatistics("yahoo_settings", getId());
 		checkList(d, list);
 		settings.dropAll();
 	}

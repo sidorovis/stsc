@@ -1,4 +1,4 @@
-package stsc.database.service.settings;
+package stsc.database.service.schemas;
 
 import java.util.Date;
 

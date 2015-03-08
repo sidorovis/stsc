@@ -1,4 +1,4 @@
-package stsc.database.service.settings;
+package stsc.database.service.schemas;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -9,8 +9,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import stsc.database.migrations.YahooDownloaderDatabaseSettings;
+import stsc.database.service.schemas.OrmliteYahooDownloaderSettings;
+import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
 
-public class OrmliteYahooDatafeedSettingsTest {
+public class OrmliteYahooDownloaderSettingsTest {
 
 	@Test
 	public void testOrmliteYahooDatafeedSettings() throws SQLException, LiquibaseException, IOException {
@@ -26,12 +28,12 @@ public class OrmliteYahooDatafeedSettingsTest {
 			oyds.setPatternNameTo("GFDS");
 			oyds.setStockNameFrom(4);
 			oyds.setStockNameTo(19);
-			Assert.assertEquals(1, storage.setYahooDatafeedSettings(oyds).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setSettings(oyds).getNumLinesChanged());
 		}
 		{
-			final OrmliteYahooDownloaderSettings copy = storage.getYahooDatafeedSettings("yahoo_downloader_test");
+			final OrmliteYahooDownloaderSettings copy = storage.getSettings("yahoo_downloader_test");
 			Assert.assertEquals(6, copy.threadAmount());
-			Assert.assertEquals(1, storage.setYahooDatafeedSettings(copy).getNumLinesChanged());
+			Assert.assertEquals(1, storage.setSettings(copy).getNumLinesChanged());
 			Assert.assertEquals(false, copy.downloadByPattern());
 			Assert.assertEquals(false, copy.downloadOnlyExisted());
 			Assert.assertEquals("ASD", copy.patternNameFrom());

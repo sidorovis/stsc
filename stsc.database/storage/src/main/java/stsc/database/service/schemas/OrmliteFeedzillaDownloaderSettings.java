@@ -1,4 +1,4 @@
-package stsc.database.service.settings;
+package stsc.database.service.schemas;
 
 import java.util.Date;
 
@@ -91,6 +91,12 @@ public class OrmliteFeedzillaDownloaderSettings implements FeedzillaDownloaderSe
 	@Override
 	public String feedFolder() {
 		return feedFolder;
+	}
+
+	//
+
+	public void setFeedFolder(String feedFolder) {
+		this.feedFolder = feedFolder;
 	}
 
 }

@@ -20,8 +20,8 @@ import stsc.common.service.StopableApp;
 import stsc.common.service.YahooDownloaderSettings;
 import stsc.common.service.statistics.StatisticType;
 import stsc.database.migrations.YahooDownloaderDatabaseSettings;
-import stsc.database.service.settings.YahooDownloaderDatabaseStorage;
-import stsc.database.service.statistics.OrmliteYahooDownloaderLogger;
+import stsc.database.service.schemas.OrmliteYahooDownloaderLogger;
+import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
 import stsc.yahoo.downloader.YahooDownloadCourutine;
@@ -49,7 +49,7 @@ final class YahooDownloadService implements StopableApp {
 		final YahooDownloaderDatabaseSettings databaseSettings = new YahooDownloaderDatabaseSettings("./config/yahoo_downloader_production.properties");
 		this.settingsStorage = new YahooDownloaderDatabaseStorage(databaseSettings);
 		this.downloaderLogger = new OrmliteYahooDownloaderLogger(logger, settingsStorage, settingName, getProcessId(), getStartTime());
-		this.settings = settingsStorage.getYahooDatafeedSettings(settingName);
+		this.settings = settingsStorage.getSettings(settingName);
 		downloaderLogger.log(StatisticType.TRACE, "YahooDownloadService initialized");
 	}
 
@@ -116,7 +116,7 @@ final class YahooDownloadService implements StopableApp {
 
 	private YahooDownloaderSettings readSettings() throws SQLException {
 		try {
-			settings = settingsStorage.getYahooDatafeedSettings(settingName);
+			settings = settingsStorage.getSettings(settingName);
 		} catch (SQLException e) {
 			logger.fatal("readSettings() " + e.getMessage());
 		}
