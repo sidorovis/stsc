@@ -7,18 +7,18 @@ import org.apache.logging.log4j.Logger;
 
 import stsc.common.service.statistics.FeedzillaDownloaderLogger;
 import stsc.common.service.statistics.StatisticType;
-import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
+import stsc.database.service.storages.FeedzillaDownloaderDatabaseStorage;
 
 public class OrmliteFeedzillaDownloaderLogger implements FeedzillaDownloaderLogger {
 
 	private final Logger logger;
-	private final YahooDownloaderDatabaseStorage storage;
+	private final FeedzillaDownloaderDatabaseStorage storage;
 	private final String settingName;
 	private final int processId;
 	private final Date startDate;
 
-	public OrmliteFeedzillaDownloaderLogger(final Logger logger, final YahooDownloaderDatabaseStorage storage, final String settingName,
-			final int processId, final Date startDate) {
+	public OrmliteFeedzillaDownloaderLogger(final Logger logger, final FeedzillaDownloaderDatabaseStorage storage,
+			final String settingName, final int processId, final Date startDate) {
 		this.logger = logger;
 		logger.info("logger initialized. processId: " + processId + ", startDate: " + startDate);
 		this.settingName = settingName;
@@ -29,7 +29,7 @@ public class OrmliteFeedzillaDownloaderLogger implements FeedzillaDownloaderLogg
 
 	@Override
 	public boolean log(StatisticType statisticType, String message) {
-		final OrmliteYahooDownloaderStatistics s = new OrmliteYahooDownloaderStatistics(settingName);
+		final OrmliteFeedzillaDownloaderStatistics s = new OrmliteFeedzillaDownloaderStatistics(settingName);
 		s.setProcessId(processId);
 		s.setStartDate(startDate);
 		s.setStatisticType(statisticType);
