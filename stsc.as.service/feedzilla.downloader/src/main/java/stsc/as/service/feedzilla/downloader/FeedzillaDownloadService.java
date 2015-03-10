@@ -1,5 +1,10 @@
 package stsc.as.service.feedzilla.downloader;
 
+import graef.feedzillajava.Article;
+import graef.feedzillajava.Category;
+import graef.feedzillajava.Subcategory;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.sql.SQLException;
@@ -20,8 +25,15 @@ import stsc.common.service.statistics.StatisticType;
 import stsc.database.migrations.FeedzillaDownloaderDatabaseSettings;
 import stsc.database.service.schemas.OrmliteFeedzillaDownloaderLogger;
 import stsc.database.service.storages.FeedzillaDownloaderDatabaseStorage;
+import stsc.news.feedzilla.FeedzillaHashStorage;
+import stsc.news.feedzilla.downloader.DownloadHelper;
+import stsc.news.feedzilla.downloader.FeedDataDownloader;
+import stsc.news.feedzilla.downloader.LoadFeedReceiver;
+import stsc.news.feedzilla.file.schema.FeedzillaFileArticle;
+import stsc.news.feedzilla.file.schema.FeedzillaFileCategory;
+import stsc.news.feedzilla.file.schema.FeedzillaFileSubcategory;
 
-final class FeedzillaDownloadService implements StopableApp {
+final class FeedzillaDownloadService implements StopableApp, LoadFeedReceiver {
 
 	static {
 		System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "./config/log4j2.xml");
@@ -37,7 +49,9 @@ final class FeedzillaDownloadService implements StopableApp {
 	private final FeedzillaDownloaderDatabaseStorage settingsStorage;
 	private final OrmliteFeedzillaDownloaderLogger downloaderLogger;
 
-	// private Optional<YahooDownloadCourutine> courutine = Optional.empty();
+	private final FeedDataDownloader downloader;
+	private final FeedzillaHashStorage hashStorage;
+
 	private Object lock = new Object();
 
 	public FeedzillaDownloadService() throws IOException, SQLException {
@@ -46,7 +60,14 @@ final class FeedzillaDownloadService implements StopableApp {
 		this.settingsStorage = new FeedzillaDownloaderDatabaseStorage(databaseSettings);
 		this.downloaderLogger = new OrmliteFeedzillaDownloaderLogger(logger, settingsStorage, settingName, getProcessId(), getStartTime());
 		this.settings = settingsStorage.getSettings(settingName);
+
+		this.downloader = new FeedDataDownloader(100, settings.articlesWaitTime());
+		this.hashStorage = new FeedzillaHashStorage(settings.feedFolder());
+		downloader.addReceiver(this);
+		hashStorage.readFeedData(DownloadHelper.createDateTimeElement(settings.daysBackDownloadFrom()));
+
 		downloaderLogger.log(StatisticType.TRACE, "YahooDownloadService initialized");
+
 	}
 
 	private FeedzillaDownloaderSettings readSettings() throws SQLException {
@@ -58,22 +79,24 @@ final class FeedzillaDownloadService implements StopableApp {
 		return settings;
 	}
 
-	public static void main(String[] args) {
-		try {
-			final StopableApp app = new FeedzillaDownloadService();
-			ApplicationHelper.createHelper(app);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public void start() throws Exception {
 		long start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+		boolean firstDownload = true;
+		LocalDateTime lastDownloadDate = DownloadHelper.createDateTimeElement(settings.daysBackDownloadFrom());
 		while (!stopped) {
 			readSettings();
 			downloaderLogger.log(StatisticType.TRACE, "Going to start next download cycle of " + FeedzillaDownloadService.class);
-			download();
+
+			final LocalDateTime now = DownloadHelper.createDateTimeElement(settings.daysBackDownloadFrom());
+			if (download(lastDownloadDate)) {
+				lastDownloadDate = now;
+			}
+			if (firstDownload) {
+				firstDownload = true;
+				hashStorage.freeArticles();
+			}
+
 			downloaderLogger.log(StatisticType.TRACE, "Downloading finished");
 			if (stopped) {
 				break;
@@ -93,41 +116,18 @@ final class FeedzillaDownloadService implements StopableApp {
 		}
 	}
 
-	private void download() throws SQLException {
-		// try {
-		// final YahooDownloaderSettings s = settings;
-		// final boolean downloadExisted = s.downloadOnlyExisted();
-		// final YahooSettings settings = YahooUtils.createSettings();
-		// final boolean downloadByPattern = s.downloadByPattern();
-		// final String startPattern = s.patternNameFrom();
-		// final String endPattern = s.patternNameTo();
-		// final int stockNameMinLength = s.stockNameFrom();
-		// final int stockNameMaxLength = s.stockNameTo();
-		// final int downloadThreadSize = s.threadAmount();
-		// final YahooDownloadCourutine courutine = new
-		// YahooDownloadCourutine(downloaderLogger, downloadExisted, settings,
-		// downloadByPattern, startPattern, endPattern, stockNameMinLength,
-		// stockNameMaxLength, downloadThreadSize);
-		// synchronized (this) {
-		// this.courutine = Optional.of(courutine);
-		// }
-		// courutine.start();
-		// synchronized (this) {
-		// this.courutine = Optional.empty();
-		// }
-		// } catch (Exception e) {
-		// downloaderLogger.log(StatisticType.ERROR, "download() " +
-		// e.getMessage());
-		// }
+	private boolean download(LocalDateTime lastDownloadDate) throws SQLException, InterruptedException, FileNotFoundException, IOException {
+		downloader.setDaysToDownload(lastDownloadDate);
+		final boolean result = downloader.download();
+		hashStorage.save(lastDownloadDate);
+		return result;
 	}
 
 	@Override
 	public void stop() throws Exception {
 		this.stopped = true;
 		synchronized (this) {
-			// if (courutine.isPresent()) {
-			// courutine.get().stop();
-			// }
+			downloader.stopDownload();
 		}
 		synchronized (lock) {
 			lock.notifyAll();
@@ -150,4 +150,40 @@ final class FeedzillaDownloadService implements StopableApp {
 		return new Date(startTime);
 	}
 
+	@Override
+	public void newArticle(Category newCategory, Subcategory newSubcategory, Article newArticle) {
+		final FeedzillaFileCategory category = createFeedzillaCategory(newCategory);
+		final FeedzillaFileSubcategory subcategory = createFeedzillaSubcategory(category, newSubcategory);
+		createFeedzillaArticle(subcategory, newArticle);
+	}
+
+	private FeedzillaFileCategory createFeedzillaCategory(Category from) {
+		final FeedzillaFileCategory result = new FeedzillaFileCategory(0, from.getDisplayName(), from.getEnglishName(), from.getUrlName());
+		return hashStorage.createFeedzillaCategory(result);
+	}
+
+	private FeedzillaFileSubcategory createFeedzillaSubcategory(FeedzillaFileCategory category, Subcategory from) {
+		final FeedzillaFileSubcategory result = new FeedzillaFileSubcategory(0, category, from.getDisplayName(), from.getEnglishName(),
+				from.getUrlName());
+		return hashStorage.createFeedzillaSubcategory(category, result);
+	}
+
+	private void createFeedzillaArticle(FeedzillaFileSubcategory subcategory, Article from) {
+		final FeedzillaFileArticle result = new FeedzillaFileArticle(0, subcategory, from.getAuthor(), from.getPublishDate());
+		result.setSource(from.getSource());
+		result.setSourceUrl(from.getSourceUrl());
+		result.setSummary(from.getSummary());
+		result.setTitle(from.getTitle());
+		result.setUrl(from.getUrl());
+		hashStorage.createFeedzillaArticle(subcategory, result);
+	}
+
+	public static void main(String[] args) {
+		try {
+			final StopableApp app = new FeedzillaDownloadService();
+			ApplicationHelper.createHelper(app);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

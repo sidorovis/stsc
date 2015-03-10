@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
-class DownloadHelper {
+public final class DownloadHelper {
 
 	public static List<Category> getCategories(FeedZilla feed, Logger logger) {
 		for (int amountOfTries = 0; amountOfTries < CallableArticlesDownload.TRIES_COUNT; ++amountOfTries) {

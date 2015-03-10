@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
  * {@link FeedDataDownloader} is a class that download feed's from FeedZilla and
  * categories them.
  */
-final class FeedDataDownloader {
+public final class FeedDataDownloader {
 
 	private final static double MIN_MULTIPLIER = 1.0;
 	private final static double MAX_MULTIPLIER = 4.0;
@@ -45,7 +45,7 @@ final class FeedDataDownloader {
 
 	private double multiplier = MIN_MULTIPLIER;
 
-	FeedDataDownloader(int amountOfArticlesPerRequest, int articlesWaitTime) {
+	public FeedDataDownloader(int amountOfArticlesPerRequest, int articlesWaitTime) {
 		this(LocalDateTime.now().minusDays(356 * 20), amountOfArticlesPerRequest, articlesWaitTime);
 	}
 
@@ -63,7 +63,7 @@ final class FeedDataDownloader {
 		stopped = true;
 	}
 
-	void addReceiver(LoadFeedReceiver receiver) {
+	public void addReceiver(LoadFeedReceiver receiver) {
 		receivers.add(receiver);
 	}
 
