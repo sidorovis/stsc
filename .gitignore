@@ -28,6 +28,7 @@ _*.log
 tools/vagrant_hadoop_cluster/single-node/package
 liquibase*db
 stsc.stocks.yahoo/downloader/test/aaoi.uf
+stsc.as.service/feedzilla.downloader/feed_data/*.fz
 
 .~lock*#
 

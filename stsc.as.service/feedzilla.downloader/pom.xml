@@ -38,7 +38,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>stsc.as.service.yahoo.downloader.YahooDownloadService</mainClass>
+							<mainClass>stsc.as.service.feedzilla.downloader.FeedzillaDownloadService</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

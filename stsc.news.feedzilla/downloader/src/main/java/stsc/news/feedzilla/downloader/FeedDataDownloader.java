@@ -130,10 +130,10 @@ public final class FeedDataDownloader {
 			try {
 				for (LoadFeedReceiver receiver : receivers) {
 					receiver.newArticle(category, subcategory, article);
-					articlesCount += 1;
 					if (stopped)
 						return articlesCount;
 				}
+				articlesCount += 1;
 			} catch (Exception e) {
 				logger.fatal("Error while passing article to receiver: for hashcode create: " + article.toString(), e);
 			}

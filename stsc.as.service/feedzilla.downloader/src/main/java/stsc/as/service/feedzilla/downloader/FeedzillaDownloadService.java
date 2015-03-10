@@ -93,7 +93,7 @@ final class FeedzillaDownloadService implements StopableApp, LoadFeedReceiver {
 				lastDownloadDate = now;
 			}
 			if (firstDownload) {
-				firstDownload = true;
+				firstDownload = false;
 				hashStorage.freeArticles();
 			}
 
