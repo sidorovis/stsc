@@ -114,26 +114,22 @@ public class ZozkaStrategyVisualiser extends Application {
 	}
 
 	private void calculateSeries(final StockStorage stockStorage) {
-		if (stockStorage == null) {
-			return;
+		if (stockStorage != null) {
+			final Optional<String> stockNamePtr = chooseStock(stockStorage);
+			if (stockNamePtr.isPresent()) {
+				final Optional<Stock> stockPtr = stockStorage.getStock(stockNamePtr.get());
+				if (stockPtr.isPresent()) {
+					final Stock stock = stockStorage.getStock(stockNamePtr.get()).get();
+					addSeriesForStock(stockStorage, stock);
+				}
+			}
 		}
-		final Optional<String> stockNamePtr = chooseStock(stockStorage);
-		if (!stockNamePtr.isPresent()) {
-			return;
-		}
-		final Optional<Stock> stockPtr = stockStorage.getStock(stockNamePtr.get());
-		if (!stockPtr.isPresent()) {
-			return;
-		}
-		final Stock stock = stockStorage.getStock(stockNamePtr.get()).get();
-		addSeriesForStock(stockStorage, stock);
 	}
 
 	private void calculateOnEodSeries(final StockStorage stockStorage) {
-		if (stockStorage == null) {
-			return;
+		if (stockStorage != null) {
+			addSeriesForEod(stockStorage);
 		}
-		addSeriesForEod(stockStorage);
 	}
 
 	private void addSeriesForStock(StockStorage stockStorage, Stock stock) {

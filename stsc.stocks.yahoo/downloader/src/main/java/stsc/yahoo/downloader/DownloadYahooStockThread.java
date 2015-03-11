@@ -16,7 +16,7 @@ class DownloadYahooStockThread implements Runnable {
 
 	private final YahooSettings settings;
 	private final StockFilter stockFilter;
-	private static int solvedAmount = 0;
+	private int solvedAmount = 0;
 	private boolean deleteFilteredData = true;
 	private DownloaderLogger logger;
 
