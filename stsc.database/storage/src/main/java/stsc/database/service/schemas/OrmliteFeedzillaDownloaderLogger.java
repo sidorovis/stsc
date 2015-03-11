@@ -5,11 +5,11 @@ import java.util.Date;
 
 import org.apache.logging.log4j.Logger;
 
-import stsc.common.service.statistics.FeedzillaDownloaderLogger;
+import stsc.common.service.statistics.DownloaderLogger;
 import stsc.common.service.statistics.StatisticType;
 import stsc.database.service.storages.FeedzillaDownloaderDatabaseStorage;
 
-public class OrmliteFeedzillaDownloaderLogger implements FeedzillaDownloaderLogger {
+public class OrmliteFeedzillaDownloaderLogger implements DownloaderLogger {
 
 	private final Logger logger;
 	private final FeedzillaDownloaderDatabaseStorage storage;

@@ -18,6 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
+import stsc.common.service.statistics.DownloaderLogger;
+import stsc.common.service.statistics.StatisticType;
+
 /**
  * {@link FeedDataDownloader} is a class that download feed's from FeedZilla and
  * categories them.
@@ -67,7 +70,7 @@ public final class FeedDataDownloader {
 		receivers.add(receiver);
 	}
 
-	public boolean download() throws InterruptedException {
+	public boolean download(DownloaderLogger downloaderLogger) throws InterruptedException {
 		boolean result = true;
 		int amountOfProcessedArticles = 0;
 		feed = new FeedZilla();
@@ -104,10 +107,12 @@ public final class FeedDataDownloader {
 				}
 			}
 			final long endTime = System.currentTimeMillis();
-			logger.debug("Category " + category.getEnglishName() + " downloaded with " + amountOfProcessedArticles + " articles. For day "
-					+ dayDownloadFrom + ". Which took: " + (endTime - beginTime) + " millisec.");
+			downloaderLogger.log(StatisticType.INFO, "Category " + category.getEnglishName() + " downloaded with "
+					+ amountOfProcessedArticles + " articles. For day " + dayDownloadFrom + ". Which took: " + (endTime - beginTime)
+					+ " millisec.");
 		}
-		logger.info("Received amount of articles: " + amountOfProcessedArticles + " --- for date " + dayDownloadFrom.toString());
+		downloaderLogger.log(StatisticType.INFO, "Received amount of articles: " + amountOfProcessedArticles + " --- for date "
+				+ dayDownloadFrom.toString());
 		return result;
 	}
 

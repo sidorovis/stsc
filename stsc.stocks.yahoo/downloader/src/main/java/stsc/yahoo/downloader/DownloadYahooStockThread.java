@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Optional;
 
 import stsc.common.service.statistics.StatisticType;
-import stsc.common.service.statistics.YahooDownloaderLogger;
+import stsc.common.service.statistics.DownloaderLogger;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.YahooSettings;
 import stsc.yahoo.YahooUtils;
@@ -18,11 +18,11 @@ class DownloadYahooStockThread implements Runnable {
 	private final StockFilter stockFilter;
 	private static int solvedAmount = 0;
 	private boolean deleteFilteredData = true;
-	private YahooDownloaderLogger logger;
+	private DownloaderLogger logger;
 
 	private volatile boolean stopped = false;
 
-	DownloadYahooStockThread(YahooDownloaderLogger logger, YahooSettings settings) {
+	DownloadYahooStockThread(DownloaderLogger logger, YahooSettings settings) {
 		this.logger = logger;
 		this.settings = settings;
 		this.stockFilter = new StockFilter();

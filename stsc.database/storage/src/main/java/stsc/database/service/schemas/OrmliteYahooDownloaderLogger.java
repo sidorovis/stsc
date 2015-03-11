@@ -6,10 +6,10 @@ import java.util.Date;
 import org.apache.logging.log4j.Logger;
 
 import stsc.common.service.statistics.StatisticType;
-import stsc.common.service.statistics.YahooDownloaderLogger;
+import stsc.common.service.statistics.DownloaderLogger;
 import stsc.database.service.storages.YahooDownloaderDatabaseStorage;
 
-public class OrmliteYahooDownloaderLogger implements YahooDownloaderLogger {
+public class OrmliteYahooDownloaderLogger implements DownloaderLogger {
 
 	private final Logger logger;
 	private final YahooDownloaderDatabaseStorage storage;

@@ -3,14 +3,14 @@ package stsc.yahoo.downloader;
 import java.util.ArrayList;
 import java.util.List;
 
-import stsc.common.service.statistics.YahooDownloaderLogger;
+import stsc.common.service.statistics.DownloaderLogger;
 import stsc.common.stocks.UnitedFormatStock;
 import stsc.yahoo.StringUtils;
 import stsc.yahoo.YahooSettings;
 
 public final class YahooDownloadCourutine {
 
-	private final YahooDownloaderLogger logger;
+	private final DownloaderLogger logger;
 
 	private final DownloadYahooStockThread downloadThread;
 
@@ -25,7 +25,7 @@ public final class YahooDownloadCourutine {
 
 	private volatile boolean stopped = false;
 
-	public YahooDownloadCourutine(YahooDownloaderLogger logger, boolean downloadExisted, YahooSettings settings, boolean downloadByPattern,
+	public YahooDownloadCourutine(DownloaderLogger logger, boolean downloadExisted, YahooSettings settings, boolean downloadByPattern,
 			String startPattern, String endPattern, int stockNameMinLength, int stockNameMaxLength, int downloadThreadSize) {
 		this.logger = logger;
 		this.downloadExisted = downloadExisted;

@@ -2,7 +2,7 @@ package stsc.common.service.statistics;
 
 import org.apache.logging.log4j.Logger;
 
-public interface FeedzillaDownloaderLogger {
+public interface DownloaderLogger {
 
 	/**
 	 * log message with statistic type (if logger is turned on to log it)

@@ -118,7 +118,7 @@ final class FeedzillaDownloadService implements StopableApp, LoadFeedReceiver {
 
 	private boolean download(LocalDateTime lastDownloadDate) throws SQLException, InterruptedException, FileNotFoundException, IOException {
 		downloader.setDaysToDownload(lastDownloadDate);
-		final boolean result = downloader.download();
+		final boolean result = downloader.download(downloaderLogger);
 		hashStorage.save(lastDownloadDate);
 		return result;
 	}
