@@ -4,7 +4,7 @@
 
 	<groupId>stsc</groupId>
 	<artifactId>stsc.as.service.yahoo.downloader</artifactId>
-	<version>0.0.15-SERVICE</version>
+	<version>0.0.16-PATTERNS-2</version>
 	<packaging>jar</packaging>
 
 	<name>stsc.as.service.yahoo.downloader</name>
