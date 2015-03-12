@@ -31,7 +31,7 @@ public final class DownloadHelper {
 			} catch (Exception e) {
 				logger.debug("Downloading subcategories throw exception: " + e.getMessage() + ". For: " + category.toString());
 			}
-			CallableArticlesDownload.pause(700);
+			CallableArticlesDownload.pause(2000);
 		}
 		return Collections.emptyList();
 	}
