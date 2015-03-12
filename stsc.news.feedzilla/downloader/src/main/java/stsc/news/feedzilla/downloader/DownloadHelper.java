@@ -29,7 +29,7 @@ public final class DownloadHelper {
 			try {
 				return feed.getSubcategories(category);
 			} catch (Exception e) {
-				logger.debug("Downloading subcategories throw exception: " + e.getMessage());
+				logger.debug("Downloading subcategories throw exception: " + e.getMessage() + ". For: " + category.toString());
 			}
 			CallableArticlesDownload.pause(700);
 		}
