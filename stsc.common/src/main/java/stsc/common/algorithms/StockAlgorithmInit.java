@@ -29,6 +29,10 @@ public class StockAlgorithmInit {
 		this.settings = settings;
 	}
 
+	/**
+	 * createInit(...) is a method that generate Init object for StockAlgorithm
+	 * initialization
+	 */
 	public StockAlgorithmInit createInit(String executionName, AlgorithmSettings settings) {
 		return new StockAlgorithmInit(executionName, this, settings);
 	}
@@ -36,7 +40,7 @@ public class StockAlgorithmInit {
 	public StockAlgorithmInit createInit(String executionName) {
 		return new StockAlgorithmInit(executionName, this, settings);
 	}
-	
+
 	public String getStockName() {
 		return stockName;
 	}
