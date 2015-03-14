@@ -21,4 +21,12 @@ public enum Side {
 		else
 			return Side.LONG;
 	}
+
+	public boolean isLong() {
+		return this.equals(LONG);
+	}
+
+	public boolean isShort() {
+		return this.equals(SHORT);
+	}
 }

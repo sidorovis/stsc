@@ -27,4 +27,10 @@ public class AlgorithmsStorageTest {
 					"For 'IN' we could assume:stsc.algorithms.stock.indices.(.+) or stsc.algorithms.stock.indices.(.+)", e.getMessage()));
 		}
 	}
+
+	@Test
+	public void testAlgorithmsEquityTest() throws BadAlgorithmException {
+		final AlgorithmsStorage ans = AlgorithmsStorage.getInstance();
+		Assert.assertNotNull(ans.getEod(".StockMarketCycleEquity"));
+	}
 }

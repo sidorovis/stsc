@@ -33,6 +33,7 @@
   </build>
 	<modules>
 		<module>common</module>
+		<module>equity.test</module>
 	</modules>
 	<description>Stsc algorithms - all trading related algoritms (on stock and end of day algorithms).</description>
 </project>

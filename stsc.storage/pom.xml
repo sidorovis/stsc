@@ -50,6 +50,11 @@
       <artifactId>stsc.algorithms.common</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>stsc</groupId>
+      <artifactId>stsc.algorithms.equity.test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   
 	<dependency>
       <groupId>junit</groupId>

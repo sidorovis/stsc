@@ -25,6 +25,14 @@ public class EodAlgorithmInit {
 		this.broker = broker;
 	}
 
+	/**
+	 * createInit(...) is a method that generate Init object for StockAlgorithm
+	 * initialization
+	 */
+	public StockAlgorithmInit createInit(String executionName, AlgorithmSettings settings, String stockName) {
+		return new StockAlgorithmInit(executionName, signalsStorage, stockName, settings);
+	}
+
 	protected final SignalContainer<? extends SerieSignal> getSignal(String executionName, Date date) {
 		return signalsStorage.getEodSignal(executionName, date);
 	}

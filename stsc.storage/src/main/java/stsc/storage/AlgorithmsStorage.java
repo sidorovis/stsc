@@ -51,6 +51,7 @@ public final class AlgorithmsStorage {
 		try {
 			for (ClassInfo e : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClasses()) {
 				final String eName = e.getName().toLowerCase();
+				System.out.println(eName);
 				if (eName.contains("$") || eName.contains("test"))
 					continue;
 				else if (eName.startsWith(containerPackageName)) {
