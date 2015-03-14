@@ -47,7 +47,7 @@
     </dependency>
     <dependency>
       <groupId>stsc</groupId>
-      <artifactId>stsc.algorithms</artifactId>
+      <artifactId>stsc.algorithms.common</artifactId>
       <version>${project.version}</version>
     </dependency>
   

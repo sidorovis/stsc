@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>stsc</groupId>
-	<artifactId>stsc.integration.tests</artifactId>
+	<artifactId>stsc.algorithms.common</artifactId>
 	<version>0.0.16-PATTERNS-2</version>
 	<packaging>jar</packaging>
 
-	<name>stsc.integration.tests</name>
+	<name>stsc.algorithms.common</name>
 	<url>https://github.com/sidorovis/stsc</url>
 
 	<properties>
@@ -45,16 +45,6 @@
 			<artifactId>stsc.signals</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.algorithms.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.general</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -73,15 +63,10 @@
 			<version>3.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.0-beta9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.0-beta9</version>
+			<groupId>com.googlecode.efficient-java-matrix-library</groupId>
+			<artifactId>ejml</artifactId>
+			<version>0.25</version>
 		</dependency>
 	</dependencies>
-	<description>Stsc integration tests for testing how modules works together.</description>
+	<description>Stsc algorithms common is a bunch common (base indexes/factors and etc. algorithms).</description>
 </project>
