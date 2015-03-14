@@ -10,7 +10,6 @@ import stsc.algorithms.Input;
 import stsc.algorithms.stock.indices.primitive.Sma;
 import stsc.common.BadSignalException;
 import stsc.common.Day;
-import stsc.common.Settings;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.algorithms.StockAlgorithm;
 import stsc.common.algorithms.StockAlgorithmInit;
@@ -21,21 +20,37 @@ import stsc.signals.series.LimitSignalsSerie;
 
 public class StockMarketCycle extends StockAlgorithm {
 
+	private final double smasDiv;
+	private final double divDiff;
+	private final double divSmallDiff;
+	private final int smaSmallSize;
+
 	private final String inputName;
 	private final Input input;
 	private final Map<String, Sma> smas = new HashMap<>();
 
-	private boolean firstValue = false;
-	private double lastValue;
+	private final String smallSmaName;
+	private final Sma smallSma;
+
+	private int index = 0;
+	private double previousValue;
+	private double previousSmallSmaValue;
 
 	public StockMarketCycle(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
+		this.smasDiv = init.getSettings().getDoubleSetting("smasDiv", 1.5).getValue();
+		this.divDiff = init.getSettings().getDoubleSetting("divDiff", 0.01).getValue();
+		this.divSmallDiff = init.getSettings().getDoubleSetting("divSmallDiff", 0.0).getValue();
+		this.smaSmallSize = init.getSettings().getIntegerSetting("smaSmallSize", 15).getValue();
+
 		this.inputName = init.getExecutionName() + "_Input";
 		final AlgorithmSettingsImpl settings = new AlgorithmSettingsImpl(init);
 		settings.setInteger("size", 500);
 		this.input = new Input(init.createInit(inputName, settings));
-		// initializeSmaAlgo(10, init);
-		// initializeSmaAlgo(50, init);
+
+		smallSmaName = init.getExecutionName() + "_SmaSmall";
+		smallSma = createSmaAlgo(smallSmaName, smaSmallSize, init);
+
 		initializeSmaAlgo(75, init);
 		initializeSmaAlgo(100, init);
 		initializeSmaAlgo(125, init);
@@ -69,24 +84,30 @@ public class StockMarketCycle extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		double sum = 0.0;
 		input.process(day);
+		smallSma.process(day);
 		for (Entry<String, Sma> e : smas.entrySet()) {
 			e.getValue().process(day);
 			final double v = getSignal(e.getKey(), day.getDate()).getContent(DoubleSignal.class).getValue();
 			sum += v;
 		}
+		final double sma3v = getSignal(smallSmaName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		double currentV = sum / smas.size();
-		if (!firstValue) {
-			final double diff = (currentV - lastValue) / 10.0;
-			if (diff > 0.01) {
+		if (index > smaSmallSize) {
+			final double diffSmas = (currentV - previousValue) / smasDiv;
+			final double diffSmallSma = (sma3v - previousSmallSmaValue);
+
+			if (diffSmas > divDiff && diffSmallSma > divSmallDiff) {
 				addSignal(day.getDate(), new DoubleSignal(100));
-			} else if (diff < -0.01) {
+			} else if (diffSmas < -divDiff && diffSmallSma < divSmallDiff) {
 				addSignal(day.getDate(), new DoubleSignal(-100));
 			} else {
 				addSignal(day.getDate(), new DoubleSignal(0));
 			}
 		} else {
-			firstValue = false;
+			addSignal(day.getDate(), new DoubleSignal(0));
 		}
-		lastValue = currentV;
+		index += 1;
+		previousValue = currentV;
+		previousSmallSmaValue = sma3v;
 	}
 }
