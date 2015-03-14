@@ -1,4 +1,4 @@
-package stsc.algorithms.stock.patterns;
+package stsc.algorithms.stock.indices;
 
 import java.util.HashMap;
 import java.util.Map;
