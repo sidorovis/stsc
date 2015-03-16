@@ -42,12 +42,20 @@ public abstract class StockAlgorithm {
 		return init.getSignal(executionName, index);
 	}
 
-	protected final int getCurrentIndex() {
+	protected final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, final int index) {
+		return init.getSignal(stockName, executionName, index);
+	}
+
+	protected final int getIndexForCurrentStock() {
 		return init.getIndexSize();
 	}
 
 	protected final int getIndexForStock(final String stockName) {
 		return init.getIndexSize(stockName);
+	}
+
+	protected final int getIndexForStock(String stockName, String executionName) {
+		return init.getIndexSize(stockName, executionName);
 	}
 
 	public abstract Optional<SignalsSerie<SerieSignal>> registerSignalsClass(final StockAlgorithmInit initialize)

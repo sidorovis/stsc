@@ -31,7 +31,7 @@ public class IkhChikou extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final int currentIndex = getCurrentIndex();
+		final int currentIndex = getIndexForCurrentStock();
 		closes.addFirst(day.getPrices().getClose());
 		if (currentIndex < tm) {
 			addSignal(day.getDate(), new DoubleSignal(closes.getLast()));

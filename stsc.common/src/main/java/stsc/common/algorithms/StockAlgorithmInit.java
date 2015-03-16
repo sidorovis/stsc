@@ -29,12 +29,23 @@ public class StockAlgorithmInit {
 		this.settings = settings;
 	}
 
+	public StockAlgorithmInit(String executionName, StockAlgorithmInit stockAlgorithmInit, String stockName, AlgorithmSettings settings) {
+		this.executionName = executionName;
+		this.signalsStorage = stockAlgorithmInit.signalsStorage;
+		this.stockName = stockName;
+		this.settings = settings;
+	}
+
 	/**
 	 * createInit(...) is a method that generate Init object for StockAlgorithm
 	 * initialization
 	 */
 	public StockAlgorithmInit createInit(String executionName, AlgorithmSettings settings) {
 		return new StockAlgorithmInit(executionName, this, settings);
+	}
+
+	public StockAlgorithmInit createInit(String executionName, String stockName, AlgorithmSettings settings) {
+		return new StockAlgorithmInit(executionName, this, stockName, settings);
 	}
 
 	public StockAlgorithmInit createInit(String executionName) {
@@ -69,11 +80,19 @@ public class StockAlgorithmInit {
 		return signalsStorage.getStockSignal(stockName, executionName, index);
 	}
 
+	final SignalContainer<? extends SerieSignal> getSignal(String stockName, String executionName, int index) {
+		return signalsStorage.getStockSignal(stockName, executionName, index);
+	}
+
 	final int getIndexSize() {
 		return signalsStorage.getIndexSize(stockName, executionName);
 	}
 
 	final int getIndexSize(String stockName) {
+		return signalsStorage.getIndexSize(stockName, executionName);
+	}
+
+	final int getIndexSize(String stockName, String executionName) {
 		return signalsStorage.getIndexSize(stockName, executionName);
 	}
 

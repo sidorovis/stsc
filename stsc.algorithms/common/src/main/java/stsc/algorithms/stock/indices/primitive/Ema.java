@@ -48,7 +48,7 @@ public class Ema extends StockAlgorithm {
 
 	@Override
 	public void process(Day day) throws BadSignalException {
-		final int signalIndex = getCurrentIndex();
+		final int signalIndex = getIndexForCurrentStock();
 		final double price = getSignal(subAlgoName, day.getDate()).getContent(DoubleSignal.class).getValue();
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(price));

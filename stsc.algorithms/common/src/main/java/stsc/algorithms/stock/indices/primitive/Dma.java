@@ -35,7 +35,7 @@ public class Dma extends StockAlgorithm {
 	public void process(Day day) throws BadSignalException {
 		ema.process(day);
 		final double emaValue = getSignal(emaName, day.getDate()).getContent(DoubleSignal.class).getValue();
-		final int signalIndex = getCurrentIndex();
+		final int signalIndex = getIndexForCurrentStock();
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(emaValue));
 		} else {

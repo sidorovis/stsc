@@ -51,4 +51,9 @@ public class StockMarketCycleTest {
 		testHelper("apa");
 		testHelper("spy");
 	}
+	
+	@Test
+	public void testOnSpy() {
+		
+	}
 }

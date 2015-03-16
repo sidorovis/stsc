@@ -41,7 +41,7 @@ public class FibonacciRetracementBullStdDev extends StockAlgorithm {
 		if (!lastSignal.isPresent()) {
 			return;
 		}
-		final int currentIndex = getCurrentIndex();
+		final int currentIndex = getIndexForCurrentStock();
 		if (currentIndex < N) {
 			addSignal(day.getDate(), new DoubleSignal(Double.MAX_VALUE));
 			return;

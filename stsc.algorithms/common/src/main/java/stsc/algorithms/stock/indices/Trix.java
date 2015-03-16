@@ -33,7 +33,7 @@ public class Trix extends StockAlgorithm {
 	@Override
 	public void process(Day day) throws BadSignalException {
 		tma.process(day);
-		final int signalIndex = getCurrentIndex();
+		final int signalIndex = getIndexForCurrentStock();
 		if (signalIndex == 0) {
 			addSignal(day.getDate(), new DoubleSignal(0.0));
 		} else {
