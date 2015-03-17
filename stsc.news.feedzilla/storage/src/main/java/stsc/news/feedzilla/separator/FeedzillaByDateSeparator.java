@@ -22,8 +22,9 @@ public class FeedzillaByDateSeparator {
 
 	private String feedFolder = "./feed_data";
 	private String byDateFeedFolder = "./feed_data_by_date";
+	private boolean byMonth = true;
 
-	private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM");
+	private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
 	private FeedzillaByDateSeparator() throws FileNotFoundException, IOException {
 		readProperties();
@@ -38,6 +39,7 @@ public class FeedzillaByDateSeparator {
 			properties.load(inputStream);
 			feedFolder = properties.getProperty("cleaned.feed.folder");
 			byDateFeedFolder = properties.getProperty("by.date.feed.folder");
+			byMonth = Boolean.valueOf(properties.getProperty("by.month", "true"));
 		}
 	}
 
@@ -48,7 +50,10 @@ public class FeedzillaByDateSeparator {
 		final List<FeedzillaFileArticle> articlesToSwap = new ArrayList<FeedzillaFileArticle>();
 		LocalDate swappingDate = LocalDate.now().withDayOfMonth(1);
 		for (Entry<LocalDateTime, List<FeedzillaFileArticle>> v : articles.entrySet()) {
-			final LocalDate keyDate = v.getKey().toLocalDate().withDayOfMonth(1);
+			LocalDate keyDate = v.getKey().toLocalDate();
+			if (byMonth) {
+				keyDate = keyDate.withDayOfMonth(1);
+			}
 			if (!keyDate.equals(swappingDate)) {
 				storeArticles(articlesToSwap, swappingDate);
 				swappingDate = keyDate;
