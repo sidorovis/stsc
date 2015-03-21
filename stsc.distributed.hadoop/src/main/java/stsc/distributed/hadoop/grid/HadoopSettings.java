@@ -162,7 +162,7 @@ public class HadoopSettings {
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("P", 0.1, 0.6, 0.5)).add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
-				algoStockName(Level.class.getSimpleName()),
+				algoStockName("." + Level.class.getSimpleName()),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, 5)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema" }))));
 		settings.addEod("os", algoEodName(OneSideOpenAlgorithm.class.getSimpleName()), "side",

@@ -35,7 +35,7 @@ public class TestGridSimulatorSettings {
 				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
-				algoStockName("Level"),
+				algoStockName(".Level"),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, fStep)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" }))));
 		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side", Arrays.asList(new String[] { "long", "short" }));
@@ -56,7 +56,7 @@ public class TestGridSimulatorSettings {
 				.add(new MpSubExecution("", "in")));
 		settings.addStock(
 				"level",
-				algoStockName("Level"),
+				algoStockName(".Level"),
 				new AlgorithmSettingsIteratorFactory(period).add(new MpDouble("f", 15.0, 20.0, fStep)).add(
 						new MpSubExecution("", Arrays.asList(new String[] { "ema", "in" }))));
 		settings.addEod("os", algoEodName("OneSideOpenAlgorithm"), "side", Arrays.asList(new String[] { "long", "short" }));
