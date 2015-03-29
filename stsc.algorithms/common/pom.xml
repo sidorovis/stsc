@@ -67,6 +67,11 @@
 			<artifactId>ejml</artifactId>
 			<version>0.25</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
 	</dependencies>
 	<description>Stsc algorithms common is a bunch common (base indexes/factors and etc. algorithms).</description>
 </project>
