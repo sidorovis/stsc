@@ -21,6 +21,18 @@ import com.google.common.collect.TreeMultiset;
 
 public class SupportLevel extends StockAlgorithm {
 
+	private static final class PairComparator implements Comparator<Pair<Integer, Double>> {
+		@Override
+		public int compare(Pair<Integer, Double> arg0, Pair<Integer, Double> arg1) {
+			if (arg0.getRight().compareTo(arg1.getRight()) == 0) {
+				return arg0.getLeft().compareTo(arg1.getLeft());
+			} else
+				return arg0.getRight().compareTo(arg1.getRight());
+		}
+	};
+
+	private static final PairComparator PAIR_COMPARATOR = new PairComparator();
+
 	private final String subExecutionName;
 
 	private final int N;
@@ -30,12 +42,10 @@ public class SupportLevel extends StockAlgorithm {
 	private double sumOfNMininalValues = 0.0;
 
 	private final LinkedList<Pair<Integer, Double>> elements = new LinkedList<Pair<Integer, Double>>();
-	private final TreeMultiset<Pair<Integer, Double>> elementsSortedByMax = TreeMultiset.create(new Comparator<Pair<Integer, Double>>() {
-		@Override
-		public int compare(Pair<Integer, Double> arg0, Pair<Integer, Double> arg1) {
-			return arg1.getRight().compareTo(arg0.getRight());
-		}
-	});
+
+	// by second value, order: 1, 6, 9, 12, 14, 16, 19, 24, 27
+	private final TreeMultiset<Pair<Integer, Double>> mElementsSorted = TreeMultiset.create(PAIR_COMPARATOR);
+	private final TreeMultiset<Pair<Integer, Double>> nElementsSorted = TreeMultiset.create(PAIR_COMPARATOR);
 
 	public SupportLevel(StockAlgorithmInit init) throws BadAlgorithmException {
 		super(init);
@@ -66,24 +76,35 @@ public class SupportLevel extends StockAlgorithm {
 	private double getAvFromMins(final Pair<Integer, Double> newE) {
 		while (!elements.isEmpty() && elements.getLast().getLeft() < currentIndex - M) {
 			final Pair<Integer, Double> v = elements.pollLast();
-			elementsSortedByMax.remove(v);
-			sumOfNMininalValues -= v.getRight();
-		}
-		if (elements.isEmpty() || elements.size() < N) {
-			elements.addFirst(newE);
-			elementsSortedByMax.add(newE);
-			sumOfNMininalValues += newE.getRight();
-		} else {
-			final Pair<Integer, Double> maxValue = elementsSortedByMax.iterator().next();
-			if (maxValue.getRight() > newE.getRight()) {
-				final Pair<Integer, Double> toDelete = elementsSortedByMax.pollFirstEntry().getElement();
-				elements.remove(toDelete);
-				sumOfNMininalValues -= toDelete.getRight();
-				elements.addFirst(newE);
-				elementsSortedByMax.add(newE);
-				sumOfNMininalValues += newE.getRight();
+			if (nElementsSorted.contains(v)) {
+				nElementsSorted.remove(v);
+				if (!mElementsSorted.isEmpty()) {
+					final Pair<Integer, Double> el = mElementsSorted.pollFirstEntry().getElement();
+					sumOfNMininalValues += el.getRight();
+					nElementsSorted.add(el);
+				}
+				sumOfNMininalValues -= v.getRight();
+			} else if (mElementsSorted.contains(v)) {
+				mElementsSorted.remove(v);
 			}
 		}
-		return sumOfNMininalValues / (elements.size());
+		if (nElementsSorted.size() < N) {
+			elements.addFirst(newE);
+			nElementsSorted.add(newE);
+			sumOfNMininalValues += newE.getRight();
+		} else {
+			elements.addFirst(newE);
+			final double maxValue = nElementsSorted.lastEntry().getElement().getRight();
+			if (newE.getRight() < maxValue) {
+				nElementsSorted.add(newE);
+				final Pair<Integer, Double> v = nElementsSorted.pollLastEntry().getElement();
+				mElementsSorted.add(v);
+				sumOfNMininalValues += newE.getRight();
+				sumOfNMininalValues -= v.getRight();
+			} else {
+				mElementsSorted.add(newE);
+			}
+		}
+		return sumOfNMininalValues / (nElementsSorted.size());
 	}
 }

@@ -23,6 +23,7 @@ import stsc.common.stocks.UnitedFormatStock;
 import stsc.integration.tests.helper.StockAlgoInitHelper;
 import stsc.signals.DoubleSignal;
 
+import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
 public class SupportLevelTest {
@@ -102,6 +103,20 @@ public class SupportLevelTest {
 			sl.process(days.get(i));
 			final double value = stockInit.getStorage().getStockSignal("aapl", "sl", i - aaplIndex).getContent(DoubleSignal.class)
 					.getValue();
+
+			final Multiset<Double> minValues = TreeMultiset.create();
+			final int mathMin = Math.min(i - aaplIndex, 66);
+			for (int u = 0; u < mathMin + 1; ++u) {
+				minValues.add(days.get(i - mathMin + u).getPrices().getOpen());
+			}
+			double sum = 0.0;
+			final Iterator<Double> iter = minValues.iterator();
+
+			for (int u = 0; u < 8 && iter.hasNext(); ++u) {
+				final double v = iter.next();
+				sum += v;
+			}
+			Assert.assertEquals(sum / Math.min(8, minValues.size()), value, Settings.doubleEpsilon);
 		}
 	}
 
