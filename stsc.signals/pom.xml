@@ -4,7 +4,7 @@
 
 	<groupId>stsc</groupId>
 	<artifactId>stsc.signals</artifactId>
-	<version>0.0.16-PATTERNS-2</version>
+	<version>0.0.17-PROSEP</version>
 	<packaging>jar</packaging>
 
 	<name>stsc.signals</name>
