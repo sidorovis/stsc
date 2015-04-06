@@ -8,8 +8,6 @@ import org.junit.Test;
 import stsc.common.algorithms.BadAlgorithmException;
 import stsc.common.storage.StockStorage;
 import stsc.general.testhelper.TestStatisticsHelper;
-import stsc.general.trading.BrokerImpl;
-import stsc.general.trading.ExecutionsLoader;
 import stsc.storage.ExecutionStarter;
 import stsc.storage.ExecutionsStorage;
 import stsc.storage.mocks.StockStorageMock;
@@ -41,6 +39,18 @@ public class ExecutionsLoaderTest {
 		Assert.assertEquals(0, starter.getEodAlgorithmsSize());
 	}
 
+	@Test
+	public void testAlgorithmLoaderWithSubExecutions() throws BadAlgorithmException {
+		final String config = "StockExecutions = smcTest, ssmm\n" + "smcTest.loadLine = .StockMarketCycle()\n"
+				+ "ssmm.loadLine = .Sma(N=50i, .StockMarketCycle() )\n";
+		final ExecutionsLoader el = new ExecutionsLoader(TestStatisticsHelper.getPeriod(), config);
+		Assert.assertEquals(2, el.getExecutionsStorage().getStockExecutions().size());
+		Assert.assertEquals("smcTest", el.getExecutionsStorage().getStockExecutions().get(0).getExecutionName());
+		Assert.assertEquals("ssmm", el.getExecutionsStorage().getStockExecutions().get(1).getExecutionName());
+		Assert.assertEquals("smcTest", el.getExecutionsStorage().getStockExecutions().get(1).getSettings().getSubExecutions().get(0));
+		el.getExecutionsStorage().initialize(new BrokerImpl(new StockStorageMock()));
+	}
+
 	private void throwTesthelper(File file, String message) throws Exception {
 		boolean throwed = false;
 		try {
@@ -58,7 +68,8 @@ public class ExecutionsLoaderTest {
 		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_repeat.ini"), "algorithm AlgDefines already registered");
 		throwTesthelper(new File("./test_data/executions_loader_tests/algs_no_load_line.ini"),
 				"bad stock execution registration, no AlgDefine.loadLine property");
-		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_load_line1.ini"), "bad algorithm load line: INPUT( e = close");
+		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_load_line1.ini"),
+				"bad algorithm load line: INPUT( e = close");
 		throwTesthelper(new File("./test_data/executions_loader_tests/algs_bad_load_line2.ini"), "bad algorithm load line: INPUT)");
 		throwTesthelper(
 				new File("./test_data/executions_loader_tests/algs_bad_load_line3.ini"),

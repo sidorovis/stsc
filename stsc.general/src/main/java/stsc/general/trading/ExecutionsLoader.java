@@ -30,6 +30,10 @@ import stsc.common.algorithms.StockExecution;
 import stsc.storage.AlgorithmsStorage;
 import stsc.storage.ExecutionsStorage;
 
+/**
+ * Executions Loader - load (create set of instances for algorithms) executions
+ * settings from text file / String.
+ */
 final class ExecutionsLoader {
 
 	private static final class PropertyNames {
@@ -55,12 +59,12 @@ final class ExecutionsLoader {
 	public File configPath = new File("./config/algs.ini");
 	private String configFileFolder;
 	final private AlgorithmSettingsImpl settings;
-	private AlgorithmsStorage algorithmsStorage;
+	final private AlgorithmsStorage algorithmsStorage;
 	final private ExecutionsStorage executionsStorage = new ExecutionsStorage();
 
 	final private Set<String> openedPropertyFileNames = new HashSet<>();
 
-	final private Set<String> registeredStockExecutions = new HashSet<>();
+	final private HashMap<String, String> registeredStockExecutions = new HashMap<>();
 	final private HashMap<String, String> namedStockExecutions = new HashMap<>();
 
 	final private Set<String> eodExecutions = new HashSet<>();
@@ -149,7 +153,7 @@ final class ExecutionsLoader {
 			checkNewStockExecution(executionName);
 			final String generatedName = processStockExecution(executionName, loadLine);
 			namedStockExecutions.put(executionName, generatedName);
-			registeredStockExecutions.add(generatedName);
+			registeredStockExecutions.put(generatedName, executionName);
 		}
 	}
 
@@ -183,8 +187,9 @@ final class ExecutionsLoader {
 			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
 		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
 		final String executionName = algorithmName + "(" + algorithmSettings.toString() + ")";
-		if (registeredStockExecutions.contains(executionName))
-			return executionName;
+		final String oldRealExecutionName = registeredStockExecutions.get(executionName);
+		if (oldRealExecutionName != null)
+			return oldRealExecutionName;
 		final StockExecution execution = new StockExecution(realExecutionName, stockAlgorithm, algorithmSettings);
 		executionsStorage.addStockExecution(execution);
 		return executionName;
@@ -196,8 +201,9 @@ final class ExecutionsLoader {
 			throw new BadAlgorithmException("there is no such algorithm like " + algorithmName);
 		final AlgorithmSettings algorithmSettings = generateStockAlgorithmSettings(params);
 		final String executionName = algorithmName + "(" + algorithmSettings.toString() + ")";
-		if (registeredStockExecutions.contains(executionName))
-			return executionName;
+		final String oldRealExecutionName = registeredStockExecutions.get(executionName);
+		if (oldRealExecutionName != null)
+			return oldRealExecutionName;
 		final StockExecution execution = new StockExecution(executionName, stockAlgorithm, algorithmSettings);
 		executionsStorage.addStockExecution(execution);
 		return executionName;
@@ -258,7 +264,9 @@ final class ExecutionsLoader {
 			final Matcher subExecutionMatch = Regexps.subExecutionParameter.matcher(parameter);
 			if (subAlgoMatch.matches()) {
 				final String subName = processStockSubExecution(subAlgoMatch);
-				registeredStockExecutions.add(subName);
+				if (!namedStockExecutions.containsKey(subName)) {
+					registeredStockExecutions.put(subName, subName);
+				}
 				algorithmSettings.addSubExecutionName(subName);
 			} else if (integerMatch.matches()) {
 				algorithmSettings.setInteger(integerMatch.group(1).trim(), Integer.valueOf(integerMatch.group(2).trim()));
