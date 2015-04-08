@@ -89,5 +89,5 @@
 	</dependency>
 
   </dependencies>
-  <description>Stsc common is a common classes for stsc project.</description>
+  <description>Stsc storage store all collections / storages of signals / algortihms / executions.</description>
 </project>
