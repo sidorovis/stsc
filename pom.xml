@@ -43,6 +43,14 @@
     	        <updatePolicy>always</updatePolicy>
         	</snapshots>
    		</repository>
+	    <repository>
+    	  	<id>stsc-storage-test-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
+        	<snapshots>
+	            <enabled>true</enabled>
+    	        <updatePolicy>always</updatePolicy>
+        	</snapshots>
+   		</repository>
 	</repositories>
 	<build>
 		<defaultGoal>compile</defaultGoal>
@@ -63,7 +71,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.storage</module>
 		<module>stsc.general</module>
 		<module>stsc.integration.tests</module>
 		<module>stsc.stocks.yahoo</module>
