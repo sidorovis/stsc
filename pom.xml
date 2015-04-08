@@ -30,7 +30,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.general</module>
 		<module>stsc.integration.tests</module>
 		<module>stsc.stocks.yahoo</module>
 		<module>stsc.performance</module>
