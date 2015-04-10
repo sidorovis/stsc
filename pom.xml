@@ -11,6 +11,32 @@
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
 	</properties>
+	<repositories>
+	    <repository>
+    	  	<id>stsc-common-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-signals-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-algorithms-common-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-algorithms-equity-test-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.equity.test/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-storage-test-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-general-test-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
+   		</repository>
+	</repositories>
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
@@ -30,7 +56,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.general</module>
 		<module>stsc.integration.tests</module>
 		<module>stsc.stocks.yahoo</module>
 		<module>stsc.performance</module>
