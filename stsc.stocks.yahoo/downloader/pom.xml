@@ -86,6 +86,7 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.stocks.yahoo.liquidator</artifactId>

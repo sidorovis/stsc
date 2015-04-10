@@ -62,6 +62,7 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.general</artifactId>
