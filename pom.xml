@@ -36,6 +36,18 @@
     	  	<id>stsc-general-test-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
    		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-downloader-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.downloader/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
+   		</repository>
 	</repositories>
 	<build>
 		<defaultGoal>compile</defaultGoal>
@@ -56,7 +68,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.stocks.yahoo</module>
 		<module>stsc.distributed.hadoop</module>
 		<module>stsc.frontend.zozka</module>
 		<module>stsc.news.feedzilla</module>

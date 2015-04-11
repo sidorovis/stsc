@@ -39,6 +39,10 @@
     	  	<id>stsc-general-test-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
    		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
+   		</repository>
 	</repositories>
 
   <build>
@@ -58,7 +62,6 @@
        		<target>1.8</target>
    		</configuration>
 	</plugin>
-
 	<plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -81,24 +84,20 @@
       		</execution>
     	</executions>
     </plugin>
-
 	</plugins>
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>stsc</groupId>
       <artifactId>stsc.stocks.yahoo.core</artifactId>
       <version>${project.version}</version>
     </dependency>
-
 	<dependency>
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
 		<version>18.0</version>
 	</dependency>
-
 	<dependency>
 	  <groupId>org.apache.hadoop</groupId>
 	  <artifactId>hadoop-mapreduce-client-core</artifactId>
@@ -109,13 +108,13 @@
 	  <artifactId>hadoop-client</artifactId>
 	  <version>2.3.0</version>
 	</dependency>
-
 	<dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
   <description>Stsc distributed hadoop - distributed Simulator Statistics computation for hadoop.</description>
 </project>

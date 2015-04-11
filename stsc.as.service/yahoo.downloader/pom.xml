@@ -18,42 +18,34 @@
 	    <repository>
     	  	<id>stsc-common-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
    		</repository>
 	    <repository>
     	  	<id>stsc-signals-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
    		</repository>
 	    <repository>
     	  	<id>stsc-algorithms-common-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
    		</repository>
 	    <repository>
     	  	<id>stsc-algorithms-equity-test-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.equity.test/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
    		</repository>
 	    <repository>
     	  	<id>stsc-storage-test-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-downloader-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.downloader/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
    		</repository>
 	</repositories>
 
