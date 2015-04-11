@@ -68,7 +68,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.distributed.hadoop</module>
 		<module>stsc.frontend.zozka</module>
 		<module>stsc.news.feedzilla</module>
 		<module>stsc.database</module>
