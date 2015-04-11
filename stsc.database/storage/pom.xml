@@ -18,10 +18,10 @@
 	    <repository>
     	  	<id>stsc-common-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-        	<snapshots>
-	            <enabled>true</enabled>
-    	        <updatePolicy>always</updatePolicy>
-        	</snapshots>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-storage-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
    		</repository>
 	</repositories>
 
@@ -46,9 +46,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>stsc</groupId>
-			<artifactId>stsc.common</artifactId>
+			<artifactId>stsc.storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

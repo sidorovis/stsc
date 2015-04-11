@@ -9,46 +9,7 @@
 	<url>https://github.com/sidorovis/stsc</url>
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
-		<github.global.server>github</github.global.server>
 	</properties>
-	<repositories>
-	    <repository>
-    	  	<id>stsc-common-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-signals-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-algorithms-common-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-algorithms-equity-test-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.equity.test/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-storage-test-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-general-test-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-downloader-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.downloader/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
-   		</repository>
-	</repositories>
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
@@ -68,9 +29,8 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.frontend.zozka</module>
-		<module>stsc.news.feedzilla</module>
 		<module>stsc.database</module>
+		<module>stsc.frontend.zozka</module>
 		<module>stsc.as.service</module>
 	</modules>
 	<description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
