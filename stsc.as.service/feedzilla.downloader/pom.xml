@@ -44,8 +44,8 @@
      		<url>https://raw.github.com/sidorovis/stsc/stsc.news.feedzilla.downloader/</url>
    		</repository>
 	    <repository>
-    	  	<id>stsc-database-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.database/</url>
+    	  	<id>stsc-database-storage-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.database.storage/</url>
    		</repository>
 	</repositories>
 
