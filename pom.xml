@@ -29,7 +29,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.database</module>
 		<module>stsc.frontend.zozka</module>
 		<module>stsc.as.service</module>
 	</modules>

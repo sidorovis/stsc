@@ -1,8 +1,3 @@
 language: java
 jdk:
   - oraclejdk8
-before_install:
-  - cd stsc.database/migrations
-  - mvn resources:resources liquibase:update -Pyahoo.test
-  - mvn resources:resources liquibase:update -Pfeedzilla.test
-  - cd ../../

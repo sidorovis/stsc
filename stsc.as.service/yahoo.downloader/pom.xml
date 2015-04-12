@@ -47,6 +47,10 @@
     	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
    		</repository>
+	    <repository>
+    	  	<id>stsc-database-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.database/</url>
+   		</repository>
 	</repositories>
 
 	<build>
