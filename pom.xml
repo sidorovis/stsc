@@ -29,7 +29,6 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>stsc.frontend.zozka</module>
 		<module>stsc.as.service</module>
 	</modules>
 	<description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
