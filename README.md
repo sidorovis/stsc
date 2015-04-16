@@ -48,12 +48,40 @@ To use subprojects please add next to pom file:
      		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.equity.test/</url>
    		</repository>
 	    <repository>
-    	  	<id>stsc-storage-test-mvn-repo</id>
+    	  	<id>stsc-storage-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
    		</repository>
 	    <repository>
-    	  	<id>stsc-general-test-mvn-repo</id>
+    	  	<id>stsc-general-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
+   		</repository>
+	    <repository>
+    	  	<id>feedzilla-java-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/feedzilla-java/feedzilla-java/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-news-feedzilla-storage-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.news.feedzilla.storage/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-news-feedzilla-downloader-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.news.feedzilla.downloader/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-downloader-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.downloader/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-database-storage-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.database.storage/</url>
    		</repository>
 	</repositories>
 ```
