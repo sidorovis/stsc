@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>stsc</groupId>
 	<artifactId>stsc</artifactId>
-	<version>0.0.17-PROSEP</version>
+	<version>0.0.18-WEBINTERFACE</version>
 	<packaging>pom</packaging>
 	<name>stsc</name>
 	<url>https://github.com/sidorovis/stsc</url>
