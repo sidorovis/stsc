@@ -2,25 +2,108 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>stsc</groupId>
-	<artifactId>stsc</artifactId>
-	<version>0.0.18-WEBINTERFACE</version>
+	<artifactId>stsc.bom</artifactId>
+	<version>0.0.19-BOM</version>
 	<packaging>pom</packaging>
 	<name>stsc</name>
 	<url>https://github.com/sidorovis/stsc</url>
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
+		<srsc.common.version>${project.version}</srsc.common.version>
+		<github.global.server>github</github.global.server>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>stsc-common-mvn-repo</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.common</artifactId>
+				<version>${srsc.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.0-beta9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.efficient-java-matrix-library</groupId>
+				<artifactId>ejml</artifactId>
+				<version>0.25</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>18.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
-		<defaultGoal>compile</defaultGoal>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<message>#151 deployment of new version: ${project.version}</message>
+					<noJekyll>true</noJekyll>
+					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+					<branch>refs/heads/stsc.bom</branch>
+					<includes>
+						<include>**/*</include>
+					</includes>
+					<repositoryName>stsc</repositoryName>
+					<repositoryOwner>sidorovis</repositoryOwner>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	<modules>
-	</modules>
-	<description>Stsc is a bunch of classes for automatic trading strategy generating.</description>
+	<description>Stsc root BOM file.</description>
 </project>
+
