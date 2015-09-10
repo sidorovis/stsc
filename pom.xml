@@ -10,6 +10,7 @@
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
 		<srsc.common.version>${project.version}</srsc.common.version>
+		<stsc.signals.version>${project.version}</stsc.signals.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -25,6 +26,10 @@
 		<repository>
 			<id>stsc-common-mvn-repo</id>
 			<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
+		</repository>
+		<repository>
+			<id>stsc-signals-mvn-repo</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
 		</repository>
 	</repositories>
 
