@@ -9,8 +9,9 @@
 	<url>https://github.com/sidorovis/stsc</url>
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
-		<srsc.common.version>${project.version}</srsc.common.version>
+		<stsc.common.version>${project.version}</stsc.common.version>
 		<stsc.signals.version>${project.version}</stsc.signals.version>
+		<stsc.algorithms.common.version>${project.version}</stsc.algorithms.common.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -38,7 +39,17 @@
 			<dependency>
 				<groupId>stsc</groupId>
 				<artifactId>stsc.common</artifactId>
-				<version>${srsc.common.version}</version>
+				<version>${stsc.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.signals</artifactId>
+				<version>${stsc.signals.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.algorithms.common</artifactId>
+				<version>${stsc.algorithms.common.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
