@@ -12,6 +12,8 @@
 		<stsc.common.version>${project.version}</stsc.common.version>
 		<stsc.signals.version>${project.version}</stsc.signals.version>
 		<stsc.algorithms.common.version>${project.version}</stsc.algorithms.common.version>
+		<stsc.algorithms.equity.test.version>${project.version}</stsc.algorithms.equity.test.version>
+		<stsc.algorithms.fundamental.analysis.version>${project.version}</stsc.algorithms.fundamental.analysis.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -32,6 +34,18 @@
 			<id>stsc-signals-mvn-repo</id>
 			<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
 		</repository>
+		<repository>
+			<id>stsc-algorithms-common-mvn-repo</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
+		</repository>
+		<repository>
+			<id>stsc-algorithms-equity-test-mvn-repo</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.equity.test/</url>
+		</repository>
+		<repository>
+			<id>stsc-algorithms-fundamental-analysis-mvn-repo</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.fundamental.analysis/</url>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
@@ -50,6 +64,16 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.algorithms.common</artifactId>
 				<version>${stsc.algorithms.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.algorithms.equity.test</artifactId>
+				<version>${stsc.algorithms.equity.test.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.algorithms.fundamental.analysis</artifactId>
+				<version>${stsc.algorithms.fundamental.analysis.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
