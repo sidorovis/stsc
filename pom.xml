@@ -14,6 +14,7 @@
 		<stsc.algorithms.common.version>${project.version}</stsc.algorithms.common.version>
 		<stsc.algorithms.equity.test.version>${project.version}</stsc.algorithms.equity.test.version>
 		<stsc.algorithms.fundamental.analysis.version>${project.version}</stsc.algorithms.fundamental.analysis.version>
+		<stsc.storage.version>${project.version}</stsc.storage.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -76,6 +77,11 @@
 				<version>${stsc.algorithms.fundamental.analysis.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.storage</artifactId>
+				<version>${stsc.storage.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.11</version>
@@ -89,6 +95,11 @@
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>
+				<version>2.0-beta9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
 				<version>2.0-beta9</version>
 			</dependency>
 			<dependency>
