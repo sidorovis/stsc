@@ -16,6 +16,7 @@
 		<stsc.algorithms.fundamental.analysis.version>${project.version}</stsc.algorithms.fundamental.analysis.version>
 		<stsc.storage.version>${project.version}</stsc.storage.version>
 		<stsc.general.version>${project.version}</stsc.general.version>
+		<stsc.stocks.indexes.version>${project.version}</stsc.stocks.indexes.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -86,6 +87,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.general</artifactId>
 				<version>${stsc.general.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.stocks.indexes</artifactId>
+				<version>${stsc.stocks.indexes.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
