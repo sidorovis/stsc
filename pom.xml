@@ -23,6 +23,7 @@
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
 		<stsc.database.version>${project.version}</stsc.database.version>
 		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
+		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -105,6 +106,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.distributed.hadoop</artifactId>
 				<version>${stsc.distributed.hadoop.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.fundamental.analysis</artifactId>
+				<version>${stsc.fundamental.analysis.version}</version>
 			</dependency>
 
 			<dependency>
