@@ -21,6 +21,7 @@
 		<stsc.stocks.yahoo.downloader.version>${project.version}</stsc.stocks.yahoo.downloader.version>
 		<stsc.stocks.yahoo.liquidator.version>${project.version}</stsc.stocks.yahoo.liquidator.version>
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
+		<stsc.database.version>${project.version}</stsc.database.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -93,6 +94,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.integration.tests</artifactId>
 				<version>${stsc.integration.tests.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.database</artifactId>
+				<version>${stsc.database.version}</version>
 			</dependency>
 
 			<dependency>
