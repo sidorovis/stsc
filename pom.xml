@@ -22,6 +22,7 @@
 		<stsc.stocks.yahoo.liquidator.version>${project.version}</stsc.stocks.yahoo.liquidator.version>
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
 		<stsc.database.version>${project.version}</stsc.database.version>
+		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -100,6 +101,11 @@
 				<artifactId>stsc.database</artifactId>
 				<version>${stsc.database.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.hadoop</artifactId>
+				<version>${stsc.distributed.hadoop.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -177,6 +183,11 @@
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-client</artifactId>
 				<version>2.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-cli</groupId>
+				<artifactId>commons-cli</artifactId>
+				<version>1.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
