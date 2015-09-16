@@ -24,6 +24,7 @@
 		<stsc.database.version>${project.version}</stsc.database.version>
 		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
 		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
+		<stsc.performance.version>${project.version}</stsc.performance.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -111,6 +112,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.fundamental.analysis</artifactId>
 				<version>${stsc.fundamental.analysis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.performance</artifactId>
+				<version>${stsc.performance.version}</version>
 			</dependency>
 
 			<dependency>
