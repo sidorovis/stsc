@@ -17,6 +17,9 @@
 		<stsc.storage.version>${project.version}</stsc.storage.version>
 		<stsc.general.version>${project.version}</stsc.general.version>
 		<stsc.stocks.indexes.version>${project.version}</stsc.stocks.indexes.version>
+		<stsc.stocks.yahoo.core.version>${project.version}</stsc.stocks.yahoo.core.version>
+		<stsc.stocks.yahoo.downloader.version>${project.version}</stsc.stocks.yahoo.downloader.version>
+		<stsc.stocks.yahoo.liquidator.version>${project.version}</stsc.stocks.yahoo.liquidator.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -27,29 +30,6 @@
 			<url>file://${project.build.directory}/mvn-repo</url>
 		</repository>
 	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>stsc-common-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-		</repository>
-		<repository>
-			<id>stsc-signals-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
-		</repository>
-		<repository>
-			<id>stsc-algorithms-common-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
-		</repository>
-		<repository>
-			<id>stsc-algorithms-equity-test-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.equity.test/</url>
-		</repository>
-		<repository>
-			<id>stsc-algorithms-fundamental-analysis-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.fundamental.analysis/</url>
-		</repository>
-	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -92,6 +72,21 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.stocks.indexes</artifactId>
 				<version>${stsc.stocks.indexes.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.stocks.yahoo.core</artifactId>
+				<version>${stsc.stocks.yahoo.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.stocks.yahoo.downloader</artifactId>
+				<version>${stsc.stocks.yahoo.downloader.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.stocks.yahoo.liquidator</artifactId>
+				<version>${stsc.stocks.yahoo.liquidator.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
