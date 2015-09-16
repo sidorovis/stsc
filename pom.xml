@@ -144,7 +144,7 @@
 				<version>18.0</version>
 			</dependency>
 			<dependency>
-					<groupId>mysql</groupId>
+				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.34</version>
 			</dependency>
@@ -167,6 +167,16 @@
 				<groupId>com.j256.ormlite</groupId>
 				<artifactId>ormlite-jdbc</artifactId>
 				<version>4.47</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-mapreduce-client-core</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-client</artifactId>
+				<version>2.3.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
