@@ -28,6 +28,7 @@ GOTO :EXIT
     git clone https://github.com/sidorovis/%~1.git
     cd %~1
     mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+	cd ../
 goto:eof
 
 :EXIT
