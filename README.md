@@ -31,6 +31,10 @@ Also code include examples of application with different search algorithms and p
 To use subprojects please add next to pom file:
 ```
 	<repositories>
+		<repository>
+			<id>stsc-bom-repository</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.bom/</url>
+		</repository>
 	    <repository>
     	  	<id>stsc-common-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
@@ -42,6 +46,10 @@ To use subprojects please add next to pom file:
 	    <repository>
     	  	<id>stsc-algorithms-common-mvn-repo</id>
      		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
+   		</repository>
+	    <repository>
+    	  	<id>stsc-algorithms-common-mvn-repo</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.fundamental.analysis/</url>
    		</repository>
 	    <repository>
     	  	<id>stsc-algorithms-equity-test-mvn-repo</id>
