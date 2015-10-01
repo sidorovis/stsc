@@ -20,24 +20,8 @@
 			<url>http://repo1.maven.org/maven2/</url>
 		</repository>
 		<repository>
-			<id>stsc-bom-repository</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.bom/</url>
-		</repository>
-		<repository>
-			<id>stsc-common-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-		</repository>
-		<repository>
-			<id>stsc-signals-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
-		</repository>
-		<repository>
-			<id>stsc-algorithms-common-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
-		</repository>
-		<repository>
-			<id>stsc-algorithms-fundamental-analysis-mvn-repo</id>
-			<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.fundamental.analysis/</url>
+			<id>stsc-mvn-repository</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.repository/</url>
 		</repository>
 	</repositories>
 
@@ -117,13 +101,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>stsc</groupId>
-			<artifactId>stsc.algorithms.fundamental.analysis</artifactId>
+			<artifactId>stsc.algorithms.common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>stsc</groupId>
-			<artifactId>stsc.algorithms.common</artifactId>
+			<artifactId>stsc.algorithms.fundamental.analysis</artifactId>
 		</dependency>
-
 	</dependencies>
 	<description>Stsc algorithms strategies episode 1 is first attempt to create fully/half - ready trading strategies.</description>
 </project>
