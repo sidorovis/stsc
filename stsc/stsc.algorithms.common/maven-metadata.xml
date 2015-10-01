@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>stsc</groupId>
+  <artifactId>stsc.algorithms.common</artifactId>
+  <versioning>
+    <release>0.0.19-BOM</release>
+    <versions>
+      <version>0.0.19-BOM</version>
+    </versions>
+    <lastUpdated>20151001132509</lastUpdated>
+  </versioning>
+</metadata>
