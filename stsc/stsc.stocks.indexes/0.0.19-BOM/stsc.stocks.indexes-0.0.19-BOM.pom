@@ -99,6 +99,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>stsc</groupId>
+			<artifactId>stsc.common</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
