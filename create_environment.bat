@@ -15,10 +15,8 @@ call :cloneAndCreateProject stsc.general
 call :cloneAndCreateProject stsc.performance
 call :cloneAndCreateProject stsc.integration.tests
 call :cloneAndCreateProject stsc.fundamental.analysis
-call :cloneAndCreateProject stsc.news.feedzilla
 call :cloneAndCreateProject stsc.distributed.hadoop
 call :cloneAndCreateProject stsc.frontend.zozka
-call :cloneAndCreateProject stsc.as.service.feedzilla.downloader
 call :cloneAndCreateProject stsc.as.service.yahoo.downloader
 
 GOTO :EXIT
