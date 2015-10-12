@@ -101,10 +101,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>stsc</groupId>
-			<artifactId>stsc.common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>stsc</groupId>
 			<artifactId>stsc.signals</artifactId>
 		</dependency>
 		<dependency>
@@ -118,10 +114,6 @@
 		<dependency>
 			<groupId>stsc</groupId>
 			<artifactId>stsc.algorithms.equity.test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.algorithms.strategies_e1</artifactId>
 		</dependency>
 
 		<dependency>
