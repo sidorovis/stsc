@@ -23,6 +23,7 @@
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
 		<stsc.database.version>${project.version}</stsc.database.version>
 		<stsc.database.storage.version>${project.version}</stsc.database.storage.version>
+		<stsc.distributed.version>${project.version}</stsc.distributed.version>
 		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
 		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
 		<stsc.performance.version>${project.version}</stsc.performance.version>
@@ -113,6 +114,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.database.storage</artifactId>
 				<version>${stsc.database.storage.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed</artifactId>
+				<version>${stsc.distributed.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
