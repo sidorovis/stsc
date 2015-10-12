@@ -9,7 +9,7 @@
 	<url>https://github.com/sidorovis/stsc</url>
 	<properties>
 		<project.build.sourceEncoding>Cp1251</project.build.sourceEncoding>
-		<stsc.common.version>${project.version}</stsc.common.version>
+		<stsc.common.version>0.0.20-AUXFIX</stsc.common.version>
 		<stsc.signals.version>${project.version}</stsc.signals.version>
 		<stsc.algorithms.common.version>${project.version}</stsc.algorithms.common.version>
 		<stsc.algorithms.equity.test.version>${project.version}</stsc.algorithms.equity.test.version>
@@ -23,6 +23,7 @@
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
 		<stsc.database.version>${project.version}</stsc.database.version>
 		<stsc.database.storage.version>${project.version}</stsc.database.storage.version>
+		<stsc.distributed.common.version>0.0.20-SPARKON</stsc.distributed.common.version>
 		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
 		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
 		<stsc.performance.version>${project.version}</stsc.performance.version>
@@ -113,6 +114,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.database.storage</artifactId>
 				<version>${stsc.database.storage.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.common</artifactId>
+				<version>${stsc.distributed.common.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
