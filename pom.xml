@@ -14,6 +14,7 @@
 		<stsc.algorithms.common.version>${project.version}</stsc.algorithms.common.version>
 		<stsc.algorithms.equity.test.version>${project.version}</stsc.algorithms.equity.test.version>
 		<stsc.algorithms.fundamental.analysis.version>${project.version}</stsc.algorithms.fundamental.analysis.version>
+		<stsc.algorithms.strategies_e1.version>${project.version}</stsc.algorithms.strategies_e1.version>
 		<stsc.storage.version>${project.version}</stsc.storage.version>
 		<stsc.general.version>${project.version}</stsc.general.version>
 		<stsc.stocks.indexes.version>${project.version}</stsc.stocks.indexes.version>
@@ -69,6 +70,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.algorithms.fundamental.analysis</artifactId>
 				<version>${stsc.algorithms.fundamental.analysis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.algorithms.strategies_e1</artifactId>
+				<version>${stsc.algorithms.strategies_e1.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
@@ -226,12 +232,12 @@
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-mapreduce-client-core</artifactId>
-				<version>2.3.0</version>
+				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-client</artifactId>
-				<version>2.3.0</version>
+				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-cli</groupId>
@@ -272,8 +278,9 @@
 				<configuration>
 					<message>#151 deployment of new version: ${project.version}</message>
 					<noJekyll>true</noJekyll>
+					<merge>true</merge>
 					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-					<branch>refs/heads/stsc.bom</branch>
+					<branch>refs/heads/stsc.repository</branch>
 					<includes>
 						<include>**/*</include>
 					</includes>

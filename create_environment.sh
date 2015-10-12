@@ -30,10 +30,8 @@ cloneAndCreateProject stsc.general
 cloneAndCreateProject stsc.performance
 cloneAndCreateProject stsc.integration.tests
 cloneAndCreateProject stsc.fundamental.analysis
-cloneAndCreateProject stsc.news.feedzilla
 cloneAndCreateProject stsc.distributed.hadoop
 cloneAndCreateProject stsc.frontend.zozka
-cloneAndCreateProject stsc.as.service.feedzilla.downloader
 cloneAndCreateProject stsc.as.service.yahoo.downloader
 
 date

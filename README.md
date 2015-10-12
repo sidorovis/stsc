@@ -31,57 +31,13 @@ Also code include examples of application with different search algorithms and p
 To use subprojects please add next to pom file:
 ```
 	<repositories>
+		<repository>
+			<id>stsc-bom-repository</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.bom/</url>
+		</repository>
 	    <repository>
-    	  	<id>stsc-common-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.common/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-signals-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.signals/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-algorithms-common-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.common/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-algorithms-equity-test-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.algorithms.equity.test/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-storage-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.storage/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-general-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.general/</url>
-   		</repository>
-	    <repository>
-    	  	<id>feedzilla-java-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/feedzilla-java/feedzilla-java/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-news-feedzilla-storage-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.news.feedzilla.storage/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-news-feedzilla-downloader-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.news.feedzilla.downloader/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-downloader-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.downloader/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-core-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.core/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-stocks-yahoo-liquidator-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.stocks.yahoo.liquidator/</url>
-   		</repository>
-	    <repository>
-    	  	<id>stsc-database-storage-mvn-repo</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.database.storage/</url>
+    	  	<id>stsc-mvn-repository</id>
+     		<url>https://raw.github.com/sidorovis/stsc/stsc.repository/</url>
    		</repository>
 	</repositories>
 ```
