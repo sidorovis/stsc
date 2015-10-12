@@ -31,6 +31,7 @@
 		<stsc.news.feedzilla.downloader.version>${project.version}</stsc.news.feedzilla.downloader.version>
 		<stsc.news.feedzilla.export.csv.version>${project.version}</stsc.news.feedzilla.export.csv.version>
 		<stsc.frontend.zozka.version>${project.version}</stsc.frontend.zozka.version>
+		<stsc.distributed.spark.version>0.0.20-SPARKON</stsc.distributed.spark.version>
 
 		<github.global.server>github</github.global.server>
 	</properties>
@@ -155,6 +156,11 @@
 				<artifactId>stsc.frontend.zozka</artifactId>
 				<version>${stsc.frontend.zozka.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.spark</artifactId>
+				<version>${stsc.distributed.spark.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -252,6 +258,11 @@
 				<groupId>org.jfree</groupId>
 				<artifactId>jfreechart</artifactId>
 				<version>1.0.19</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-core_2.10</artifactId>
+				<version>1.2.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
