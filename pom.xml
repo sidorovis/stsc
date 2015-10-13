@@ -24,7 +24,9 @@
 		<stsc.integration.tests.version>${project.version}</stsc.integration.tests.version>
 		<stsc.database.version>${project.version}</stsc.database.version>
 		<stsc.database.storage.version>${project.version}</stsc.database.storage.version>
+		<stsc.distributed.common.version>0.0.20-SPARKON</stsc.distributed.common.version>
 		<stsc.distributed.hadoop.version>${project.version}</stsc.distributed.hadoop.version>
+		<stsc.distributed.spark.version>0.0.20-SPARKON</stsc.distributed.spark.version>
 		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
 		<stsc.performance.version>${project.version}</stsc.performance.version>
 		<stsc.news.feedzilla.storage.version>${project.version}</stsc.news.feedzilla.storage.version>
@@ -155,6 +157,16 @@
 				<artifactId>stsc.frontend.zozka</artifactId>
 				<version>${stsc.frontend.zozka.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.common</artifactId>
+				<version>${stsc.distributed.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.spark</artifactId>
+				<version>${stsc.distributed.spark.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -252,6 +264,11 @@
 				<groupId>org.jfree</groupId>
 				<artifactId>jfreechart</artifactId>
 				<version>1.0.19</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-core_2.10</artifactId>
+				<version>1.5.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
