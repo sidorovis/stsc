@@ -115,6 +115,10 @@
 			<groupId>stsc</groupId>
 			<artifactId>stsc.algorithms.equity.test</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>stsc</groupId>
+			<artifactId>stsc.algorithms.strategies_e1</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
