@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 IF EXIST ./source GOTO EXIT
 echo "Creating Sources..."
@@ -23,9 +23,9 @@ GOTO :EXIT
 
 :cloneAndCreateProject
     echo Cloning and Creating %~1 Project
-    git clone https://github.com/sidorovis/%~1.git
+    call git clone https://github.com/sidorovis/%~1.git
     cd %~1
-    mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+    call mvn compile
 	cd ../
 goto:eof
 
