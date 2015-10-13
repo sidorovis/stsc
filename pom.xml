@@ -164,11 +164,6 @@
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
-				<artifactId>stsc.distributed.common</artifactId>
-				<version>${stsc.distributed.common.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>stsc</groupId>
 				<artifactId>stsc.distributed.spark</artifactId>
 				<version>${stsc.distributed.spark.version}</version>
 			</dependency>
