@@ -3,10 +3,10 @@
   <groupId>stsc</groupId>
   <artifactId>stsc.common</artifactId>
   <versioning>
-    <release>0.0.20-AUXFIX</release>
+    <release>0.0.21-NOJODA</release>
     <versions>
-      <version>0.0.20-AUXFIX</version>
+      <version>0.0.21-NOJODA</version>
     </versions>
-    <lastUpdated>20151014145401</lastUpdated>
+    <lastUpdated>20151014191523</lastUpdated>
   </versioning>
 </metadata>
