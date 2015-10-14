@@ -3,10 +3,11 @@
   <groupId>stsc</groupId>
   <artifactId>stsc.bom</artifactId>
   <versioning>
-    <release>0.0.19-BOM</release>
+    <release>0.0.20-NOJODA</release>
     <versions>
       <version>0.0.19-BOM</version>
+      <version>0.0.20-NOJODA</version>
     </versions>
-    <lastUpdated>20151013095313</lastUpdated>
+    <lastUpdated>20151014203428</lastUpdated>
   </versioning>
 </metadata>
