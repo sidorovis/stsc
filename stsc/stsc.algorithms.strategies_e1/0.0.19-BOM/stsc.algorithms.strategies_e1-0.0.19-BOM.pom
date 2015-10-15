@@ -105,6 +105,10 @@
 		</dependency>
 		<dependency>
 			<groupId>stsc</groupId>
+			<artifactId>stsc.stocks.indexes</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>stsc</groupId>
 			<artifactId>stsc.algorithms.fundamental.analysis</artifactId>
 		</dependency>
 	</dependencies>
