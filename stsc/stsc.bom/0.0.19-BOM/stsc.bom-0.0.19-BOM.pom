@@ -30,6 +30,9 @@
 		<stsc.fundamental.analysis.version>${project.version}</stsc.fundamental.analysis.version>
 		<stsc.performance.version>${project.version}</stsc.performance.version>
 		<stsc.frontend.zozka.version>${project.version}</stsc.frontend.zozka.version>
+		<stsc.frontend.zozka.common.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.common.version>
+		<stsc.frontend.zozka.charts.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.charts.version>
+		<stsc.frontend.zozka.components.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.components.version>
 
 		<github.global.server>github</github.global.server>
 	</properties>
@@ -131,6 +134,11 @@
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
+				<artifactId>stsc.distributed.spark</artifactId>
+				<version>${stsc.distributed.spark.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
 				<artifactId>stsc.fundamental.analysis</artifactId>
 				<version>${stsc.fundamental.analysis.version}</version>
 			</dependency>
@@ -146,8 +154,18 @@
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
-				<artifactId>stsc.distributed.spark</artifactId>
-				<version>${stsc.distributed.spark.version}</version>
+				<artifactId>stsc.frontend.common.zozka</artifactId>
+				<version>${stsc.frontend.zozka.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.frontend.charts.zozka</artifactId>
+				<version>${stsc.frontend.zozka.charts.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.frontend.components.zozka</artifactId>
+				<version>${stsc.frontend.zozka.components.version}</version>
 			</dependency>
 
 			<dependency>
