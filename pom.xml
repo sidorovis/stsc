@@ -154,17 +154,17 @@
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
-				<artifactId>stsc.frontend.common.zozka</artifactId>
+				<artifactId>stsc.frontend.zozka.common</artifactId>
 				<version>${stsc.frontend.zozka.common.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
-				<artifactId>stsc.frontend.charts.zozka</artifactId>
+				<artifactId>stsc.frontend.zozka.charts</artifactId>
 				<version>${stsc.frontend.zozka.charts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
-				<artifactId>stsc.frontend.components.zozka</artifactId>
+				<artifactId>stsc.frontend.zozka.components</artifactId>
 				<version>${stsc.frontend.zozka.components.version}</version>
 			</dependency>
 
