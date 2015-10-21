@@ -33,6 +33,7 @@
 		<stsc.frontend.zozka.common.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.common.version>
 		<stsc.frontend.zozka.charts.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.charts.version>
 		<stsc.frontend.zozka.components.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.components.version>
+		<stsc.frontend.zozka.applications.datafeed.checker.version>0.0.20-NOCONTROLFX</stsc.frontend.zozka.applications.datafeed.checker.version>
 
 		<github.global.server>github</github.global.server>
 	</properties>
@@ -166,6 +167,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.frontend.zozka.components</artifactId>
 				<version>${stsc.frontend.zozka.components.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.frontend.zozka.applications.datafeed.checker</artifactId>
+				<version>${stsc.frontend.zozka.applications.datafeed.checker.version}</version>
 			</dependency>
 
 			<dependency>
