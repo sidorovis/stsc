@@ -5,9 +5,9 @@
   <versioning>
     <release>0.0.20-AUXFIX</release>
     <versions>
-      <version>0.0.20-AUXFIX</version>
       <version>0.0.21-NOJODA</version>
+      <version>0.0.20-AUXFIX</version>
     </versions>
-    <lastUpdated>20151023073859</lastUpdated>
+    <lastUpdated>20151023182400</lastUpdated>
   </versioning>
 </metadata>
