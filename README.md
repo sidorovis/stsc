@@ -35,9 +35,9 @@ To use subprojects please add next to pom file:
 			<id>stsc-bom-repository</id>
 			<url>https://raw.github.com/sidorovis/stsc/stsc.bom/</url>
 		</repository>
-	    <repository>
-    	  	<id>stsc-mvn-repository</id>
-     		<url>https://raw.github.com/sidorovis/stsc/stsc.repository/</url>
-   		</repository>
+		<repository>
+			<id>stsc-mvn-repository</id>
+			<url>https://raw.github.com/sidorovis/stsc/stsc.repository/</url>
+		</repository>
 	</repositories>
 ```
