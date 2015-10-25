@@ -128,10 +128,6 @@
 			<artifactId>stsc.stocks.yahoo.liquidator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>stsc</groupId>
-			<artifactId>stsc.stocks.indexes</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
