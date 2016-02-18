@@ -32,6 +32,7 @@
 		<stsc.integration.tests.version>0.0.19-BOM</stsc.integration.tests.version>
 
 		<stsc.database.version>0.0.19-BOM</stsc.database.version>
+		<stsc.database.migrations.version>0.0.19-BOM</stsc.database.migrations.version>
 		<stsc.database.storage.version>0.0.19-BOM</stsc.database.storage.version>
 
 		<stsc.distributed.common.version>0.0.20-SPARKON</stsc.distributed.common.version>
@@ -130,6 +131,11 @@
 				<groupId>stsc</groupId>
 				<artifactId>stsc.database</artifactId>
 				<version>${stsc.database.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>stsc</groupId>
+				<artifactId>stsc.database.migrations</artifactId>
+				<version>${stsc.database.migrations.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>stsc</groupId>
